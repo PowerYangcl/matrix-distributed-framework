@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script type="text/javascript" src="../internal.js"></script>
+    <style type="text/css">
+        *{margin:0;padding:0;color: #838383;}
+        table{font-size: 12px;margin: 10px;line-height: 30px}
+        .txt{width:300px;height:21px;line-height:21px;border:1px solid #d7d7d7;}
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td><label for="text"> <var id="lang_input_product_code"></var></label></td>
+            <td><input class="txt" id="product_code" type="product_code" /></td>
+        </tr>
+        <tr>
+            <td colspan="2" id="msg"></td>
+        </tr>
+    </table>
+
+<script type="text/javascript">
+	var range = editor.selection.getRange(),
+		link = range.collapsed ? editor.queryCommandValue( "link" ) : editor.selection.getStart(),
+		rangeLink = domUtils.findParentByTagName(range.getCommonAncestor(),'a',true),
+		url="";
+	link = domUtils.findParentByTagName( link, "a", true );
+	if(link){
+        url = utils.html(link.getAttribute( '_href' ) || link.getAttribute( 'href', 2 ));
+    }
+	
+	if( undefined != url && null != url && url.length > 0) {
+		if(url.indexOf("?") >0 && url.indexOf("goods_num") > 0) {//进入商品详情页的标识
+			var paramArr = url.split("?")[1].split("&");
+			for(var i =0;i<paramArr.length ;i++) {
+				var param = paramArr[i].split("=");
+				if(param[0] == "pid") {
+					url = param[1];
+					break;
+				}
+			}
+		}
+	}
+	$G("product_code").value=url;
+
+    function handleDialogOk(){
+        var product_code = $G('product_code').value;
+        if(product_code ){
+            var obj = {
+                'href' : "http://wx.lacues.cn/Product_Detail.html?pid="+product_code+"&fromshare=1&wxPhone=&goods_num:"+product_code,
+                'target' :  "_blank" ,
+                'title' : product_code,
+                '_href': "http://wx.lacues.cn/Product_Detail.html?pid="+product_code+"&fromshare=1&wxPhone=&goods_num:"+product_code
+            };
+            editor.execCommand('link',utils.clearEmptyAttrs(obj) );
+            dialog.close();
+        } else {
+        	//取消跳转商品详情页
+        	//待定
+        }
+    }
+    dialog.onok = handleDialogOk;
+				
+</script>
+
+
+</body>
+</html>

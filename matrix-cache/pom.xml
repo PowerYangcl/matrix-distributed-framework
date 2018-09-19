@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.matrix</groupId>
+		<artifactId>matrix-dubbo-framework</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent> 
+	<artifactId>matrix-cache</artifactId>
+	<packaging>jar</packaging>
+	<name>matrix-cache</name>
+	<url>https://github.com/PowerYangcl</url>
+	
+	<properties>
+		<!-- 全局性控制项目编码为UTF-8 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+		<jedis.version>2.9.0</jedis.version>
+		<spring.data.redis.version>1.8.10.RELEASE</spring.data.redis.version>
+		
+		
+		<!-- ZooKeeper 版本 -->
+        <zookeeper.version>3.4.11</zookeeper.version>
+        <!-- Curator(ZooKeeper客户端)版本 -->
+        <curator.version>4.0.0</curator.version>
+        
+	</properties>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.matrix</groupId>
+			<artifactId>matrix-core</artifactId>
+			<version>${project.version}</version>
+		</dependency> 
+		
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>${jedis.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId> 
+			<version>${spring.data.redis.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.zookeeper</groupId>
+		    <artifactId>zookeeper</artifactId>
+		    <version>${zookeeper.version}</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.curator</groupId>
+		    <artifactId>curator-framework</artifactId>
+		    <version>${curator.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.curator</groupId>
+		    <artifactId>curator-client</artifactId>
+		    <version>${curator.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.curator</groupId>
+		    <artifactId>curator-recipes</artifactId>
+		    <version>${curator.version}</version>
+		</dependency>
+	</dependencies>
+	
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

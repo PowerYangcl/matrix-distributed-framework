@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.ISysLockMapper">
+
+     <parameterMap id="lockParam" type="java.util.Map" >
+         <parameter property="somekey" mode="IN" jdbcType="VARCHAR"/>
+         <parameter property="keysplit" mode="IN" jdbcType="VARCHAR"/>
+         <parameter property="timeoutsecond" mode="IN" jdbcType="INTEGER"/>
+         <parameter property="lockflag" mode="IN" jdbcType="INTEGER"/>
+         <parameter property="uuid" mode="IN" jdbcType="VARCHAR"/>
+     </parameterMap>
+     
+     
+	<select id="addLock" parameterMap="lockParam" statementType="CALLABLE" resultType="String">
+		CALL matrixcore.proc_lock_or_unlock_somekey(?,?,?,?,?)
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
