@@ -1,23 +1,51 @@
-# Compiled class file
-*.class
+/target/ 
+/.settings/ 
+/*.project
 
-# Log file
-*.log
 
-# BlueJ files
-*.ctxt
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+/matrix-core/target/
+/matrix-core/.settings/
+/matrix-core/.project 
+/matrix-core/.classpath
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+/matrix-cache/target/
+/matrix-cache/.settings/
+/matrix-cache/.project 
+/matrix-cache/.classpath
+
+
+/matrix-quartz/target/
+/matrix-quartz/.settings/
+/matrix-quartz/.project 
+/matrix-quartz/.classpath
+
+
+/matrix-manager/target/
+/matrix-manager/.settings/
+/matrix-manager/.project 
+/matrix-manager/.classpath
+
+
+/matrix-admin/target/
+/matrix-admin/.settings/
+/matrix-admin/.project 
+/matrix-admin/.classpath
+
+
+/matrix-example/target/
+/matrix-example/.settings/
+/matrix-example/.project 
+/matrix-example/.classpath
+
+
+
+
+
+
+
+
+
+
+
