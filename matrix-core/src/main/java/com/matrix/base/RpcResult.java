@@ -90,7 +90,7 @@ public class RpcResult<T> implements Serializable {
 	public T getData() {
 		return data;
 	}
-	public void setResult(T data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 	
