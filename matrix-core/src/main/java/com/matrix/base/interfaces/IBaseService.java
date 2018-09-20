@@ -6,9 +6,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseDto;
 import com.matrix.base.BaseEntity;
 import com.matrix.base.BaseView;
+import com.matrix.base.RpcResult;
 
 
 /**
@@ -407,6 +409,34 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
      * @version 1.0.0.1
      */
     public JSONObject pageListByDto(D dto , HttpServletRequest request);
+    
+    
+    /**
+     * @description: DubboRpc分页|DTO作为查询条件，返回Entity泛型列表
+ 	 * 	Mapper.xml标识为：queryPageByDto
+	 * 	<select id="queryPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.***Dto">
+	 * 
+     * @param dto
+     * @author Yangcl
+     * @date 2018年7月25日 下午4:05:48 
+     * @version 1.0.0.1
+     */
+    public RpcResult<PageInfo<E>> rpcEntityPageByDto(D dto);
+    
+    
+    /**
+     * @description: DubboRpc分页|DTO作为查询条件，返回View泛型列表
+     * 	Mapper.xml标识为：pageListByDto
+     * 	<resultMap id="findListMsfView" type="com.matrix.pojo.view.McSysFunctionView">< / resultMap>
+	 * 	<select id="pageListByDto" resultMap="findListMsfView" parameterType="com.matrix.pojo.dto.***Dto">
+	 * 
+	 * 
+     * @param dto
+     * @author Yangcl
+     * @date 2018年7月25日 下午4:06:14 
+     * @version 1.0.0.1
+     */
+    public RpcResult<PageInfo<V>> rpcViewPageByDto(D dto);
 }
 
 

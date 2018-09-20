@@ -579,6 +579,75 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
 		result.put("entity", dto);
 		return result;
     }
+    
+    
+    
+    /**
+     * @description: DubboRpc分页|DTO作为查询条件，返回Entity泛型列表
+ 	 * 	Mapper.xml标识为：queryPageByDto
+	 * 	<select id="queryPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.***Dto">
+	 * 
+     * @param dto
+     * @author Yangcl
+     * @date 2018年7月25日 下午4:05:48 
+     * @version 1.0.0.1
+     */
+    public RpcResult<PageInfo<E>> rpcEntityPageByDto(D dto) {
+		Integer startIndex = dto.getStartIndex(); 	// 当前第几页 | 必须大于0
+    	Integer pageSize = dto.getPageSize(); 		// 当前页所显示记录条数
+		int num = 1;
+		int size = 10;
+		if (startIndex != null) {
+			num = startIndex;
+		}
+		if (pageSize != null) {
+			size = pageSize;
+		}
+ 
+		PageHelper.startPage(num , size);
+		List<E> list = baseDao.queryPageByDto(dto);
+		if (list != null && list.size() > 0) {
+			return RpcResult.SUCCESS(this.getInfo(100000000), new PageInfo<E>(list));  // Dubbo分页数据返回成功
+		}
+		
+		// 没有查询到可以显示的数据
+		return RpcResult.ERROR(this.getInfo(100090002), RpcResultCode.RESULT_NULL);
+    }
+    
+    
+    /**
+     * @description: DubboRpc分页|DTO作为查询条件，返回View泛型列表
+     * 	Mapper.xml标识为：pageListByDto
+     * 	<resultMap id="findListMsfView" type="com.matrix.pojo.view.McSysFunctionView">< / resultMap>
+	 * 	<select id="pageListByDto" resultMap="findListMsfView" parameterType="com.matrix.pojo.dto.***Dto">
+	 * 
+	 * 
+     * @param dto
+     * @author Yangcl
+     * @date 2018年7月25日 下午4:06:14 
+     * @version 1.0.0.1
+     */
+    public RpcResult<PageInfo<V>> rpcViewPageByDto(D dto) {
+    	Integer startIndex = dto.getStartIndex(); 	// 当前第几页 | 必须大于0
+    	Integer pageSize = dto.getPageSize(); 		// 当前页所显示记录条数
+		int num = 1;
+		int size = 10;
+		if (startIndex != null) {
+			num = startIndex;
+		}
+		if (pageSize != null) {
+			size = pageSize;
+		}
+ 
+		PageHelper.startPage(num , size);
+		List<V> list = baseDao.pageListByDto(dto);
+		if (list != null && list.size() > 0) {
+			return RpcResult.SUCCESS(this.getInfo(100000000), new PageInfo<V>(list));  // Dubbo分页数据返回成功
+		}
+		
+		// 没有查询到可以显示的数据
+		return RpcResult.ERROR(this.getInfo(100090002), RpcResultCode.RESULT_NULL); 
+    }
 
 }
 
