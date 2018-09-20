@@ -31,8 +31,12 @@ public class RpcResult<T> implements Serializable {
 		return new RpcResult<T>("success" , "" , 200 , null);
 	}
 	
-	public static <T> RpcResult<T> SUCCESS(T t) { 
-		return new RpcResult<T>("success" , "" , 200 , t);
+	public static <T> RpcResult<T> SUCCESS(String msg) { 
+		return new RpcResult<T>("success" , msg , 200 , null);
+	}
+	
+	public static <T> RpcResult<T> SUCCESS(String msg , T t) { 
+		return new RpcResult<T>("success" , msg , 200 , t);
 	}
 	
 
