@@ -27,21 +27,41 @@ public class RpcResult<T> implements Serializable {
 	}
 	
 	public static <T> RpcResult<T> SUCCESS() {
-		return new RpcResult<T>("success" , "" , 200 , null);
+		return new RpcResult<T>("success" , "" , RpcResultCode.SUCCESS , null);
 	}
 	
 	public static <T> RpcResult<T> SUCCESS(String msg) { 
-		return new RpcResult<T>("success" , msg , 200 , null);
+		return new RpcResult<T>("success" , msg , RpcResultCode.SUCCESS , null);
 	}
 	
 	public static <T> RpcResult<T> SUCCESS(String msg , T t) { 
-		return new RpcResult<T>("success" , msg , 200 , t);
+		return new RpcResult<T>("success" , msg , RpcResultCode.SUCCESS , t);
 	}
 	
-
+	/**
+	 * @description: Rpc错误消息提示
+	 *
+	 * @param msg
+	 * @param code 必须是RpcResultCode中定义的值
+	 * 
+	 * @author Yangcl
+	 * @date 2018年9月20日 下午3:44:41 
+	 * @version 1.0.0.1
+	 */
 	public static <T> RpcResult<T> ERROR(String msg , Integer code) {
 		return new RpcResult<T>("error" , msg , code , null);
 	}
+	
+	/**
+	 * @description: Rpc错误消息提示
+	 *
+	 * @param msg
+	 * @param code 必须是RpcResultCode中定义的值
+	 * 
+	 * @author Yangcl
+	 * @date 2018年9月20日 下午3:44:41 
+	 * @version 1.0.0.1
+	 */
 	public static <T> RpcResult<T> ERROR(String msg , Integer code , T t) {
 		return new RpcResult<T>("error" , msg , code , t);
 	}
