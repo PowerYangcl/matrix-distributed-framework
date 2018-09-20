@@ -17,13 +17,13 @@ public class RpcResult<T> implements Serializable {
 	private String status;
 	private String msg;
 	private Integer code = null;
-	private T result;
+	private T data;
 	
-	public RpcResult(String status, String msg, Integer code, T result) {
+	public RpcResult(String status, String msg, Integer code, T data) {
 		this.status = status;
 		this.msg = msg;
 		this.code = code;
-		this.result = result;
+		this.data = data;
 	}
 	
 	public static <T> RpcResult<T> SUCCESS() {
@@ -87,11 +87,11 @@ public class RpcResult<T> implements Serializable {
 	public void setCode(Integer code) {
 		this.code = code;
 	}
-	public T getResult() {
-		return result;
+	public T getData() {
+		return data;
 	}
-	public void setResult(T result) {
-		this.result = result;
+	public void setResult(T data) {
+		this.data = data;
 	}
 	
 }
