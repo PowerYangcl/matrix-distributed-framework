@@ -1,7 +1,6 @@
 package com.matrix.base;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @description: RPC 调用响应封装
