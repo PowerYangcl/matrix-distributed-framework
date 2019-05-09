@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IAcApiInfoMapper">
+	
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.AcApiInfo"  extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="target" property="target" jdbcType="VARCHAR" />
+		<result column="dto_info" property="dtoInfo" jdbcType="VARCHAR" />
+		<result column="atype" property="atype" jdbcType="VARCHAR" />
+		<result column="module" property="module" jdbcType="VARCHAR" />
+		<result column="processor" property="processor" jdbcType="VARCHAR" />
+		<result column="domain" property="domain" jdbcType="INTEGER" />
+		<result column="parent_id" property="parentId" jdbcType="BIGINT" />
+		<result column="seqnum" property="seqnum" jdbcType="INTEGER" />
+		<result column="discard" property="discard" jdbcType="INTEGER" />
+		<result column="login" property="login" jdbcType="INTEGER" />
+		<result column="remark" property="remark" jdbcType="LONGVARCHAR" /> 
+	</resultMap>
+	
+
+	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			*
+		from 
+			ac_api_info
+		where 
+			id = #{id} 
+	</select>
+	
+	<resultMap id="ApiTreeView" type="com.matrix.pojo.view.ApiTreeView"></resultMap>
+	<select id="findApiInfoList" resultMap="ApiTreeView" parameterType="com.matrix.pojo.entity.AcApiInfo">
+		select
+			a.id as id,
+			a.name as name,
+			a.target as target,
+			a.dto_info as dtoInfo,
+			a.atype as atype,
+			a.module as module,
+			a.processor as processor,
+			a.domain as domain,
+			a.seqnum as seqnum,
+			a.parent_id as parentId,
+			a.discard as discard,
+			a.login as login,
+			a.remark as remark
+		from 
+			ac_api_info a
+		where 
+			a.delete_flag =1 
+			<if test="discard != null">
+				and a.discard = #{discard , jdbcType=INTEGER} 
+			</if>
+	</select>
+	
+	<!-- 多条件查询 -->
+	<select id="selectByEntity" resultMap="BaseResultMap" parameterType="com.matrix.pojo.entity.AcApiInfo">
+		select
+			*
+		from 
+			ac_api_info
+		where 
+			delete_flag = 1
+			<if test="id != null">
+				and id = #{id,jdbcType=BIGINT} 
+			</if>
+			<if test="name != null">
+				and name = #{name,jdbcType=VARCHAR} 
+			</if>
+			<if test="target != null">
+				and target = #{target , jdbcType=VARCHAR} 
+			</if>
+			<if test="atype != null">
+				and atype = #{atype,jdbcType=VARCHAR} 
+			</if>
+			<if test="module != null">
+				and module = #{module,jdbcType=VARCHAR} 
+			</if>
+			<if test="processor != null">
+				and processor = #{processor,jdbcType=VARCHAR} 
+			</if>
+			<if test="domain != null">
+				and domain = #{domain,jdbcType=INTEGER} 
+			</if> 
+			<if test="discard != null">
+				and discard = #{discard , jdbcType=INTEGER} 
+			</if>
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from ac_api_info where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.AcApiInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into ac_api_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="target != null">
+				target,
+			</if>
+			<if test="dtoInfo != null">
+				dto_info,
+			</if>
+			<if test="atype != null">
+				atype,
+			</if>
+			<if test="module != null">
+				module,
+			</if>
+			<if test="processor != null">
+				processor,
+			</if>
+			<if test="domain != null">
+				domain,
+			</if>
+			<if test="parentId != null">
+				parent_id,
+			</if>
+			<if test="seqnum != null">
+				seqnum,
+			</if>
+			<if test="discard != null">
+				discard,
+			</if>
+			<if test="login != null">
+				login,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="target != null">
+				#{target , jdbcType=VARCHAR},
+			</if>
+			<if test="dtoInfo != null">
+				#{dtoInfo , jdbcType=VARCHAR},
+			</if>
+			<if test="atype != null">
+				#{atype,jdbcType=VARCHAR},
+			</if>
+			<if test="module != null">
+				#{module,jdbcType=VARCHAR},
+			</if>
+			<if test="processor != null">
+				#{processor,jdbcType=VARCHAR},
+			</if>
+			<if test="domain != null">
+				#{domain,jdbcType=INTEGER},
+			</if>
+			<if test="parentId != null">
+				#{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="seqnum != null">
+				#{seqnum , jdbcType=INTEGER},
+			</if>
+			<if test="discard != null">
+				#{discard , jdbcType=INTEGER},
+			</if>
+			<if test="login != null">
+				#{login , jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark , jdbcType=VARCHAR}, 
+			</if>
+			
+			<if test="createTime != null">
+				#{createTime , jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId , jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName , jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime , jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId , jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName , jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag , jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.AcApiInfo">
+		update ac_api_info
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="target != null">
+				target = #{target , jdbcType=VARCHAR},
+			</if>
+			<if test="dtoInfo != null">
+				dto_info = #{dtoInfo , jdbcType=VARCHAR},
+			</if>
+			<if test="atype != null">
+				atype = #{atype,jdbcType=VARCHAR},
+			</if>
+			<if test="module != null">
+				module = #{module,jdbcType=VARCHAR},
+			</if>
+			<if test="processor != null">
+				processor = #{processor,jdbcType=VARCHAR},
+			</if>
+			<if test="domain != null">
+				domain = #{domain,jdbcType=INTEGER},
+			</if>
+			<if test="parentId != null">
+				parent_id = #{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="seqnum != null">
+				seqnum = #{seqnum , jdbcType=INTEGER}, 
+			</if>
+			<if test="discard != null">
+				discard = #{discard , jdbcType=INTEGER}, 
+			</if>
+			<if test="login != null">
+				login = #{login , jdbcType=INTEGER}, 
+			</if>
+			<if test="remark != null">
+				remark = #{remark , jdbcType=VARCHAR}, 
+			</if>
+			
+			<if test="updateTime != null">
+				update_time = #{updateTime , jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId , jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName , jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag , jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id , jdbcType=BIGINT}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+

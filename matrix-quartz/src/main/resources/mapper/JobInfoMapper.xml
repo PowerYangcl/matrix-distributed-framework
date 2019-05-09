@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IJobInfoMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.JobInfo" extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="job_name" property="jobName" jdbcType="VARCHAR" />
+		<result column="job_title" property="jobTitle" jdbcType="VARCHAR" />
+		<result column="job_class" property="jobClass" jdbcType="VARCHAR" />
+		<result column="job_triger" property="jobTriger" jdbcType="VARCHAR" />
+		<result column="run_group_id" property="runGroupId" jdbcType="BIGINT" />
+		<result column="concurrent_type" property="concurrentType" jdbcType="INTEGER" />
+		<result column="begin_time" property="beginTime" jdbcType="TIMESTAMP" />
+		<result column="max_exec_time" property="maxExecTime" jdbcType="INTEGER" />
+		<result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+		<result column="next_time" property="nextTime" jdbcType="TIMESTAMP" />
+		<result column="pause" property="pause" jdbcType="INTEGER" />
+		<result column="lock_key" property="lockKey" jdbcType="VARCHAR" />
+		<result column="expire_time" property="expireTime" jdbcType="INTEGER" />
+		<result column="time_out" property="timeOut" jdbcType="INTEGER" />
+		<result column="job_list" property="jobList" jdbcType="VARCHAR" />
+		<result column="triger_type" property="trigerType" jdbcType="INTEGER" />
+		<result column="log_type" property="logType" jdbcType="INTEGER" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<sql id="table_column_list">
+		id, 
+		job_name, 
+		job_title, 
+		job_class, 
+		job_triger, 
+		run_group_id,
+		concurrent_type, 
+		begin_time,
+		max_exec_time, 
+		end_time, 
+		next_time, 
+		pause, 
+		lock_key, 
+		expire_time, 
+		time_out, 
+		job_list, 
+		triger_type,
+		log_type,
+		remark, 
+		create_time,
+		create_user_id,
+		create_user_name, 
+		update_time, 
+		update_user_id, 
+		update_user_name, 
+		delete_flag
+	</sql>
+	
+	
+	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="table_column_list" />
+		from 
+			job_info
+		where 
+			id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+			<include refid="table_column_list" />
+		from 
+			job_info
+		where 
+			delete_flag = 1
+		and 
+			job_name = #{jobName,jdbcType=VARCHAR} limit 1
+	</select>
+	
+	
+	<select id="findListByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.JobInfoDto">
+		select
+			<include refid="table_column_list" />
+		from 
+			job_info
+		where 
+			delete_flag = 1
+		<if test="jobName != null">
+			and job_name = #{jobName,jdbcType=VARCHAR} 
+		</if>
+		<if test="jobTitle != null">
+			and job_title like CONCAT('%' , '${jobTitle}' , '%' ) 
+		</if>
+		<if test="jobClass != null">
+			and job_class = #{jobClass,jdbcType=VARCHAR} 
+		</if>
+		<if test="trigerType != null">
+			and triger_type = #{trigerType , jdbcType=INTEGER} 
+		</if>
+		<if test="runGroupId != null">
+			and run_group_id = #{runGroupId,jdbcType=BIGINT} 
+		</if>
+	</select>
+	
+	<!-- 定时任务列表页 -->
+	<resultMap id="JobInfoView" type="com.matrix.pojo.view.JobInfoView"></resultMap>
+	<select id="pageListByDto" resultMap="JobInfoView" parameterType="com.matrix.pojo.dto.JobInfoDto">
+		select
+			info.id as id, 
+			info.job_name as jobName, 
+			info.job_title as jobTitle, 
+			info.job_class as jobClass, 
+			info.job_triger as jobTriger, 
+			info.run_group_id as runGroupId,
+			info.begin_time as beginTime,
+			info.end_time as endTime, 
+			info.next_time as nextTime, 
+			info.pause as pause, 
+			info.lock_key as lockKey, 
+			info.expire_time as expireTime, 
+			info.time_out as timeOut, 
+			info.job_list as jobList, 
+			info.triger_type as trigerType,
+			info.log_type as logType,
+			info.remark as remark, 
+			info.create_time as createTime,
+			info.create_user_id as createUserId,
+			info.create_user_name as createUserName, 
+			info.update_time as updateTime, 
+			info.update_user_id as updateUserId, 
+			info.update_user_name as updateUserName, 
+			info.delete_flag as deleteFlag,
+			g.group_name as groupName,
+			g.ip as ip
+		from 
+			job_info info left join job_group g on info.run_group_id = g.id
+		where 
+			info.delete_flag = 1
+		<if test="jobName != null and jobName != '' ">
+			and info.job_name = #{jobName,jdbcType=VARCHAR} 
+		</if>
+		<if test="jobTitle != null and jobTitle != '' ">
+			and info.job_title like CONCAT('%' , '${jobTitle}' , '%' ) 
+		</if>
+		<if test="jobClass != null">
+			and info.job_class = #{jobClass,jdbcType=VARCHAR} 
+		</if>
+		<if test="trigerType != null">
+			and info.triger_type = #{trigerType , jdbcType=INTEGER} 
+		</if>
+		<if test="runGroupId != null">
+			and info.run_group_id = #{runGroupId,jdbcType=BIGINT} 
+		</if>
+	</select>
+	
+	<select id="findList" resultMap="BaseResultMap" parameterType="com.matrix.pojo.entity.JobInfo">
+		select
+			<include refid="table_column_list" />
+		from 
+			job_info
+		where 
+			delete_flag = 1
+		<if test="jobTitle != null and jobClass != null">
+			and ( job_title = #{jobTitle , jdbcType=VARCHAR} or job_class = #{jobClass , jdbcType=VARCHAR} ) 
+		</if>
+		<if test="jobTitle != null and jobClass == null">
+			and job_title = #{jobTitle , jdbcType=VARCHAR} 
+		</if>
+		<if test="jobTitle == null and jobClass != null">
+			and job_class = #{jobClass , jdbcType=VARCHAR} 
+		</if>
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from job_info where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	
+	<delete id="deleteByDto" parameterType="com.matrix.pojo.dto.JobInfoDto">
+		delete 
+			from job_info 
+		where
+			job_name = #{jobName,jdbcType=VARCHAR} 
+	</delete>
+	
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.JobInfo"  useGeneratedKeys="true" keyProperty="id">
+		insert into job_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="jobName != null">
+				job_name,
+			</if>
+			<if test="jobTitle != null">
+				job_title,
+			</if>
+			<if test="jobClass != null">
+				job_class,
+			</if>
+			<if test="jobTriger != null">
+				job_triger,
+			</if>
+			<if test="runGroupId != null">
+				run_group_id,
+			</if>
+			<if test="concurrentType != null">
+				concurrent_type,
+			</if>
+			<if test="beginTime != null">
+				begin_time,
+			</if>
+			<if test="maxExecTime != null">
+				max_exec_time,
+			</if>
+			<if test="endTime != null">
+				end_time,
+			</if>
+			<if test="nextTime != null">
+				next_time,
+			</if>
+			<if test="pause != null">
+				pause,
+			</if>
+			<if test="lockKey != null">
+				lock_key,
+			</if>
+			<if test="expireTime != null">
+				expire_time,
+			</if>
+			<if test="timeOut != null">
+				time_out,
+			</if>
+			<if test="jobList != null">
+				job_list,
+			</if>
+			<if test="trigerType != null">
+				triger_type,
+			</if>
+			<if test="logType != null">
+				log_type,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="jobName != null">
+				#{jobName,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTitle != null">
+				#{jobTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="jobClass != null">
+				#{jobClass,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTriger != null">
+				#{jobTriger,jdbcType=VARCHAR},
+			</if>
+			<if test="runGroupId != null">
+				#{runGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="concurrentType != null">
+				#{concurrentType,jdbcType=INTEGER},
+			</if>
+			<if test="beginTime != null">
+				#{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="maxExecTime != null">
+				#{maxExecTime,jdbcType=INTEGER},
+			</if>
+			<if test="endTime != null">
+				#{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="nextTime != null">
+				#{nextTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pause != null">
+				#{pause,jdbcType=INTEGER},
+			</if>
+			<if test="lockKey != null">
+				#{lockKey,jdbcType=VARCHAR},
+			</if>
+			<if test="expireTime != null">
+				#{expireTime,jdbcType=INTEGER},
+			</if>
+			<if test="timeOut != null">
+				#{timeOut,jdbcType=INTEGER},
+			</if>
+			<if test="jobList != null">
+				#{jobList,jdbcType=VARCHAR},
+			</if>
+			<if test="trigerType != null">
+				#{trigerType,jdbcType=INTEGER},
+			</if>
+			<if test="logType != null">
+				#{logType,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.JobInfo">
+		update job_info
+		<set>
+			<if test="jobName != null">
+				job_name = #{jobName,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTitle != null">
+				job_title = #{jobTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="jobClass != null">
+				job_class = #{jobClass,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTriger != null">
+				job_triger = #{jobTriger,jdbcType=VARCHAR},
+			</if>
+			<if test="runGroupId != null">
+				run_group_id = #{runGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="concurrentType != null">
+				concurrent_type = #{concurrentType,jdbcType=INTEGER},
+			</if>
+			<if test="beginTime != null">
+				begin_time = #{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="maxExecTime != null">
+				max_exec_time = #{maxExecTime,jdbcType=INTEGER},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="nextTime != null">
+				next_time = #{nextTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pause != null">
+				pause = #{pause,jdbcType=INTEGER},
+			</if>
+			<if test="lockKey != null">
+				lock_key = #{lockKey,jdbcType=VARCHAR},
+			</if>
+			<if test="expireTime != null">
+				expire_time = #{expireTime,jdbcType=INTEGER},
+			</if>
+			<if test="timeOut != null">
+				time_out = #{timeOut,jdbcType=INTEGER},
+			</if>
+			<if test="jobList != null">
+				job_list = #{jobList,jdbcType=VARCHAR},
+			</if>
+			<if test="trigerType != null">
+				triger_type = #{trigerType , jdbcType=INTEGER},
+			</if>
+			<if test="logType != null">
+				log_type = #{logType , jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<update id="updateSelectiveByJobName" parameterType="com.matrix.pojo.entity.JobInfo">
+		update job_info
+		<set>
+			<if test="jobName != null">
+				job_name = #{jobName,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTitle != null">
+				job_title = #{jobTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="jobClass != null">
+				job_class = #{jobClass,jdbcType=VARCHAR},
+			</if>
+			<if test="jobTriger != null">
+				job_triger = #{jobTriger,jdbcType=VARCHAR},
+			</if>
+			<if test="runGroupId != null">
+				run_group_id = #{runGroupId,jdbcType=BIGINT},
+			</if>
+			<if test="concurrentType != null">
+				concurrent_type = #{concurrentType,jdbcType=INTEGER},
+			</if>
+			<if test="beginTime != null">
+				begin_time = #{beginTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="maxExecTime != null">
+				max_exec_time = #{maxExecTime,jdbcType=INTEGER},
+			</if>
+			<if test="endTime != null">
+				end_time = #{endTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="nextTime != null">
+				next_time = #{nextTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="pause != null">
+				pause = #{pause,jdbcType=INTEGER},
+			</if>
+			<if test="lockKey != null">
+				lock_key = #{lockKey,jdbcType=VARCHAR},
+			</if>
+			<if test="expireTime != null">
+				expire_time = #{expireTime,jdbcType=INTEGER},
+			</if>
+			<if test="timeOut != null">
+				time_out = #{timeOut,jdbcType=INTEGER},
+			</if>
+			<if test="jobList != null">
+				job_list = #{jobList,jdbcType=VARCHAR},
+			</if>
+			<if test="trigerType != null">
+				triger_type = #{trigerType , jdbcType=INTEGER},
+			</if>
+			<if test="logType != null">
+				log_type = #{logType , jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</set>
+		where job_name = #{jobName,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<update id="pauseAll" parameterType="com.matrix.pojo.entity.JobInfo">
+		update job_info
+		<set>
+			<if test="pause != null">
+				pause = #{pause,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where delete_flag = 1
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

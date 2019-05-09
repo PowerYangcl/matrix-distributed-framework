@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.4.xsd"
+	default-lazy-init="true">
+
+	<description>mongodb配置信息 </description>
+
+ 	<mongo:mongo id="mongo" replica-set="${matrix.replica-set}">
+		<mongo:options connections-per-host="${matrix.mongo.connectionsPerHost}"
+                   threads-allowed-to-block-for-connection-multiplier="${matrix.mongo.threadsAllowedToBlockForConnectionMultiplier}"
+                   connect-timeout="${matrix.mongo.connectTimeout}"
+                   max-wait-time="${matrix.mongo.maxWaitTime}"
+                   auto-connect-retry="${matrix.mongo.autoConnectRetry}"
+                   socket-keep-alive="${matrix.mongo.socketKeepAlive}"
+                   socket-timeout="${matrix.mongo.connectTimeout}" />
+	</mongo:mongo>
+
+	<mongo:db-factory authentication-dbname="${matrix.mongo.authName}"  dbname="${matrix.mongo.dbname}" username="${matrix.mongo.username}" password="${matrix.mongo.password}" mongo-ref="mongo" />
+	
+	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+		<constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/> 
+	</bean>
+	
+	<bean id="mongoDao" class="com.matrix.mongodb.impl.MongoDaoImpl">
+		<property name="mongoTemplate" ref="mongoTemplate"></property>
+	</bean>
+
+</beans>

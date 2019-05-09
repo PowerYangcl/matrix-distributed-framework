@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.ISysFileRecordMapper">
+    
+    <!-- 基类字段映射 -->
+    <resultMap id="BaseMap" type="com.matrix.base.BaseEntity">
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user_id" property="createUserId" jdbcType="BIGINT"/>
+        <result column="create_user_name" property="createUserName" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user_id" property="updateUserId" jdbcType="BIGINT"/>
+        <result column="update_user_name" property="updateUserName" jdbcType="VARCHAR"/>
+        <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER"/>
+    </resultMap>
+
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.SysFileRecord" extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="cid" property="cid" jdbcType="BIGINT" />
+		<result column="original" property="original" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="size" property="size" jdbcType="BIGINT" />
+		<result column="save" property="save" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="height" property="height" jdbcType="VARCHAR" />
+		<result column="width" property="width" jdbcType="VARCHAR" />
+		<result column="cdn" property="cdn" jdbcType="VARCHAR" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<sql id="base_column_list">
+		id, 
+		cid, 
+		create_time, 
+		create_user_id, 
+		create_user_name, 
+		update_time,
+		update_user_id,
+		update_user_name, 
+		delete_flag, 
+		original, 
+		title, 
+		size, 
+		save, 
+		type, 
+		url, 
+		height, 
+		width,
+		cdn,
+		ip
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="base_column_list" />
+		from 
+			sys_file_record
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from sys_file_record where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.SysFileRecord">
+		insert into sys_file_record
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="cid != null">
+				cid,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+			<if test="original != null">
+				original,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="size != null">
+				size,
+			</if>
+			<if test="save != null">
+				save,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="height != null">
+				height,
+			</if>
+			<if test="width != null">
+				width,
+			</if>
+			<if test="cdn != null">
+				cdn,
+			</if>
+			<if test="ip != null">
+				ip,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="cid != null">
+				#{cid,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+			<if test="original != null">
+				#{original,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="size != null">
+				#{size,jdbcType=BIGINT},
+			</if>
+			<if test="save != null">
+				#{save,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="height != null">
+				#{height,jdbcType=VARCHAR},
+			</if>
+			<if test="width != null">
+				#{width,jdbcType=VARCHAR},
+			</if>
+			<if test="cdn != null">
+				#{cdn,jdbcType=VARCHAR},
+			</if>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.SysFileRecord">
+		update sys_file_record
+		<set>
+			<if test="cid != null">
+				cid = #{cid,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+			<if test="original != null">
+				original = #{original,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="size != null">
+				size = #{size,jdbcType=BIGINT},
+			</if>
+			<if test="save != null">
+				save = #{save,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="height != null">
+				height = #{height,jdbcType=VARCHAR},
+			</if>
+			<if test="width != null">
+				width = #{width,jdbcType=VARCHAR},
+			</if>
+			<if test="cdn != null">
+				cdn = #{cdn,jdbcType=VARCHAR},
+			</if>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

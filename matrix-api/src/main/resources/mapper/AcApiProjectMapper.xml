@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IAcApiProjectMapper">
+	
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.AcApiProject" extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="target" property="target" jdbcType="VARCHAR" />
+		<result column="atype" property="atype" jdbcType="VARCHAR" />
+		<result column="service_url" property="serviceUrl" jdbcType="VARCHAR" />
+		<result column="aflag" property="aflag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	
+	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			*
+		from 
+			ac_api_project
+		where 
+			id = #{id , jdbcType=BIGINT}
+	</select>
+	
+	<resultMap id="AcApiProjectListView" type="com.matrix.pojo.view.AcApiProjectView"></resultMap>
+	<select id="queryPageList" parameterType="com.matrix.pojo.entity.AcApiProject" resultMap="AcApiProjectListView">
+		select 
+			a.id as id,
+			a.target as target,
+			a.service_url as serviceUrl,
+			a.atype as atype,
+			a.create_time as createTime,
+			a.update_time as updateTime,
+			a.update_user_id as updateUserId,
+			a.update_user_name as updater 
+		from 
+			ac_api_project a  
+		<where>
+			a.aflag = 1  and a.delete_flag = 1 
+			<if test="target != null and target != ''  ">
+				and a.target = #{target , jdbcType=VARCHAR}
+			</if> 
+			order by a.id asc
+		</where>
+	</select>
+	
+	<!-- 拿出字典数据放入缓存 -->
+	<select id="findAll"  resultMap="AcApiProjectListView">
+		select 
+			a.id as id,
+			a.target as target,
+			a.service_url as serviceUrl,
+			a.atype as atype,
+			a.create_time as createTime,
+			a.update_time as updateTime,
+			a.update_user_id as updateUserId,
+			a.update_user_name as updater 
+		from 
+			ac_api_project a 
+		where
+			a.aflag = 1 and a.delete_flag = 1 order by a.id asc
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from ac_api_project where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.AcApiProject">
+		insert into ac_api_project
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="target != null">
+				target,
+			</if>
+			<if test="atype != null">
+				atype,
+			</if>
+			<if test="serviceUrl != null">
+				service_url,
+			</if>
+			<if test="aflag != null">
+				aflag,
+			</if>
+			
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="target != null">
+				#{target,jdbcType=VARCHAR},
+			</if>
+			<if test="atype != null">
+				#{atype,jdbcType=VARCHAR},
+			</if>
+			<if test="serviceUrl != null">
+				#{serviceUrl , jdbcType=VARCHAR},
+			</if>
+			<if test="aflag != null">
+				#{aflag,jdbcType=INTEGER},
+			</if>
+			
+			<if test="createTime != null">
+				#{createTime , jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId , jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName , jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime , jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId , jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName , jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag , jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.AcApiProject">
+		update ac_api_project
+		<set>
+			<if test="target != null">
+				target = #{target,jdbcType=VARCHAR},
+			</if>
+			<if test="atype != null">
+				atype = #{atype,jdbcType=VARCHAR},
+			</if>
+			<if test="serviceUrl != null">
+				service_url = #{serviceUrl , jdbcType=VARCHAR},
+			</if>
+			<if test="aflag != null">
+				aflag = #{aflag,jdbcType=INTEGER},
+			</if>
+			
+			<if test="updateTime != null">
+				update_time = #{updateTime , jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId , jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName , jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag , jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
