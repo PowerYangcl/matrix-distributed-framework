@@ -65,7 +65,9 @@
 
 		
 		
-		
+核心数据库初始化脚本：
+        链接：https://pan.baidu.com/s/1Y535pVUkbj36emQ4BfpNXg 
+
 		
 		
 		
