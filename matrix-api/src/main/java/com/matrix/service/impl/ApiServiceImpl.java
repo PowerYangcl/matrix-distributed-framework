@@ -1,7 +1,5 @@
 package com.matrix.service.impl;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -131,21 +129,25 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 				return this.errorMsg(response, "10007", 600010007);	// 600010007=非法的请求! 您的请求域不匹配!
 			}
 			
-			
-			// 如果【api所属项目】的开放类型 是【公司内部使用接口】，那么遍历该请求者是否拥有该接口的请求权限。
-			if(apiInfo.getString("atype").equals("private")) {    
-				if(!head.getClient().equals("0") && !head.getClient().equals("1") && StringUtils.isNotBlank(originHeader)) {
-					String defaultDomains = this.getConfig("matrix-api.default_leader_service_list_" + this.getConfig("matrix-core.model"));  // 取出默认跨域服务器列表
-					if (StringUtils.contains(apiInfo.getString("list"), originHeader)||StringUtils.contains(defaultDomains, originHeader)) { 
-						response.setHeader("Access-Control-Allow-Origin", originHeader); // 移除跨域访问限制
-					}else{
-						if(apiInfo.getString("list") == null ||apiInfo.getString("list").length() == 2) {
-							return this.errorMsg(response, "10008", 600010008, head.getTarget());	 // 600010008=您所请求的接口{0}不支持跨域访问!
+			if(this.getConfig("matrix-core.model").equals("master")) {  
+				// 如果【api所属项目】的开放类型 是【公司内部使用接口】，那么遍历该请求者是否拥有该接口的请求权限。
+				if(apiInfo.getString("atype").equals("private")) {    
+					if(!head.getClient().equals("0") && !head.getClient().equals("1") && StringUtils.isNotBlank(originHeader)) {
+						String defaultDomains = this.getConfig("matrix-api.default_leader_service_list_" + this.getConfig("matrix-core.model"));  // 取出默认跨域服务器列表
+						if (StringUtils.contains(apiInfo.getString("list"), originHeader)||StringUtils.contains(defaultDomains, originHeader)) { 
+							response.setHeader("Access-Control-Allow-Origin", originHeader); // 移除跨域访问限制
+						}else{
+							if(apiInfo.getString("list") == null ||apiInfo.getString("list").length() == 2) {
+								return this.errorMsg(response, "10008", 600010008, head.getTarget());	 // 600010008=您所请求的接口{0}不支持跨域访问!
+							}
+							return this.errorMsg(response, "10009", 600010009, head.getTarget());	 // 600010009=非法的请求!您尚未包含在{0}跨域访问名单中!
 						}
-						return this.errorMsg(response, "10009", 600010009, head.getTarget());	 // 600010009=非法的请求!您尚未包含在{0}跨域访问名单中!
 					}
 				}
+			}else {
+				response.setHeader("Access-Control-Allow-Origin", "*"); // 解决跨域访问限制，开发环境和测试环境不在限制跨域
 			}
+			
 //			else {    // else: requester.getString("atype").equals("public")  此时为open-api，系统公共开放接口，则移除跨域访问限制
 //				response.setHeader("Access-Control-Allow-Origin", originHeader);
 //			}

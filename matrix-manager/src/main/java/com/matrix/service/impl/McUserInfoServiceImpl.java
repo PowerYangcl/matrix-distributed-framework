@@ -145,28 +145,31 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		}
 		
 		
-		if(StringUtils.isBlank(dto.getValidateCode())) {
-			result.put("status", "error");
-			result.put("msg", "验证码不得为空");
-			return result;
-		}
-		if(StringUtils.isBlank(dto.getValidateCodeKey())) {
-			result.put("status", "error");
-			result.put("msg", "验证码Key不能为空");
-			return result;
-		}
-		String validateCode = ValidateCodeSupport.getCode(dto.getValidateCodeKey());
-		if(StringUtils.isBlank(validateCode)) {
-			result.put("status", "error");
-			result.put("msg", "验证码已过期");
-			return result;
-		}else {
-			if(!validateCode.equalsIgnoreCase(dto.getValidateCode())) {
+		if(this.getConfig("matrix-core.model").equals("master")) {   // 线上环境验证码生效
+			if(StringUtils.isBlank(dto.getValidateCode())) {
 				result.put("status", "error");
-				result.put("msg", "验证码错误");
+				result.put("msg", "验证码不得为空");
 				return result;
 			}
+			if(StringUtils.isBlank(dto.getValidateCodeKey())) {
+				result.put("status", "error");
+				result.put("msg", "验证码Key不能为空");
+				return result;
+			}
+			String validateCode = ValidateCodeSupport.getCode(dto.getValidateCodeKey());
+			if(StringUtils.isBlank(validateCode)) {
+				result.put("status", "error");
+				result.put("msg", "验证码已过期");
+				return result;
+			}else {
+				if(!validateCode.equalsIgnoreCase(dto.getValidateCode())) {
+					result.put("status", "error");
+					result.put("msg", "验证码错误");
+					return result;
+				}
+			}
 		}
+		
 		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		if (StringUtils.isNotBlank(userInfoNpJson) && info != null) { 

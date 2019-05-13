@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +27,6 @@ import com.matrix.service.IFileUploadService;
 @RequestMapping("file")
 public class FileUploadController  extends BaseController{
 
-	private static Logger logger=Logger.getLogger(FileUploadController.class);
-	
 	@Autowired
 	private IFileUploadService service;
 	
@@ -65,11 +62,21 @@ public class FileUploadController  extends BaseController{
 		JSONObject result = new JSONObject();
 		
 		String originHeader = request.getHeader("Origin");
-		this.getLogger(null).sysoutInfo("文件上传 - originHeader：" + originHeader , this.getClass());
-		String allowDomain = this.getConfig("matrix-file.access_control_allow_origin_" + this.getConfig("matrix-core.model")); 
-		this.getLogger(null).sysoutInfo("文件上传 - allowDomain：" + allowDomain , this.getClass());
-		if (StringUtils.isNotBlank(originHeader) && StringUtils.contains(allowDomain, originHeader)){
-			response.setHeader("Access-Control-Allow-Origin", originHeader); // 解决跨域访问限制
+		if (StringUtils.isNotBlank(originHeader)) {
+			
+			if(this.getConfig("matrix-core.model").equals("master")) {
+				String allowDomain = this.getConfig("matrix-file.access_control_allow_origin_" + this.getConfig("matrix-core.model")); 
+				if (StringUtils.contains(allowDomain, originHeader)){
+					response.setHeader("Access-Control-Allow-Origin", originHeader); // 解决跨域访问限制
+				}else {
+					result.put("status", "error");
+					result.put("msg", this.getInfo(500010007));  // 您所请求的接口不对第三方开放
+					return result;
+				} 
+			}else {
+				response.setHeader("Access-Control-Allow-Origin", "*"); // 解决跨域访问限制，开发环境和测试环境不在限制跨域
+			}
+			
 			response.setContentType("application/json;charset=UTF-8");
 			response.setHeader("Access-Control-Allow-Methods", "POST");  // , GET, OPTIONS, DELETE
 			response.setHeader("Access-Control-Max-Age", "3600");  // 头指定了preflight请求的结果能够被缓存3600s
@@ -79,12 +86,14 @@ public class FileUploadController  extends BaseController{
 			//请注意：简单 GET 请求不会被预检；如果对此类请求的响应中不包含该字段，这个响应将被忽略掉，并且浏览器也不会将相应内容返回给网页。
 			response.setHeader("Access-Control-Allow-Credentials", "true"); 
 			response.setHeader("XDomainRequestAllowed","1");
-
+			
 			result = service.apiFileRemoteUpload(request);
 		}else {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(500010007));  // 您所请求的接口不对第三方开放
-		} 
+			result.put("msg", this.getInfo(500010008));  // 500010008=文件上传接口验证失败!
+			return result;
+		}
+		
 		
 		if(result.getString("status").equals("success")) {		// 文件上传成功后，保存到数据库一份做记录							
 			UploadRecord  ur = new UploadRecord(service , result);
