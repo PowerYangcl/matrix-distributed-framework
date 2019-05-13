@@ -325,6 +325,10 @@ public class ContextFactory implements ICacheFactory{
 		return null;
 	}
 
+	public Long getExpire(String key) {
+		return null;
+	}
+
 
 
 	

@@ -689,6 +689,19 @@ public class RedisFactory implements ICacheFactory{
 		return RedisTemplate.getInstance().zsetRemoveRange(baseKey + key, start, end);
 	}
 
+	/**
+	 * @description: 获取key的过期剩余时间 单位毫秒
+	 *
+	 * @param key
+	 * @return 
+	 * @author wanghao
+	 * @date 2019年5月11日 上午9:47:00 
+	 * @version 1.0.0.1
+	 */
+	public Long getExpire(String key){
+		return RedisTemplate.getInstance().getExpire(key);
+	}
+
 }
 
 

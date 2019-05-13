@@ -626,6 +626,17 @@ public class RedisTemplate extends BaseClass {
     }
 
 
+    /**
+     * @description: 获取redis key剩余过期时间
+     *
+     * @param key
+     * @author wanghao
+     * @date 2019年5月11日 上午9:44:03 
+     * @version 1.0.0.1
+     */
+    public Long getExpire(String key) {
+        return this.template.getExpire(key);
+    }
 }
 
 

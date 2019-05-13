@@ -357,6 +357,10 @@ public class PowerFactory implements ICacheFactory {
 		return null;
 	}
 
+	public Long getExpire(String key) {
+		return null;
+	}
+
 
 }
 

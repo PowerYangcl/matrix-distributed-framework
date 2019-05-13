@@ -489,7 +489,16 @@ public interface ICacheFactory {
 	 */
 	public Long zsetRemoveRange(String key , long start, long end);
 	
-	
+	/**
+	 * @description: 获取key的过期剩余时间 单位毫秒
+	 *
+	 * @param key
+	 * @return 
+	 * @author wanghao
+	 * @date 2019年5月11日 上午9:47:00 
+	 * @version 1.0.0.1
+	 */
+	public Long getExpire(String key);
 }
 
 
