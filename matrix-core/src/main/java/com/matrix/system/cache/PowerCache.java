@@ -124,6 +124,8 @@ public class PowerCache{
 	/**
 	 * @description: 查找key所对应的value值
 	 *
+	 * 	PowerCache.getInstance().find("PropConfig" ,"matrix-web.model"); 
+	 * 
 	 * @param cacheName
 	 * @param key
 	 * @author Yangcl
