@@ -1,4 +1,4 @@
-
+﻿
 本模块封装于：org.apache.rocketmq 4.5.0。rocketmq-client端版本需要与Linux集群版本一致，否则会出错。
 
 	4.5.0版本特性如下：
@@ -43,9 +43,9 @@ Q&A
 
 
 
-
-
-
+https://github.com/apache/rocketmq/tree/release-4.5.0/docs/cn
+https://github.com/apache/rocketmq/blob/release-4.5.0/docs/cn/acl/user_guide.md
+https://github.com/apache/rocketmq/blob/release-4.5.0/docs/cn/RocketMQ_Example.md
 
 
 
