@@ -108,6 +108,7 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 	 */
 	private JSONObject saveFile(String fileName , byte[] file , long size){
 		JSONObject result = new JSONObject();
+		result.put("uploaded", false);
 		if(StringUtils.isBlank(fileName)){
 			result.put("status", "error");
 			result.put("msg", this.getInfo(500010001));   // 500010001=文件名称不得为空 
@@ -145,6 +146,7 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 			File out = new File(filePath + newName);
 			FileCopyUtils.copy(file, out); // 复制文件到服务器
 			result.put("status", "success");
+			result.put("uploaded", true);
 			result.put("msg", this.getInfo(500010005));   // 500010005=文件上传完成
 			result.put("title" , newName);
 			// result.put("filePath" , filePath);
