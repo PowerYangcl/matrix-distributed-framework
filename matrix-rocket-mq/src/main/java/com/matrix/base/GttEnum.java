@@ -24,8 +24,9 @@ public enum GttEnum {
 				TopicTest,
 						   TagTest,
 	
-	
-	
+	GroupOrderProducer,
+   				TopicOrder,
+   							TagOrder
 	
 }
 

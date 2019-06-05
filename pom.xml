@@ -21,7 +21,6 @@
         <module>matrix-dubbo-monitor</module>
         <module>matrix-route</module>
         <module>matrix-quartz</module>
-        <module>matrix-fescar</module>
         <module>matrix-rabbit-mq</module>
         <module>matrix-mongodb</module>
         <module>matrix-solr</module>

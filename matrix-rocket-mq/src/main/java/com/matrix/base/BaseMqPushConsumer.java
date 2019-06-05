@@ -14,6 +14,7 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.interfaces.IRocketConsumer;
 
 
 /**
@@ -26,7 +27,7 @@ import com.alibaba.fastjson.JSONObject;
  * @date 2016年4月24日 下午4:59:02 
  * @version 1.0.0.1
  */
-public abstract class BaseMqPushConsumer extends BaseClass {
+public abstract class BaseMqPushConsumer extends BaseClass implements IRocketConsumer<DefaultMQPushConsumer>{
 	
 	private DefaultMQPushConsumer consumer = new DefaultMQPushConsumer();
 
@@ -74,32 +75,31 @@ public abstract class BaseMqPushConsumer extends BaseClass {
 	/**
 	 * @description: 配置消费者
 	 *
-	 * @param type 消费者类型：Concurrently 非顺序消费 | Orderly 顺序消费
-	 * @param group
-	 * @param topic
-	 * @param tag
+	 * @param dto.type 消费者类型：Concurrently 非顺序消费 | Orderly 顺序消费
+	 * @param dto.group
+	 * @param dto.topic
+	 * @param dto.tag
 	 * @author Yangcl
 	 * @date 2019年5月20日 下午9:58:37 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject doExecute(ConsumerType type , GttEnum group , GttEnum topic , GttEnum tag ) {
+	public JSONObject doExecute(GttDto dto) {
 		JSONObject result = new JSONObject();
 		result.put("status", "success");
 		result.put("msg", this.getInfo(109010004));  // 109010004=消息处理成功!
 		
 		consumer.setNamesrvAddr(this.getConfig("matrix-rocket-mq.namesrv_" + this.getConfig("matrix-core.model")) );
-		consumer.setConsumerGroup(group.toString());
+		consumer.setConsumerGroup(dto.getGroup());
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET); 	// 程序第一次启动从消息队列头获取数据  
 		try {
-			consumer.subscribe(topic.toString() , tag.toString()); 		// 开始订阅消息，tag可以为"*"
-			
-			if(type.toString().equals("Concurrently")) {  		// 注册消费的监听 - 非顺序消费
+			consumer.subscribe(dto.getTopic() , dto.getTag()); 		// 开始订阅消息，tag可以为"*"
+			if(dto.getConsumerType().equals("Concurrently")) {  		// 注册消费的监听 - 非顺序消费
 				consumer.registerMessageListener(new MessageListenerConcurrently(){  		  
 	                public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs , ConsumeConcurrentlyContext context) {  
 	                	return msgProcessor(msgs, context);  
 	                }  
 	            }); 
-			}else if(type.toString().equals("Orderly")) {		// 注册消费的监听 - 顺序消费
+			}else if(dto.getConsumerType().equals("Orderly")) {		// 注册消费的监听 - 顺序消费
 				consumer.registerMessageListener(new MessageListenerOrderly() {				
 					public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgs, ConsumeOrderlyContext context) {
 						return msgProcessorOrderly(msgs, context);
@@ -107,7 +107,7 @@ public abstract class BaseMqPushConsumer extends BaseClass {
 				});
 			}else {
 				result.put("status", "error");
-				result.put("msg", this.getInfo(109010006));  // 109010006=消息处理失败，ConsumerType.java存在非法的枚举类型
+				result.put("msg", this.getInfo(109010006));  // 109010006=消息处理失败，ConsumerType 存在非法的枚举类型
 				return result;
 			}
 			consumer.start(); 
@@ -133,6 +133,13 @@ public abstract class BaseMqPushConsumer extends BaseClass {
 		return consumer;
 	}
 	
+	public void shutdown() {
+		this.consumer.shutdown(); 
+	}
+	
+	public void resume() {
+		this.consumer.resume();
+	}
 }
 
 

@@ -2,9 +2,11 @@ package com.matrix.base;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.common.RemotingHelper;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.util.ExceptionUtils;
@@ -24,6 +26,8 @@ public abstract class BaseMqProducer extends BaseClass{
 
 	private DefaultMQProducer producer = new DefaultMQProducer();
 	private SendResult sendResult = null;
+	
+	private String keys = null;  // org.apache.rocketmq.common.message.Message.java默认参数，如果需要请自行设置值
 	
 	/**
 	 * @description: 子类组装消息的方法
@@ -91,16 +95,29 @@ public abstract class BaseMqProducer extends BaseClass{
 		this.producer.setProducerGroup(group.toString());
 		byte[] bytes = null;
 		try {
-			bytes = json.getBytes("UTF-8");
+			bytes = json.getBytes(RemotingHelper.DEFAULT_CHARSET);  // UTF-8
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 			return null;
 		}
-		Message msg = new Message(
-				GttEnum.TopicTest.toString(),   		/* Topic */
-				GttEnum.TagTest.toString() 		 		/* Tag */ ,   
-				bytes 															/* Message body */
-		);
+		Message msg = null;
+		
+		if(StringUtils.isNotBlank(this.keys)) {
+			msg = new Message(
+					GttEnum.TopicTest.toString(),   		/* Topic */
+					GttEnum.TagTest.toString() 		 		/* Tag */ ,   
+					keys,
+					bytes 															/* Message body */
+			);
+		}else {
+			msg = new Message(
+					GttEnum.TopicTest.toString(),   		/* Topic */
+					GttEnum.TagTest.toString() 		 		/* Tag */ ,   
+					bytes 															/* Message body */
+			);
+		}
+		
+		
 		return msg;
 	}
 	
@@ -114,6 +131,10 @@ public abstract class BaseMqProducer extends BaseClass{
 	 */
 	public DefaultMQProducer getProductor() {
 		return producer;
+	}
+	
+	public void setKeys(String keys) {
+		this.keys = keys;
 	}
 }
 

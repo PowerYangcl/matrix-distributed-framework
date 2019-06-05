@@ -16,10 +16,13 @@ import com.matrix.base.BaseMqPushConsumer;
  * @description: 非顺序消费者使用示例。如果需要使用顺序消费，需要写msgProcessorOrderly()方法。
  * 
  * 	如何使用：
- * 			JSONObject result = new AsyncSyncConsumer().doExecute(ConsumerType.Concurrently , 
- * 																														   	GttEnum.GroupTest, 
- * 																															GttEnum.TopicTest, 
- * 																															GttEnum.TagTest);
+ * 					GttDto dto = new GttDto();
+						dto.setConsumerType("");
+						dto.setGroup("");
+						dto.setTopic("");
+						dto.setTag("");
+						IRocketConsumer<DefaultMQPushConsumer> consumer = new AsyncSyncConsumer();
+						consumer.doExecute(dto);
  *
  * @author Yangcl
  * @date 2019年5月21日 下午7:25:28 
@@ -44,7 +47,6 @@ public class AsyncSyncConsumer extends BaseMqPushConsumer{
 		// TODO Auto-generated method stub
 		return ConsumeOrderlyStatus.SUCCESS;
 	}
-	
 	
 }
 

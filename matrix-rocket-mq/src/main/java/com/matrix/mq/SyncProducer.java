@@ -28,7 +28,7 @@ public class SyncProducer extends BaseMqProducer{
 	public SendResult assemblyMsg() throws Exception {
 		
 		String productInfo = "Hello RocketMQ";    // 此处消息主要来源于对象的JSON序列字符串，由具体业务来定
-		
+		super.setKeys("rocketmq-keys");
 		/**
 		 * 警告！！！！
 		 * 		禁止开发人员直接操作DefaultMQProducer.java中的setProducerGroup()方法来设置分组名称；

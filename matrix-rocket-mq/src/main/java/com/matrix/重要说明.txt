@@ -49,23 +49,19 @@ https://github.com/apache/rocketmq/blob/release-4.5.0/docs/cn/RocketMQ_Example.m
 
 
 
+RocketMQ事务消费和顺序消费详解
+http://www.cnblogs.com/520playboy/p/6750023.html
 
 
+https://www.cnblogs.com/Jtianlin/p/8436024.html
+RocketMQ 顺序消费只消费一次：这个地方有一个大坑，注册监听类的时候，不能使用匿名内部类。不然的话，只会消费一次，然后消费者就挂了；监听类要单独写！！！
 
 
+RocketMQ事务消费和顺序消费详解
+https://www.cnblogs.com/520playboy/p/6750023.html
 
-
-
-
-
-
-
-
-
-
-
-
-
+Rocket重试机制，消息模式，刷盘方式
+https://www.cnblogs.com/520playboy/p/6748680.html
 
 
 
