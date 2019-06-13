@@ -22,7 +22,7 @@ import com.matrix.base.GttEnum;
  * 	这种可靠性同步地发送方式使用的比较广泛，比如：重要的消息通知，短信通知。
  * 
  * 	如何使用：
- * 			JSONObject result = new SyncProducer().sendMsg();
+ * 			JSONObject result = new SyncProducer(i).sendMsg();
  *
  * @author Yangcl
  * @date 2019年5月16日 上午10:56:23 

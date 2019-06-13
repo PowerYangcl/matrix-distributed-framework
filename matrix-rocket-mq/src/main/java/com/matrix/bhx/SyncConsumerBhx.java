@@ -3,9 +3,6 @@ package com.matrix.bhx;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
@@ -14,8 +11,6 @@ import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 
 import com.matrix.base.BaseMqPushConsumer;
-import com.matrix.base.GttDto;
-import com.matrix.base.interfaces.IRocketConsumer;
 
 
 /**
@@ -33,7 +28,7 @@ import com.matrix.base.interfaces.IRocketConsumer;
 						for(MessageExt msg : msgs) {
 							byte[] body = msg.getBody();
 							try {
-								String str = new String(body, "UTF-8");
+								String str = new String(body, "UTF-8");                          -------------------------------->   此处必须这么写，否则乱码！！！！！！！
 								System.out.println("Consumer running = " + str);
 								
 							} catch (UnsupportedEncodingException e) {
@@ -75,13 +70,6 @@ public class SyncConsumerBhx extends BaseMqPushConsumer{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-		}
-		
-		try {
-			TimeUnit.SECONDS.sleep(random.nextInt(1));
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			return 	ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
 		}
 		
 		return ConsumeOrderlyStatus.SUCCESS;
