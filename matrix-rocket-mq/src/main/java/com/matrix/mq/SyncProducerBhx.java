@@ -1,4 +1,4 @@
-package com.matrix.bhx;
+package com.matrix.mq;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

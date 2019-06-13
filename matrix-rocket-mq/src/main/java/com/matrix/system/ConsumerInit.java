@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseInit;
 import com.matrix.base.GttDto;
 import com.matrix.base.interfaces.IRocketConsumer;
-import com.matrix.bhx.SyncConsumerBhx;
+import com.matrix.mq.SyncConsumerBhx;
 
 public class ConsumerInit  extends BaseInit{
 
@@ -22,7 +22,7 @@ public class ConsumerInit  extends BaseInit{
 		IRocketConsumer<DefaultMQPushConsumer> consumer = new SyncConsumerBhx();
 		JSONObject doExecute = consumer.doExecute(dto);
 		
-		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Consumer Init"); 
+		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Consumer Init"); 
 		
 		return true;
 	}
