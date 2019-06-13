@@ -23,4 +23,7 @@ public interface IExampleService  extends IBaseService<Long , UserDemo, UserDemo
 	
 	public JSONObject apiProcessorTest(ApiExampleDto dto);
 
+	public JSONObject ajaxRocketmqProducerInit(HttpServletRequest request);
+
+
 }

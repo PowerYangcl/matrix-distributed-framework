@@ -3,6 +3,7 @@ package com.matrix.base;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
@@ -51,7 +52,6 @@ public abstract class BaseMqProducer extends BaseClass{
 		result.put("msg", this.getInfo(109010001));  // 109010001=消息发送成功!
 		producer.setNamesrvAddr( this.getConfig("matrix-rocket-mq.namesrv_" + this.getConfig("matrix-core.model")) );
 		try {
-			producer.start();
 			sendResult = this.assemblyMsg();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -95,8 +95,9 @@ public abstract class BaseMqProducer extends BaseClass{
 		this.producer.setProducerGroup(group.toString());
 		byte[] bytes = null;
 		try {
+			this.producer.start();
 			bytes = json.getBytes(RemotingHelper.DEFAULT_CHARSET);  // UTF-8
-		} catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException | MQClientException e) { 
 			e.printStackTrace();
 			return null;
 		}
@@ -104,16 +105,16 @@ public abstract class BaseMqProducer extends BaseClass{
 		
 		if(StringUtils.isNotBlank(this.keys)) {
 			msg = new Message(
-					GttEnum.TopicTest.toString(),   		/* Topic */
-					GttEnum.TagTest.toString() 		 		/* Tag */ ,   
+					topic.toString(),   			/* Topic */
+					tag.toString() 		 		/* Tag */ ,   
 					keys,
-					bytes 															/* Message body */
+					bytes 						 		/* Message body */
 			);
 		}else {
 			msg = new Message(
-					GttEnum.TopicTest.toString(),   		/* Topic */
-					GttEnum.TagTest.toString() 		 		/* Tag */ ,   
-					bytes 															/* Message body */
+					topic.toString(),   			/* Topic */
+					tag.toString() 		 		/* Tag */ , 
+					bytes 							 	/* Message body */
 			);
 		}
 		

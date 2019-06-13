@@ -28,6 +28,12 @@
             <artifactId>matrix-route</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+            <groupId>com.matrix</groupId>
+            <artifactId>matrix-rocket-mq</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 	
 </project>

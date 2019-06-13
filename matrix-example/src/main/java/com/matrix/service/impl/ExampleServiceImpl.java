@@ -3,6 +3,7 @@ package com.matrix.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -13,14 +14,18 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.rpc.service.GenericService;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseServiceImpl;
+import com.matrix.base.GttDto;
+import com.matrix.base.interfaces.IRocketConsumer;
+import com.matrix.bhx.SyncConsumerBhx;
+import com.matrix.bhx.SyncProducerBhx;
 import com.matrix.dao.IUserDemoMapper;
 import com.matrix.pojo.dto.ApiExampleDto;
-import com.matrix.pojo.dto.PowerCacheDto;
 import com.matrix.pojo.dto.UserDemoDto;
 import com.matrix.pojo.entity.UserDemo;
 import com.matrix.pojo.view.UserDemoView;
@@ -154,6 +159,24 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
 		}
 		return r;
 	}
+
+	/**
+	 * @description: 模拟RocketMq发送消息请求
+	 *
+	 * @param request
+	 * @author Yangcl
+	 * @date 2019年6月13日 下午5:13:12 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxRocketmqProducerInit(HttpServletRequest request) {
+		JSONObject result= new JSONObject();
+		for(int i = 1 ; i <= 5 ; i ++) {
+			JSONObject sendMsg = new SyncProducerBhx(i).sendMsg();
+			result.put(String.valueOf(i), sendMsg);
+		}
+		return result;
+	}
+
 
 }
 

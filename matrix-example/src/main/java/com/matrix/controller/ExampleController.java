@@ -291,6 +291,21 @@ public class ExampleController extends BaseController{
 		return exampleService.apiHttpClientTest(request);
 	} 
 	
+	/**
+	 * @description: 模拟RocketMq发送消息请求
+	 *
+	 * @param request
+	 * @author Yangcl
+	 * @date 2019年6月13日 下午5:13:12 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_rocketmq_producer_init", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxRocketmqProducerInit(HttpServletRequest request){
+		return exampleService.ajaxRocketmqProducerInit(request);
+	}
+	
+	
 }
 
 

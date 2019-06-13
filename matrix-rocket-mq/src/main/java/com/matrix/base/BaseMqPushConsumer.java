@@ -33,7 +33,7 @@ public abstract class BaseMqPushConsumer extends BaseClass implements IRocketCon
 
 	
 	/**
-	 * @description: 非顺序消费 - 消息处理者，子类需要实现此方法 - 此方式系统吞吐量高|此方式常用
+	 * @description: 【非顺序消费】 - 消息处理者，子类需要实现此方法 - 此方式系统吞吐量高|此方式常用
 	 * 
 	 * 		msgs中只收集同一个topic，同一个tag，并且key相同的message   
 	 * 		会把不同的消息分别放置到不同的队列中  
@@ -53,7 +53,7 @@ public abstract class BaseMqPushConsumer extends BaseClass implements IRocketCon
 	public abstract ConsumeConcurrentlyStatus msgProcessor(List<MessageExt> msgs , ConsumeConcurrentlyContext context);
 	
 	/**
-	 * @description: 顺序消费 - 消息处理者，子类需要实现此方法 - 此方式系统吞吐量相对较低
+	 * @description: 【顺序消费】 - 消息处理者，子类需要实现此方法 - 此方式系统吞吐量相对较低
 	 * 
 	 * 		msgs中只收集同一个topic，同一个tag，并且key相同的message   
 	 * 		会把不同的消息分别放置到不同的队列中  
