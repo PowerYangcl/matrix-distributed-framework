@@ -6,7 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseInit;
 import com.matrix.base.GttDto;
 import com.matrix.base.interfaces.IRocketConsumer;
-import com.matrix.mq.SyncConsumerBhx;
+import com.matrix.example.AsyncSyncConsumer;
+import com.matrix.example.SyncConsumerBhx;
 
 public class ConsumerInit  extends BaseInit{
 
@@ -15,12 +16,20 @@ public class ConsumerInit  extends BaseInit{
 		
 		
 		GttDto dto = new GttDto();
+//		dto.setConsumerType("Concurrently");
+//		dto.setGroup("GroupTransTest");
+		
 		dto.setConsumerType("Orderly");
-		dto.setGroup("GroupOrderProducer");
+		dto.setGroup("GroupDefaultTest");
+		
 		dto.setTopic("TopicOrder");
 		dto.setTag("TagOrder");
 		IRocketConsumer<DefaultMQPushConsumer> consumer = new SyncConsumerBhx();
 		JSONObject doExecute = consumer.doExecute(dto);
+		
+		
+//		IRocketConsumer<DefaultMQPushConsumer> consumer2 = new AsyncSyncConsumer(); 
+//		JSONObject doExecute2 = consumer2.doExecute(dto);
 		
 		System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Consumer Init"); 
 		

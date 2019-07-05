@@ -2,16 +2,7 @@ package com.matrix.base;
 
 
 /**
- * @description: 枚举约束|需要区分层级节点，方便阅读
- * 
- * 	Group-A
- * 				Topic
- * 							Tag-A
- * 							Tag-B
- * 				Topic
- * 							Tag-C
- * 							Tag-D
- * 	 Group-B
+ * @description: 消息队列分组-枚举约束
  *
  * @author Yangcl
  * @date 2019年5月15日 下午8:18:50 
@@ -20,13 +11,9 @@ package com.matrix.base;
 public enum GttEnum {
 
 	
-	GroupTest,
-				TopicTest,
-						   TagTest,
+	GroupDefaultTest,
 	
-	GroupOrderProducer,
-   				TopicOrder,
-   							TagOrder
+	GroupTransTest,
 	
 }
 
