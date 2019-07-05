@@ -1,10 +1,9 @@
 package com.matrix.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,21 +13,27 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.MessageQueueSelector;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.common.message.MessageQueue;
+import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.rpc.service.GenericService;
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.BaseMqProducer;
 import com.matrix.base.BaseServiceImpl;
-import com.matrix.base.GttDto;
-import com.matrix.base.interfaces.IRocketConsumer;
+import com.matrix.base.BaseTransactionMqProducer;
 import com.matrix.dao.IUserDemoMapper;
-import com.matrix.mq.SyncConsumerBhx;
-import com.matrix.mq.SyncProducerBhx;
 import com.matrix.pojo.dto.ApiExampleDto;
 import com.matrix.pojo.dto.UserDemoDto;
 import com.matrix.pojo.entity.UserDemo;
 import com.matrix.pojo.view.UserDemoView;
+import com.matrix.rocket.GroupDefaultTestSupport;
+import com.matrix.rocket.GroupTransTestSupport;
 import com.matrix.service.IExampleService;
 import com.matrix.util.SignUtil;
 
@@ -170,10 +175,91 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
 	 */
 	public JSONObject ajaxRocketmqProducerInit(HttpServletRequest request) {
 		JSONObject result= new JSONObject();
-		for(int i = 1 ; i <= 5 ; i ++) {
-			JSONObject sendMsg = new SyncProducerBhx(i).sendMsg();
-			result.put(String.valueOf(i), sendMsg);
+		
+		// 顺序消息使用示例
+		Date date = new Date();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	String dateStr = sdf.format(date);
+    	BaseMqProducer baseMqProducer = GroupDefaultTestSupport.getInstance().getBaseMqProducer();
+    	
+    	try {
+    		for(int i = 1 ; i <= 5 ; i ++) {
+    			String body = dateStr + " 订单编号-1-" + i;
+    			Message msg = baseMqProducer.initMqMessage("TopicOrder", "TagOrder", body);
+    			
+    			baseMqProducer.getDefaultMQProducer().send(
+    					msg, 
+    					new MessageQueueSelector() { 
+    						@Override
+    						public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+    							Integer id  = (Integer) arg;
+    							return mqs.get(id); 
+    						}
+    					}, 
+    					0, 				// 队列的下标
+    					60_000		// 超时时间
+    					);
+    			System.out.println("Producer -----> body：" + body);
+    		}
+    		
+    		for(int i = 1 ; i <= 5 ; i ++) {
+    			String body = dateStr + " 订单编号-2-" + i;
+    			Message msg = baseMqProducer.initMqMessage("TopicOrder", "TagOrder", body);
+    			
+    			baseMqProducer.getDefaultMQProducer().send(
+    					msg, 
+    					new MessageQueueSelector() { 
+    						@Override
+    						public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+    							Integer id  = (Integer) arg;
+    							return mqs.get(id); 
+    						}
+    					}, 
+    					1, 				// 队列的下标
+    					60_000		// 超时时间
+    					);
+    			System.out.println("Producer -----> body：" + body);
+    		}
+    		
+    		for(int i = 1 ; i <= 5 ; i ++) {
+    			String body = dateStr + " 订单编号-3-" + i;
+    			Message msg = baseMqProducer.initMqMessage("TopicOrder", "TagOrder", body);
+    			
+    			baseMqProducer.getDefaultMQProducer().send(
+    					msg, 
+    					new MessageQueueSelector() { 
+    						@Override
+    						public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+    							Integer id  = (Integer) arg;
+    							return mqs.get(id); 
+    						}
+    					}, 
+    					2, 				// 队列的下标
+    					60_000		// 超时时间
+    					);
+    			System.out.println("Producer -----> body：" + body);
+    		}
+		} catch (MQClientException | RemotingException | MQBrokerException | InterruptedException e) {
+			e.printStackTrace();
 		}
+		
+		
+		// 事物消息使用示例
+		/*BaseTransactionMqProducer transProducer = GroupTransTestSupport.getInstance().getTransProducer();
+		String body = "Hello-Transaction-RocketMq-";
+		String[] args = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
+		for(int i = 1 ; i < args.length + 1 ; i ++) {
+			Message msg = transProducer.initMqMessage(
+					"TopicOrder",				 Topic 
+					"TagOrder", 					 Tag   
+					body + i);
+			msg.putUserProperty("up", "user-property-" + i);
+			
+			JSONObject obj = GroupTransTestSupport.getInstance().getTransProducer().sendMsg(msg, args[i-1]);
+			
+			System.err.println(args[i-1] + " Producer SendResult " + msg.getUserProperty("up") 
+								+ " SendStatus = " + obj.getJSONObject("data").getString("sendStatus")); 
+		}*/
 		return result;
 	}
 
