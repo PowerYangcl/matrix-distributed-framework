@@ -25,6 +25,12 @@
 		</dependency> 
 		
 		<dependency>
+			<groupId>com.matrix</groupId>
+			<artifactId>matrix-cache</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.apache.rocketmq</groupId>
 			<artifactId>rocketmq-client</artifactId>
 			<version>4.5.0</version>

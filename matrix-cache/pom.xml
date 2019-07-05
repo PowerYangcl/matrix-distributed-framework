@@ -49,6 +49,12 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>org.redisson</groupId>
+		    <artifactId>redisson</artifactId>
+		    <version>${redisson.version}</version>
+		</dependency>
+		
+		<dependency>
 		    <groupId>org.apache.zookeeper</groupId>
 		    <artifactId>zookeeper</artifactId>
 		    <version>${zookeeper.version}</version>
