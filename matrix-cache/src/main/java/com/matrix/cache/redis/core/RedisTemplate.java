@@ -26,6 +26,11 @@ import redis.clients.util.SafeEncoder;
  * @description: 支持Redis集群带密码验证的需求|底层包装类为org.springframework.data.redis。
  *			提供接口，包含String、hash、Set和ZSet，没有加入List
  *
+ *			Redis集群通常采用主从、哨兵模式和集群模式三种。主从往往是为了读写分离、backup 等目的， 
+ *			哨兵可以检测主从健康， 主挂了可以把从提升为主， 集群往往是为了数据分片， 解决单台机器资源的上限的问题。
+ *			故：在应对较大的缓存数据量的情况系统采用集群模式。
+ *
+ *
  * @author Yangcl
  * @date 2018年9月18日 上午9:38:09
  * @version 1.0.0.1
@@ -220,7 +225,7 @@ public class RedisTemplate extends BaseClass {
      * @description: 以增量的方式将long值存储在变量中。
      *
      * @param key
-     * @param delta
+     * @param delta 增量值，1、2、3等等
      *
      * @author Yangcl
      * @date 2018年9月18日 下午8:06:42

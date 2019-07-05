@@ -15,6 +15,8 @@ public enum DCacheEnum {
 	
 	zkLockRoot,        // zookeeper锁基础路径
 	
+	Increment,        // 通用自增前缀。例如自增+1、自增+2等等
+	
 	McSysFunc,     // mc_sys_function 表的缓存标识
 	
 	McRole,        // 角色信息
@@ -52,6 +54,8 @@ public enum DCacheEnum {
 	DictLabelType, //标签类型信息表缓存
 
 	DictActivityType, //活动类型信息表缓存
+	
+	MsgId, // RocketMq消息队列
 }
 
 

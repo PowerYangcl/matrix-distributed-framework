@@ -20,7 +20,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 
 /**
- * @description: 分布式锁支持|Redis的高性能分布式锁 
+ * @description: 分布式锁支持|Redis的高性能分布式锁
+ * 		【注意！该类废弃，但会一直保留】该类可以作为学习分布式锁来使用，但不建议在项目中继续使用，推荐使用RedissonLock.java
+ * 		这里的代码近乎完美的实现了分布式锁的逻辑，但Redisson处理的更加完美。
+ * 
  *			从性能角度： 缓存 > Zookeeper >= 数据库；从可靠性角度： Zookeeper > 缓存 > 数据库
  *			可靠性原则：
  *					互斥性。在任意时刻，只有一个客户端能持有锁。
@@ -39,10 +42,10 @@ import redis.clients.jedis.JedisCluster;
 					try {
 						long now = System.currentTimeMillis();
 						if (lock.tryLock()) {
-							// TODO 获取到锁要执行的代码块
+							// TODO 获取到锁要执行的代码块，这里主要写你的业务代码
 							System.out.println(now);
 						} else {
-							// TODO 没有获取到锁要执行的代码块
+							// TODO 没有获取到锁要执行的代码块，通常不做任何处理
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -56,6 +59,7 @@ import redis.clients.jedis.JedisCluster;
  * @date 2018年12月17日 下午6:41:35
  * @version 1.0.0.1
  */
+@Deprecated
 public class DistributeLockRedis  extends BaseClass{
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	private StringRedisTemplate redisTemplate = null;

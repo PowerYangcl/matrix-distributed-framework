@@ -3,12 +3,15 @@ package com.matrix.cache.redis.core;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RLock;
 
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.inf.ICacheFactory;
+import com.matrix.support.RedissonLock;
 import com.matrix.system.cache.PowerCache;
 
 /**
@@ -82,34 +85,45 @@ public class RedisFactory implements ICacheFactory{
 	public String get(String key) {
 		String value = RedisTemplate.getInstance().get(baseKey + key);
 		if(StringUtils.isBlank(value)) {
-			synchronized (CacheLaunch.class) {
-				value = RedisTemplate.getInstance().get(baseKey + key);
-				if(StringUtils.isBlank(value)) {
-					if(this.load.length() == 16) {
-						return "";
-					}
-					try {
-						Class<?> clazz = Class.forName(load);   
-						if (clazz != null && clazz.getDeclaredMethods() != null){
-							// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
-							Long count = RedisTemplate.getInstance().incrementTimeout(baseKey + key, 10*60L);
-							if(count >= 20) {
-								return "";
-							}
-							@SuppressWarnings("unchecked")
-							ILoadCache<String> cache = (ILoadCache<String>) clazz.newInstance();
-							return cache.load(key , "");
-						}else {
+			RLock disLock = RedissonLock.getInstance().getRedissonClient().getLock("lock-" + baseKey + key);  // 添加分布式锁
+			try {
+			    // 尝试获取分布式锁|20秒内获取不到锁则直接返回； 第二个参数是60秒后强制释放
+				boolean isLock = disLock.tryLock(20L, 60L, TimeUnit.SECONDS);
+			    if (isLock) {
+			    	value = RedisTemplate.getInstance().get(baseKey + key);
+					if(StringUtils.isBlank(value)) {
+						if(this.load.length() == 16) {
 							return "";
 						}
-					}catch (Exception e) {
-						e.printStackTrace();
-						return "";
-					}    
-				}else {
-					return value;
-				}
+						try {
+							Class<?> clazz = Class.forName(load);   
+							if (clazz != null && clazz.getDeclaredMethods() != null){
+								// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
+								Long count = RedisTemplate.getInstance().incrementTimeout(baseKey + key, 10*60L);
+								if(count >= 20) {
+									return "";
+								}
+								@SuppressWarnings("unchecked")
+								ILoadCache<String> cache = (ILoadCache<String>) clazz.newInstance();
+								return cache.load(key , "");
+							}else {
+								return "";
+							}
+						}catch (Exception e) {
+							e.printStackTrace();
+							return "";
+						}    
+					}else {
+						return value;
+					}
+			    }
+			} catch (Exception e) {
+				e.printStackTrace(); 
+			} finally {   // 无论如何, 最后都要解锁
+			    disLock.unlock();
 			}
+			
+			return value;
 		}else {
 			return value;
 		}
@@ -290,7 +304,7 @@ public class RedisFactory implements ICacheFactory{
 	 * @description: 以增量的方式将long值存储在变量中。
 	 *
 	 * @param key
-	 * @param delta
+	 * @param delta  增量值，1、2、3等等
 	 * 
 	 * @author Yangcl
 	 * @date 2018年9月18日 下午8:06:42 
