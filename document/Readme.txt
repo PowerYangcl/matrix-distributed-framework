@@ -8,11 +8,6 @@
 		com.matrix.pojo.view 返回数据模型。多表联查返回的结果集通常是以一个联合视图的形式反馈给service层。
 			McUserInfoView
 			
-		com.matrix.pojo.input api相关内容中的输入参数描述
-			McUserInfoInput
-		
-		com.matrix.pojo.result api相关内容中的输出参数描述
-			McUserInfoResult
 		
 		com.matrix.pojo.cache 返回的缓存数据模型。通常用key=json-string的情况下
 
@@ -26,36 +21,55 @@
 		info.matrix-file.5000.properties
 		info.matrix-api.6000.properties
 		info.matrix-api-launch.6100.properties
-		info.matrix-circuit-breaker.7000.properties
+		----------------------------------------------------------------------------------------info.matrix-circuit-breaker.7000.properties------------------------项目废弃
 		info.matrix-route.1080.properties
 		info.matrix-rocket-mq.1090.properties
 		info.matrix-mongo.1100.properties
+		info.matrix-tenant.1110.properties
 		
 		info.matrix-example.99999.properties
 
 		
 		dubbo服务配置文件起始标识：
 		info.dubbo-demo.9999.properties						|可以直接复用的项目，请根据具体业务修改【dubbo-demo.9999】关联具体的业务场景
-		info.mip-member.9010.properties					|会员信息服务 												- 此项目会被废弃 - 20190504 - Yangcl
-		info.dict-info.9020.properties				    		|字典服务 														- 此项目会被废弃 - 20190504 - Yangcl
-		info.mip-common.9030.properties					|短信和邮件服务 											- 此项目会被废弃 - 20190504 - Yangcl
-		info.user-behavior-service.9040.properties   |用户行为埋点服务
+		info.matrix-financial.9010.properties				|财务服务-Dubbo 				 
+		info.matrix-decoration.9020.properties			|店铺装修服务-Dubbo 														
+		info.matrix-record.9030.properties					|日志服务-Dubbo 					
+		
+		info.matrix-behavior.9040.properties   			|用户行为埋点服务
 		info.matrix-member.9050.properties              |基础会员服务-Dubbo
 		info.matrix-public.9060.properties                  |公共服务-Dubbo
-		info.matrix-coupon.9070.properties                |优惠券服务-Dubbo
-		info.mip-****-service.9080.properties
-		info.mip-****-service.9090.properties
-		info.mip-****-service.9100.properties
+		info.matrix-order.9070.properties                   |订单服务-Dubbo
+		info.matrix-payment-service.9080.properties       |支付服务-Dubbo
+		info.matrix-commodity.9090.properties					 |商品服务-Dubbo
+		
+		info.matrix-****.9100.properties
+		info.matrix-****.9110.properties
+		info.matrix-****.9120.properties
+		info.matrix-****.9130.properties
+		info.matrix-****.9140.properties
 		
 		
 		
-		web项目配置文件起始标识：
-		info.mip-web.8010.properties                                                                - 此项目会被废弃 - 20190504 - Yangcl
-		info.matrix-manager-api.8020.properties
-		info.mop-web-api.8030.properties                                                        - 此项目会被废弃 - 20190504 - Yangcl
-		info.monitor-web.8040.properties
-		info.member-web.8050.properties
-		info.coupon-web.8060.properties
+		web项目-配置文件起始标识：
+		info.api-manager-web.8010.properties                           权限API网关
+		info.matrix-manager-api.8020.properties						权限API网关-具体实现项目
+		info.api-commodity-web.8030.properties 						商品API网关
+		info.api-order-web.8040.properties									订单API网关
+		info.api-member-web.8050.properties								会员API网关
+		info.api-behavior-web.8060.properties							埋点API网关
+		info.api-payment-web.8070.properties							支付API网关 - 项目暂停
+		info.api-financial-web.8080.properties							财务API网关
+		info.api-public-web.8090.properties                                公共服务+字典API网关
+		info.api-decoration-web.8100.properties						店铺装修API网关
+		info.api-client-web.8110.properties									C端接口API网关
+		
+		JSP后台管理系统-配置文件起始标识：
+		info.web-file.7000.properties												文件服务器|此配置文件并未放置到项目中
+		info.matrix-omo.7010.properties										OMO运营管理后台
+		info.matrix-mq.7020.properties										消息队列项目
+		
+		
 		
 
 【归档备注】
