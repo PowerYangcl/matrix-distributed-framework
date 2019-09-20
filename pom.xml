@@ -4,17 +4,18 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.matrix</groupId>
     <artifactId>matrix-distributed-framework</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>The matrix e-commerce platform</description>
     <modules>
         <module>matrix-core</module>
+		<module>leader</module>
+		<module>matrix-admin</module>
         <module>matrix-cache</module>
         <module>matrix-manager</module>
         <module>matrix-manager-api</module>
         <module>matrix-file</module>
         <module>matrix-api</module>
-        <module>matrix-admin</module>
         <module>matrix-example</module>
         <module>matrix-dubbo-admin</module>
         <module>matrix-route</module>

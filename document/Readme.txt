@@ -13,6 +13,7 @@
 
 
 
+
 【info-国际化文件顺序】
 		info.matrix-core.1000.properties
 		info.matrix-quartz.2000.properties
@@ -95,6 +96,7 @@
 		
 		
 alter table `mc_user_info` auto_increment= 2;
+		
 		
 		
 		

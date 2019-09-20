@@ -10,6 +10,17 @@
 /matrix-core/.classpath
 /matrix-core/.DS_Store
 
+/matrix-admin/target/
+/matrix-admin/.settings/
+/matrix-admin/.project 
+/matrix-admin/.classpath
+/matrix-admin/.DS_Store
+
+/leader/target/
+/leader/.settings/
+/leader/.project 
+/leader/.classpath
+/leader/.DS_Store
 
 /matrix-cache/target/
 /matrix-cache/.settings/
@@ -39,13 +50,6 @@
 /matrix-manager-api/.DS_Store
 
 
-/matrix-admin/target/
-/matrix-admin/.settings/
-/matrix-admin/.project 
-/matrix-admin/.classpath
-/matrix-admin/.DS_Store
-
-
 /matrix-example/target/
 /matrix-example/.settings/
 /matrix-example/.project 
@@ -67,25 +71,11 @@
 /matrix-dubbo-admin/.DS_Store
 
 
-/matrix-dubbo-monitor/target/
-/matrix-dubbo-monitor/.settings/
-/matrix-dubbo-monitor/.project 
-/matrix-dubbo-monitor/.classpath
-/matrix-dubbo-monitor/.DS_Store
-
-
 /matrix-route/target/
 /matrix-route/.settings/
 /matrix-route/.project 
 /matrix-route/.classpath
 /matrix-route/.DS_Store
-
-
-/matrix-fescar/target/
-/matrix-fescar/.settings/
-/matrix-fescar/.project 
-/matrix-fescar/.classpath
-/matrix-fescar/.DS_Store
 
 
 /matrix-rocket-mq/target/
@@ -95,13 +85,6 @@
 /matrix-rocket-mq/.DS_Store
 
 
-/matrix-rabbit-mq/target/
-/matrix-rabbit-mq/.settings/
-/matrix-rabbit-mq/.project
-/matrix-rabbit-mq/.classpath
-/matrix-rabbit-mq/.DS_Store
-
-
 /matrix-mongodb/target/
 /matrix-mongodb/.settings/
 /matrix-mongodb/.project
@@ -109,18 +92,12 @@
 /matrix-mongodb/.DS_Store
 
 
-/matrix-solr/target/
-/matrix-solr/.settings/
-/matrix-solr/.project
-/matrix-solr/.classpath
-/matrix-solr/.DS_Store
-
-
 /.idea/
 /matrix-distributed-framework.iml
 /matrix-admin/matrix-admin.iml
-/matrix-cache/matrix-cache.iml
+/leader/matrix-admin.iml
 /matrix-core/matrix-core.iml
+/matrix-cache/matrix-cache.iml
 /matrix-example/matrix-example.iml
 /matrix-file/matrix-file.iml
 /matrix-manager/matrix-manager.iml
@@ -128,14 +105,10 @@
 /matrix-api/matrix-api.iml
 /matrix-manager-api/matrix-manager-api.iml
 /matrix-dubbo-admin/matrix-dubbo-admin.iml
-/matrix-dubbo-monitor/matrix-dubbo-admin.iml
 /matrix-route/matrix-route.iml
 /matrix-quartz/matrix-quartz.iml
-/matrix-fescar/matrix-fescar.iml
 /matrix-rocket-mq/matrix-rocket-mq.iml
-/matrix-rabbit-mq/matrix-rabbit-mq.iml
 /matrix-mongodb/matrix-mongodb.iml
-/matrix-solr/matrix-solr.iml
 
 *.iml
 

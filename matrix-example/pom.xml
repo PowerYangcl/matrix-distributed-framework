@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.matrix</groupId>
 		<artifactId>matrix-distributed-framework</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent> 
 	<artifactId>matrix-example</artifactId>
 	<packaging>jar</packaging>
@@ -26,13 +26,13 @@
 		<dependency>
             <groupId>com.matrix</groupId>
             <artifactId>matrix-route</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         
         <dependency>
             <groupId>com.matrix</groupId>
             <artifactId>matrix-rocket-mq</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
 	</dependencies>
 	
