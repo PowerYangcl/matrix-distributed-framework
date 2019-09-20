@@ -14,16 +14,12 @@
         <module>matrix-manager-api</module>
         <module>matrix-file</module>
         <module>matrix-api</module>
-        <module>matrix-api-launch</module>
         <module>matrix-admin</module>
         <module>matrix-example</module>
         <module>matrix-dubbo-admin</module>
-        <module>matrix-dubbo-monitor</module>
         <module>matrix-route</module>
         <module>matrix-quartz</module>
-        <module>matrix-rabbit-mq</module>
         <module>matrix-mongodb</module>
-        <module>matrix-solr</module>
         <module>matrix-rocket-mq</module>
     </modules>
     <properties>
