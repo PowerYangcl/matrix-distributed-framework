@@ -19,6 +19,38 @@ import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IApiService;
 import com.matrix.util.SignUtil;
 
+
+
+/**
+ * @description: 网关入口
+ * 
+ * 请求接口数据格式示例：
+			{
+				"head": {
+					"target": "MANAGER-API-100",
+					"accessToken": "",
+					"client": 3,
+					"version": "vsesion-2.0.0.1",
+					"requestTime": "2018-12-14 16:47:09",
+					"channel": "mip会员平台PC前端",
+					"key": "133C9CB27DA0",
+					"value": "58b6e0bd4d34a35b9773d4762be0f521"
+				},
+				"data": {
+					"cid":2735828374812748174428374,  // cid如果 != 0则代表用户拥有多店铺，需要前端传入cid
+					"userName": "admin-lqx",
+					"password": "xxxxxx",
+					"validateCodeKey": "b89e4919-2620-4c52-a371-240e452fbc3b",
+					"validateCode": "SOFH",
+					"platform": "133EFB922DF3"
+				}
+			}
+ *
+ * @author Yangcl
+ * @home https://github.com/PowerYangcl
+ * @date 2019年8月9日 下午5:32:44 
+ * @version 1.0.0.1
+ */
 @Service("apiService")
 public class ApiServiceImpl extends BaseClass implements IApiService {
 
@@ -48,7 +80,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 				}
 			}catch (Exception e) {
 				e.printStackTrace(); 
-				return this.errorMsg(response, "10010", 600010011);	// 600010011=系统错误, 请联系开发人员!
+				return this.errorMsg(response, "10011", 600010011);	// 600010011=系统错误, 请联系开发人员!
 			}
 		}else { 
 			return result;
@@ -95,7 +127,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 			return this.errorMsg(response, "10013", 600010013);	// 600010013=您所访问的接口已停用
 		}
 		if(StringUtils.isBlank(apiInfo.getString("processor"))) {  // "processor": "private.order.OrderInfomation"
-			return this.errorMsg(response, "10014", 600010015);	// 600010015=系统未检测到对应接口处理类!请联系开发人员!
+			return this.errorMsg(response, "10015", 600010015);	// 600010015=系统未检测到对应接口处理类!请联系开发人员!
 		}
 		
 		if(StringUtils.startsWith(apiInfo.getString("processor") , "common")) {	// 如果是工具类型的api则移除跨域访问限制
@@ -110,6 +142,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 				if(StringUtils.isBlank(userInfo)) {
 					return this.errorMsg(response, "10020", 600010020);	// 600010020=用户登录已经超时
 				}
+				launch.loadDictCache(DCacheEnum.AccessToken , null).setKeyTimeout(head.getAccessToken() , 15*24*60*60L); 
 			}
 			
 			String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "InitApiRequester").get(key);  // ac_request_info表的缓存
@@ -155,11 +188,40 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 			// 重置请求对象，加入用户Session信息|此种情况一般为业务API调入，以“common”开始的Api通常不会进入到此代码块中。
 			apiInfo.put("status", "success");
 			JSONObject data = JSONObject.parseObject(requester_.getString("data"));
-			if(StringUtils.isNotBlank(userInfo)) { // ajax_client_login接口会导致此处为空
+//			if(StringUtils.isNotBlank(userInfo)) { // ajax_client_login接口会导致此处为空
+//				McUserInfoView view = JSONObject.parseObject(userInfo, McUserInfoView.class);
+//				data.put("userCache", view);  // 加入用户Session信息
+//				this.getLogger(null).sysoutInfo("用户：" + view.getUserName() + " 接口名称：" + apiInfo.getString("name") + " target = " + head.getTarget(), this.getClass()); 
+//			}
+			
+			if(StringUtils.isNotBlank(userInfo)) { 		// 登录后可访问的接口
 				McUserInfoView view = JSONObject.parseObject(userInfo, McUserInfoView.class);
+				if(view.getCid() != 0) {		// 0 或 -1		
+					JSONObject shopObj = view.getShopInfoMap().get("key-" + data.getLong("cid"));
+					if (shopObj != null){
+						view.setCid(data.getLong("cid"));  // cid如果 != 0 则代表用户拥有多店铺，需要前端传入cid
+						view.setTenantInfoId(shopObj.getLong("tenantInfoId"));
+					}
+				}
 				data.put("userCache", view);  // 加入用户Session信息
 				this.getLogger(null).sysoutInfo("用户：" + view.getUserName() + " 接口名称：" + apiInfo.getString("name") + " target = " + head.getTarget(), this.getClass()); 
+			}else {			// 免登录接口
+				if(data.containsKey("cid")) {    // 部分接口可以不用传递 cid
+					McUserInfoView view = new McUserInfoView();
+					String shopInfo = launch.loadDictCache(DCacheEnum.TcShopInfo , "InitTcShopInfo").get(view.getCid().toString());
+					if(StringUtils.isNotBlank(shopInfo)) {
+						view.setCid(data.getLong("cid"));
+						JSONObject shop = JSONObject.parseObject(shopInfo);
+						view.setTenantInfoId(shop.getLong("tenantInfoId"));
+					}else {
+						return this.errorMsg(response, "10021", 600010021);	// 600010021=免登录接口所传入的cid未找到对应的店铺信息，请核实
+					}
+					data.put("userCache", view);  // 加入用户Session信息
+					this.getLogger(null).sysoutInfo("免登录接口 | 接口名称：" + apiInfo.getString("name") + " target = " + head.getTarget(), this.getClass()); 
+				}
 			}
+			
+			
 			JSONObject obj = new JSONObject();	// 重置请求对象
 			obj.put("head" , head);
 			obj.put("data", data);
