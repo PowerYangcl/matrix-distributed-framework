@@ -2,9 +2,11 @@ package com.matrix.pojo.view;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.matrix.base.BaseView;
+import com.alibaba.fastjson.JSONObject;
 
 
 /**
@@ -22,6 +24,7 @@ public class McUserInfoView implements Serializable {
 	//	McUserInfo实体数据
 	private Long id; 
 	private Long cid;
+	private Long tenantInfoId;
     private String userName;
     private String userCode;
     private Long mcOrganizationId;
@@ -37,14 +40,21 @@ public class McUserInfoView implements Serializable {
     private String remark;
     private Date createTime;
     private Integer deleteFlag;
-    
-//    McUserInfoExt实体数据
     private String picUrl;
     private String pageCss;
     private String platform;
     
     // type=user|则此字段生效，为mc_user_info_organization表的mc_organization_id记录集合
     private List<Long> orgidList; 
+    
+    private JSONObject mcOrg;  // mc_organization表对象，代表当前用户的归属组织，mcOrganizationId=0时此处为null
+    
+    /**
+     *  店铺列表(cid != 0等情况)：用户可能为多个店铺。
+     *  key: "key-" + cid
+     */
+    private Map<String , JSONObject> shopInfoMap = new HashMap<String , JSONObject>(); 
+    
     
 	public Long getId() {
 		return id;
@@ -172,6 +182,24 @@ public class McUserInfoView implements Serializable {
 	}
 	public void setOrgidList(List<Long> orgidList) {
 		this.orgidList = orgidList;
+	}
+	public JSONObject getMcOrg() {
+		return mcOrg;
+	}
+	public void setMcOrg(JSONObject mcOrg) {
+		this.mcOrg = mcOrg;
+	}
+	public Map<String, JSONObject> getShopInfoMap() {
+		return shopInfoMap;
+	}
+	public void setShopInfoMap(Map<String, JSONObject> shopInfoMap) {
+		this.shopInfoMap = shopInfoMap;
+	}
+	public Long getTid() {
+		return tid;
+	}
+	public void setTid(Long tid) {
+		this.tid = tid;
 	}
 }
 

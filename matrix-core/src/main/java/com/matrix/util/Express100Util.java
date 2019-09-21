@@ -159,8 +159,8 @@ public class Express100Util extends BaseClass {
     }
 
 
-    public static void main(String[] args) {
-        Express100Util express100Util = new Express100Util("fJtsBpfL5820", "zhongtongkuaiyun", "542952733398", "http://xshell.51vip.biz/api-member-web/express/callback.do?cid=2&id=1129633424575959040");
-        System.out.print(express100Util.subscribe());
-    }
+//    public static void main(String[] args) {
+//        Express100Util express100Util = new Express100Util("fJtsBpfL5820", "zhongtongkuaiyun", "542952733398", "http://xshell.51vip.biz/api-member-web/express/callback.do?cid=2&id=1129633424575959040");
+//        System.out.print(express100Util.subscribe());
+//    }
 }

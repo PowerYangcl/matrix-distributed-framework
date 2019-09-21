@@ -84,6 +84,8 @@
 			<tx:method name="delAndRepair" propagation="REQUIRED" />
 			<tx:method name="batch*" propagation="REQUIRED" />
 			<tx:method name="bind*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="submit*" propagation="REQUIRED" />
 
 			<tx:method name="get*" propagation="SUPPORTS"  read-only="true" />
 			<tx:method name="find*" propagation="SUPPORTS" read-only="true"  />
@@ -112,6 +114,16 @@
 	<aop:config>
 		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
 	</aop:config>
+
+    <bean id="loggerAspect" class="com.matrix.aspectj.LoggerAspect"/>
+    <!-- web service 耗时日志 -->
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* com.matrix.service.impl.*.*(..))"/>
+        <aop:aspect id="LoggerAspect" ref="loggerAspect">
+            <aop:around method="aroundMethod" pointcut-ref="pointcut"/>
+        </aop:aspect>
+    </aop:config>
+
 
 
 	<aop:aspectj-autoproxy  proxy-target-class="true"/>

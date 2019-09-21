@@ -1,6 +1,11 @@
 package com.matrix.base;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -17,7 +22,7 @@ import com.matrix.system.cache.PropVisitor;
  * 
  * @author 张海涛
  * @date 2016年9月29日 下午2:40:02 
- * @version 1.0.0
+ * @version 1.0.0.1
  */
 public class BaseClass {
 	private static Logger logger = Logger.getLogger(BaseClass.class);
@@ -104,6 +109,107 @@ public class BaseClass {
 		return FormatHelper.formatString(PropVisitor.getInfo(infoCode), parms);
 	}
 	
+	/**
+	 * @description: 时间操作|返回字符串
+	 *		String dateStr = super.getDate(new Date(), -1 , "yyyy-MM-dd-HH");  // 获取上一小时时间
+	 *
+	 * @param date
+	 * @param flag 减一 或 加一
+	 * @param format  如：yyyy-MM-dd-HH
+	 * @param type Calendar.HOUR | Calendar.DATE | Calendar.MONTH
+	 * @author Yangcl
+	 * @date 2019年9月9日 下午5:58:22 
+	 * @version 1.0.0.1
+	 */
+	public String getDate(Date date , int flag , String format , int type){
+		 Calendar calendar = new GregorianCalendar();
+		 calendar.setTime(date);
+		 
+		 calendar.add(type , flag); 
+		 date=calendar.getTime();  
+		 SimpleDateFormat formatter = new SimpleDateFormat(format);
+		 return formatter.format(date);
+	}
+	
+	/**
+	 * @description: 时间操作|返回java.util.Date
+	 *		String dateStr = super.getDate(new Date(), -1 , "yyyy-MM-dd-HH");  // 获取上一小时时间
+	 *
+	 * @param date
+	 * @param flag 减一 或 加一
+	 * @param type Calendar.HOUR | Calendar.DATE | Calendar.MONTH
+	 * @author Yangcl
+	 * @date 2019年9月9日 下午5:58:22 
+	 * @version 1.0.0.1
+	 */
+	public Date getDate(Date date , int flag ,  int type){
+		 Calendar calendar = new GregorianCalendar();
+		 calendar.setTime(date);
+		 calendar.add(type , flag); 
+		 return date=calendar.getTime();
+	}
+	
+	/**
+	 * @descriptions 比较两个时间的大小 如果两个时间相等则返回false
+	 * @tips 如果两个时间相等则a.compareTo(b) = 0
+	 * 
+	 * 	String a = "2016-09-18 15:00:00";
+	 * 	String b = "2016-09-18 16:00:00";
+	 * 	System.out.println(compareDate(a, b)); 	// true
+	 * 
+	 * @param a not null
+	 * @param b not null 
+	 * @return boolean 
+	 * 
+	 * @author Yangcl
+	 * @date 2016-5-5-下午2:52:13
+	 * @version 1.0.0.1
+	 */
+	public boolean compareDate(String a , String b){
+		if(StringUtils.isAnyBlank(a , b)){
+			return false;
+		}
+		return a.compareTo(b) < 0;
+	}
+	
+	/**
+	 * @描述: 比较两个时间的大小
+	 * @作者: Yangcl
+	 * @时间: 2015-11-09
+	 * @param null
+	 */
+	public boolean compareDate(Date date1 , Date date2) {
+	   return date1.getTime() > date2.getTime();
+	}
+	
+	/**
+	 * @description: 两天之间的时间差 
+	 *
+	 * @param date1 起始日期
+	 * @param date2 结束日期
+	 * @param flag 是否包含结束的那天
+	 * 
+	 * @author Yangcl
+	 * @date 2019年9月12日 上午10:43:08 
+	 * @version 1.0.0.1
+	 */
+	public int differenceDays(Date date1 , Date date2 , boolean flag){
+		if(!compareDate(date1, date2)) {
+			return 0;
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		try {
+			int days = (int) ((sdf.parse(sdf.format(date2)).getTime() - sdf.parse(sdf.format(date1)).getTime()) / (1000*3600*24));
+			if(flag) {
+				days = days +1;
+			}
+			return days;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
+    }
 }
 
 

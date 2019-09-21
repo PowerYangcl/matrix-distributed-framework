@@ -19,6 +19,8 @@ public class RpcResultCode {
 
 	public static Integer ERROR_PARAM = 401;  // 重要参数异常
 
+	public static Integer ERROR_TID = 400;		// tid 为空  Sjh 0905
+
 	public static Integer SERVER_EXCEPTION = 500;  // 服务器异常
 
 	public static Integer ERROR_UPDATE= 501;  // 更新失败
@@ -26,6 +28,10 @@ public class RpcResultCode {
 	public static Integer ERROR_INSERT = 502;  // 数据添加失败
 	
 	public static Integer ERROR_DELETE = 503;  // 数据删除失败
+
+	public static Integer ERROR_FIND = 504;  // 数据获取失败
+
+	public static Integer DUPLICATE = 505;  // 数据重复
 
 	// TODO: 2018/9/28 状态码从小到大、且唯一！！！保证可读性 ！！！
 
