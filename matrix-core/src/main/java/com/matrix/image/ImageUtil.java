@@ -1,6 +1,5 @@
 package com.matrix.image;
 
-import com.matrix.util.SslUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -10,8 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * @description:图片处理
@@ -20,9 +17,10 @@ import java.net.URLConnection;
  * @date: 2019/8/13 16:17
  * @version: 1.0.1
  */
+@SuppressWarnings("restriction")
 public class ImageUtil {
-    public static BASE64Decoder decoder = new BASE64Decoder();
-    public static BASE64Encoder encoder = new BASE64Encoder();
+	public static BASE64Decoder decoder = new BASE64Decoder();
+	public static BASE64Encoder encoder = new BASE64Encoder();
     public static final float DEFAULT_QUALITY = 0.2125f;
 
 
@@ -166,31 +164,5 @@ public class ImageUtil {
         return targetImage;
     }
 
-    /**
-     * @description 下载网络图片(支持htts)
-
-     * @param
-     * @author: gengsl
-     * @date: 2019/8/26 11:07
-     * @return
-     * @version: 1.0.1
-     */
-    public static BufferedImage getPicture(String imageUrl) {
-        int timeOut = 3000;
-        try {
-            URL u = new URL(imageUrl);
-            if ("https".equalsIgnoreCase(u.getProtocol())) {
-                SslUtils.ignoreSsl();
-            }
-            URLConnection conn = u.openConnection();
-            conn.setConnectTimeout(timeOut);
-            conn.setReadTimeout(timeOut);
-            BufferedImage bufferedImage = ImageIO.read(conn.getInputStream());
-            return bufferedImage;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
 
 }

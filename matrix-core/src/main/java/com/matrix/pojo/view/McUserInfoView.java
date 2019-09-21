@@ -195,12 +195,6 @@ public class McUserInfoView implements Serializable {
 	public void setShopInfoMap(Map<String, JSONObject> shopInfoMap) {
 		this.shopInfoMap = shopInfoMap;
 	}
-	public Long getTid() {
-		return tid;
-	}
-	public void setTid(Long tid) {
-		this.tid = tid;
-	}
 }
 
 
