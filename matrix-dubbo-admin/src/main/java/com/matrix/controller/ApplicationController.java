@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.pojo.dto.AppProvideDto;
 import com.matrix.pojo.dto.ApplicationDto;
 import com.matrix.pojo.dto.RpcFunctionDto;
+import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IAdminApplicationService;
 
 /**
@@ -29,7 +30,12 @@ public class ApplicationController {
 	@Autowired
 	private IAdminApplicationService adminApplicationService;
 	
-	
+	@RequestMapping("page_goto_sentinel_dashboard")   // 代码可能废弃
+	public String pageGotoSentinelDashboard(ModelMap model ,HttpSession session){
+        McUserInfoView info = (McUserInfoView) session.getAttribute("userInfo");
+        model.put("userInfo", info);
+		return "jsp/dubbo/sentinel/goto-sentinel-dashboard";
+	}
 	
 	/**
 	 * @description: Dubbo应用服务列表|Dubbo项目名称列表
