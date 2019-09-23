@@ -12,6 +12,4 @@ public interface IFileUploadService {
 
 	public JSONObject apiFileRemoteInject(HttpServletRequest request);
 
-	public void insertUploadFileInfo(JSONObject uploadFile);
-
 }
