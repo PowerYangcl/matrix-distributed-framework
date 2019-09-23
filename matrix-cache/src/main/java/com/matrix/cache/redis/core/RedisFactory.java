@@ -1,8 +1,6 @@
 package com.matrix.cache.redis.core;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -311,6 +309,7 @@ public class RedisFactory implements ICacheFactory{
 	 * @version 1.0.0.1
 	 */
 	public Long increment(String key, Long delta , long timeout) {
+//		this.get(key);  // 缓存没有从数据库里拿一下
 		return RedisTemplate.getInstance().increment(baseKey + key, delta, timeout); 
 	}
 
@@ -453,6 +452,23 @@ public class RedisFactory implements ICacheFactory{
 	 */
 	public Long addSet(String key, String... values) {
 		return RedisTemplate.getInstance().addSet(baseKey + key, values);
+	}
+	
+	/**
+	 * @description: 添加一个set集合到redis中，同时设置过期时间
+	 *	例如：
+	 *			redisTemplate.opsForSet().add("setValue","A","B","C","B","D","E","F");  
+	 * @param key
+	 * @param values 
+	 * 
+	 * @author Yangcl
+	 * @date 2018年9月19日 上午10:22:26 
+	 * @version 1.0.0.1
+	 */
+	public Long addSet(String key , Integer expireTime , String... values) {
+		Long value = RedisTemplate.getInstance().addSet(baseKey + key, values);
+		this.setKeyTimeout(key, Long.valueOf(expireTime));
+		return value;
 	}
 
 	/**

@@ -1,9 +1,6 @@
 package com.matrix.cache.redis.core;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +16,6 @@ import com.matrix.base.BaseClass;
 
 import redis.clients.jedis.JedisCommands;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.Protocol;
-import redis.clients.util.SafeEncoder;
 
 /**
  * @description: 支持Redis集群带密码验证的需求|底层包装类为org.springframework.data.redis。
@@ -29,7 +24,8 @@ import redis.clients.util.SafeEncoder;
  *			Redis集群通常采用主从、哨兵模式和集群模式三种。主从往往是为了读写分离、backup 等目的， 
  *			哨兵可以检测主从健康， 主挂了可以把从提升为主， 集群往往是为了数据分片， 解决单台机器资源的上限的问题。
  *			故：在应对较大的缓存数据量的情况系统采用集群模式。
- *
+ *		
+ *			https://www.cnblogs.com/tankaixiong/p/4048167.html
  *
  * @author Yangcl
  * @date 2018年9月18日 上午9:38:09
@@ -50,14 +46,32 @@ public class RedisTemplate extends BaseClass {
         }
 
         JedisPoolConfig pconfig = new JedisPoolConfig();
-        pconfig.setMaxIdle(Integer.valueOf(this.getConfig("matrix-cache.redis_pool_maxIdle")));
-        pconfig.setMinIdle(Integer.valueOf(this.getConfig("matrix-cache.redis_pool_minIdle")));
-        pconfig.setMaxTotal(Integer.valueOf(this.getConfig("matrix-cache.redis_pool_maxTotal")));
+        pconfig.setMaxIdle(Integer.valueOf(this.getConfig("matrix-cache.redis_pool_maxIdle")));				// 最大空闲连接数, 默认8个
+        pconfig.setMinIdle(Integer.valueOf(this.getConfig("matrix-cache.redis_pool_minIdle")));				// 最小空闲连接数, 默认0
+        pconfig.setMaxTotal(Integer.valueOf(this.getConfig("matrix-cache.redis_pool_maxTotal")));		//最大连接数, 50
         pconfig.setMaxWaitMillis(Long.valueOf(this.getConfig("matrix-cache.redis_pool_maxWaitMillis")));
         pconfig.setTestOnCreate(Boolean.valueOf(this.getConfig("matrix-cache.redis_pool_testOnCreate")));
         pconfig.setTestOnReturn(Boolean.valueOf(this.getConfig("matrix-cache.redis_pool_testOnReturn")));
         pconfig.setTestOnBorrow(Boolean.valueOf(this.getConfig("matrix-cache.redis_pool_testOnBorrow"))); // 在获得链接的时候检查有效性
         pconfig.setTestWhileIdle(Boolean.valueOf(this.getConfig("matrix-cache.redis_pool_testWhileIdle")));  // 在空闲时检查有效性
+        
+        
+        pconfig.setLifo(true);
+        
+        // 对象空闲多久后逐出, 当空闲时间>该值 且 空闲连接 > 最大空闲数(MaxIdle)
+        // 时直接逐出,不再根据setMinEvictableIdleTimeMillis判断  (默认逐出策略)   
+        pconfig.setSoftMinEvictableIdleTimeMillis(600000);
+        
+        // 默认逐出策略。逐出连接的最小空闲时间 默认1800000毫秒(此处设置10分钟)
+        // https://www.cnblogs.com/xiao-tao/p/9797252.html
+        // pconfig.setMinEvictableIdleTimeMillis(1800000);
+        
+        // 每次逐出检查时 逐出的最大数目 如果为负数就是 : 1/abs(n), 默认3
+        pconfig.setNumTestsPerEvictionRun(100);
+         
+        // 逐出扫描的时间间隔(毫秒) 如果为负数,则不运行逐出线程, 默认-1
+        pconfig.setTimeBetweenEvictionRunsMillis(600000);
+        
 
         // Spring Data Redis 连接工厂配置
         JedisConnectionFactory factory = new JedisConnectionFactory(clusterConfig, pconfig);

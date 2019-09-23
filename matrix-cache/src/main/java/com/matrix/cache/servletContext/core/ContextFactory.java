@@ -1,5 +1,6 @@
 package com.matrix.cache.servletContext.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -245,7 +246,7 @@ public class ContextFactory implements ICacheFactory{
 	 * @version 1.0.0.1
 	 */
 	@Override
-	public Set<?> sget(String key) {
+	public Set<String> sget(String key) {
 		return null;
 	}
 
@@ -329,6 +330,11 @@ public class ContextFactory implements ICacheFactory{
 		return null;
 	}
 
+	@Override
+	public Long addSet(String key, Integer expireTime, String... values) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 	

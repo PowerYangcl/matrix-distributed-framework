@@ -1,5 +1,6 @@
 package com.matrix.cache.power.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -358,6 +359,12 @@ public class PowerFactory implements ICacheFactory {
 	}
 
 	public Long getExpire(String key) {
+		return null;
+	}
+
+	@Override
+	public Long addSet(String key, Integer expireTime, String... values) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

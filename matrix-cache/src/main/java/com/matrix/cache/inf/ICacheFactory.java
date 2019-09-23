@@ -1,5 +1,6 @@
 package com.matrix.cache.inf;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -300,6 +301,18 @@ public interface ICacheFactory {
 	 */
 	public Long addSet(String key , String... values);
 	
+	/**
+	 * @description: 添加一个set集合到redis中，同时设置过期时间
+	 *	例如：
+	 *			redisTemplate.opsForSet().add("setValue","A","B","C","B","D","E","F");  
+	 * @param key
+	 * @param values 
+	 * 
+	 * @author Yangcl
+	 * @date 2018年9月19日 上午10:22:26 
+	 * @version 1.0.0.1
+	 */
+	public Long addSet(String key , Integer expireTime , String... values);
 	
 	/**
 	 * @description: 获取变量中的值。
@@ -309,7 +322,7 @@ public interface ICacheFactory {
 	 * @date 2018年9月19日 上午10:27:10 
 	 * @version 1.0.0.1
 	 */
-	public  Set<?> sget(String key);
+	public  Set<String> sget(String key);
 	
 	/**
 	 * @description: 获取set集合的长度
