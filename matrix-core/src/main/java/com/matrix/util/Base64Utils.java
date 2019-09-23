@@ -1,4 +1,4 @@
-package com.matrix.support;
+package com.matrix.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 /**
- * @description: 
+ * @description: Base64 图片操作
  *
  * @author Yangcl
  * @home https://github.com/PowerYangcl
@@ -74,29 +74,24 @@ public class Base64Utils {
 			while ((len = is.read(by)) != -1) {
 				data.write(by, 0, len);
 			}
-			// 关闭流
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// 对字节数组Base64编码
-		BASE64Encoder encoder = new BASE64Encoder();
+		BASE64Encoder encoder = new BASE64Encoder();  // 对字节数组Base64编码
 		return encoder.encode(data.toByteArray());
 	}
 
 	/**
-	 * base64字符串转换成图片
-	 * 
+	 * @description: 对字节数组字符串进行Base64解码并生成图片
+	 *
 	 * @param imgStr
-	 *            base64字符串
 	 * @param imgFilePath
-	 *            图片存放路径
-	 * @author XuTao
-	 * @date 2019年9月17日 下午3:17:22
+	 * @author Yangcl
+	 * @date 2019年9月23日 下午6:35:20 
 	 * @version 1.0.0.1
 	 */
-	public static boolean Base64ToImage(String imgStr, String imgFilePath) { // 对字节数组字符串进行Base64解码并生成图片
-
+	public static boolean Base64ToImage(String imgStr, String imgFilePath) { 
 		if (StringUtils.isEmpty(imgStr)) // 图像数据为空
 			return false;
 
@@ -114,16 +109,13 @@ public class Base64Utils {
 			out.write(b);
 			out.flush();
 			out.close();
-
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
-
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		// 本地图片地址
 		String url = "C:/Users/Administrator/Desktop/微信图片_20190820134511.jpg";
 		// 在线图片地址
@@ -138,6 +130,7 @@ public class Base64Utils {
 		Base64Utils.Base64ToImage(str, "C:/Users/Administrator/Desktop/test1.jpg");
 
 		Base64Utils.Base64ToImage(ste, "C:/Users/Administrator/Desktop/test2.jpg");
-
 	}
+	
+	
 }

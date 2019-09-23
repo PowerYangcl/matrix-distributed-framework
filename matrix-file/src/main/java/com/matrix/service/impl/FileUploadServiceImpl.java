@@ -2,11 +2,8 @@ package com.matrix.service.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
@@ -20,8 +17,6 @@ import org.springframework.util.FileCopyUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
-import com.matrix.dao.ISysFileRecordMapper;
-import com.matrix.pojo.entity.SysFileRecord;
 import com.matrix.service.IFileUploadService;
 import com.matrix.support.FileSupport;
 import com.matrix.util.DateUtil;
@@ -32,9 +27,6 @@ import com.matrix.util.UuidUtil;
 @Service("fileUploadService")
 public class FileUploadServiceImpl extends BaseClass implements IFileUploadService{
 	
-	@Resource
-	private ISysFileRecordMapper sysFileRecordMapper;
-
 	/**
 	 * @description: 从页面Request请求获取文件保存到服务器
 	 *
@@ -187,29 +179,6 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 		return result;
 	}
 
-	/**
-	 * @description: 插入文件后，添加文件信息
-	 *
-	 * @param uploadFile
-	 * @author Yangcl
-	 * @date 2018年11月1日 下午3:32:14 
-	 * @version 1.0.0.1
-	 */
-	public void insertUploadFileInfo(JSONObject uploadFile) {
-		try {
-			SysFileRecord e = JSONObject.parseObject(uploadFile.toJSONString(), SysFileRecord.class);
-			e.setCreateTime(new Date());
-			e.setCreateUserId(1L);
-			e.setCreateUserName("system");
-			e.setUpdateTime(new Date());
-			e.setUpdateUserId(1L);
-			e.setUpdateUserName("system");
-			sysFileRecordMapper.insertSelective(e);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-	
 }
 
 
