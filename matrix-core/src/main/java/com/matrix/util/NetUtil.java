@@ -32,6 +32,8 @@ import com.matrix.base.BaseClass;
 /**
  * @description: 与网路相关的工具集合
  * 
+ * 		尚未根据这篇文章做修改：https://www.cnblogs.com/gynbk/p/9449924.html
+ * 
  * @author Yangcl
  * @home https://github.com/PowerYangcl
  * @date 2016年9月29日 下午3:09:07 
