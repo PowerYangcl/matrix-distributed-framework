@@ -195,6 +195,13 @@ public class McUserInfoView implements Serializable {
 	public void setShopInfoMap(Map<String, JSONObject> shopInfoMap) {
 		this.shopInfoMap = shopInfoMap;
 	}
+	public Long getTenantInfoId() {
+		return tenantInfoId;
+	}
+	public void setTenantInfoId(Long tenantInfoId) {
+		this.tenantInfoId = tenantInfoId;
+	}
+	
 }
 
 
