@@ -56,6 +56,8 @@ public enum DCacheEnum {
 	DictActivityType, //活动类型信息表缓存
 	
 	MsgId, // RocketMq消息队列
+	
+	TcShopInfo , // 店铺信息
 }
 
 
