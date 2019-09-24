@@ -2,7 +2,7 @@ package com.matrix.base.interfaces;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.matrix.base.GttDto;
+import com.matrix.gtt.GttDto;
 
 public interface IRocketConsumer <T>{ 
 

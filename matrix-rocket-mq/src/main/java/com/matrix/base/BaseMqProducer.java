@@ -4,12 +4,10 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
-import org.apache.rocketmq.client.producer.MessageQueueSelector;
-import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
 
-import com.alibaba.fastjson.JSONObject;
+import com.matrix.gtt.GttEnum;
 
 /**
  * @description: RockMq【非事务消息】顶层提供者，封装基础行为。
@@ -42,6 +40,10 @@ public class BaseMqProducer extends BaseClass{
 		try {
 			producer = new DefaultMQProducer(group.toString());
 			producer.setNamesrvAddr( this.getConfig("matrix-rocket-mq.namesrv_" + this.getConfig("matrix-core.model")) );
+			// 设置重试次数,默认2
+            producer.setRetryTimesWhenSendFailed(15);
+            //设置发送超时时间，默认是3000
+            producer.setSendMsgTimeout(6000);
 			this.producer.start();
 		} catch (MQClientException e) { 
 			e.printStackTrace();

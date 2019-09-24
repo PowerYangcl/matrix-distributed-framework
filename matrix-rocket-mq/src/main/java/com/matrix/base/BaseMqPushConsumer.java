@@ -1,9 +1,6 @@
 package com.matrix.base;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -14,11 +11,9 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.redisson.api.RLock;
-
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.interfaces.IRocketConsumer;
-import com.matrix.support.RedissonLock;
+import com.matrix.gtt.GttDto;
 
 
 /**
@@ -113,7 +108,9 @@ public abstract class BaseMqPushConsumer extends BaseClass implements IRocketCon
 //        consumer.setPullBatchSize(32);
         // 消息拉取线程每隔多久拉取一次，默认0
 //        consumer.setPullInterval(0);
-        
+        if(dto.getMaxReconsumeTimes() != null) {  // 如果传递此参数，则设置为自定义的重试次数
+        	consumer.setMaxReconsumeTimes(dto.getMaxReconsumeTimes());
+        } 
         
 		try {
 			consumer.subscribe(dto.getTopic() , dto.getTag()); 		// 开始订阅消息，tag可以为"*"
