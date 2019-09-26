@@ -171,7 +171,7 @@ public class ManagerCenterController extends BaseController{
 	public JSONObject sysUserList(McUserInfoDto dto , HttpSession session , HttpServletRequest request) {
 		super.userBehavior(session, logger, "sys_user_list", "获取用户列表");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcUserInfoService.ajaxSystemUserList(dto , session , request);
+		return mcUserInfoService.ajaxSystemUserList(dto , request);
 	}
 	
 	/**
@@ -220,7 +220,7 @@ public class ManagerCenterController extends BaseController{
 	public JSONObject addSysUser(McUserInfoDto info , HttpSession session) {
 		super.userBehavior(session, logger, "add_sys_user", "添加用户");
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcUserInfoService.addSysUser(info , session);
+		return mcUserInfoService.addSysUser(info);
 	}
 	
 	/**
@@ -272,7 +272,7 @@ public class ManagerCenterController extends BaseController{
 	public JSONObject editSysUser(McUserInfoDto info , HttpSession session) {
 		super.userBehavior(session, logger, "edit_sys_user", "修改用户信息");
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcUserInfoService.editSysUser(info , session);
+		return mcUserInfoService.editSysUser(info);
 	}
 	
 	/**

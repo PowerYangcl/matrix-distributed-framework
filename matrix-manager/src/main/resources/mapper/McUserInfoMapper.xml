@@ -28,6 +28,9 @@
 		<result column="mobile" property="mobile" jdbcType="VARCHAR" />
 		<result column="email" property="email" jdbcType="VARCHAR" />
 		<result column="qq" property="qq" jdbcType="VARCHAR" />
+		<result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+		<result column="page_css" property="pageCss" jdbcType="VARCHAR" />
+		<result column="platform" property="platform" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="LONGVARCHAR" />
 	</resultMap>
 	
@@ -51,13 +54,13 @@
 			i.mobile as mobile,
 			i.email as email,
 			i.qq as qq,
-			i.create_time as createTime,
+			i.pic_url as picUrl,
+			i.page_css as pageCss,
+			i.platform as platform,
 			i.remark as remark,
-			e.pic_url as picUrl,
-			e.page_css as pageCss,
-			e.platform as platform
+			i.create_time as createTime
 		from 
-			mc_user_info i left join mc_user_info_ext e on i.id = e.user_info_id
+			mc_user_info i 
 		where 
 			i.user_name = #{userName} 
 		and 
@@ -83,13 +86,13 @@
 			i.mobile as mobile,
 			i.email as email,
 			i.qq as qq,
-			i.create_time as createTime,
+			i.pic_url as picUrl,
+			i.page_css as pageCss,
+			i.platform as platform,
 			i.remark as remark,
-			e.pic_url as picUrl,
-			e.page_css as pageCss,
-			e.platform as platform
+			i.create_time as createTime
 		from 
-			mc_user_info i left join mc_user_info_ext e on i.id = e.user_info_id
+			mc_user_info i 
 		where 
 			i.delete_flag = 1 
 		and
@@ -113,13 +116,13 @@
 			i.mobile as mobile,
 			i.email as email,
 			i.qq as qq,
-			i.create_time as createTime,
+			i.pic_url as picUrl,
+			i.page_css as pageCss,
+			i.platform as platform,
 			i.remark as remark,
-			e.pic_url as picUrl,
-			e.page_css as pageCss,
-			e.platform as platform
+			i.create_time as createTime
 		from 
-			mc_user_info i left join mc_user_info_ext e on i.id = e.user_info_id
+			mc_user_info i 
 		where 
 			i.delete_flag = 1  
 	</select>
@@ -171,13 +174,13 @@
 			i.mobile as mobile,
 			i.email as email,
 			i.qq as qq,
-			i.create_time as createTime,
+			i.pic_url as picUrl,
+			i.page_css as pageCss,
+			i.platform as platform,
 			i.remark as remark,
-			e.pic_url as picUrl,
-			e.page_css as pageCss,
-			e.platform as platform
+			i.create_time as createTime
 		from 
-			mc_user_info i left join mc_user_info_ext e on i.id = e.user_info_id
+			mc_user_info i 
 		where
 			i.delete_flag = 1  
 			<if test="cid != null">
@@ -275,6 +278,15 @@
 			<if test="qq != null">
 				qq,
 			</if>
+			<if test="picUrl != null">
+				pic_url,
+			</if>
+			<if test="pageCss != null">
+				page_css,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
 			<if test="remark != null">
 				remark,
 			</if>
@@ -343,6 +355,15 @@
 			</if>
 			<if test="qq != null">
 				#{qq,jdbcType=VARCHAR},
+			</if>
+			<if test="picUrl != null">
+				#{picUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="pageCss != null">
+				#{pageCss,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				#{remark,jdbcType=LONGVARCHAR},
@@ -417,6 +438,15 @@
 			<if test="qq != null">
 				qq,
 			</if>
+			<if test="picUrl != null">
+				pic_url,
+			</if>
+			<if test="pageCss != null">
+				page_css,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
 			<if test="remark != null">
 				remark,
 			</if>
@@ -486,6 +516,15 @@
 			<if test="qq != null">
 				#{qq,jdbcType=VARCHAR},
 			</if>
+			<if test="picUrl != null">
+				#{picUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="pageCss != null">
+				#{pageCss,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
+			</if>
 			<if test="remark != null">
 				#{remark,jdbcType=LONGVARCHAR},
 			</if>
@@ -552,6 +591,15 @@
 			</if>
 			<if test="qq != null">
 				qq = #{qq,jdbcType=VARCHAR},
+			</if>
+			<if test="picUrl != null">
+				pic_url = #{picUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="pageCss != null">
+				page_css = #{pageCss,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				remark = #{remark,jdbcType=LONGVARCHAR},

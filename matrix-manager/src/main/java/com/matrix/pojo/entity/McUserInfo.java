@@ -22,6 +22,9 @@ public class McUserInfo extends BaseEntity{
     private String email;
     private String qq;
     private String remark;
+    private String picUrl;
+    private String pageCss;
+    private String platform;
     
 	public Long getId() {
 		return id;
@@ -112,6 +115,24 @@ public class McUserInfo extends BaseEntity{
 	}
 	public void setMcOrganizationId(Long mcOrganizationId) {
 		this.mcOrganizationId = mcOrganizationId;
+	}
+	public String getPicUrl() {
+		return picUrl;
+	}
+	public void setPicUrl(String picUrl) {
+		this.picUrl = picUrl;
+	}
+	public String getPageCss() {
+		return pageCss;
+	}
+	public void setPageCss(String pageCss) {
+		this.pageCss = pageCss;
+	}
+	public String getPlatform() {
+		return platform;
+	}
+	public void setPlatform(String platform) {
+		this.platform = platform;
 	}
 	
 }

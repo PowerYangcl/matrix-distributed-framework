@@ -14,9 +14,9 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	
 	public JSONObject login(McUserInfoDto userInfo , HttpSession session);
 
-	public JSONObject addSysUser(McUserInfoDto info , HttpSession session);
+	public JSONObject addSysUser(McUserInfoDto info);
 
-	public JSONObject editSysUser(McUserInfoDto info , HttpSession session);
+	public JSONObject editSysUser(McUserInfoDto info);
 
 	public JSONObject deleteUser(McUserInfoDto dto);
 
@@ -26,7 +26,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 
 	public JSONObject ajaxDrawAddUserPage();
 
-	public JSONObject ajaxSystemUserList(McUserInfoDto dto , HttpSession session , HttpServletRequest request);
+	public JSONObject ajaxSystemUserList(McUserInfoDto dto ,HttpServletRequest request);
 
 	/**
 	 * @description: 验证用户登录信息|客户端用户：nodejs/IOS平板等

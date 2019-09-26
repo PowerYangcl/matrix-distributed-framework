@@ -12,6 +12,7 @@ import com.matrix.dao.*;
 import com.matrix.pojo.entity.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseServiceImpl;
@@ -43,19 +44,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	
 	@Resource
 	private IMcUserInfoMapper mcUserInfoMapper;
-	
 	@Resource
 	private IMcUserRoleMapper mcUserRoleMapper;
-	
-	@Resource
-	private IMcUserInfoExtMapper mcUserInfoExtMapper;
-	
-	@Resource
-	private ICompanyInfoMapper companyInfoMapper;
-	
 	@Resource
 	private IMcSysFunctionMapper mcSysFunctionMapper;
-
 	@Resource
 	private IMcOrganizationMapper mcOrganizationMapper;
 
@@ -123,9 +115,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	/**
 	 * @description: 验证用户登录信息|客户端用户：nodejs/IOS平板等
 	 *
-	 * @param request
 	 * @param dto
-	 * 
 	 * @author Yangcl
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
@@ -251,7 +241,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	}
 
 	
-	public JSONObject addSysUser(McUserInfoDto info , HttpSession session) {
+	public JSONObject addSysUser(McUserInfoDto info) {
 		JSONObject result = new JSONObject();
 		McUserInfoView userCache = info.getUserCache(); //(McUserInfoView) session.getAttribute("userInfo");
 		if (StringUtils.isBlank(info.getUserName()) || StringUtils.isBlank(info.getPassword())) {
@@ -308,6 +298,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		e.setSex(info.getSex());  
 		e.setRemark(info.getRemark());
 		e.setIdcard(info.getIdcard());
+		
+		if(StringUtils.contains(info.getPlatform(), "@")) { // Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
+			e.setPlatform(info.getPlatform().split("@")[1]);
+		}else {
+			e.setPlatform(userCache.getPlatform()); 		// 非Leader平台(具体某个平台)创建的用户，则继承其创建者的平台标识码			 
+		}
+		
 		e.setCreateTime(new Date());
 		e.setCreateUserId(userCache.getId());
 		e.setCreateUserName(userCache.getUserName()); 
@@ -317,18 +314,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		try {
 			int count = mcUserInfoMapper.insertSelectiveGetZid(e);
 			if(count == 1){
-				McUserInfoExt ex = new McUserInfoExt();
-				ex.setUserInfoId(e.getId()); 
-				if(StringUtils.contains(info.getPlatform(), "@")) { // Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
-					ex.setPlatform(info.getPlatform().split("@")[1]);
-				}else {
-					ex.setPlatform(userCache.getPlatform()); 		// 非Leader平台(具体某个平台)创建的用户，则继承其创建者的平台标识码			 
-				}
-				mcUserInfoExtMapper.insertSelective(ex);
-				
-				McUserInfoView view = mcUserInfoMapper.loadUserInfo(e.getId());
-				launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(view.getUserName() + "," + view.getPassword() , JSONObject.toJSONString(view) , 30*24*60*60);
-				
 				result.put("status", "success");
 				result.put("msg", this.getInfo(400010022));	// 400010022=添加成功
 			}else{
@@ -340,7 +325,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			result.put("status", "error");
 			result.put("msg", this.getInfo(400010026));	// 400010026=服务器异常
 		}
-		
 		return result;
 	}
 	
@@ -362,27 +346,22 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return result;
 		}
 		McUserInfo entity = mcUserInfoMapper.find(dto.getId());
-		if(entity != null){       // 添加组织机构信息 - 马少华
-			if(entity.getMcOrganizationId() != null){
-				McOrganization org = mcOrganizationMapper.find(entity.getMcOrganizationId());
-				if (org != null){
-					String name = org.getName();
-					result.put("organization",name);
-				}else{
-					result.put("organization","未知");
-				}
-			}else{
-				result.put("organization","未知");
-			}
+		if(entity == null){      
+			result.put("status", "error");
+			result.put("msg", this.getInfo(400010030));	// 400010030=获取用户详情失败，用户id为空
+			return result;
 		}
+		
+		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(entity.getUserName() + "," + entity.getPassword());
+		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		result.put("status", "success");
 		result.put("msg", this.getInfo(400010014));		// 400010014=查询成功
-		result.put("entity", entity);
+		result.put("entity", info);
 		return result;
 	}
 
 
-	public JSONObject editSysUser(McUserInfoDto info , HttpSession session) {
+	public JSONObject editSysUser(McUserInfoDto info) {
 		JSONObject result = new JSONObject();
 		if (StringUtils.isBlank(info.getUserName())) {
 			result.put("status", "error");
@@ -427,19 +406,15 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			e.setUpdateUserName(master.getUserName()); 
 			e.setQq(info.getQq());
 			e.setRemark(info.getRemark());
-			
+			e.setPicUrl(info.getPicUrl());			// 更新用户头像
+			// Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
+			if(master.getType().equals("leader") && StringUtils.isNotBlank(info.getPlatform()) && StringUtils.contains(info.getPlatform(), "@")) { 
+				e.setPlatform(info.getPlatform().split("@")[1]);	// 非Leader平台创建的用户，不会更新平台码
+			} 
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1){
-				if(master.getType().equals("leader") && StringUtils.contains(info.getPlatform(), "@")) { // Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
-					McUserInfoExt ex = new McUserInfoExt();
-					ex.setUserInfoId(info.getId()); 
-					ex.setPlatform(info.getPlatform().split("@")[1]);	// 非Leader平台创建的用户，不会更新平台码和公司
-					mcUserInfoExtMapper.updateSelectiveByUserId(ex);
-				} 
-//				McUserInfoView view = mcUserInfoMapper.loadUserInfo(info.getId());
-//				launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(view.getUserName() + "," + view.getPassword() , JSONObject.toJSONString(view) , 30*24*60*60);
 				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(info.getUserName() + "," + info.getPassword());
-				launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(info.getUserName() + "," + info.getPassword());
+//				launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(info.getUserName() + "," + info.getPassword());
 				result.put("status", "success");
 				result.put("msg", this.getInfo(400010024));	// 400010024=更新成功
 			}else{
@@ -517,6 +492,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
+	@Transactional
 	public JSONObject deleteUser(McUserInfoDto dto) {
 		JSONObject result = new JSONObject();
 		Long id = dto.getId();
@@ -532,8 +508,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			if(StringUtils.isNotBlank(launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(id.toString()))) {
 				count_ = mcUserRoleMapper.deleteByUserId(id); // 确定该用户有角色被分配才去删除
 			}
-			int cout__ = mcUserInfoExtMapper.deleteByUserId(id);  // 删除mc_user_info_ext表的用户扩展信息 
-			if(count == 1 && count_ == 1 && cout__ == 1){
+			if(count == 1 && count_ == 1){
 				launch.loadDictCache(DCacheEnum.McUserRole , null).del(id.toString());
 				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(view.getUserName() + "," + view.getPassword());
 				result.put("status", "success");
@@ -551,17 +526,16 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		return result;
 	}
 
-	@Override
 	public JSONObject updatePageStyle(McUserInfoDto dto) {
 		JSONObject result = new JSONObject();
 		McUserInfoView master = dto.getUserCache();
-		McUserInfoExt e = new McUserInfoExt();
-		e.setUserInfoId(dto.getId());
+		McUserInfo e = new McUserInfo();
+		e.setId(dto.getId());
 		e.setPageCss(dto.getPageCss()); 
 		e.setUpdateTime(new Date());
 		e.setUpdateUserId(master.getId());
 		e.setUpdateUserName(master.getUserName()); 
-		mcUserInfoExtMapper.updateSelectiveByUserId(e);
+		mcUserInfoMapper.updateSelective(e);
 		
 		McUserInfoView view = mcUserInfoMapper.loadUserInfo(dto.getId());
 		launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(view.getUserName() + "," + view.getPassword() , JSONObject.toJSONString(view) , 30*24*60*60);
@@ -575,7 +549,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @description: 绘制添加用户界面
 	 *
 	 * @param info
-	 * @param session
 	 * @author Yangcl
 	 * @date 2018年9月22日 下午2:23:23 
 	 * @version 1.0.0.1
@@ -583,12 +556,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	public JSONObject ajaxDrawAddUserPage() {
 		JSONObject result = new JSONObject();
 		try {
-			List<CompanyInfo> clist = companyInfoMapper.findList(null);
 			McSysFunction e = new McSysFunction();
 			e.setNavType(0);
 			List<McSysFunction> sflist = mcSysFunctionMapper.getSysFuncList(e);
 			result.put("status", "success");
-			result.put("clist", clist);
 			result.put("sflist", sflist);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -616,7 +587,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年9月23日 上午12:03:05 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxSystemUserList(McUserInfoDto dto , HttpSession session , HttpServletRequest request) {
+	public JSONObject ajaxSystemUserList(McUserInfoDto dto , HttpServletRequest request) {
 		McUserInfoView userCache = dto.getUserCache();
 		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString()  , userCache.getType() )) {   
 			JSONObject r = new JSONObject();
@@ -637,7 +608,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		
 		return super.pageListByDto(dto, request);
 	}
-
 
 
 

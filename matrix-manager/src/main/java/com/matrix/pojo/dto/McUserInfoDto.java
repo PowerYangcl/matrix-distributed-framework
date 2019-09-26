@@ -24,7 +24,8 @@ public class McUserInfoDto extends BaseDto{
     private String email;
     private String qq;
     private String remark;
-    private String platform;		// 	McUserInfoExt冗余字段
+    private String picUrl;
+    private String platform;	 
     private String accessToken;
     
     private String pageCss;
@@ -174,6 +175,12 @@ public class McUserInfoDto extends BaseDto{
 	}
 	public void setValidateCodeKey(String validateCodeKey) {
 		this.validateCodeKey = validateCodeKey;
+	}
+	public String getPicUrl() {
+		return picUrl;
+	}
+	public void setPicUrl(String picUrl) {
+		this.picUrl = picUrl;
 	}
 	
 }

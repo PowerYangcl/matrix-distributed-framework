@@ -34,6 +34,16 @@ import com.matrix.pojo.view.McUserInfoView;
 	    "email": "root@pm.com",
 	    "pageCss": "",
 	    "mobile": "13511112221",
+	    "mcOrg":{
+	    	"status":"success",
+	    	"msg":"查询成功",
+	    	"cid":"1",
+	    	"name":"组织机构名称",
+	    	"platform":"平台标识码",
+	    		……  详细信息请参考：InitMcOrganization.java
+	    		
+	    	"address":"机构地址信息"
+	    }
 	    "orgidList":[
 	    	23948127349182348,
 	    	12394109751029349
@@ -73,7 +83,11 @@ public class InitUserInfoNp extends BaseClass implements ILoadCache<String> {
 			}
 			
 			String value = JSONObject.toJSONString(view);
-			launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 30*24*60*60);
+			if(view.getMcOrganizationId() != null && view.getMcOrganizationId() != 0) {
+				String mcOrg = launch.loadDictCache(DCacheEnum.McOrganization , "InitMcOrganization").get(view.getMcOrganizationId().toString());
+				view.setMcOrg(JSONObject.parseObject(mcOrg));
+			}
+			launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 4*60*60);
 			return value;
 		}
 		return "";
