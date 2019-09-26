@@ -6,6 +6,10 @@ import com.matrix.gtt.GttDto;
 
 /**
  * @description: 分布式消息队列初始化|通过初始化数据表中的消费者，根据IP地址分组，反射调用每一个消费者
+ * 
+ * 		关于重复消费问题：https://blog.csdn.net/a417930422/article/details/50663629
+ * 											https://blog.csdn.net/wangsht/article/details/84776906
+ * 	
  *
  * @author Yangcl
  * @home https://github.com/PowerYangcl
