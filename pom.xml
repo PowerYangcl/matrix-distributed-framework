@@ -7,6 +7,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>The matrix e-commerce platform</description>
+    
     <modules>
         <module>matrix-core</module>
 		<module>leader</module>
@@ -23,6 +24,7 @@
         <module>matrix-mongodb</module>
         <module>matrix-rocket-mq</module>
     </modules>
+    
     <properties>
         <!-- 全局性控制项目编码为UTF-8 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -33,7 +35,6 @@
         <druid.version>1.1.10</druid.version> <!-- 需要和mysql-connector一起升级 -->
         <junit.version>4.11</junit.version>
         <aspectjweaver.version>1.8.9</aspectjweaver.version>
-        <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-lang3.version>3.2.1</commons-lang3.version>
         <commons-collections.version>3.2.1</commons-collections.version>
         <slf4j.version>1.7.12</slf4j.version>
@@ -44,18 +45,14 @@
         <itextpdf.version>5.4.0</itextpdf.version>
         <xmlworker.version>5.5.5</xmlworker.version>
         <itext-asian.version>5.2.0</itext-asian.version>
-        <activemq.version>5.7.0</activemq.version>
         <httpclient.version>4.5.1</httpclient.version>
         <pagerhelper.version>4.0.3</pagerhelper.version>
         <jdom.version>2.0.2</jdom.version>
         <dubbo.version>2.6.5</dubbo.version>
-        <hystrix-core.version>1.5.12</hystrix-core.version>
-        <spring-rabbit.version>1.7.4.RELEASE</spring-rabbit.version>
         <spring-data-mongodb.version>1.10.7.RELEASE</spring-data-mongodb.version>
         <spring.data.mongodb.cross.store.version>1.10.7.RELEASE</spring.data.mongodb.cross.store.version>
-        <solr-solrj.version>5.5.3</solr-solrj.version>
-        <spring-data-solr>2.1.13.RELEASE</spring-data-solr>
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -117,13 +114,14 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!-- 用于com.hjy.support.MailSupport 2016-06-27 zhy -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <!-- mybatis -->
+        
+        
+        <!-- Mybatis -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
@@ -139,14 +137,12 @@
             <artifactId>pagehelper</artifactId>
             <version>${pagerhelper.version}</version>
         </dependency>
-
         <!-- Mybatis 分页插件 4.0.2所依赖jar包 -->
         <dependency>
             <groupId>com.github.jsqlparser</groupId>
             <artifactId>jsqlparser</artifactId>
             <version>0.9.1</version>
         </dependency>
-
         <!-- 用于Mybatis的分页插件，提供了服务器端的分页和排序功能。http://my.oschina.net/miemiedev/blog/135516 -->
         <dependency>
             <groupId>com.github.miemiedev</groupId>
@@ -180,11 +176,6 @@
             <version>${aspectjweaver.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>${commons-httpclient.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -255,63 +246,8 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.6.5</version>
         </dependency>
-        <!-- =============poi============ -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>${poi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>${poi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itextpdf</artifactId>
-            <version>${itextpdf.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf.tool</groupId>
-            <artifactId>xmlworker</artifactId>
-            <version>${xmlworker.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext-asian</artifactId>
-            <version>${itext-asian.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>${activemq.version}</version>
-        </dependency>
-        <!-- rabbitMQ -->
-        <dependency>
-            <groupId>org.springframework.amqp</groupId>
-            <artifactId>spring-rabbit</artifactId>
-            <version>${spring-rabbit.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-
-        <!-- 利用它直接在Java程序中连接SSH服务器。Ganymed SSH-2支持SSH对话 (远程命令执行和shell访问),本地和远程端口转发，本地数据流转发，X11转发和SCP。 -->
-        <dependency>
-            <groupId>ch.ethz.ganymed</groupId>
-            <artifactId>ganymed-ssh2</artifactId>
-            <version>build210</version>
-        </dependency>
-        <!-- Java获取汉字的拼音 -->
-        <dependency>
-            <groupId>com.belerweb</groupId>
-            <artifactId>pinyin4j</artifactId>
-            <version>2.5.1</version>
-        </dependency>
+        
+        
         <!-- 定时任务job -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -329,12 +265,7 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-pool</artifactId>
-            <version>5.9.0</version>
-        </dependency>
-
+        
         <!-- 为ueditor 上传图片添加 -->
         <dependency>
             <groupId>commons-codec</groupId>
@@ -356,22 +287,16 @@
             <artifactId>json</artifactId>
             <version>20170516</version>
         </dependency>
+        
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
-        </dependency>
+            <version>${httpclient.version}</version>
+        </dependency> 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>4.5.1</version>
-        </dependency>
-
-        <!-- 轻量级密码术包 -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.58</version>
+            <version>${httpclient.version}</version>
         </dependency>
 
         <!-- 增加解析xml -->
@@ -386,19 +311,7 @@
             <artifactId>dubbo</artifactId>
             <version>${dubbo.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-core</artifactId>
-            <version>${hystrix-core.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.18</version>
-        </dependency>
-
+        
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
@@ -408,6 +321,20 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb-cross-store</artifactId>
             <version>${spring.data.mongodb.cross.store.version}</version>
+        </dependency>
+        
+         <!-- 二维码生成 -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        
+        <!-- 轻量级密码术包，对称加密和非对称加密。使用类：RSAUtil.java and RsaUtils.java -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.58</version>
         </dependency>
 
     </dependencies>
