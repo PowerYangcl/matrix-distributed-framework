@@ -32,8 +32,8 @@ import com.matrix.pojo.dto.ApiExampleDto;
 import com.matrix.pojo.dto.UserDemoDto;
 import com.matrix.pojo.entity.UserDemo;
 import com.matrix.pojo.view.UserDemoView;
-import com.matrix.rocket.GroupDefaultTestSupport;
-import com.matrix.rocket.GroupTransTestSupport;
+import com.matrix.rocket.GroupDefaultTestRocket;
+import com.matrix.rocket.GroupDefaultTestRocket;
 import com.matrix.service.IExampleService;
 import com.matrix.util.SignUtil;
 
@@ -180,7 +180,7 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
 		Date date = new Date();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	String dateStr = sdf.format(date);
-    	BaseMqProducer baseMqProducer = GroupDefaultTestSupport.getInstance().getBaseMqProducer();
+    	BaseMqProducer baseMqProducer = GroupDefaultTestRocket.getInstance().getBaseMqProducer();
     	
     	try {
     		for(int i = 1 ; i <= 5 ; i ++) {
@@ -245,7 +245,7 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
 		
 		
 		// 事物消息使用示例
-		/*BaseTransactionMqProducer transProducer = GroupTransTestSupport.getInstance().getTransProducer();
+		/*BaseTransactionMqProducer transProducer = GroupDefaultTestRocket.getInstance().getTransProducer();
 		String body = "Hello-Transaction-RocketMq-";
 		String[] args = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
 		for(int i = 1 ; i < args.length + 1 ; i ++) {
