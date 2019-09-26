@@ -20,18 +20,7 @@ var sysuser = {
 			var data_ = $("#form-add-user").serializeArray();
 			var obj = JSON.parse(ajaxs.sendAjax('post' , url_ , data_));
 			if(obj.status == 'success'){
-				var clist = obj.clist;
 				var sflist = obj.sflist;
-				
-				if(clist.length != 0){
-					var html_ = '<select id="cid" name="cid" class="ae-form-input" style="min-width: 31%;">';
-					for(var i = 0 ; i < clist.length; i ++){
-						html_ += '<option value="' + clist[i].id +'">' + clist[i].name + '</option>';
-					}
-					html_ += '</select>';
-					$("#company-info").append(html_);
-				}
-				
 				if(sflist.length != 0){
 					var html_ = '';
 					for(var i = 0 ; i < sflist.length; i ++){

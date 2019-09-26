@@ -4,10 +4,10 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.matrix</groupId>
-		<artifactId>matrix-distributed-framework</artifactId>
+		<groupId>com.nrcp</groupId>
+		<artifactId>service-support-platform</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
-	</parent> 
+	</parent>
 	<artifactId>matrix-admin</artifactId>
 	<packaging>war</packaging>
 	<name>matrix-admin</name>
@@ -15,46 +15,46 @@
 	
 	<dependencies> 
 		<dependency>
-			<groupId>com.matrix</groupId>
+			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-example</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.matrix</groupId>
+			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-manager</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
-			<groupId>com.matrix</groupId>
+			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-manager-api</artifactId>
 			<version>${project.version}</version>
 		</dependency> 
 		
 		<dependency>
-			<groupId>com.matrix</groupId>
+			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-file</artifactId>
 			<version>${project.version}</version>
 		</dependency> 
 		
+		<!-- <dependency>
+			<groupId>com.nrcp</groupId>
+			<artifactId>matrix-api-launch</artifactId>
+			<version>${project.version}</version>
+		</dependency> -->
+		
 		<dependency>
-			<groupId>com.matrix</groupId>
+			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-route</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-dubbo-admin</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.matrix</groupId>
+			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-quartz</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
+		</dependency>
 	</dependencies>
 	
 	<profiles>

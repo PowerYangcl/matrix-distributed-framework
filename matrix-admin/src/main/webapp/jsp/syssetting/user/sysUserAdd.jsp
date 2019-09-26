@@ -60,14 +60,8 @@
 					</p>
 					
 					<p>
-						<label>所属公司</label>  <%-- select --%>
-						<span id="company-info" class="field">
-							 <!-- 动态代码填充 -->
-						</span>
-					</p>
-					
-					<p>
 						<label>平台分配</label>
+						<input type="hidden" name="cid" value="0"/><!-- Leader后台创建的用户默认为0 - Yangcl -->
 						<span id="platform-info" class="field" style="padding-top:5px">
 								<!-- 动态代码填充 -->
 						</span>
