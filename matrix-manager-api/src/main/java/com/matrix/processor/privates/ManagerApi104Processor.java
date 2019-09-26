@@ -42,7 +42,7 @@ public class ManagerApi104Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
 		McUserInfoDto dto = JSONObject.parseObject(param.getString("data"), McUserInfoDto.class);
-		return mcUserInfoService.addSysUser(dto, session); 
+		return mcUserInfoService.addSysUser(dto); 
 	}
 
 }
