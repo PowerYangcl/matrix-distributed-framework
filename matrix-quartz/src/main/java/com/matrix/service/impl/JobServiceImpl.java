@@ -1,5 +1,6 @@
 package com.matrix.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import com.matrix.dao.IJobInfoMapper;
 import com.matrix.pojo.dto.JobExecLogDto;
 import com.matrix.pojo.dto.JobGroupDto;
 import com.matrix.pojo.dto.JobInfoDto;
+import com.matrix.pojo.dto.PowerCacheDto;
 import com.matrix.pojo.entity.JobExecLog;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
@@ -30,6 +32,7 @@ import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IJobService;
+import com.matrix.service.IMatrixRouteService;
 import com.matrix.util.UuidUtil;
 import com.matrix.validate.StringValidate;
 
@@ -44,6 +47,8 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	private IJobGroupMapper jobGroupMapper;
 	@Resource
 	private IJobExecLogMapper jobExecLogMapper;
+	@Resource
+	private IMatrixRouteService matrixRouteService;
 	
 	/**
 	 * @description: 根据定时任务名称更新执行时间等内容
@@ -673,6 +678,52 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 		result.put("msg", this.getInfo(200010053));  // 200010053=定时任务日志获取成功!
 		result.put("e", find);
 		return result;
+	}
+
+
+	/**
+	 * @description: 主动触发定时任务
+	 *
+	 * @param dto
+	 * @param session
+	 * @author Yangcl
+	 * @date 2019年9月26日 下午10:22:54 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxJobInfoExec(JobInfoDto dto) {
+		JSONObject result = new JSONObject();
+		if(dto.getId() == null) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(200010056));  // 200010056=定时任务主动触发失败!主键id为空
+			return result;
+		}
+		try {
+			String[] arr  = dto.getIps().split(",");  
+			String port = "28110";  // 28110端口为Job项目默认dubbo端口号
+			if(StringUtils.isNotBlank(this.getConfig("matrix-quartz.job_port"))) {
+				port = this.getConfig("matrix-quartz.job_port");
+			}
+			List<String> list = new ArrayList<String>(arr.length);
+			for(String ip : arr) {
+				list.add(ip + ":" +port);
+			}
+			String dubboAddr = "";
+			for(String addr : list) {
+				dubboAddr = dubboAddr + addr + ",";
+			}
+			dubboAddr = dubboAddr.substring(0, dubboAddr.length() - 1);
+			
+			PowerCacheDto pcd = new PowerCacheDto();
+			pcd.setDubboAddr(dubboAddr);
+			pcd.setKey("guard_job_exec");
+			pcd.setValue(JSONObject.toJSONString(dto));
+			return matrixRouteService.ajaxRouteExecute(pcd);
+		} catch (Exception e) {
+			e.printStackTrace(); 
+			result.put("status", "error");
+			result.put("msg", this.getInfo(200010058));  // 200010058=定时任务主动触发失败
+			return result;
+		}
 	}
 
 

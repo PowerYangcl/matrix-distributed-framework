@@ -177,6 +177,19 @@ public interface IJobService {
 	 * @version 1.0.0.1
 	 */
 	public JSONObject ajaxJobLogDetail(JobExecLogDto dto);
+
+	/**
+	 * @description: 主动触发定时任务
+	 *
+	 * @param entity
+	 * @param session
+	 * @author Yangcl
+	 * @date 2019年9月26日 下午10:22:54 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxJobInfoExec(JobInfoDto dto);
+	
+	
 }
 
 

@@ -113,6 +113,23 @@ public class QuartzCenterController extends BaseController{
 	}
 	
 	/**
+	 * @description: 主动触发定时任务
+	 *
+	 * @param entity
+	 * @param session
+	 * @author Yangcl
+	 * @date 2019年9月26日 下午10:22:54 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_job_info_exec", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxJobInfoExec(JobInfoDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_job_info_exec", "主动触发定时任务");
+		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return jobService.ajaxJobInfoExec(dto);
+	}
+	
+	/**
 	 * @description: 定时任务详情|根据jobName获取
 	 *
 	 * @param dto 

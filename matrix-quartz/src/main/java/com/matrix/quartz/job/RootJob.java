@@ -1,11 +1,16 @@
 package com.matrix.quartz.job;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.redisson.api.RLock;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
@@ -18,6 +23,7 @@ import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.entity.JobInfo;
 import com.matrix.service.IJobService;
 import com.matrix.support.DistributeLockRedis;
+import com.matrix.support.RedissonLock;
 import com.matrix.util.ExceptionUtils;
 
 /**
@@ -55,7 +61,7 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 		if(jobInfo.getPause() == 1) { // 判断定时任务是否已经暂停 | 定时任务是否暂停 0否|1是
 			return;
 		}
-		
+	
 		Boolean execute = false;  // 这条定时任务是否在当前IP服务器中执行，默认不执行
 		JSONObject job_ = JSONObject.parseObject(job);
 		String[] ips = job_.getString("ip").split(",");
@@ -72,9 +78,11 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 		JSONObject result = new JSONObject();
 		result.put("status", "success"); 
 		if(jobInfo.getConcurrentType()  == 0) {		// 是否允许并行启动|0不允许 1允许
-			DistributeLockRedis lock = new DistributeLockRedis(jobInfo.getLockKey() , jobInfo.getExpireTime() , jobInfo.getTimeOut());
+			RLock disLock = RedissonLock.getInstance().getRedissonClient().getLock(jobInfo.getLockKey());
 			try {
-				if (lock.tryLock()) {
+			    // 尝试获取分布式锁|第一个参数是请求锁的超时时间。 第二个参数 锁的过期时间
+				boolean isLock = disLock.tryLock(jobInfo.getTimeOut() , jobInfo.getExpireTime()*1000 , TimeUnit.MILLISECONDS);
+			    if (isLock) {
 					this.getLogger(null).sysoutInfo(200010011, this.getClass() ,  "【" +jobInfo.getJobTitle() + "|" + jobInfo.getJobName()+ "】");  // 200010011={0}分布式锁已获取
 					result = this.doExecute(context);  // context可以为空
 					this.getLogger(null).sysoutInfo(200010012, this.getClass() , "【" +jobInfo.getJobTitle() + "|" + jobInfo.getJobName()+ "】");  // 200010012={0}定时任务执行完成
@@ -82,12 +90,12 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 					this.getLogger(null).sysoutInfo(200010008, this.getClass());  // 200010008=定时任务没能获取分布式锁
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(); 
 				this.getLogger(null).sysoutInfo(200010009, this.getClass()); // 200010009=定时任务执行出现异常!
 				result.put("status", "exception");  // 标记为定时任务执行异常
 				result.put("msg", ExceptionUtils.getExceptionInfo(e));
-			} finally {
-				lock.unlock();
+			} finally {   // 无论如何, 最后都要解锁
+			    disLock.unlock();
 			}
 		}else {
 			result = this.doExecute(context);  // context可以为空
@@ -131,6 +139,7 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 	public void setJobInfo(JobInfo trigerJobInfo) {
 		this.jobInfo = trigerJobInfo;
 	}
+	
 }
 
 
