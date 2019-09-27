@@ -74,8 +74,10 @@ var jobinfo = {
 							
 							+ '<td width="200px" align="center">'
 								+ '<a onclick="jobinfo.openDetailDialog(this)"  eleId="' + list[i].jobName + '"  title="详情"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:detail">详情</a> '
-								+ '<a onclick="jobinfo.deleteJob(this)" eleId="' + list[i].jobName + '" title="删除"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:delete">删除</a> '
 								+ '<a onclick="jobinfo.openEditDialog(this)"  eleId="' + list[i].jobName + '"  title="修改"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:edit">修改</a> '
+								+ '<a onclick="jobinfo.jobExce(this)"  eleId="' + list[i].id + '" ips="' + list[i].ip + '"  title="立刻执行定时任务"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:handling">手动</a> '
+								+ '<a onclick="jobinfo.deleteJob(this)" eleId="' + list[i].jobName + '" title="删除"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:delete">删除</a> '
+								
 								// + '<a onclick="" eleId="' + list[i].jobName + '" title="立刻执行定时任务"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:run">手动</a> '
 								+ resume
 								+ '<a onclick="jobinfo.logPageList(this)" eleId="' + list[i].jobName + '" title="查看执行状态记录"  style="display:none;cursor:pointer;" class="security-btn" key="job_info_list:run_log">日志</a> '
@@ -386,6 +388,23 @@ var jobinfo = {
 					 }
 				}
 			});
+		},
+		
+		// 手动触发定时任务
+		jobExce:function(e){
+			var type_ = 'post';
+			var url_ = jobinfo.path + 'quartz/ajax_job_info_exec.do';
+			var data_ = {
+					id : $(e).attr("eleId"),
+					guardType : "triger",
+					ips : $(e).attr("ips")
+			};
+			 var o = JSON.parse(ajaxs.sendAjax(type_, url_, data_));
+			 if(o.status == "success"){
+				 malert(o.msg , '系统提示');
+			 }else{
+				 malert(o.msg , '系统提示'); 
+			 }
 		},
 		
 		// 前往日志详情页面
