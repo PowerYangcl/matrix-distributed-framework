@@ -17,6 +17,7 @@ import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.entity.JobInfo;
 import com.matrix.quartz.support.JobSupport;
 import com.matrix.service.IJobService;
+import com.matrix.system.cache.PowerCache;
 
 /**
  * @description: 分布式定时任务实例化。定时任务区分运行组，运行组包含服务器列表信息。
@@ -50,6 +51,7 @@ public class DistributeJobLaunch extends BaseInit{
 		}
 		
         try {
+        	PowerCache.getInstance().compelPut("PropConfig", "matrix-core.guard_job_exec", "com.matrix.security.JobExecGuard");
         	List<JobInfo> list = new ArrayList<JobInfo>();  
         	List<JobInfo> list_ = jobService.findJobInfoList(null);
         	if(list_ == null || list_.size() == 0) {
