@@ -57,6 +57,8 @@ public enum DCacheEnum {
 	
 	MsgId, // RocketMq消息队列
 	
+	McOrganization, // 组织结构
+	
 	TcShopInfo , // 店铺信息
 }
 

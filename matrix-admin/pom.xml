@@ -32,17 +32,24 @@
 			<version>${project.version}</version>
 		</dependency> 
 		
+		 <!-- 开启matrix-dubbo-admin 就会不断刷日志，原因不明 -->
+<!-- 		<dependency> 
+			<groupId>com.nrcp</groupId>
+			<artifactId>matrix-dubbo-admin</artifactId>
+			<version>${project.version}</version>
+		</dependency> -->
+		
 		<dependency>
 			<groupId>com.nrcp</groupId>
 			<artifactId>matrix-file</artifactId>
 			<version>${project.version}</version>
 		</dependency> 
 		
-		<!-- <dependency>
+		<dependency>
 			<groupId>com.nrcp</groupId>
-			<artifactId>matrix-api-launch</artifactId>
+			<artifactId>matrix-api</artifactId>
 			<version>${project.version}</version>
-		</dependency> -->
+		</dependency>
 		
 		<dependency>
 			<groupId>com.nrcp</groupId>
