@@ -51,6 +51,8 @@
         <dubbo.version>2.6.5</dubbo.version>
         <spring-data-mongodb.version>1.10.7.RELEASE</spring-data-mongodb.version>
         <spring.data.mongodb.cross.store.version>1.10.7.RELEASE</spring.data.mongodb.cross.store.version>
+        <!-- 使用4.*中最高版本的Netty覆盖所有引用到的第三方项目中的低版本netty -->
+        <netty-all.version>4.1.36.Final</netty-all.version>
     </properties>
     
     <dependencies>
@@ -337,6 +339,12 @@
             <version>1.58</version>
         </dependency>
 
+		<dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-all.version}</version>
+        </dependency>
+		
     </dependencies>
 
     <build>

@@ -59,7 +59,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @version 1.0.0.1
 	 */
 	public Integer updateSelectiveByJobName(JobInfo entity) {
-		launch.loadDictCache(DCacheEnum.SysJob , "").del(entity.getJobName());  
+//		launch.loadDictCache(DCacheEnum.SysJob , "").del(entity.getJobName());     // 小于10分钟间隔的任务会出现问题 - 李玟霆
 		return jobInfoMapper.updateSelectiveByJobName(entity); 
 	}
 

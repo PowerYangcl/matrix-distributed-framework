@@ -315,7 +315,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			if(urList != null && urList.size() != 0){
 				for(int i = 0 ; i < list.size() ; i ++){
 					for(McUserRole ur : urList){
-						if(list.get(i).getId() == ur.getMcRoleId()){
+						if(list.get(i).getId().longValue() == ur.getMcRoleId().longValue()){
 							list.get(i).setUserId(ur.getMcUserId()); 
 						}
 					}
