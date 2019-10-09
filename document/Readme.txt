@@ -16,6 +16,7 @@
 
 【info-国际化文件顺序】
 		info.matrix-core.1000.properties
+		info.matrix-permissions.1010.properties
 		info.matrix-quartz.2000.properties
 		info.matrix-cache.3000.properties
 		info.matrix-manager.4000.properties

@@ -23,6 +23,7 @@
         <module>matrix-quartz</module>
         <module>matrix-mongodb</module>
         <module>matrix-rocket-mq</module>
+		<module>matrix-permissions</module>
     </modules>
     
     <properties>

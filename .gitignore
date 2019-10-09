@@ -92,6 +92,13 @@
 /matrix-mongodb/.DS_Store
 
 
+/matrix-permissions/target/
+/matrix-permissions/.settings/
+/matrix-permissions/.project 
+/matrix-permissions/.classpath
+/matrix-permissions/.DS_Store
+
+
 /.idea/
 /matrix-distributed-framework.iml
 /matrix-admin/matrix-admin.iml
@@ -109,6 +116,7 @@
 /matrix-quartz/matrix-quartz.iml
 /matrix-rocket-mq/matrix-rocket-mq.iml
 /matrix-mongodb/matrix-mongodb.iml
+/matrix-permissions/matrix-permissions.iml
 
 *.iml
 

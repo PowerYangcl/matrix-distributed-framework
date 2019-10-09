@@ -1,7 +1,6 @@
 package com.matrix.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.dubbo.common.json.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseController;
 import com.matrix.pojo.dto.McUserInfoDto;
@@ -19,7 +17,6 @@ import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
 import com.matrix.support.ValidateCodeSupport;
-import com.matrix.util.IpUtil;
 
 /**
  * @description: 权限、角色、后台登录等等操作 
