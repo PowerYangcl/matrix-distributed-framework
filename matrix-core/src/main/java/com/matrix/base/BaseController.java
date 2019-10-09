@@ -2,12 +2,9 @@ package com.matrix.base;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.pojo.view.McUserInfoView;
-import com.matrix.util.SignUtil;
 
 public class BaseController extends BaseClass{
 

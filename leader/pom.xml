@@ -16,51 +16,9 @@
 	<dependencies> 
 		<dependency>
 			<groupId>com.matrix</groupId>
-			<artifactId>matrix-example</artifactId>
+			<artifactId>matrix-permissions</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-manager</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-manager-api</artifactId>
-			<version>${project.version}</version>
-		</dependency> 
-		
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-file</artifactId>
-			<version>${project.version}</version>
-		</dependency> 
-		
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-route</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-dubbo-admin</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-quartz</artifactId>
-			<version>${project.version}</version>
-		</dependency> 
 	</dependencies>
 	
 	<profiles>

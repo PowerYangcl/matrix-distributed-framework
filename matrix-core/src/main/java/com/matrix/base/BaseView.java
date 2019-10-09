@@ -30,6 +30,9 @@ public class BaseView  implements Serializable {
 	 * 分布式事务 xid
 	 * */
 	private String commodityCode;
+	
+	private String eleValue; // 按钮权限标识
+	
 	public McUserInfoView getUserCache() {
 		return userCache;
 	}
@@ -83,5 +86,11 @@ public class BaseView  implements Serializable {
 	}
 	public void setCommodityCode(String commodityCode) {
 		this.commodityCode = commodityCode;
+	}
+	public String getEleValue() {
+		return eleValue;
+	}
+	public void setEleValue(String eleValue) {
+		this.eleValue = eleValue;
 	}
 }

@@ -20,14 +20,17 @@ import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.view.McUserInfoView;
 
 /**
- * @description: 页面权限拦截器|主要针对二级菜单栏
- * 
- * 拦截关键词：page_：二级菜单栏对应请求|system_：系统关键功能对应请求，通常这些请求不对系统用户开放，只对管理员开放，比如刷新字典缓存
- * 
+ * @description: 页面权限拦截器|拦截【二级菜单】和【按钮】
+ * 	系统强制要求：
+ * 			api.do：系统开放接口
+ * 			page_：二级菜单栏对应请求，例如：page_user_list。page代表页面，user代表用户模块，list代表列表页面
+ * 			ajax_：系统所有异步ajax请求必须以此开头
+ * 	其他请求全部会被拦截，无法访问
+ *
  * @author Yangcl
  * @home https://github.com/PowerYangcl
- * @date 2017年5月25日 上午11:46:25 
- * @version 1.0.0
+ * @date 2019年10月9日 下午5:51:48 
+ * @version 1.0.0.1
  */
 public class UrlInterceptor extends HandlerInterceptorAdapter{
 	
@@ -47,7 +50,8 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
             	return true;	
             }
         }
-        if(StringUtils.startsWith(url, "api")){		// 公共调用接口则跳过验证。
+        
+        if(url.equals("api.do")){		// 系统开放接口则跳过验证。
         	return true;
         }
         
@@ -55,14 +59,16 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         HttpSession session = request.getSession();
         McUserInfoView info = (McUserInfoView) session.getAttribute("userInfo");  
         if (info != null){
-        	if( url.equals("page_manager_home.do") || url.equals("page_manager_index.do")){
+        	if( url.equals("page_permissions_index.do")){
         		return true;	// 如果用户已经登录则可以访问首页        
         	}
+        	
         	if(StringUtils.startsWith(url, "page_")){ 
         		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
         		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(info.getId().toString()), McUserRoleCache.class);
         		List<McSysFunction> list = cache.getMsfList();
-        		for(McSysFunction sf : list){
+        		for(McSysFunction sf : list) {
+        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 内部跳转页面
         			if(sf.getNavType() != null && sf.getNavType() == 3){ 
         				String [] arr = sf.getFuncUrl().split("/");
         				if(arr[arr.length -1].equals(url)){
@@ -70,18 +76,47 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         				}
         			}
         		}
-        	}else{
-        		return true;     // 如果用户已经登录，且是非权限类型的跳转请求，则允许访问。
         	}
-        }else{  // 如果用户没有登录则返回到登录页
+        	
+        	if(StringUtils.startsWith(url, "ajax_")) {   
+        		if(StringUtils.startsWith(url, "ajax_btn_")) {		// 开始验证用户按钮权限
+        			String btn = request.getParameter("eleValue");
+        			if(StringUtils.isBlank(btn)) {
+        				// 如果请求被排除则跳转到默认提示页面  				TODO 此处应该提示缺少按钮级权限->按钮权限标识丢失
+        		        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/jsp/sys_page/roleErrorPage.jsp" ;
+        		        response.sendRedirect(loginUrl);
+        		        return false;
+        			}
+        			
+        			// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+            		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(info.getId().toString()), McUserRoleCache.class);
+            		List<McSysFunction> list = cache.getMsfList();
+            		for(McSysFunction sf : list) {
+            			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 内部跳转页面
+            			if(sf.getNavType() != null && sf.getNavType() > 3){ 	// 4 页面按钮|5 内部跳转页面
+            				if(btn.equals(sf.getEleValue())){
+            					return true;
+            				}
+            			}
+            		}
+            		
+            		// 如果请求被排除则跳转到默认提示页面  				TODO 此处应该提示缺少按钮级权限->按钮权限标识错误
+    		        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/jsp/sys_page/roleErrorPage.jsp" ;
+    		        response.sendRedirect(loginUrl);
+            		return false;
+        		}
+        		// 正常的ajax请求，非按钮标识
+        		return true;
+        	}
+        	
+        }else{  
+        	// 如果用户没有登录则返回到登录页
         	String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/login.jsp" ;
         	response.sendRedirect(loginUrl);
         	return false;
         }
         
-        /**
-         * 如果请求被排除则跳转到默认提示页面
-         */
+        // 如果请求被排除则跳转到默认提示页面				TODO 此处应该提示缺少二级页面权限
         String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/jsp/sys_page/roleErrorPage.jsp" ;
         response.sendRedirect(loginUrl);
         return false;
