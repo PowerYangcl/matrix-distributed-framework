@@ -35,7 +35,7 @@ public class PermissionsController extends BaseController{
 	@RequestMapping("page_permissions_index")
 	public String pagePermissionsIndex(HttpSession session) {
 		super.userBehavior(session, logger, "page_manager_home", "登录验证完成后跳转到指定页面 home.jsp");
-		return "redirect:/jsp/home.jsp";
+		return "redirect:/views/index.jsp";
 	}
 	
 	

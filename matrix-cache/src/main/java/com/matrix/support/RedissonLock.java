@@ -53,7 +53,7 @@ public class RedissonLock extends BaseClass{
 			
 			config.useClusterServers().addNodeAddress(nodeAddr)
 			.setPassword(this.getConfig("matrix-cache.redis_password_" + this.getConfig("matrix-core.model")))
-			.setScanInterval(5000);	// Redis集群扫描间隔(毫秒)
+			.setScanInterval(10*60*1000);	// Redis集群扫描间隔(毫秒)
 			
 			redissonClient = Redisson.create(config);
 		} catch (Exception e) {

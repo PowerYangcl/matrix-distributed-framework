@@ -132,11 +132,11 @@
 	<!-- 引入dubbo配置文件 -->
 	<import resource="classpath*:/META-INF/matrix/spring-dubbo.xml" />
 	<!-- 引入mq配置文件 -->
-	<import resource="classpath*:/META-INF/matrix/spring-rabbit-mq.xml" />
+	<!-- <import resource="classpath*:/META-INF/matrix/spring-rabbit-mq.xml" /> -->
 	<!-- 引入mongodb配置文件 -->
-	<import resource="classpath*:/META-INF/matrix/spring-mongodb.xml" />
+	<!-- <import resource="classpath*:/META-INF/matrix/spring-mongodb.xml" /> -->
 	<!-- 引入solr 配置文件 -->
-	<import resource="classpath*:/META-INF/matrix/spring-solr.xml" />
+	<!-- <import resource="classpath*:/META-INF/matrix/spring-solr.xml" /> -->
 
 	<!-- 配置系统监听器 -->
 	<bean id="matrix-distributed-framework-listener" class="com.matrix.system.listener.MatrixDistributedFrameworkListener" />

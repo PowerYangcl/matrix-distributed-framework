@@ -8,16 +8,18 @@
 		String css = path + "/css";
 		String img = path + "/images";
 		String resources = path + "/resources";
-	
+		String layui = path + "/layuiadmin";
+		
 		pageContext.setAttribute("js", js);
 		pageContext.setAttribute("jsp", jsp);
 		pageContext.setAttribute("css", css);
 		pageContext.setAttribute("img", img);
 		pageContext.setAttribute("basePath", basePath);
 		pageContext.setAttribute("resources", resources);
+		pageContext.setAttribute("layui", layui);
 		
 		if(session.getAttribute("userInfo") == null){
-			String url = basePath + "login.jsp";
+			String url = basePath + "login.html";
 			response.sendRedirect(url);
 			return;
 		}

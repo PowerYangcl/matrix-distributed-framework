@@ -1,3 +1,5 @@
+<%@ include file="/inc/resource.inc" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -6,8 +8,8 @@
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-		<link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
-		<link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+		<link rel="stylesheet" href="${layui}/layui/css/layui.css" media="all">
+		<link rel="stylesheet" href="${layui}/style/admin.css" media="all">
 	</head>
 
 	<body class="layui-layout-body">
@@ -24,7 +26,8 @@
 							</a>
 						</li>
 						<li class="layui-nav-item layui-hide-xs" lay-unselect>
-							<a href="http://www.layui.com/admin/" target="_blank" title="前台">
+							<!-- TODO 此处可以携带一个Token传递给官网，租户即可在官网登录 -->
+							<a href="http://www.baidu.com" target="_blank" title="前往官网首页">
 								<i class="layui-icon layui-icon-website"></i>
 							</a>
 						</li>
@@ -123,29 +126,6 @@
 									<cite>组件</cite>
 								</a>
 								<dl class="layui-nav-child">
-									<dd data-name="grid">
-										<a href="javascript:;">栅格</a>
-										<dl class="layui-nav-child">
-											<dd data-name="list">
-												<a lay-href="component/grid/list.html">等比例列表排列</a>
-											</dd>
-											<dd data-name="mobile">
-												<a lay-href="component/grid/mobile.html">按移动端排列</a>
-											</dd>
-											<dd data-name="mobile-pc">
-												<a lay-href="component/grid/mobile-pc.html">移动桌面端组合</a>
-											</dd>
-											<dd data-name="all">
-												<a lay-href="component/grid/all.html">全端复杂组合</a>
-											</dd>
-											<dd data-name="stack">
-												<a lay-href="component/grid/stack.html">低于桌面堆叠排列</a>
-											</dd>
-											<dd data-name="speed-dial">
-												<a lay-href="component/grid/speed-dial.html">九宫格</a>
-											</dd>
-										</dl>
-									</dd>
 									
 									<dd data-name="form">
 										<a href="javascript:;">表单</a>
@@ -162,32 +142,7 @@
 								</dl>
 							</li>
 							
-							<li data-name="template" class="layui-nav-item">
-								<a href="javascript:;" lay-tips="页面" lay-direction="2">
-									<i class="layui-icon layui-icon-template"></i>
-									<cite>页面</cite>
-								</a>
-								<dl class="layui-nav-child">
-									<dd>
-										<a lay-href="template/personalpage.html">个人主页</a>
-									</dd>
-									<dd>
-										<a lay-href="template/addresslist.html">通讯录</a>
-									</dd>
-									<dd>
-										<a lay-href="template/caller.html">客户列表</a>
-									</dd>
-									<dd>
-										<a lay-href="template/goodslist.html">商品列表</a>
-									</dd>
-									<dd>
-										<a lay-href="template/msgboard.html">留言板</a>
-									</dd>
-									<dd>
-										<a lay-href="template/search.html">搜索结果</a>
-									</dd>
-								</dl>
-							</li>
+							
 						</ul>
 					</div>
 				</div>
@@ -243,14 +198,79 @@
 	</body>
 </html>
 
-<script src="../layuiadmin/layui/layui.js"></script>
+<script src="${layui}/layui/layui.js"></script>
 <script>
+
 	layui.config({
 		base : '../layuiadmin/' //静态资源所在路径
 	}).extend({
 		index : 'lib/index' //主入口模块
 	}).use('index');
 </script>	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -7,16 +7,23 @@
     
  */
  
-layui.define('view', function(exports){
+layui.extend(
+{
+	pageInit : 'lib/pageInit'  	
+}).define(['view' ,  'pageInit'], function(exports){
+	
+	
   var $ = layui.jquery
   ,laytpl = layui.laytpl
   ,element = layui.element
   ,setter = layui.setter
   ,view = layui.view
-  ,device = layui.device()
+  ,device = layui.device();
   
-  ,$win = $(window), $body = $('body')
-  ,container = $('#'+ setter.container)
+  layui.pageInit.drawPage();
+  
+  var $win = $(window), $body = $('body');
+  var container = $('#'+ setter.container)
   
   ,SHOW = 'layui-show', HIDE = 'layui-hide', THIS = 'layui-this', DISABLED = 'layui-disabled', TEMP = 'template'
   ,APP_BODY = '#LAY_app_body', APP_FLEXIBLE = 'LAY_app_flexible'

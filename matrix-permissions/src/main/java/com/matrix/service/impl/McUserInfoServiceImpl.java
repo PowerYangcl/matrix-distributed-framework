@@ -73,10 +73,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			result.put("msg", "平台唯一标识码不得为空");
 			return result;
 		}
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
+		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		if (StringUtils.isNotBlank(userInfoNpJson) && info != null) { 
-			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(info.getId().toString());
+			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
 			if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) { 
 				result.put("status", "error");
 				result.put("msg", "未授权用户");
@@ -160,10 +160,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			}
 		}
 		
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
+		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		if (StringUtils.isNotBlank(userInfoNpJson) && info != null) { 
-			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(info.getId().toString());
+			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
 			if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) { 
 				result.put("status", "error");
 				result.put("msg", "未授权用户");
@@ -352,7 +352,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return result;
 		}
 		
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(entity.getUserName() + "," + entity.getPassword());
+		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(entity.getUserName() + "," + entity.getPassword());
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		result.put("status", "success");
 		result.put("msg", this.getInfo(400010014));		// 400010014=查询成功
@@ -414,7 +414,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1){
 				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(info.getUserName() + "," + info.getPassword());
-//				launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(info.getUserName() + "," + info.getPassword());
+//				launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(info.getUserName() + "," + info.getPassword());
 				result.put("status", "success");
 				result.put("msg", this.getInfo(400010024));	// 400010024=更新成功
 			}else{
@@ -477,7 +477,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		}
 		
 		launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(user.getUserName() + "," + user.getPassword());
-		launch.loadDictCache(DCacheEnum.UserInfoNp , "InitUserInfoNp").get(user.getUserName() + "," + info.getPassword());  // 缓存重置
+		launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(user.getUserName() + "," + info.getPassword());  // 缓存重置
 
 		result.put("status", "success");
 		result.put("msg", this.getInfo(400010024));	// 400010024=更新成功
@@ -505,7 +505,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			McUserInfoView view = dto.getUserCache(); // (McUserInfoView) session.getAttribute("userInfo");  // mcUserInfoMapper.loadUserInfo(id);
 			int count = mcUserInfoMapper.deleteById(id);   
 			int count_ = 1;
-			if(StringUtils.isNotBlank(launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(id.toString()))) {
+			if(StringUtils.isNotBlank(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(id.toString()))) {
 				count_ = mcUserRoleMapper.deleteByUserId(id); // 确定该用户有角色被分配才去删除
 			}
 			if(count == 1 && count_ == 1){

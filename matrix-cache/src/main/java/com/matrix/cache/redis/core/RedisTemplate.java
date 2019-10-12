@@ -262,16 +262,7 @@ public class RedisTemplate extends BaseClass {
      * @version 1.0.0.1
      */
     public Long incrementTimeout(String key, Long timeout) {
-        String incr = this.get(key + "-incr");
-        if (StringUtils.isBlank(incr)) { // Redis已经清空超时的值
-            this.del(key + "-count");
-        }
-        Long value = this.template.opsForValue().increment(key + "-count", 1);
-        if (timeout == null) {
-            this.set(key + "-incr", value.toString());
-        } else {
-            this.set(key + "-incr", value.toString(), timeout);
-        }
+    	Long  value = this.increment(key + "-count", 1L , timeout);
         this.getLogger(null).sysoutInfo("获取缓存开始增量计次|Redis Key = " + key + "  当前增量值 = " + value, this.getClass());
         return value;
     }

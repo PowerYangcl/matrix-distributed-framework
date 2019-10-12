@@ -7,7 +7,7 @@
 	<display-name>leader</display-name>
 	
 	<welcome-file-list>
-		<welcome-file>login.jsp</welcome-file>
+		<welcome-file>login.html</welcome-file>
 	</welcome-file-list>
 	
 	<!-- load spring config xml file -->
