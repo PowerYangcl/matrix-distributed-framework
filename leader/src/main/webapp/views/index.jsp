@@ -98,10 +98,11 @@
 				<div class="layui-side layui-side-menu">
 					<div class="layui-side-scroll">
 						<div class="layui-logo" lay-href="home/console.html">
-							<span>layuiAdmin</span>
+							<span style="font-size: 25px">矩阵控制台</span>
 						</div>
 	
 						<ul id="LAY-system-side-menu" class="layui-nav layui-nav-tree" lay-shrink="all"  lay-filter="layadmin-system-side-menu">
+							<!-- 
 							<li data-name="home" class="layui-nav-item layui-nav-itemed">
 								<a href="javascript:;" lay-tips="主页" lay-direction="2"> 
 									<i class="layui-icon layui-icon-home"></i> 
@@ -141,7 +142,7 @@
 									
 								</dl>
 							</li>
-							
+							 -->
 							
 						</ul>
 					</div>

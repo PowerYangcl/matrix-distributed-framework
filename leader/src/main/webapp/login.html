@@ -85,9 +85,9 @@
 	layui.config({
 	  base: 'layuiadmin/' 		//静态资源所在路径
 	}).extend({
-		
-		login: 'lib/login' 				//主入口模块
-	}).use(['login', 'user'], function(){
+		setter : 'config', 		// 配置模块
+		user : 'modules/user'
+	}).use(['setter','user'], function(){
 			var $ = layui.$;
 			var setter = layui.setter;
 			var admin = layui.admin;
