@@ -111,7 +111,7 @@ layui.extend(
 											}
 											html_ += '<dd data-name="' + sarr[i].data.id + '">';
 //													html_ += '<a href="javascript:void(0)" onclick="pageInit.menuOnclick(this)" btns="' + str + '" target_="' + url_ + '" >' + sarr[s].data.name + '</a>';
-												html_ += '<a lay-href="' + url_ + '" onclick="pageInit.menuOnclick(this)" btns="' + str + '">' + sarr[s].data.name + '</a>';
+												html_ += '<a lay-href="' + url_ + '" onclick="layui.pageInit.menuOnclick(this)" btns="' + str + '">' + sarr[s].data.name + '</a>';
 											html_ += '</dd>';
 										}
 									}

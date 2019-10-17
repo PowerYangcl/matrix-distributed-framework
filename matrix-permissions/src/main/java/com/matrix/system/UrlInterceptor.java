@@ -111,7 +111,7 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         	
         }else{  
         	// 如果用户没有登录则返回到登录页
-        	String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/login.jsp" ;
+        	String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/login.html" ;
         	response.sendRedirect(loginUrl);
         	return false;
         }

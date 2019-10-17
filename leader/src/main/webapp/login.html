@@ -88,46 +88,46 @@
 		setter : 'config', 		// 配置模块
 		user : 'modules/user'
 	}).use(['setter','user'], function(){
-			var $ = layui.$;
-			var setter = layui.setter;
-			var admin = layui.admin;
-			var form = layui.form;
-			var router = layui.router();
-			var search = router.search;
-			form.render();
-			
-			// 提交
-			form.on('submit(user-login-submit)', function(obj){
-				localStorage.uploadUrl = "";
-		        var url_ = layui.setter.path + 'userInfo/login.do';
-		        var data_ = $('#form-login').serializeArray();
-		        var o = new Object();
-		        o.name='platform';
-		        o.value='133C9CB27E18';
-		        data_.push(o);
-		        var object = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
-		        if(object.status == 'success'){
-		        	if(object.data == undefined || object.data == ""){
-		        		layer.open({
-		        			title: '系统提示"',
-		        			content: '未检查到您有任何权限，请联系系统管理员'
-	        			});
-		        	}else{
-		        		localStorage.pageJson = object.data;
-		        		localStorage.userInfo = object.info;
-		        		localStorage.uploadUrl = object.uploadUrl;
-		        		window.location.href = layui.setter.path + 'permissions/page_permissions_index.do';
-		        	}
-		        }else{
-		        	layer.open({
+	    if(window != top){  // 解决登陆页面嵌套问题
+			top.location.href=location.href;
+		}
+		var $ = layui.$;
+		var setter = layui.setter;
+		var admin = layui.admin;
+		var form = layui.form;
+		var router = layui.router();
+		var search = router.search;
+		form.render();
+		
+		// 提交
+		form.on('submit(user-login-submit)', function(obj){
+			localStorage.uploadUrl = "";
+	        var url_ = layui.setter.path + 'userInfo/login.do';
+	        var data_ = $('#form-login').serializeArray();
+	        var o = new Object();
+	        o.name='platform';
+	        o.value='133C9CB27E18';
+	        data_.push(o);
+	        var object = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
+	        if(object.status == 'success'){
+	        	if(object.data == undefined || object.data == ""){
+	        		layer.open({
 	        			title: '系统提示"',
-	        			content: object.msg
+	        			content: '未检查到您有任何权限，请联系系统管理员'
         			});
-		        }
-			    
-			    
-			});
-	  
+	        	}else{
+	        		localStorage.pageJson = object.data;
+	        		localStorage.userInfo = object.info;
+	        		localStorage.uploadUrl = object.uploadUrl;
+	        		window.location.href = layui.setter.path + 'permissions/page_permissions_index.do';
+	        	}
+	        }else{
+	        	layer.open({
+        			title: '系统提示"',
+        			content: object.msg
+       			});
+	        }
+		});
 	});
 </script>
 
