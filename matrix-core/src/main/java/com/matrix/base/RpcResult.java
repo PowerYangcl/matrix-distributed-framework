@@ -67,6 +67,17 @@ public class RpcResult<T> implements Serializable {
 	}
 	
 	/**
+	 * @description: Rpc消息成功返回提示|自定义消息提示文本
+	 *
+	 * @author Yangcl
+	 * @date 2018年9月28日 下午3:14:47 
+	 * @version 1.0.0.1
+	 */
+	public static <T> RpcResult<T> SUCCESS(String msg, Integer code) { 
+		return new RpcResult<T>("success" , msg , code , null);
+	}
+	
+	/**
 	 * @description: Rpc消息成功返回提示|附加泛型对象所携带的描述信息|如：insertEntityGotId(E e);
 	 *
 	 * @author Yangcl

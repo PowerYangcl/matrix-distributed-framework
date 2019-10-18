@@ -11,6 +11,8 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.interfaces.IRocketConsumer;
 import com.matrix.gtt.GttDto;
@@ -144,7 +146,9 @@ public abstract class BaseMqPushConsumer extends BaseClass implements IRocketCon
 	
 	
 	/**
-	 * @description: 获取消费者，执行其他操作；比如挂载消费端：consumer.suspend();
+	 * @description: 获取消费者，执行其他操作；
+	 * 	比如设置广播消费模式：consumer.setMessageModel(MessageModel.BROADCASTING);
+	 * 	挂载消费端：consumer.suspend();
 	 *
 	 * @author Yangcl
 	 * @date 2019年5月20日 下午10:05:25 

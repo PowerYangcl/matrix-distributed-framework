@@ -25,7 +25,7 @@ public class PermissionsController extends BaseController{
 	private static Logger logger = Logger.getLogger(PermissionsController.class);
 	
 	/**
-	 * @description: 登录成功后跳转到主页
+	 * @description: 前往系统主页
 	 *
 	 * @param session
 	 * @author Yangcl
@@ -34,15 +34,21 @@ public class PermissionsController extends BaseController{
 	 */
 	@RequestMapping("page_permissions_index")
 	public String pagePermissionsIndex(HttpSession session) {
-		super.userBehavior(session, logger, "page_manager_home", "登录验证完成后跳转到指定页面 home.jsp");
+		super.userBehavior(session, logger, "page_manager_home", "前往系统主页界面index.jsp");
 		return "redirect:/views/index.jsp";
 	}
 	
-	
-	@RequestMapping("page_manager_index")
-	public String loginPageIndex(HttpSession session) {
-		super.userBehavior(session, logger, "page_manager_index", "登录验证完成后跳转到指定页面 index.jsp");
-		return "/index";
+	/**
+	 * @description: 前往系统用户列表
+	 *
+	 * @author Yangcl
+	 * @date 2019年10月18日 下午3:36:39 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping("page_permissions_user_list")
+	public String pagePermissionsUserList(HttpSession session){
+		super.userBehavior(session, logger, "page_permissions_user_list", "前往系统用户列表界面system-user-list.jsp");
+		return "views/permission/user/system-user-list";
 	}
 }
 

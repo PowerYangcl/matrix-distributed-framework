@@ -570,21 +570,20 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	}
 
 	/**
-	 * @description: 系统用户列表数据|非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
-	 *
-	 *		sysUserList.jsp根据Leader系统或者mip-web等衍生系统的不同
+	 * @description: 系统用户列表页数据
+	 * 	非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
+	 * 
+	 *		system-user-list.jsp根据Leader系统或者mip-web等衍生系统的不同
 	 *		增加dto.type 和 dto.platform为参数条件
 	 *		而cid则需要从session获取
 	 *
-	 *
-	 *
-	 * @param dto.type：and i.type in(${type}) |Leader系统只有dto.type作为查询条件
+	 * 	 dto.type：and i.type in(${type}) |Leader系统只有dto.type作为查询条件
 	 * 	 dto.cid  				
 	 * 	 dto.platform
 	 * 	 dto.mcOrganizationId|从组织机构树拿到，查询该机构下的平台用户信息|非Leader平台会出现
-	 * 
+	 *  	
 	 * @author Yangcl
-	 * @date 2018年9月23日 上午12:03:05 
+	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
 	public JSONObject ajaxSystemUserList(McUserInfoDto dto , HttpServletRequest request) {
