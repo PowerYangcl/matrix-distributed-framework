@@ -30,10 +30,10 @@ public class ConfigMap extends BaseEhcache<String, Map<String , String>> {
 		return LazyHolder.INSTANCE; 
 	}
 
-	public synchronized void refresh() {
+	public synchronized void refresh(String key_) {
 		PropConfig config = PropConfig.getInstance();
 		if (config.getKeys().size() == 0){
-			config.refresh();
+			config.refresh(key_);
 		}
 		BaseLog.getInstance().sysoutInfo("System beginning organiza the class" , this.getClass());
 		for (String s : config.getKeys()) {

@@ -46,7 +46,7 @@ import com.matrix.pojo.view.AcIncludeDomainView;
  * @date 2017年11月14日 下午5:26:17 
  * @version 1.0.0
  */
-public class LoadCacheAcIncludeDomainList extends BaseClass implements IBaseCache{
+public class LoadCacheAcIncludeDomainList extends BaseClass implements IBaseCache<String>{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	
@@ -55,7 +55,7 @@ public class LoadCacheAcIncludeDomainList extends BaseClass implements IBaseCach
 	
 	
 	@Override
-	public void refresh() {
+	public void refresh(String key) {
 		List<AcIncludeDomainView> list = acIncludeDomainMapper.queryPageList(null); 
 		if(list != null && list.size() > 0) {
 			JSONObject cache = new JSONObject();

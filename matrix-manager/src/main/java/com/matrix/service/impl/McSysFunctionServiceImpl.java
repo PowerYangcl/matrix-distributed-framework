@@ -551,6 +551,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 
 
 	/**
+	 * @deprecated
 	 * @description: 重新加载系统字典缓存
 	 * 
 	 * @param session
@@ -570,7 +571,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 					Class<?> clazz = Class.forName(package_ + arr[i]);   
 					if (clazz != null && clazz.getDeclaredMethods() != null){
 						dictCache = (IBaseCache) clazz.newInstance();
-						dictCache.refresh();
+						dictCache.refresh(null);
 					}
 				}
 			}

@@ -19,9 +19,9 @@ public abstract class BaseInit extends BaseClass{
 	 * @date 2016年11月29日 下午2:56:27 
 	 * @version 1.0.0.1
 	 */
-	public void initEcache(IBaseCache... subCaches) {
-		for (IBaseCache cache : subCaches) {
-			cache.refresh();
+	public void initEcache(IBaseCache<?>... subCaches) {
+		for (IBaseCache<?> cache : subCaches) {
+			cache.refresh(null);
 		}
 	}
 

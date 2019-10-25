@@ -1790,7 +1790,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
             arr = [],
             data = table.cache[id] || [];
         //计算全选个数
-        layui.each(data.list , function(i, item) {
+        layui.each(data , function(i, item) {
             if (item.constructor === Array) {
                 invalidNum++; //无效数据，或已删除的
                 return;

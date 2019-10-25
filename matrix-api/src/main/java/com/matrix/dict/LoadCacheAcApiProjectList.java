@@ -52,7 +52,7 @@ import com.matrix.pojo.view.AcApiProjectView;
  * @date 2017年11月14日 下午5:26:17 
  * @version 1.0.0
  */
-public class LoadCacheAcApiProjectList extends BaseClass implements IBaseCache{
+public class LoadCacheAcApiProjectList extends BaseClass implements IBaseCache<String>{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	
@@ -61,7 +61,7 @@ public class LoadCacheAcApiProjectList extends BaseClass implements IBaseCache{
 	
 	
 	@Override
-	public void refresh() {
+	public void refresh(String key) {
 		List<AcApiProjectView> list = acApiProjectMapper.findAll();
 		if(list != null && list.size() > 0) {
 			JSONObject cache = new JSONObject();

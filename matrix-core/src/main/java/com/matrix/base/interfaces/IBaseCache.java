@@ -8,7 +8,7 @@ package com.matrix.base.interfaces;
  * @date 2016年9月29日 下午4:36:43 
  * @version 1.0.0
  */
-public interface IBaseCache {
+public interface IBaseCache<K> {
 
 	/**
 	 * @description: 刷新缓存 该方法一般定义为synchronized 
@@ -17,7 +17,7 @@ public interface IBaseCache {
 	 * @date 2016年9月29日 下午4:37:00 
 	 * @version 1.0.0.1
 	 */
-	public void refresh();
+	public void refresh(K key);
 	
 	
 	/**

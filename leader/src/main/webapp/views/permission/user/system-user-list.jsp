@@ -60,26 +60,41 @@
   	      url : layui.setter.path + 'userInfo/ajax_system_user_list.do',
   	      toolbar: '#table-search-toolbar',
   	      title: '系统用户列表表',
+  	      height: 'full-100', 
+ 	      limit: 16,
   	      cols: [
  	    	  [
  	    		 {type: 'checkbox', fixed: 'left'},
- 	  	         {field:'id', title:'ID', width:180, fixed: 'left', unresize: true, sort: true},
- 	  	         {field:'userName', title:'用户名', width:120, edit: 'text'},
+ 	  	         {field:'id', title:'ID', width:160,unresize: true, sort: true},  //  fixed: 'left', 
+ 	  	         {field:'userName', title:'用户名', width:120},
 				 {
 					field:'email', 
 					title:'E-mail', 
-					width:150, 
+					width:200, 
 					edit: 'text', 
+					style:'background-color: #ffd6b9; color: #fff;',
 					templet: function(res){
 				  		return '<a>'+ res.email +'</a>'
 					}
 				 },
-  	        	 {field:'sex', title:'性别', width:80, edit: 'text', sort: true},
+  	        	 {
+					 field:'sex', 
+					 title:'性别', 
+					 width:80, 
+					 edit: 'text', 
+					 sort: true, 
+					 templet: function(res){
+						 var html_ = '男';
+						 if(res.sex == 2){
+							 html_ = '女';
+						 }
+				  		 return '<a>'+ html_ +'</a>'
+					 }
+				 },
  	  	         {field:'remark', title:'签名'},
  	  	         {field:'type', title:'用户类型', width:100, sort: true},
- 	  	         {field:'password', title:'password', width:120},
- 	  	         {field:'mobile', title:'手机号码', width:100, sort: true},
- 	  	         {field:'createTime', title:'加入时间', width:120},
+ 	  	         {field:'mobile', title:'手机号码', width:120, sort: true},
+ 	  	         {field:'createTime', title:'加入时间', width:180},
  	  	         {fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:150}
  	    	  ]
   	      ]

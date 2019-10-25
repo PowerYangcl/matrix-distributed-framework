@@ -30,9 +30,10 @@ public class PropConfig extends BaseEhcache<String, String> {
 		return LazyHolder.INSTANCE; 
 	}
 
-	public synchronized void refresh() {
+	public synchronized void refresh(String key_) {
 		if(this.getRefreshFlag("prop-config").equals("true")) {
 			// 未发现的Key：系统配置信息同步已经完成 
+			BaseLog.getInstance().sysoutInfo("系统配置信息同步已经完成，未发现的key = " + key_ , this.getClass()); 
 			return;
 		}
 		this.addElement("prop-config", "true"); // 添加刷新标记

@@ -26,9 +26,9 @@ public class PropInfo extends BaseEhcache<Long, String> {
 		return LazyHolder.INSTANCE; 
 	}
 
-	public synchronized void refresh() {
+	public synchronized void refresh(Long key_) {
 		if(this.getRefreshFlag(99999999999L).equals("true")) {
-			BaseLog.getInstance().sysoutInfo("系统消息提示信息同步已经完成 " , this.getClass()); 
+			BaseLog.getInstance().sysoutInfo("系统消息提示信息同步已经完成，当前系统不包含key = " + key_ , this.getClass()); 
 			return;
 		}
 		this.addElement(99999999999L , "true"); // 添加刷新标记
