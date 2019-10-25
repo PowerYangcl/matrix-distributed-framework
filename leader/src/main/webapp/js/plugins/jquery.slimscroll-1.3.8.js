@@ -86,7 +86,7 @@
 
       var isOverPanel, isOverBar, isDragg, queueHide, touchDif,
         barHeight, percentScroll, lastScroll,
-        divS = '<div></div>',
+        divS = '<div style="padding-bottom:10px;"></div>',  // style="padding-bottom:10px;"  2019-10-25 - Yangcl
         minBarHeight = 30,
         releaseScroll = false;
 
@@ -200,6 +200,7 @@
             opacity: o.opacity,
             display: o.alwaysVisible ? 'block' : 'none',
             'border-radius' : o.borderRadius,
+            'padding-bottom': '10px;',
             BorderRadius: o.borderRadius,
             MozBorderRadius: o.borderRadius,
             WebkitBorderRadius: o.borderRadius,

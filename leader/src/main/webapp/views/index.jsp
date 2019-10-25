@@ -202,11 +202,15 @@
 <script src="${layui}/layui/layui.js"></script>
 <script>
 
+	
+	
 	layui.config({
 		base : '../layuiadmin/' //静态资源所在路径
 	}).extend({
 		index : 'lib/index' //主入口模块
-	}).use('index');
+	}).use(['index'], function(){
+		basePath = layui.setter.path;	  // 设置全局路径
+	});
 </script>	
 
 

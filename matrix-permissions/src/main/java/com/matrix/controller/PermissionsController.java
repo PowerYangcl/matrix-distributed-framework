@@ -40,6 +40,8 @@ public class PermissionsController extends BaseController{
 	
 	/**
 	 * @description: 前往系统用户列表
+	 * 	manager/page_manager_user_list.do
+	 * 	matrix-admin/src/main/webapp/jsp/syssetting/user/sysUserList.jsp
 	 *
 	 * @author Yangcl
 	 * @date 2019年10月18日 下午3:36:39 
@@ -49,6 +51,19 @@ public class PermissionsController extends BaseController{
 	public String pagePermissionsUserList(HttpSession session){
 		super.userBehavior(session, logger, "page_permissions_user_list", "前往系统用户列表界面system-user-list.jsp");
 		return "views/permission/user/system-user-list";
+	}
+	
+	/**
+	 * @description: 前往系统功能列表界面
+	 *
+	 * @author Yangcl
+	 * @date 2019年10月25日 下午10:13:20 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping("page_permissions_system_function")
+	public String pagePermissionsSystemFunction(HttpSession session){
+		super.userBehavior(session, logger, "page_permissions_system_function", "前往系统功能列表界面system-func-tree.jsp");
+		return "views/permission/func/system-func-tree";
 	}
 }
 
