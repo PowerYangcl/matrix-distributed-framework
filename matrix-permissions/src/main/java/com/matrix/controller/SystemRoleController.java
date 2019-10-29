@@ -66,16 +66,14 @@ public class SystemRoleController  extends BaseController{
 	/**
 	 * @description: 系统角色列表数据
 	 *
-	 * @param dto 
-	 * 
 	 * @author Yangcl
 	 * @date 2018年9月24日 下午3:58:48 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "sys_role_list", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_system_role_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject sysRoleList(McRoleDto dto , HttpSession session , HttpServletRequest request) {
-		super.userBehavior(session, logger, "sys_role_list", "系统角色列表数据");
+	public JSONObject ajaxSystemRoleList(McRoleDto dto , HttpSession session , HttpServletRequest request) {
+		super.userBehavior(session, logger, "ajax_system_role_list", "系统角色列表数据");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcRoleService.ajaxSystemRoleList(dto , request);
 	}

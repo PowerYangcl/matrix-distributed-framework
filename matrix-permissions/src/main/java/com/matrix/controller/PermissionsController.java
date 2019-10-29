@@ -47,9 +47,9 @@ public class PermissionsController extends BaseController{
 	 * @date 2019年10月18日 下午3:36:39 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping("page_permissions_user_list")
+	@RequestMapping("page_permissions_system_user_list")
 	public String pagePermissionsUserList(HttpSession session){
-		super.userBehavior(session, logger, "page_permissions_user_list", "前往系统用户列表界面system-user-list.jsp");
+		super.userBehavior(session, logger, "page_permissions_system_user_list", "前往系统用户列表界面system-user-list.jsp");
 		return "views/permission/user/system-user-list";
 	}
 	
@@ -64,6 +64,19 @@ public class PermissionsController extends BaseController{
 	public String pagePermissionsSystemFunction(HttpSession session){
 		super.userBehavior(session, logger, "page_permissions_system_function", "前往系统功能列表界面system-func-tree.jsp");
 		return "views/permission/func/system-func-tree";
+	}
+	
+	/**
+	 * @description: 前往系统角色列表界面
+	 *
+	 * @author Yangcl
+	 * @date 2019年10月29日 下午3:07:42 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping("page_permissions_system_role_list")
+	public String pagePermissionsSystemRoleList(HttpSession session){
+		super.userBehavior(session, logger, "page_permissions_system_role_list", "前往系统角色列表界面system-role-list.jsp");
+		return "views/permission/role/system-role-list";
 	}
 }
 
