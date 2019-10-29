@@ -189,10 +189,10 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月1日 上午11:05:51 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "add_tree_node", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_add_tree_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject addTreeNode(McSysFunction e , HttpSession session){
-		super.userBehavior(session, logger, "add_tree_node", "添加系统功能到数据库-mc_sys_function表添加记录");
+	public JSONObject ajaxAddTreeNode(McSysFunction e , HttpSession session){
+		super.userBehavior(session, logger, "ajax_add_tree_node", "添加系统功能到数据库-mc_sys_function表添加记录");
 		e.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.addInfo(e);	
 	}
@@ -206,10 +206,10 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月1日 下午5:33:30 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "edit_tree_node", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_edit_tree_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject editTreeNode(McSysFunction e , HttpSession session){
-		super.userBehavior(session, logger, "edit_tree_node", "更新一个节点到数据库");
+	public JSONObject ajaxEditTreeNode(McSysFunction e , HttpSession session){
+		super.userBehavior(session, logger, "ajax_edit_tree_node", "更新一个节点到数据库");
 		e.setUserCache((McUserInfoView) session.getAttribute("userInfo")); 
 		return mcSysFunctionService.editInfo(e);	
 	}
@@ -222,10 +222,10 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月2日 下午5:33:07 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "update_tree_nodes", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_update_tree_nodes", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject updateTreeNodes(McSysFunctionDto dto, HttpSession session){
-		super.userBehavior(session, logger, "update_tree_nodes", "更新拖拽后的同层节点");
+	public JSONObject ajaxUpdateTreeNodes(McSysFunctionDto dto, HttpSession session){
+		super.userBehavior(session, logger, "ajax_update_tree_nodes", "更新拖拽后的同层节点");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.updateTreeNodes(dto);	
 	}
@@ -239,10 +239,10 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2018年10月15日 下午3:00:50 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "delete_node", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_delete_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject deleteNode(McSysFunctionDto dto , HttpSession session){
-		super.userBehavior(session, logger, "delete_node", "删除一个系统功能节点及其子节点");
+	public JSONObject ajaxDeleteNode(McSysFunctionDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_delete_node", "删除一个系统功能节点及其子节点");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.deleteNode(dto);	
 	}

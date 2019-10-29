@@ -13,7 +13,35 @@
 		
 		<link rel="stylesheet" href="${css}/ztree/zTreeStyle.css" type="text/css" />
 		<style type="text/css">
-			.flow-default{width: 500px; height: auto; overflow: auto; font-size: 16; }		   	
+			.flow-default{width: 500px; height: auto; overflow: auto; font-size: 16; }
+			
+			form input,select,textarea{
+			    border: 1px solid #ccc;
+			    padding: 8px 5px;
+			    min-width: 40%;
+			    border-radius: 2px;
+			 	box-shadow: inset 1px 1px 2px #cddc398f;
+			    color: #666;
+			    font-size: 12px;
+			    font-family: "Century Schoolbook", Arial, Helvetica, sans-serif;
+			    letter-spacing: normal;
+			    word-spacing: normal;
+			    text-transform: none;
+			    text-indent: 0px;
+			    text-shadow: none;
+			    text-align: start;
+			    outline: none;
+			    display: inline-block;
+			    margin: 0;
+			}
+			
+			form input[type=text] {
+			    width: 255px; 
+			}
+			
+			form select {
+			    width: 280px; 
+			}		   	
 		</style>
 		
 	</head>
@@ -29,18 +57,27 @@
 						</div>
 						<div class="layui-card-header">
 							<h3>
-								<a herf="javascript:void(0)" onclick="" class="a-btn" style="cursor: pointer; color:#FB9337; " title="收起导航栏从而方便您的操作">收起导航</a> | 
-								<a herf="javascript:void(0)" onclick="" class="a-btn" style="cursor: pointer; color:#FB9337; " title="收起一级菜单栏从而方便您的操作">收起菜单</a>
+								<a herf="javascript:void(0)" onclick="surfunc.closeNavi('sys-tree')" class="a-btn" style="cursor: pointer; color:#FB9337; " title="收起导航栏从而方便您的操作">收起导航</a> | 
+								<a herf="javascript:void(0)" onclick="surfunc.closeMenu('sys-tree')" class="a-btn" style="cursor: pointer; color:#FB9337; " title="收起一级菜单栏从而方便您的操作">收起菜单</a>
 							</h3>
 						</div>
-						<div id="func-list" class="layui-card-body mousescroll" style="width: 500px;height: auto; border-right:1px solid #ece7e7">
-							<ul id="sys-tree" class="ztree flow-default" >
-								<!-- ztree -->
-							</ul>
+						<div id="func-list" class="layui-card-body mousescroll" style="width: 1200px;height: auto;">
+							<table class="" style="width:100%">
+								<tr>
+									<td style="border-right:1px solid #ece7e7;width:40%;">
+										<ul id="sys-tree" class="ztree flow-default" >
+											<!-- ztree -->
+										</ul>
+									</td>
+									<td style="vertical-align:top">
+										<div class="tree-right" style="padding: 5px; margin-left:40px; margin-top:20px;">
+											<form id="tree-node-edit" action="javascript:void(0)"></form>
+										</div>
+									</td>
+								</tr>
+							</table>
 						</div>
-						<div class="tree-right" style="padding: 5px; display:none;">
-							<form id="tree-node-edit" action="javascript:void(0)"></form>
-						</div>
+						
 						
 					</div>
 				</div>
@@ -50,8 +87,10 @@
 	</body>
 </html>
 
-
 <script type="text/javascript" src="${js}/jquery-1.10.2.js"></script>
+
+<script type="text/javascript" src="${layui}/layui/lay/modules/layer.js"></script>
+
 <script type="text/javascript" src="${js}/utils/ajaxs.js"></script>
 <script type="text/javascript" src="${js}/plugins/jquery.slimscroll-1.3.8.js"></script>
 <script type="text/javascript" src="${js}/ztree/jquery.ztree.all.js"></script>

@@ -78,12 +78,12 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         		}
         	}
         	
-        	if(StringUtils.startsWith(url, "ajax_")) {   
+        	if(StringUtils.startsWith(url, "ajax_")) {
         		if(StringUtils.startsWith(url, "ajax_btn_")) {		// 开始验证用户按钮权限
         			String btn = request.getParameter("eleValue");
         			if(StringUtils.isBlank(btn)) {
         				// 如果请求被排除则跳转到默认提示页面  				TODO 此处应该提示缺少按钮级权限->按钮权限标识丢失
-        		        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/jsp/sys_page/roleErrorPage.jsp" ;
+        		        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-error.html" ;
         		        response.sendRedirect(loginUrl);
         		        return false;
         			}
@@ -101,7 +101,7 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
             		}
             		
             		// 如果请求被排除则跳转到默认提示页面  				TODO 此处应该提示缺少按钮级权限->按钮权限标识错误
-    		        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/jsp/sys_page/roleErrorPage.jsp" ;
+    		        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-error.html" ;
     		        response.sendRedirect(loginUrl);
             		return false;
         		}
@@ -116,9 +116,15 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         	return false;
         }
         
-        // 如果请求被排除则跳转到默认提示页面				TODO 此处应该提示缺少二级页面权限
-        String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/jsp/sys_page/roleErrorPage.jsp" ;
-        response.sendRedirect(loginUrl);
+        if(StringUtils.startsWith(url, "page_")) {
+        	// 如果请求被排除则跳转到默认提示页面				TODO 此处应该提示缺少二级页面权限
+            String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/error.html" ;
+            response.sendRedirect(loginUrl);
+        }else {
+        	String loginUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-error.html" ;
+	        response.sendRedirect(loginUrl);
+        }
+        
         return false;
     }
  

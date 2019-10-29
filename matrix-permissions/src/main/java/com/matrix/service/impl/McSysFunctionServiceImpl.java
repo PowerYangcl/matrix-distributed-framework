@@ -122,13 +122,13 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			int count = mcSysFunctionMapper.updateSelective(entity);
 			if(count == 1){
 				result.put("status", "success");
-				result.put("msg", "修改成功!");
+				result.put("msg", this.getInfo(100010104)); // 100010104=数据更新成功!
 				// 开始修改缓存
 				launch.loadDictCache(DCacheEnum.McSysFunc , null).set(entity.getId().toString(), JSONObject.toJSONString(entity) , 30*24*60*60); 
 				result.put("entity", entity);
 			}else{
 				result.put("status", "error");
-				result.put("msg", "修改失败!");
+				result.put("msg", this.getInfo(100010105));  // 100010105=数据更新失败，服务器异常!
 			}
 		}else{
 			result.put("status", "error");
@@ -149,20 +149,31 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	public JSONObject updateTreeNodes(McSysFunctionDto dto) {
-		McUserInfoView userInfo = dto.getUserCache();
-		String [] arr = dto.getUstring().split(",");
-		for(int i = 0 ; i < arr.length ; i ++){
-			McSysFunction e = new McSysFunction();
-			e.setId( Long.valueOf(arr[i].split("@")[0]) );
-			e.setSeqnum( Integer.valueOf(arr[i].split("@")[1]) );
-			e.setUpdateTime(new Date());
-			e.setUpdateUserId(userInfo.getId());
-			e.setUpdateUserName(userInfo.getUserName());
-			mcSysFunctionMapper.updateSelective(e);
-			// 开始修改缓存
-			launch.loadDictCache(DCacheEnum.McSysFunc , null).set(e.getId().toString() , JSONObject.toJSONString(e) , 30*24*60*60); 
+		JSONObject result = new JSONObject();
+		try {
+			McUserInfoView userInfo = dto.getUserCache();
+			String [] arr = dto.getUstring().split(",");
+			for(int i = 0 ; i < arr.length ; i ++){
+				McSysFunction e = new McSysFunction();
+				e.setId( Long.valueOf(arr[i].split("@")[0]) );
+				e.setSeqnum( Integer.valueOf(arr[i].split("@")[1]) );
+				e.setUpdateTime(new Date());
+				e.setUpdateUserId(userInfo.getId());
+				e.setUpdateUserName(userInfo.getUserName());
+				mcSysFunctionMapper.updateSelective(e);
+				// 开始修改缓存
+				launch.loadDictCache(DCacheEnum.McSysFunc , null).set(e.getId().toString() , JSONObject.toJSONString(e) , 30*24*60*60); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(100010105));  // 100010105=数据更新失败，服务器异常!
+			return result;
 		}
-		return null;
+				
+		result.put("status", "success");
+		result.put("msg", this.getInfo(100010104)); // 100010104=数据更新成功!
+		return result;
 	}
 
 
@@ -561,25 +572,25 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 */
 	public JSONObject sysDictCacheReload() {
 		JSONObject result = new JSONObject();
-		try {
-			IBaseCache dictCache = null;
-			String package_ = this.getConfig("matrix-cache.default_package_url");
-			String dictCacheClass = this.getConfig("matrix-cache.sub_project_cache_init");
-			if(StringUtils.isNotBlank(dictCacheClass)){
-				String [] arr = dictCacheClass.split(",");
-				for(int i = 0 ; i < arr.length ; i ++){
-					Class<?> clazz = Class.forName(package_ + arr[i]);   
-					if (clazz != null && clazz.getDeclaredMethods() != null){
-						dictCache = (IBaseCache) clazz.newInstance();
-						dictCache.refresh(null);
-					}
-				}
-			}
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(400010008)); // 系统异常
-			return result;
-		}
+//		try {
+//			IBaseCache dictCache = null;
+//			String package_ = this.getConfig("matrix-cache.default_package_url");
+//			String dictCacheClass = this.getConfig("matrix-cache.sub_project_cache_init");
+//			if(StringUtils.isNotBlank(dictCacheClass)){
+//				String [] arr = dictCacheClass.split(",");
+//				for(int i = 0 ; i < arr.length ; i ++){
+//					Class<?> clazz = Class.forName(package_ + arr[i]);   
+//					if (clazz != null && clazz.getDeclaredMethods() != null){
+//						dictCache = (IBaseCache) clazz.newInstance();
+//						dictCache.refresh(null);
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			result.put("status", "error");
+//			result.put("msg", this.getInfo(400010008)); // 系统异常
+//			return result;
+//		}
 		
 		result.put("status", "success");
 		result.put("msg", this.getInfo(400010011)); // 系统字典缓存刷新完成!

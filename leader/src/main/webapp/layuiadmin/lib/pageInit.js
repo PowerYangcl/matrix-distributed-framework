@@ -94,7 +94,7 @@ layui.extend(
 							var farr = arr[i].fmenus;
 							for(var f = 0 ; f < farr.length ; f ++){
 								html_ += '<dd data-name="grid">';
-									html_ += '<a href="javascript:void(0)">' + farr[f].data.name + '</a>';
+									html_ += '<a href="javascript:void(0)" style="color:#FB9337;">' + farr[f].data.name + '</a>';
 									html_ += '<dl class="layui-nav-child">';
 									var sarr = farr[f].smenus;
 									if(sarr.length !== 0){
