@@ -13,7 +13,10 @@
 	<!-- load spring config xml file -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:applicationContext.xml</param-value>
+		<param-value>
+			classpath:applicationContext.xml
+			classpath:spring-mvc.xml
+		</param-value>
 	</context-param>
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -39,6 +42,16 @@
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
+	
+	<!-- Spring-Session -->
+	<filter>
+	   <filter-name>springSessionRepositoryFilter</filter-name>
+	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	   <filter-name>springSessionRepositoryFilter</filter-name>
+	   <url-pattern>*.do</url-pattern>
+	</filter-mapping>
 	
 	<listener>
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>

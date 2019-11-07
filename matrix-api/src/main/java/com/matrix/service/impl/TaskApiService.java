@@ -38,22 +38,28 @@ public class TaskApiService extends BaseClass implements Callable<JSONObject>{
 		return this.apiService(request, response, session, json);
 	}
 	
+	/**
+	 * @description: 实现IBaseProcessor接口的类以及这个类所调用的Service方法或RPC接口，其返回
+	 * 		值不允许使用公共静态字段，并发场景下会导致返回结果错误
+	 *
+	 * @author Yangcl
+	 * @date 2019年10月29日 下午11:02:06 
+	 * @version 1.0.0.1
+	 */
 	private  JSONObject apiService(HttpServletRequest request, HttpServletResponse response , HttpSession session , String json) {
 		JSONObject result = this.checkRequest(request , response , json);
 		if (result.getString("status").equals("success")){  
-			synchronized (Object.class) {
-				try {     
-					Class<?> clazz = Class.forName("com.matrix.processor." + result.getString("processor"));   
-					if (clazz != null && clazz.getDeclaredMethods() != null){
-						IBaseProcessor iprocessor = (IBaseProcessor) clazz.newInstance();
-						return iprocessor.processor(request , response , session , result.getJSONObject("requester"));
-					}else {
-						return this.errorMsg(response, "10010", 600010010, result.getString("target"));	// 600010010=系统错误, 未找到{0}接口对应的处理类.请联系开发人员!
-					}
-				}catch (Exception e) {
-					e.printStackTrace(); 
-					return this.errorMsg(response, "10011", 600010011);	// 600010011=系统错误, 请联系开发人员!
+			try {     
+				Class<?> clazz = Class.forName("com.matrix.processor." + result.getString("processor"));   
+				if (clazz != null && clazz.getDeclaredMethods() != null){
+					IBaseProcessor iprocessor = (IBaseProcessor) clazz.newInstance();
+					return iprocessor.processor(request , response , session , result.getJSONObject("requester"));
+				}else {
+					return this.errorMsg(response, "10010", 600010010, result.getString("target"));	// 600010010=系统错误, 未找到{0}接口对应的处理类.请联系开发人员!
 				}
+			}catch (Exception e) {
+				e.printStackTrace(); 
+				return this.errorMsg(response, "10011", 600010011);	// 600010011=系统错误, 请联系开发人员!
 			}
 		}else { 
 			return result;

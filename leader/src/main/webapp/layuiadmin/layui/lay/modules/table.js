@@ -350,10 +350,9 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
             elemToolTemp.html(leftDefaultTemp);
         } else if (typeof options.toolbar === 'string') {
             var toolbarHtml = $(options.toolbar).html() || '';
-            toolbarHtml && elemToolTemp.html(
-                laytpl(toolbarHtml).render(options)
-            );
+            toolbarHtml && elemToolTemp.html( laytpl(toolbarHtml).render(options) );
         }
+        
 
         //添加工具栏右侧面板
         var layout = {
@@ -562,17 +561,17 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
         options = options || {};
         delete that.haveInit;
 
-//        if (options.data && options.data.constructor === Array){
-//        	delete that.config.data;
-//        }
+        if (options.data && options.data.constructor === Array){
+        	delete that.config.data;
+        }
         
         // edit by Yangcl
-        if (options.data.list && options.data.list.constructor === Array){
-        	console.log("table.js | 表格重载 | Class.prototype.reload |代码修改正确| 如果输出这段日志请到响应位置删除对应代码");
-        	delete that.config.data;
-        }else{
-        	console.log("table.js | 表格重载 | Class.prototype.reload |代码修改错误| 如果输出这段日志请到响应位置删除对应代码");
-        }
+//        if (options.data.list && options.data.list.constructor === Array){
+//        	console.log("table.js | 表格重载 | Class.prototype.reload |代码修改正确| 如果输出这段日志请到响应位置删除对应代码");
+//        	delete that.config.data;
+//        }else{
+//        	console.log("table.js | 表格重载 | Class.prototype.reload |代码修改错误| 如果输出这段日志请到响应位置删除对应代码");
+//        }
         
         that.config = $.extend(true, {}, that.config, options);
 

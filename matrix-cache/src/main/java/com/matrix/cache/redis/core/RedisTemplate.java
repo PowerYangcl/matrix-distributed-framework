@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisClusterNode;
@@ -34,6 +35,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisTemplate extends BaseClass {
 
     private StringRedisTemplate template = null;
+    private JedisConnectionFactory factory = null;
 
     private RedisTemplate() {
         RedisClusterConfiguration clusterConfig = new RedisClusterConfiguration();
@@ -74,7 +76,7 @@ public class RedisTemplate extends BaseClass {
         
 
         // Spring Data Redis 连接工厂配置
-        JedisConnectionFactory factory = new JedisConnectionFactory(clusterConfig, pconfig);
+        factory = new JedisConnectionFactory(clusterConfig , pconfig);
         factory.setPassword(this.getConfig("matrix-cache.redis_password_" + this.getConfig("matrix-core.model")));
         factory.afterPropertiesSet();
         template = new StringRedisTemplate(factory);
@@ -88,8 +90,14 @@ public class RedisTemplate extends BaseClass {
         return LazyHolder.INSTANCE;
     }
     
+    @Bean
     public StringRedisTemplate getTemplate() {
     	return template;
+    }
+    
+    @Bean
+    public JedisConnectionFactory getJedisConnectionFactory() {
+    	return factory;
     }
 
     /////////////////////////////////////////////////////////////////// 基础json //////////////////////////////////////////////////////////////////////

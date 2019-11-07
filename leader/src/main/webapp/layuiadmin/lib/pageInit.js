@@ -109,9 +109,8 @@ layui.extend(
 												}
 												str = str.substring(0 , str.length - 1);
 											}
-											html_ += '<dd data-name="' + sarr[i].data.id + '">';
-//													html_ += '<a href="javascript:void(0)" onclick="pageInit.menuOnclick(this)" btns="' + str + '" target_="' + url_ + '" >' + sarr[s].data.name + '</a>';
-												html_ += '<a lay-href="' + url_ + '" onclick="layui.pageInit.menuOnclick(this)" btns="' + str + '">' + sarr[s].data.name + '</a>';
+											html_ += '<dd data-name="' + sarr[s].data.id + '">';
+												html_ += '<a aid="' + sarr[s].data.id + '" lay-href="' + url_ + '" onclick="layui.pageInit.menuOnclick(this)" btns="' + str + '">' + sarr[s].data.name + '</a>';
 											html_ += '</dd>';
 										}
 									}
@@ -150,14 +149,18 @@ layui.extend(
 		}
 	},
 	
+	
+	
 	/**
 	 * 二级菜单 单击事件
 	 * @param obj
 	 */
 	pageInit.menuOnclick = function(obj){ 
-		var href_ = layui.$(obj).attr("target_"); 
-		localStorage.btns = layui.$(obj).attr("btns");  
-    	layui.$("#sub-page").attr("src" , href_); 
+		/*if( typeof(localStorage.pageJson) != "undefined" && localStorage.pageJson.length != 0){
+			var btns = 'btns-' + layui.$(obj).attr("aid");
+			layui.setter.pageBtns.set(btns , layui.$(obj).attr("btns"));
+			localStorage.btns = layui.$(obj).attr("btns");
+		}*/
 	}
 	
 	//对外暴露的接口

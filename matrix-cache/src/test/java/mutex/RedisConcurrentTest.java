@@ -2,15 +2,19 @@ package mutex;
 
 import com.matrix.base.BaseClass;
 import com.matrix.cache.redis.core.RedisTemplate;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-// 李玟霆
+/**
+ * @description: CountDownLatch(闭锁)
+ *			https://www.cnblogs.com/linkworld/p/7819270.html
+ *
+ *
+ * @author 李玟霆
+ * @home https://github.com/PowerYangcl
+ * @date 2019年10月29日 下午10:40:14 
+ * @version 1.0.0.1
+ */
 public class RedisConcurrentTest extends BaseClass{
     //线程数量
     private static final int threadCount = 100;

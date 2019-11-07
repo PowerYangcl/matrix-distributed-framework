@@ -19,7 +19,7 @@ public class TestLabel implements Runnable{
 
 	public void run() {
 		JSONObject data = new JSONObject();
-		data.put("cid", "2");
+		data.put("cid", time);
 		
 //		try {
 //			System.out.println(Thread.currentThread().getName() + " = " + this.time); 

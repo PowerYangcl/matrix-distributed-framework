@@ -128,7 +128,9 @@ public class ManagerCenterController extends BaseController{
 	@RequestMapping("page_manager_home")
 	public String loginPageHome(HttpSession session) {
 		super.userBehavior(session, logger, "page_manager_home", "登录验证完成后跳转到指定页面 home.jsp");
-		return "redirect:/jsp/home.jsp";
+		
+//		return "redirect:/jsp/home.jsp";   Spring-Session生成的ID无法托管redirect方式返回的页面
+		return "jsp/home";
 	}
 	
 	

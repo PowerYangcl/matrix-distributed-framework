@@ -367,10 +367,11 @@ layui.extend(
       
       var iframe = admin.tabsBody(admin.tabsPage.index).find(ELEM_IFRAME);
       iframe[0].contentWindow.location.reload(true);
-    }
+    } ,
 
-    //输入框搜索
-    ,serach: function(othis){
+    // 输入框搜索
+   serach: function(othis){
+	   alert("admin.js line 374 禁用这个功能！！！！！！！！！");
       othis.off('keypress').on('keypress',function(e){
         if(!this.value.replace(/\s/g, '')) return;
         //回车跳转
@@ -382,7 +383,7 @@ layui.extend(
           text = text + ' <span style="color: #FF5722;">'+ admin.escape(this.value) +'</span>';
           
           //打开标签页
-          layui.index.openTabsPage(href, text);
+//          layui.index.openTabsPage(href, text); 此方法增加了参数
           
           //如果搜索关键词已经打开，则刷新页面即可
           events.serach.keys || (events.serach.keys = {});
@@ -755,7 +756,7 @@ layui.extend(
   }
   ,TABS_HEADER = '#LAY_app_tabsheader>li';
   
-  //标签页标题点击
+  // 标签页标题点击
   $body.on('click', TABS_HEADER, function(){
     var othis = $(this)
     ,index = othis.index();
@@ -779,17 +780,16 @@ layui.extend(
   
   //页面跳转
   $body.on('click', '*[lay-href]', function(){
-    var othis = $(this)
-    ,href = othis.attr('lay-href')
-    ,text = othis.attr('lay-text')
-    ,router = layui.router();
-    
+    var othis = $(this);
+    var href = othis.attr('lay-href');
+    var text = othis.attr('lay-text');
+    var router = layui.router();
     admin.tabsPage.elem = othis;
     //admin.prevRouter[router.path[0]] = router.href; //记录上一次各菜单的路由信息
 
     //执行跳转
     var topLayui = parent === self ? layui : top.layui;
-    topLayui.index.openTabsPage(href, text || othis.text());
+    topLayui.index.openTabsPage(href , text || othis.text() , othis);
   });
   
   //点击事件

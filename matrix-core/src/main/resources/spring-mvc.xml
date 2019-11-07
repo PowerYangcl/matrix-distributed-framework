@@ -82,6 +82,32 @@
 	-->
 	
 	
+		
+	
+	
+	<!-- 初始化Redis -->
+	<bean class="com.matrix.cache.redis.core.RedisTemplate"/>
+	<!-- Spring-Session -->
+    <!--  
+    	Spring-Session  新sessionid
+    	https://www.cnblogs.com/aflyun/p/8532210.html
+    -->
+	<bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+        <!--指定session策略-->
+        <!--<property name="httpSessionStrategy" ref="httpSessionStrategy"/>-->
+    </bean>
+    <!--使用cookie策略-->
+    <!-- <bean id="httpSessionStrategy" class="org.springframework.session.web.http.CookieHttpSessionStrategy">
+        <property name="cookieSerializer" ref="cookieSerializer"/>
+    </bean> -->
+    <!--指定cookie的域名及路径-->
+    <!-- <bean id="cookieSerializer" class="org.springframework.session.web.http.DefaultCookieSerializer">
+        <property name="cookiePath" value="/"/>
+        <property name="domainName" value="www.matrix.com"/>
+    </bean> -->
+    
+    
+	
 	<!-- 处理responseBody 里面日期类型。开启此处将自动过滤所有返回向页面的java.util.date类型数据 -->
 	<mvc:annotation-driven>
 		<mvc:message-converters>

@@ -18,11 +18,13 @@ layui.extend(
 			var view = layui.view;
 
 			// 打开标签页|tab标签如果不存在则新加，如果存在则找到那个标签，然后设置为显示
-			var openTabsPage = function(url, text) {
+			// admin.js调用此方法
+			var openTabsPage = function(url, text , othis) {
 				// 遍历页签选项卡
 				var matchTo;
 				var tabs = $('#LAY_app_tabsheader>li');
 				var path = url.replace(/(^http(s*):)|(\?[\s\S]*$)/g, '');
+				var aid = othis.attr('aid');
 
 				tabs.each(function(index) {
 					var li = $(this), layid = li.attr('lay-id');
@@ -37,16 +39,19 @@ layui.extend(
 				if (setter.pageTabs) {
 					if (!matchTo) {	// 如果未在选项卡中匹配到，则追加选项卡
 						$(APP_BODY).append(['<div class="layadmin-tabsbody-item layui-show">', '<iframe src="' + url + '" frameborder="0" class="layadmin-iframe"></iframe>', '</div>' ].join(''));
-						
 						tabsPage.index = tabs.length;
-						
-						element.tabAdd(FILTER_TAB_TBAS, 
+						element.tabAdd(						// 调用element.js的方法				
+							FILTER_TAB_TBAS, 
 							{
 								title : '<span>' + text + '</span>',
 								id : url,
-								attr : path
+								attr : path,
+								tabId : aid
 							}
 						);
+						
+						layui.setter.pageBtns.set('btns-' + aid , othis.attr("btns"));  // 保存按钮标识
+						localStorage.btns = othis.attr("btns");
 					}
 				} else {
 					var iframe = admin.tabsBody(admin.tabsPage.index).find('.layadmin-iframe');

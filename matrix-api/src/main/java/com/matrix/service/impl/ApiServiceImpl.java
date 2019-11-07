@@ -24,6 +24,7 @@ import com.matrix.service.IApiService;
 
 
 /**
+ * @deprecated
  * @description: 网关入口
  * 
  * 请求接口数据格式示例：

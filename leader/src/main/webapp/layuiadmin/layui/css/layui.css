@@ -27,3 +27,32 @@
     font-size: 14px;
 	display:inline-block; 
  }
+ 
+ /**
+  * 隐藏权限类按钮
+  */
+.security-btn{
+	display:none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

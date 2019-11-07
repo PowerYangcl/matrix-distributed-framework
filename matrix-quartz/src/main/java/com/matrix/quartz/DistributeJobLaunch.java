@@ -1,13 +1,9 @@
 package com.matrix.quartz;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseInit;
 import com.matrix.cache.CacheLaunch;
@@ -45,6 +41,10 @@ public class DistributeJobLaunch extends BaseInit{
 	 */
 	public boolean onInit() {
 		boolean flag = true;
+		if(!this.getConfig("matrix-web.model").equals("job-system")) {  // job-system|web-system|mq-system
+			this.getLogger(null).sysoutInfo(200010010, this.getClass());  // 200010010=系统定时任务已关闭
+			return true;
+		}
 		if(!this.getConfig("matrix-quartz.job_init").equals("true")) {
 			this.getLogger(null).sysoutInfo(200010010, this.getClass());  // 200010010=系统定时任务已关闭
 			return true;
