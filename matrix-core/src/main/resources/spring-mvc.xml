@@ -91,6 +91,9 @@
     <!--  
     	Spring-Session  新sessionid
     	https://www.cnblogs.com/aflyun/p/8532210.html
+    	
+    	No bean named 'springSessionRepositoryFilter' available
+    	https://www.cnblogs.com/EasonJim/p/7815712.html
     -->
 	<bean class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
         <!--指定session策略-->
