@@ -35,7 +35,7 @@ public class PermissionsController extends BaseController{
 	@RequestMapping("page_permissions_index")
 	public String pagePermissionsIndex(HttpSession session) {
 		super.userBehavior(session, logger, "page_manager_home", "前往系统主页界面index.jsp");
-		return "redirect:/views/index.jsp";
+		return "views/index";
 	}
 	
 	/**
