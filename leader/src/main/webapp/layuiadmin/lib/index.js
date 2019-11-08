@@ -38,6 +38,9 @@ layui.extend(
 
 				if (setter.pageTabs) {
 					if (!matchTo) {	// 如果未在选项卡中匹配到，则追加选项卡
+						layui.setter.pageBtns.set('btns-' + aid , othis.attr("btns"));  // 保存按钮标识
+						localStorage.btns = othis.attr("btns");
+						
 						$(APP_BODY).append(['<div class="layadmin-tabsbody-item layui-show">', '<iframe src="' + url + '" frameborder="0" class="layadmin-iframe"></iframe>', '</div>' ].join(''));
 						tabsPage.index = tabs.length;
 						element.tabAdd(						// 调用element.js的方法				
@@ -50,8 +53,6 @@ layui.extend(
 							}
 						);
 						
-						layui.setter.pageBtns.set('btns-' + aid , othis.attr("btns"));  // 保存按钮标识
-						localStorage.btns = othis.attr("btns");
 					}
 				} else {
 					var iframe = admin.tabsBody(admin.tabsPage.index).find('.layadmin-iframe');

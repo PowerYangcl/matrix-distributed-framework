@@ -26,6 +26,19 @@ layui.define([ 'laytpl', 'layer', 'element', 'util' ], function(exports) {
 		MOD_NAME : 'admin'  , 	// 模块事件名
 		debug : true 	 , 	// 是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
 		
+		// 安全权限操作
+		security : function(btnMap){
+			var tabId = layui.$(".layui-this" , parent.document)[1].id;
+			var barr = btnMap.get('btns-' + tabId).split(",");
+			for(var i = 0 ; i < barr.length ; i ++){
+				var key = barr[i].split("@")[1];
+				layui.$(".security-btn[key='" + key + "']").show();
+				layui.$(".security-btn[key='" + key + "']").removeClass("security-btn"); 
+			}
+			layui.$("a.layui-btn").removeAttr("style");	// 数据表格 操作列中的按钮移除元素本身的style样式，保留css样式
+			layui.$(".security-btn").remove();
+		},
+		
 		request : {	// 自定义请求字段
 			tokenName : false //自动携带 token 的字段名（如：access_token）。可设置 false 不携带。
 		} , 	
@@ -129,6 +142,8 @@ layui.define([ 'laytpl', 'layer', 'element', 'util' ], function(exports) {
 		}
 	});
 });
+
+
 
 
 /**

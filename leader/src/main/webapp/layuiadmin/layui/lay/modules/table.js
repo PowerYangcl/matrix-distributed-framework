@@ -9,7 +9,7 @@
 
 layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
     "use strict";
-
+    var setter = layui.setter;
     var $ = layui.$,
         laytpl = layui.laytpl,
         laypage = layui.laypage,
@@ -651,17 +651,22 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
                         }
                         that.setColsWidth();
                         typeof options.done === 'function' && options.done(res, curr, res[response.countName]);
-                        
                     }else{	// res.status == "error"
                     	that.errorView('接口请求失败!  ' + res.msg);  // 服务器出现异常!
                         that.renderForm();
                         that.setColsWidth();
                     }
+                    
+                    // 显示数据中的按钮 - Yangcl
+                    layui.setter.security(window.parent.layui.setter.pageBtns);
                 },
                 error: function(e, m) {
                     that.errorView('Http数据接口请求异常，请检查您的网络：' + m);
                     that.renderForm();
                     that.setColsWidth();
+                    
+                    // 显示数据中的按钮 - Yangcl
+                    layui.setter.security(window.parent.layui.setter.pageBtns);
                 }
             });
         } else if (options.data.list && options.data.list.constructor === Array) { //已知数据
