@@ -35,6 +35,31 @@
 	display:none;
 }
 
+ /**
+  * layer.open type = 1 解析HTML代码段时form表单通用样式
+  */
+.dialog-form {
+	width:100%;
+	/* text-align:center; */
+	margin-top:20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

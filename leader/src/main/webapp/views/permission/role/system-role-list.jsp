@@ -13,7 +13,7 @@
 		<script src="${layui}/layui/layui.js"></script>
 		
 		<style type="text/css">
-			form input,select,textarea{
+			form input[type=text],select,textarea{
 			    border: 1px solid #ccc;
 			    padding: 8px 5px;
 			    min-width: 40%;
@@ -89,99 +89,31 @@
 	</body>
 </html>
 
+<script type="text/javascript" src="${views}/permission/role/system-role-list.js"></script>
 
-<script>
-  	layui.config({
-    	base: '../layuiadmin/' //静态资源所在路径
-  	}).extend({
-    	index: 'lib/index' //主入口模块
-  	}).use(['index', 'table'], function(){
-  	    var table = layui.table;
-  	  	var $ = layui.$;
-  	    table.render({
-  	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload
-  	      	elem: '#table-toolbar',				// 表格控制句柄
-  	      	url : layui.setter.path + 'sysrole/ajax_system_role_list.do',
-  	      	toolbar: '#table-search-toolbar',
-  	      	title: '系统角色列表',
-  	      	height: 'full-100', 
- 	      	limit: 16,
-  	      	cols: [
- 	    	  	[
- 	  	         	{field:'id', title:'角色ID', width:100,unresize: true, sort: true},  //  fixed: 'left', 
- 	  	         	{field:'roleName', title:'角色名称', width:200},
- 	  	         	{field:'type', title:'平台名称', width:250, sort: true},
- 	  	         	{field:'roleDesc', title:'角色描述'},
- 	  	         	{field:'createTime', title:'创建时间', width:180},
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:200}
- 	    	  	]
-  	      	],
-  	    	page: true
-  	    });
 
-		// 头部工具栏事件
-		table.on('toolbar(table-toolbar)', function(obj) {
-			switch (obj.event) {
-				case 'search':
-					search.reload();
-					break;
-				case 'reset':
-					search.reset();
-					break;
-				case 'add':
-	
-					break;
-			}
-		});
 
-		// 监听行工具事件
-		table.on('tool(table-toolbar)', function(obj) {
-			var data = obj.data;
-			if (obj.event === 'del') {
-				layer.confirm('真的删除行么', function(index) {
-					obj.del();
-					layer.close(index);
-				});
-			} else if (obj.event === 'edit') {
-				layer.prompt({
-					formType : 2,
-					value : data.email
-				}, function(value, index) {
-					obj.update({
-						email : value
-					});
-					layer.close(index);
-				});
-			}
-		});
-		
-		
-		// 查询按钮
-		var search = {		
-			reload : function() {
-				var roleName = $('#role-name').val();
-				var type = $('#type').val();
-				table.reload('page-table-reload', {
-					page : {
-						curr : 1  // 重新从第 1 页开始
-					},
-					where : {
-						roleName:roleName
-					}
-				}, 'data');
-				
-				$('#role-name').val(roleName);
-			},
-			
-			reset : function(){
-				$('#role-name').val('');
-				search.reload();
-			}
-		};
-		
 
-	});
-</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

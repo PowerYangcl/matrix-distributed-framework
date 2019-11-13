@@ -140,14 +140,14 @@
 			<if test="cid != null">
 				and r.cid = #{cid , jdbcType=BIGINT}
 			</if>
-			<if test="type != null">
+			<if test="type != null  and type != '' ">
 				and r.type = #{type,jdbcType=VARCHAR}
 			</if>
-			<if test="platform != null">
+			<if test="platform != null and platform != '' ">
 				and r.platform = #{platform,jdbcType=VARCHAR}
 			</if>
 			<if test="roleName != null and roleName != ''  ">
-				and r.role_name like "%"#{roleName , jdbcType=VARCHAR}"%" 
+				and r.role_name like  '%${roleName}%'
 			</if>
 			order by r.create_time desc
 	</select>

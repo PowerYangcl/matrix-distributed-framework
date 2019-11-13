@@ -110,7 +110,7 @@ layui.extend(
 												str = str.substring(0 , str.length - 1);
 											}
 											html_ += '<dd data-name="' + sarr[s].data.id + '">';
-												html_ += '<a aid="' + sarr[s].data.id + '" lay-href="' + url_ + '" onclick="layui.pageInit.menuOnclick(this)" btns="' + str + '">' + sarr[s].data.name + '</a>';
+												html_ += '<a aid="' + sarr[s].data.id + '" lay-href="' + url_ + '" btns="' + str + '">' + sarr[s].data.name + '</a>';
 											html_ += '</dd>';
 										}
 									}
@@ -135,33 +135,6 @@ layui.extend(
 		layui.element.render(); // 动态生成菜单后 render 左侧下导航
 	},
 	
-	
-	// 显示被隐藏的按钮| pageInit.security();   display:none;
-	pageInit.security = function(){
-		if( typeof(localStorage.btns) != "undefined" && localStorage.btns.length != 0){
-			var barr = localStorage.btns.split(",");
-			for(var i = 0 ; i < barr.length ; i ++){
-				var key = barr[i].split("@")[1];
-				layui.$(".security-btn[key='" + key + "']").show();
-				layui.$(".security-btn[key='" + key + "']").removeClass("security-btn"); 
-			}
-			layui.$(".security-btn").remove();
-		}
-	},
-	
-	
-	
-	/**
-	 * 二级菜单 单击事件
-	 * @param obj
-	 */
-	pageInit.menuOnclick = function(obj){ 
-		/*if( typeof(localStorage.pageJson) != "undefined" && localStorage.pageJson.length != 0){
-			var btns = 'btns-' + layui.$(obj).attr("aid");
-			layui.setter.pageBtns.set(btns , layui.$(obj).attr("btns"));
-			localStorage.btns = layui.$(obj).attr("btns");
-		}*/
-	}
 	
 	//对外暴露的接口
 	exports('pageInit', pageInit);

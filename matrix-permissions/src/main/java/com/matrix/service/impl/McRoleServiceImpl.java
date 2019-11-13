@@ -54,7 +54,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString() , userCache.getType())) {   
 			JSONObject r = new JSONObject();
 			r.put("status", "error");
-			r.put("msg", this.getInfo(400010013));   // 用户会话异常! platform cod or cid is null
+			r.put("msg", this.getInfo(101010013));   // 用户会话异常! platform cod or cid is null
 			return r;
 		}
 		// 此种情况为Leader后台进行数据请求 且对别当前登录用户的缓存信息是否正确
@@ -77,13 +77,13 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(role.getRoleName())){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010027));  // 400010027=角色名称不得为空
+			result.put("msg", this.getInfo(101010027));  // 101010027=角色名称不得为空
 			return result;
 		}
 		McUserInfoView userCache = role.getUserCache();
 		if(!userCache.getType().equals("leader") && StringUtils.isNotBlank(role.getPlatform()) ) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010028)); // 400010028=非Leader平台用户创建角色不得携带平台编码
+			result.put("msg", this.getInfo(101010028)); // 101010028=非Leader平台用户创建角色不得携带平台编码
 			return result;
 		}
 		if(userCache.getType().equals("leader") ) {
@@ -111,14 +111,14 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McRole ishas = mcRoleMapper.findByType(role_);
 			if(ishas != null) {
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010041));	// 400010041=角色名称已经存在
+				result.put("msg", this.getInfo(101010041));	// 101010041=角色名称已经存在
 				return result;
 			}
 			
 			int count = mcRoleMapper.insertGotEntityId(role); 
 			if(count == 1){
 				result.put("status", "success");
-				result.put("msg", this.getInfo(400010022));			// 400010022=添加成功
+				result.put("msg", this.getInfo(101010022));			// 101010022=添加成功
 				McRoleCache c = new McRoleCache();
 				c.setMcRoleId(role.getId());
 				c.setRoleName(role.getRoleName());
@@ -129,12 +129,12 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 				launch.loadDictCache(DCacheEnum.McRole , null).set(role.getId().toString() , JSONObject.toJSONString(c) , 30*24*60*60);   
 			}else{
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010004));	// 400010004=系统角色创建失败
+				result.put("msg", this.getInfo(101010004));	// 101010004=系统角色创建失败
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010026)); // 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026)); // 101010026=服务器异常
 		}
 		return result;
 	}
@@ -152,18 +152,18 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		JSONObject result = new JSONObject();
 		if(e.getId() == null) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010033));	// 400010033=角色id不得为空
+			result.put("msg", this.getInfo(101010033));	// 101010033=角色id不得为空
 			return result;
 		}
 		McRole entity = mcRoleMapper.find(e.getId());
 		if(entity == null) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010034));	// 400010034=后台数据查询失败
+			result.put("msg", this.getInfo(101010034));	// 101010034=后台数据查询失败
 			return result;
 		}
 		
 		result.put("status", "success");
-		result.put("msg", this.getInfo(400010014));	// 400010014=查询成功
+		result.put("msg", this.getInfo(101010014));	// 101010014=查询成功
 		result.put("entity", entity);
 		return result;
 	}
@@ -179,7 +179,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		JSONObject result = new JSONObject();
 		if(dto.getUserId()== null){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010034));		// 400010027=角色名称不得为空
+			result.put("msg", this.getInfo(101010034));		// 101010027=角色名称不得为空
 			return result;
 		}
 		List<McRole> list = new ArrayList<McRole>();
@@ -213,12 +213,12 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(dto.getRoleName())){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010027));		// 400010027=角色名称不得为空
+			result.put("msg", this.getInfo(101010027));		// 101010027=角色名称不得为空
 			return result;
 		}
 		if(dto.getId() == null){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010025));		// 400010025=更新失败
+			result.put("msg", this.getInfo(101010025));		// 101010025=更新失败
 			return result;
 		}
 		Date currentTime = new Date();
@@ -237,7 +237,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 				McRole ishas = mcRoleMapper.findByType(role_);
 				if(ishas != null) {
 					result.put("status", "error");
-					result.put("msg", this.getInfo(400010041));	// 400010041=角色名称已经存在
+					result.put("msg", this.getInfo(101010041));	// 101010041=角色名称已经存在
 					return result;
 				}
 			}
@@ -253,7 +253,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			int count = mcRoleMapper.updateSelective(e);
 			if(count == 1){
 				result.put("status", "success");
-				result.put("msg", this.getInfo(400010024));		// 400010024=更新成功
+				result.put("msg", this.getInfo(101010024));		// 101010024=更新成功
 				McRoleCache c = new McRoleCache();
 				c.setMcRoleId(dto.getId());
 				c.setRoleName(dto.getRoleName());
@@ -268,12 +268,12 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 				launch.loadDictCache(DCacheEnum.McRole , null).set(dto.getId().toString() , JSONObject.toJSONString(c) , 30*24*60*60); 
 			}else{
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010004));	// 系统角色创建失败
+				result.put("msg", this.getInfo(101010004));	// 系统角色创建失败
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010026));	// 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026));	// 101010026=服务器异常
 		}
 		return result;
 	}

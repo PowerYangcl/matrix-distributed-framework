@@ -15,7 +15,7 @@
 		<style type="text/css">
 			.flow-default{width: 500px; height: auto; overflow: auto; font-size: 16; }
 			
-			form input,select,textarea{
+			form input[type=text],select,textarea{
 			    border: 1px solid #ccc;
 			    padding: 8px 5px;
 			    min-width: 40%;

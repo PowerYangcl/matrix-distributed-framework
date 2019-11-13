@@ -250,7 +250,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(dto.getIds())){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010012)); // 节点id不得为空!
+			result.put("msg", this.getInfo(101010012)); // 节点id不得为空!
 			return result; 
 		}
 		String [] arr = dto.getIds().split(",");
@@ -262,13 +262,13 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		Integer flag = mcSysFunctionMapper.deleteByIds(list);
 		if(flag != 0){
 			result.put("status", "success");
-			result.put("msg", this.getInfo(400010001)); // 删除成功
+			result.put("msg", this.getInfo(101010001)); // 删除成功
 			for(String s : arr){
 				launch.loadDictCache(DCacheEnum.McSysFunc , null).del(s);  
 			}
 		}else{
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010002)); // 删除失败
+			result.put("msg", this.getInfo(101010002)); // 删除失败
 		}
 		return result;
 	}
@@ -285,7 +285,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(d.getIds())){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010003)); // 请勾选系统功能
+			result.put("msg", this.getInfo(101010003)); // 请勾选系统功能
 		}else{
 			Date createTime = new Date();
 			McUserInfoView userInfo = d.getUserCache();
@@ -337,7 +337,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			} catch (Exception e) {
 				e.printStackTrace();
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010004)); // 系统角色创建失败
+				result.put("msg", this.getInfo(101010004)); // 系统角色创建失败
 			}
 		}
 		return result;
@@ -356,7 +356,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(dto.getIds())){
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010003)); // 请勾选系统功能
+			result.put("msg", this.getInfo(101010003)); // 请勾选系统功能
 		}else{
 			McRoleCache c = new McRoleCache();
 			c.setMcRoleId(dto.getMcRoleId());
@@ -407,7 +407,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			} catch (Exception e) {
 				e.printStackTrace();
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010005)); // 系统角色修改失败
+				result.put("msg", this.getInfo(101010005)); // 系统角色修改失败
 			}
 		}
 		return result;
@@ -431,7 +431,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		try {
 			if(mcUserRoleMapper.selectByMcRoleId(dto.getMcRoleId()).size() != 0){ 
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010009)); // 该角色已经关联了用户，如果想删除则必选先将用户与该角色解除绑定
+				result.put("msg", this.getInfo(101010009)); // 该角色已经关联了用户，如果想删除则必选先将用户与该角色解除绑定
 			}else{
 				mcRoleMapper.deleteById(dto.getMcRoleId());
 				mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
@@ -441,7 +441,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010006)); // 系统角色删除失败
+			result.put("msg", this.getInfo(101010006)); // 系统角色删除失败
 		}
 		
 		return result;
@@ -476,11 +476,11 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 				this.reloadUserFunction(e.getMcUserId());  
 			}else{
 				result.put("status", "error");
-				result.put("msg", this.getInfo(400010007)); // 用户与角色关联失败
+				result.put("msg", this.getInfo(101010007)); // 用户与角色关联失败
 			}
 		} catch (Exception e2) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010008)); // 系统异常
+			result.put("msg", this.getInfo(101010008)); // 系统异常
 		}
 		return result;
 	}
@@ -505,11 +505,11 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			this.reloadUserFunction(d.getUserId()); 
 			
 			result.put("status", "success");
-			result.put("msg", this.getInfo(400010010)); // 角色绑定解除成功! 
+			result.put("msg", this.getInfo(101010010)); // 角色绑定解除成功! 
 		} catch (Exception e) {
 			e.printStackTrace(); 
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010008)); // 系统异常
+			result.put("msg", this.getInfo(101010008)); // 系统异常
 		}
 		return result;
 	}
@@ -588,12 +588,12 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 //			}
 //		} catch (Exception e) {
 //			result.put("status", "error");
-//			result.put("msg", this.getInfo(400010008)); // 系统异常
+//			result.put("msg", this.getInfo(101010008)); // 系统异常
 //			return result;
 //		}
 		
 		result.put("status", "success");
-		result.put("msg", this.getInfo(400010011)); // 系统字典缓存刷新完成!
+		result.put("msg", this.getInfo(101010011)); // 系统字典缓存刷新完成!
 		return result;
 	}
 

@@ -103,10 +103,10 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年5月19日 下午9:10:56 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "add_mc_role_only", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_add_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject addMcRoleOnly(McRole info , HttpSession session) {
-		super.userBehavior(session, logger, "add_mc_role_only", "添加一个角色，不勾选系统功能");
+	public JSONObject ajaxAddMcRoleOnly(McRole info , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_add_mc_role_only", "添加一个角色，不勾选系统功能");
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcRoleService.addMcRole(info);
 	}

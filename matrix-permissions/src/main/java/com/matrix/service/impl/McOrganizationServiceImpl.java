@@ -116,18 +116,18 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010026));    // 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026));    // 101010026=服务器异常
 			return result;
 		}
 		if (flag == 0) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010023));    // 400010023=添加失败
+			result.put("msg", this.getInfo(101010023));    // 101010023=添加失败
 			return result;
 		}
 
 		result.put("status", "success");
 		result.put("entity", e);
-		result.put("msg", this.getInfo(400010022));    // 400010022=添加成功
+		result.put("msg", this.getInfo(101010022));    // 101010022=添加成功
 		return result;
 	}
 
@@ -163,7 +163,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		JSONObject result = new JSONObject();
 		if (e.getId() == null) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010025) + "," + this.getInfo(400010012));    // 400010025=更新失败 + 400010012=节点id不得为空!
+			result.put("msg", this.getInfo(101010025) + "," + this.getInfo(101010012));    // 101010025=更新失败 + 101010012=节点id不得为空!
 			return result;
 		}
 
@@ -186,18 +186,18 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010026));    // 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026));    // 101010026=服务器异常
 			return result;
 		}
 		if (flag == 0) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010025));    // 400010025=更新失败
+			result.put("msg", this.getInfo(101010025));    // 101010025=更新失败
 			return result;
 		}
 
 		result.put("status", "success");
 		result.put("entity", e);
-		result.put("msg", this.getInfo(400010024));    // 400010024=更新成功
+		result.put("msg", this.getInfo(101010024));    // 101010024=更新成功
 		return result;
 	}
 
@@ -213,7 +213,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		JSONObject result = new JSONObject();
 		if (StringUtils.isBlank(dto.getIds())) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010002) + "," + this.getInfo(400010012));    // 400010002=删除失败 + 400010012=节点id不得为空!
+			result.put("msg", this.getInfo(101010002) + "," + this.getInfo(101010012));    // 101010002=删除失败 + 101010012=节点id不得为空!
 			return result;
 		}
 
@@ -241,12 +241,12 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010026));    // 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026));    // 101010026=服务器异常
 			return result;
 		}
 
 		result.put("status", "success");
-		result.put("msg", this.getInfo(400010001));    // 400010001=删除成功
+		result.put("msg", this.getInfo(101010001));    // 101010001=删除成功
 		return result;
 	}
 
@@ -275,12 +275,12 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(400010026));    // 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026));    // 101010026=服务器异常
 			return result;
 		}
 
 		result.put("status", "success");
-		result.put("msg", this.getInfo(400010035));    // 400010035=同层节点位置更换成功
+		result.put("msg", this.getInfo(101010035));    // 101010035=同层节点位置更换成功
 		return result;
 	}
 
@@ -305,7 +305,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 
 		if (StringUtils.isBlank(dto.getIds())) {
 			result.put("status", "success");
-			result.put("msg", this.getInfo(400010039));    // 400010039=用户数据权限已经解除
+			result.put("msg", this.getInfo(101010039));    // 101010039=用户数据权限已经解除
 			return result;
 		}
 
@@ -333,13 +333,13 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "success");
-			result.put("msg", this.getInfo(400010026));    // 400010026=服务器异常
+			result.put("msg", this.getInfo(101010026));    // 101010026=服务器异常
 			return result;
 		}
 
 
 		result.put("status", "success");
-		result.put("msg", this.getInfo(400010040));    // 400010040=用户数据权限关联成功
+		result.put("msg", this.getInfo(101010040));    // 101010040=用户数据权限关联成功
 		return result;
 	}
 

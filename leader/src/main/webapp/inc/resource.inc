@@ -9,6 +9,7 @@
 		String img = path + "/images";
 		String resources = path + "/resources";
 		String layui = path + "/layuiadmin";
+		String views = path + "/views";
 		
 		pageContext.setAttribute("js", js);
 		pageContext.setAttribute("jsp", jsp);
@@ -17,6 +18,7 @@
 		pageContext.setAttribute("basePath", basePath);
 		pageContext.setAttribute("resources", resources);
 		pageContext.setAttribute("layui", layui);
+		pageContext.setAttribute("views", views);
 		
 		if(session.getAttribute("userInfo") == null){
 			String url = basePath + "login.html";

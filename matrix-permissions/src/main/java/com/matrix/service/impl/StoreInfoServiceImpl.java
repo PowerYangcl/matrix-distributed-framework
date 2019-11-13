@@ -112,11 +112,11 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         Integer count = super.insertSelective(entity);
         if (count==1){
             result.put("status", "success");
-            result.put("msg", this.getInfo(400010022));// 添加门店成功
+            result.put("msg", this.getInfo(101010022));// 添加门店成功
             return result;
         }
         result.put("status", "error");
-        result.put("msg", this.getInfo(400010103));	// 保存门店失败
+        result.put("msg", this.getInfo(101010103));	// 保存门店失败
         return result;
     }
 
@@ -135,7 +135,7 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         StoreInfo find = storeInfoMapper.findByOrgId(orgId);
         if(find == null && e.getType() == 0) {	// 不存在于门店表中，且组织机构为非门店，
         	result.put("status", "success");
-            result.put("msg", this.getInfo(400010024));// 400010024=更新成功
+            result.put("msg", this.getInfo(101010024));// 101010024=更新成功
             return result;
         }
         
@@ -143,7 +143,7 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         	storeInfoMapper.deleteByOrgId(orgId);
         	launch.loadDictCache(DCacheEnum.StoreInfo , null).del(e.getCid() + "-" + find.getId());
         	result.put("status", "success");
-            result.put("msg", this.getInfo(400010024));// 400010024=更新成功
+            result.put("msg", this.getInfo(101010024));// 101010024=更新成功
             return result;
         }
         
@@ -152,11 +152,11 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         	count = storeInfoMapper.insertSelective(e);
         	if (count == 1){
                 result.put("status", "success");
-                result.put("msg", this.getInfo(400010022)); // 添加门店成功
+                result.put("msg", this.getInfo(101010022)); // 添加门店成功
                 return result;
             }
         	result.put("status", "error");
-            result.put("msg", this.getInfo(400010103));	// 保存门店失败
+            result.put("msg", this.getInfo(101010103));	// 保存门店失败
             return result;
         }
         
@@ -167,16 +167,16 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
                 //清除门店缓存
                 launch.loadDictCache(DCacheEnum.StoreInfo , null).del(e.getCid() + "-" + find.getId());
                 result.put("status", "success");
-                result.put("msg", this.getInfo(400010024));// 400010024=更新成功
+                result.put("msg", this.getInfo(101010024));// 101010024=更新成功
                 return result;
             }
             result.put("status", "error");
-            result.put("msg", this.getInfo(400010101));	// 保存门店失败
+            result.put("msg", this.getInfo(101010101));	// 保存门店失败
             return result;
         }
         
         result.put("status", "success");
-        result.put("msg", this.getInfo(400010024));// 400010024=更新成功
+        result.put("msg", this.getInfo(101010024));// 101010024=更新成功
         return result;
     }
 
@@ -196,11 +196,11 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
             //清除门店缓存
             launch.loadDictCache(DCacheEnum.StoreInfo , null).del(entity.getCid()+"-"+entity.getId());
             result.put("status", "success");
-            result.put("msg", this.getInfo(400010024));// 更新成功
+            result.put("msg", this.getInfo(101010024));// 更新成功
             return result;
         }
         result.put("status", "error");
-        result.put("msg", this.getInfo(400010102));	// 删除门店失败
+        result.put("msg", this.getInfo(101010102));	// 删除门店失败
         return result;
     }
 }

@@ -24,7 +24,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 
 	public JSONObject updatePageStyle(McUserInfoDto dto);
 
-	public JSONObject ajaxDrawAddUserPage();
+	public JSONObject ajaxPlatformInfoList();
 
 	public JSONObject ajaxSystemUserList(McUserInfoDto dto ,HttpServletRequest request);
 
