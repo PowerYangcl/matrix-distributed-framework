@@ -72,7 +72,7 @@
 									<input id="type" name="type" class="layui-table-search" autocomplete="off">
                 					<button class="security-btn layui-btn layui-btn-sm" key="system_role_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
                 					<button class="security-btn layui-btn layui-btn-sm" key="system_role_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
-                					<button class="security-btn layui-btn layui-btn-sm" key="system_role_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
+                					<button id="page-add" class="security-btn layui-btn layui-btn-sm" key="system_role_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">

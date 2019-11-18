@@ -60,8 +60,6 @@ public class SystemRoleController  extends BaseController{
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.treeList(dto);
 	}
-	
-	
 
 	/**
 	 * @description: 系统角色列表数据
@@ -78,41 +76,25 @@ public class SystemRoleController  extends BaseController{
 		return mcRoleService.ajaxSystemRoleList(dto , request);
 	}
 	
-	
 	/**
-	 * @descriptions 展示权限列表|如果用户已经有权限了则标识出来
-	 *
-	 * @date 2017年5月24日 上午12:02:01
-	 * @author Yangcl 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "user_role_list", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject userRoleList(McRoleDto role , HttpSession session , HttpServletRequest request) {
-		super.userBehavior(session, logger, "user_role_list", "展示权限列表|如果用户已经有权限了则标识出来");  
-		role.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.userRoleList(role , request);
-	}
-	
-	
-	
-	/**
-	 * @description: 添加一个角色，不勾选系统功能
+	 * @description: 添加一个角色，不勾选系统功能 | ajax_btn_开头【此接口需要验证用户按钮权限】
 	 * 
 	 * @author Yangcl 
 	 * @date 2017年5月19日 下午9:10:56 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_add_mc_role_only", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_add_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxAddMcRoleOnly(McRole info , HttpSession session) {
-		super.userBehavior(session, logger, "ajax_add_mc_role_only", "添加一个角色，不勾选系统功能");
+	public JSONObject ajaxBtnAddMcRoleOnly(McRole info , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_btn_add_mc_role_only", "添加一个角色，不勾选系统功能");
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcRoleService.addMcRole(info);
 	}
 	
 	/**
 	 * @description: 角色详情
+	 * 		
+	 * 		system-role-list.js没有用到
 	 *
 	 * @param info.id mc_role表自增id
 	 * 
@@ -135,14 +117,48 @@ public class SystemRoleController  extends BaseController{
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "edit_mc_role_only", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_edit_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject editMcRoleOnly(McRoleDto info , HttpSession session) {
-		super.userBehavior(session, logger, "edit_mc_role_only", "修改角色名称和描述，不勾选系统功能");
+	public JSONObject ajaxBtnEditMcRoleOnly(McRoleDto info , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_btn_edit_mc_role_only", "修改角色名称和描述，不勾选系统功能");
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcRoleService.editSysRole(info);
 	}
 	
+	/**
+	 * @description: 删除系统角色
+	 * 
+	 * @param dto
+	 * @author Yangcl 
+	 * @date 2017年4月20日 上午11:02:30 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_delete_mc_role", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnDeleteMcRole(McRoleDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_delete_mc_role", "删除系统角色");
+		return mcSysFunctionService.deleteMcRole(dto);	
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * @descriptions 展示权限列表|如果用户已经有权限了则标识出来
+	 *
+	 * @date 2017年5月24日 上午12:02:01
+	 * @author Yangcl 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "user_role_list", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject userRoleList(McRoleDto role , HttpSession session , HttpServletRequest request) {
+		super.userBehavior(session, logger, "user_role_list", "展示权限列表|如果用户已经有权限了则标识出来");  
+		role.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.userRoleList(role , request);
+	}
 	
 	/**
 	 * @description: 修改角色功能|【角色列表】->【角色功能】->【提交按钮】
@@ -159,23 +175,6 @@ public class SystemRoleController  extends BaseController{
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.editMcRole(dto);	
 	}
-	
-	
-	/**
-	 * @description: 删除系统角色
-	 * 
-	 * @param dto
-	 * @author Yangcl 
-	 * @date 2017年4月20日 上午11:02:30 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "delete_mc_role", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject deleteMcRole(McRoleDto dto , HttpSession session){
-		super.userBehavior(session, logger, "delete_mc_role", "删除系统角色");
-		return mcSysFunctionService.deleteMcRole(dto);	
-	}
-	
 	
 	
 	/**

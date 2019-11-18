@@ -437,6 +437,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 				mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
 				launch.loadDictCache(DCacheEnum.McRole , null).del(dto.getMcRoleId().toString());  
 				result.put("status", "success");
+				result.put("msg", this.getInfo(101010001)); // 101010001=删除成功
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

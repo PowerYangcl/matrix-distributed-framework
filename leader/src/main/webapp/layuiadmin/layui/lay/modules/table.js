@@ -17,30 +17,25 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
         form = layui.form,
         util = layui.util,
         hint = layui.hint(),
-        device = layui.device()
+        device = layui.device(), 
 
     //外部接口
-    , table = {
+    table = {
         config: {
-            checkName: 'LAY_CHECKED' //是否选中状态的字段名
-                ,
+            checkName: 'LAY_CHECKED' ,  //是否选中状态的字段名
             indexName: 'LAY_TABLE_INDEX' //下标索引名
-        } //全局配置项
-        ,
-        cache: {} //数据缓存
-        ,
-        index: layui.table ? (layui.table.index + 10000) : 0
-
-        //设置全局项
-        ,
+        } , // 全局配置项
+        
+        cache: {}, // 数据缓存
+        
+        index: layui.table ? (layui.table.index + 10000) : 0 , // 设置全局项
+        
         set: function(options) {
             var that = this;
             that.config = $.extend({}, that.config, options);
             return that;
-        }
-
-        //事件监听
-        ,
+        } , // 事件监听
+        
         on: function(events, callback) {
             return layui.onevent.call(this, MOD_NAME, events, callback);
         }
@@ -1190,7 +1185,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
             resizing, ELEM_CELL = '.layui-table-cell',
             filter = options.elem.attr('lay-filter');
 
-        //工具栏操作事件
+        // 工具栏操作事件
         that.layTool.on('click', '*[lay-event]', function(e) {
             var othis = $(this),
                 events = othis.attr('lay-event'),
@@ -1303,7 +1298,9 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
 
             layui.event.call(this, MOD_NAME, 'toolbar(' + filter + ')', $.extend({
                 event: events,
-                config: options
+                config: options,
+                id : typeof othis.attr('id') == 'undefined' ? '' : othis.attr('id') , 				 // 获取按钮ID标识 - Yangcl 
+                key : typeof othis.attr('key') == 'undefined' ? '' : othis.attr('key')           // 获取按钮权限标识 - Yangcl
             }, {}));
         });
 
@@ -1612,12 +1609,13 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
             layui.stope(e);
         });
 
-        //行工具条操作事件
+        // 行工具条 操作 事件
         that.layBody.on('click', '*[lay-event]', function() {
-            var othis = $(this),
-                index = othis.parents('tr').eq(0).data('index');
-            layui.event.call(this, MOD_NAME, 'tool(' + filter + ')', commonMember.call(this, {
-                event: othis.attr('lay-event')
+            var othis = $(this);
+            var index = othis.parents('tr').eq(0).data('index');
+            layui.event.call(this , MOD_NAME , 'tool(' + filter + ')' , commonMember.call(this , {
+                event: othis.attr('lay-event'),
+                key : typeof othis.attr('key') == 'undefined' ? '' : othis.attr('key')      // 获取按钮权限标识 - Yangcl
             }));
             that.setThisRowChecked(index);
         });

@@ -697,27 +697,6 @@ var surfunc = {
         
         
         
-        deleteMcRole:function(ele){
-        	var roleId = $(ele).attr("roleId");
-        	mconfirm('您确定要删除这个角色吗？', '系统提示', function(flag) {
-        		if(flag){
-					var type_ = 'post';
-		            var url_ = surfunc.path + 'sysrole/delete_mc_role.do';
-		        	var data_ = {
-		        			mcRoleId:roleId
-	        			}; 
-		        	var obj = JSON.parse(ajaxs.sendAjax(type_ , url_ , data_));
-		            if(obj.status == 'success'){
-		            	var tr_ = ele.parentElement.parentElement;  
-		            	$(tr_).remove();
-		            }else{
-		            	malert(obj.msg , '系统提示 ');
-		            }
-				}
-			});
-        },
-        
-
         /**
          * 关联用户与这个角色
          * @ surfunc.addUserRole(this)
