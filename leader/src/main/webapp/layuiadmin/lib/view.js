@@ -7,7 +7,10 @@
     
  */
  
-layui.define(['laytpl', 'layer'], function(exports){
+layui.extend(
+{
+	setter : 'config', 		// 配置模块
+}).define(['laytpl', 'layer' , 'setter'], function(exports){
   var $ = layui.jquery
   ,laytpl = layui.laytpl
   ,layer = layui.layer

@@ -10,7 +10,7 @@
 layui.extend(
 {
 	pageInit : 'lib/pageInit'  	
-}).define(['view' ,  'pageInit'], function(exports){
+}).define(['pageInit'], function(exports){
 	
 	
   var $ = layui.jquery

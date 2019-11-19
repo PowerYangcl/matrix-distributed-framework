@@ -8,12 +8,12 @@
  * @date 2019年10月14日 上午10:32:47 
  * @version 1.0.0.1
  */
-layui.extend(
+/*layui.extend(
 {
 	setter : 'config', 		// 配置模块
-}).define([ 'setter'] , function(exports){
+}).define([ 'setter'] , function(exports){*/
 	
-	
+layui.define([ 'view'] , function(exports){	
 	var pageInit = {
 		page : null,
 		path : layui.setter.path,
