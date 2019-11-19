@@ -28,7 +28,13 @@ layui.define([ 'laytpl', 'layer', 'element', 'util' ], function(exports) {
 		
 		// 安全权限操作
 		security : function(btnMap){
-			var tabId = layui.$(".layui-this" , parent.document)[1].id;
+			var checkArr = layui.$(".layui-this" , parent.document);
+			var tabId = null;
+			if(checkArr.length > 1){
+				tabId = layui.$(".layui-this" , parent.document)[1].id;
+			}else{
+				tabId = layui.$(".layui-this" , parent.document)[0].id;
+			}
 			var barr = btnMap.get('btns-' + tabId).split(",");
 			for(var i = 0 ; i < barr.length ; i ++){
 				var key = barr[i].split("@")[1];
