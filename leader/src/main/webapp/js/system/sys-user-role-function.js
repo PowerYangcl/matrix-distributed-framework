@@ -698,50 +698,6 @@ var surfunc = {
         
         
         /**
-         * 关联用户与这个角色
-         * @ surfunc.addUserRole(this)
-         */
-        /*addUserRole:function(ele){
-        	var userInfoId = $(ele).attr("userInfoId");
-        	var roleId = $( surfunc.roleElement).attr("roleId");
-        	var type_ = 'post';
-            var url_ = 'add_user_role.do';
-        	var data_ = {
-        			mcRoleId : roleId,
-        			mcUserId : userInfoId
-    			};
-        	var obj = JSON.parse(ajaxs.sendAjax(type_ , url_ , data_));
-            if(obj.status == 'success'){
-            	ele.onclick = null;
-            	ele.innerText="完成";
-            }else{
-            	malert(obj.msg , '系统提示 ');
-            }
-        },*/
-        
-
-        /**
-         * 解除后台用户的权限
-         * @ surfunc.deleteUserRole(this)
-         */
-        /*deleteUserRole:function(obj){
-        	var userId = $(obj).attr("userId");
-        	var zId = $(obj).attr("zId");  
-        	var type_ = 'post';
-            var data_ = {
-        		userId: userId,
-                id: zId 
-            }
-            var url_ = 'delete_user_role.do'; 
-            var obj = JSON.parse(ajaxs.sendAjax(type_ , url_ , data_));
-            if(obj.status == 'success'){ 
-            	var currentPageNumber = $(".paginate_active").html();   // 定位到当前分页的页码，然后重新加载数据
-                aForm.formPaging(currentPageNumber);
-            } 
-            malert(obj.msg , '系统提示 ');
-        },*/
-        
-        /**
          * 收起导航栏从而方便操作
          */
         closeNavi:function(treeId){

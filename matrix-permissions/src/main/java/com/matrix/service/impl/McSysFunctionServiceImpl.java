@@ -548,7 +548,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		if(list != null && list.size() != 0){
 			Set<Long> set = new TreeSet<Long>();  
 			for(McUserRole r : list){
-				String roleJson = launch.loadDictCache(DCacheEnum.McRole , "InitMcRole").get(r.getMcRoleId().toString());
+				String roleJson = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(r.getMcRoleId().toString());
 				if(StringUtils.isNotBlank(roleJson)){
 					McRoleCache role = JSONObject.parseObject(roleJson, McRoleCache.class);
 					if(role == null){
@@ -564,7 +564,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			}
 			if(set != null && set.size() != 0){
 				for(Long id : set){
-					String rfJson = launch.loadDictCache(DCacheEnum.McSysFunc , "InitMcSysFunc").get(id.toString());
+					String rfJson = launch.loadDictCache(DCacheEnum.McSysFunc , "McSysFuncInit").get(id.toString());
 					if(StringUtils.isNotBlank(rfJson)){
 						McSysFunction rf = JSONObject.parseObject(rfJson, McSysFunction.class);
 						if(rf == null){

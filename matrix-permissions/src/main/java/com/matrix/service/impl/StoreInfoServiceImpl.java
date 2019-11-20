@@ -64,7 +64,7 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         //加载一下门店缓存,mip-member-service服务需要
         if (CollectionUtils.isNotEmpty(list)){
             for (StoreInfo store: list){
-                launch.loadDictCache(DCacheEnum.StoreInfo , "InitStoreInfo").get(store.getCid()+"-"+store.getId());
+                launch.loadDictCache(DCacheEnum.StoreInfo , "StoreInfoInit").get(store.getCid()+"-"+store.getId());
             }
         }
 

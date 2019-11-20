@@ -73,7 +73,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		list.add(view);
 
 		if (StringUtils.isNotBlank(dto.getRedisKey())) { // 数据权限功能 - 弹窗中的树 - 勾选
-			String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp, "InitUserInfoNp").get(dto.getRedisKey());
+			String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp, "UserInfoNpInit").get(dto.getRedisKey());
 			McUserInfoView user = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 			result.put("orgIds", user.getOrgidList() == null ? "" : user.getOrgidList().toString().substring(1, user.getOrgidList().toString().length() - 1));
 		}
@@ -329,7 +329,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 
 			McUserInfo user = mcUserInfoMapper.find(dto.getUserId());        // 开始重置用户缓存
 			launch.loadDictCache(DCacheEnum.UserInfoNp, "").del(user.getUserName() + "," + user.getPassword());
-			launch.loadDictCache(DCacheEnum.UserInfoNp, "InitUserInfoNp").get(user.getUserName() + "," + user.getPassword());
+			launch.loadDictCache(DCacheEnum.UserInfoNp, "UserInfoNpInit").get(user.getUserName() + "," + user.getPassword());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.put("status", "success");
