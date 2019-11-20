@@ -57,8 +57,8 @@
 						</div>
 						<div class="layui-card-header">
 							<h3>
-								<a herf="javascript:void(0)" onclick="surfunc.closeNavi('sys-tree')" class="a-btn" style="cursor: pointer; color:#FB9337; " title="收起导航栏从而方便您的操作">收起导航</a> | 
-								<a herf="javascript:void(0)" onclick="surfunc.closeMenu('sys-tree')" class="a-btn" style="cursor: pointer; color:#FB9337; " title="收起一级菜单栏从而方便您的操作">收起菜单</a>
+								<a herf="javascript:void(0)" onclick="surfunc.closeNavi('sys-tree')" style="cursor: pointer; color:#FB9337; " title="收起导航栏从而方便您的操作">收起导航</a> | 
+								<a herf="javascript:void(0)" onclick="surfunc.closeMenu('sys-tree')" style="cursor: pointer; color:#FB9337; " title="收起一级菜单栏从而方便您的操作">收起菜单</a>
 							</h3>
 						</div>
 						<div id="func-list" class="layui-card-body mousescroll" style="width: 1200px;height: auto;">

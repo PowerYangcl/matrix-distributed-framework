@@ -193,7 +193,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		McUserInfoView userCache = dto.getUserCache();
 		if(!userCache.getType().equals("leader")) {
 			dto.setPlatform(userCache.getPlatform()); // 不再使用页面传入的平台编码，防止造假
-			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(userCache.getId().toString());
+			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(userCache.getId().toString());
 			McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
 			String ids = "";
 			for(McSysFunction m : cache.getMsfList()) {	// 去掉与平台标识码无关的功能项
@@ -220,7 +220,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 				List<McRole> roleList = mcRoleMapper.findList(role);
 				if(roleList != null && roleList.size() != 0){
 					for(McRole m : roleList){
-						String json = launch.loadDictCache(DCacheEnum.McRole , "InitMcRole").get(m.getId().toString());
+						String json = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(m.getId().toString());
 						if(StringUtils.isBlank(json)){
 							continue;
 						}
@@ -358,35 +358,18 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			result.put("status", "error");
 			result.put("msg", this.getInfo(101010003)); // 请勾选系统功能
 		}else{
-			McRoleCache c = new McRoleCache();
-			c.setMcRoleId(dto.getMcRoleId());
-			c.setCid(dto.getCid());
-			c.setType(dto.getType());
-			c.setPlatform(dto.getPlatform());
-			c.setRoleName(dto.getRoleName());
-			c.setRoleDesc(dto.getRoleDesc());
-			c.setIds(dto.getIds()); 
-			
 			Date currentTime = new Date();
 			McUserInfoView userInfo = dto.getUserCache(); 
 			McRole role = new McRole();
-			role.setId(c.getMcRoleId()); 
-			role.setRoleName(c.getRoleName());
-			role.setRoleDesc(c.getRoleDesc()); 
+			role.setId(dto.getMcRoleId()); 
 			role.setUpdateTime(currentTime); 
 			role.setUpdateUserId(userInfo.getId());
 			role.setUpdateUserName(userInfo.getUserName()); 
 			try {
 				mcRoleMapper.updateSelective(role);
-				
-				mcRoleFunctionMapper.deleteByMcRoleId(c.getMcRoleId()); 
-				if(StringUtils.isBlank(c.getRoleName()) && StringUtils.isBlank(c.getRoleDesc())){
-					McRoleCache o = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McRole , "InitMcRole").get(c.getMcRoleId().toString()), McRoleCache.class);
-					c.setRoleName(o.getRoleName());
-					c.setRoleDesc(o.getRoleDesc()); 
-				}
-				launch.loadDictCache(DCacheEnum.McRole , null).del(c.getMcRoleId().toString());  
-				String[] arr = c.getIds().split(",");
+				mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
+				launch.loadDictCache(DCacheEnum.McRole , null).del(dto.getMcRoleId().toString());  
+				String[] arr = dto.getIds().split(",");
 				for(int i = 0 ; i < arr.length ; i ++){
 					McRoleFunction rf = new McRoleFunction();
 					rf.setMcRoleId(role.getId());
@@ -401,8 +384,10 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 					rf.setUpdateUserName(userInfo.getUserName());
 					mcRoleFunctionMapper.insertSelective(rf);
 				}
+				McRoleCache c = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(dto.getMcRoleId().toString()), McRoleCache.class);
+				
 				result.put("status", "success");
-				launch.loadDictCache(DCacheEnum.McRole , null).set(c.getMcRoleId().toString() , JSONObject.toJSONString(c) , 30*24*60*60);  
+				result.put("msg" , this.getInfo(101010045));    // 101010045=系统角色与系统功能绑定成功!
 				result.put("cache", c);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -413,6 +398,38 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		return result;
 	}
 
+	/**
+	 * @description: 修改角色功能|【角色列表】->【角色功能】->【解绑】按钮
+	 *
+	 * @param dto
+	 * @author Yangcl
+	 * @date 2019年11月20日 下午3:41:54 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxRelieveMcRole(McRoleDto dto) {
+		JSONObject result = new JSONObject();
+		
+		McUserInfoView userInfo = dto.getUserCache(); 
+		McRole role = new McRole();
+		role.setId(dto.getMcRoleId()); 
+		role.setUpdateTime(new Date()); 
+		role.setUpdateUserId(userInfo.getId());
+		role.setUpdateUserName(userInfo.getUserName()); 
+		try {
+			mcRoleMapper.updateSelective(role);
+			mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
+			launch.loadDictCache(DCacheEnum.McRole , null).del(dto.getMcRoleId().toString());  
+			
+			result.put("status", "success");
+			result.put("msg" , this.getInfo(101010046));    // 101010046=系统角色与系统功能解绑成功!
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010005)); // 系统角色修改失败
+		}
+		
+		return result;
+	}
 
 	/**
 	 * @descriptions 删除一条角色信息

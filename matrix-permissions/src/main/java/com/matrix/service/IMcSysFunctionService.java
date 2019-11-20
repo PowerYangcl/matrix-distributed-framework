@@ -49,6 +49,35 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 
 	public JSONObject sysDictCacheReload();
 
-	public JSONObject ajaxFuncRole(McUserInfo entity, HttpServletRequest request);            
+	public JSONObject ajaxFuncRole(McUserInfo entity, HttpServletRequest request);
+
+	/**
+	 * @description: 修改角色功能|【角色列表】->【角色功能】->【解绑】按钮
+	 *
+	 * @param dto
+	 * @author Yangcl
+	 * @date 2019年11月20日 下午3:41:54 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxRelieveMcRole(McRoleDto dto);            
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

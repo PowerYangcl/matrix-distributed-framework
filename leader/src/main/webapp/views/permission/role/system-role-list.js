@@ -51,6 +51,8 @@ layui.config({
 				pageDialog.deleteMcRole(o);
 			} else if (o.event === 'edit') {
 				pageDialog.editDialog(o);
+			}else if (o.event === 'role') {
+				pageDialog.roleFuncDialog(o)
 			}
 		});
 		
@@ -90,7 +92,7 @@ layui.config({
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
 	          		content : pageDialog.drawDialogPage('add' , securityKey , null),
-	          		anim : 1 ,		// 弹窗从上掉落
+	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
 	          			var url_ =  layui.setter.path + 'sysrole/ajax_btn_add_mc_role_only.do';
@@ -125,7 +127,7 @@ layui.config({
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
 	          		content : pageDialog.drawDialogPage('edit' , o.key , o.data),
-	          		anim : 1 ,		// 弹窗从上掉落
+	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
 	          			var url_ =  layui.setter.path + 'sysrole/ajax_btn_edit_mc_role_only.do';
@@ -176,10 +178,101 @@ layui.config({
 	        },
 	        
 			// 角色功能弹层
-			roleFuncDialog : function(){
-				
+			roleFuncDialog : function(o){
+				var title = '为角色【' + o.data.roleName + '】赋予系统功能';
+				layer.open({
+					title : title,
+		          	type : 1,	// 1：解析HTML代码段；2：解析url
+		          	area : ['600px', '800px'],
+		          	fixed : false,
+		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
+		          	resize : false,        // 是否允许拉伸 默认：true
+	          		content : pageDialog.drawRoleFuncDialog(o),
+	          		anim : 0 ,		// 弹窗从上掉落
+	          		btn : ['提交' , '解绑' , '取消'],
+	          		success: function(layero, index){	// 开始追加ztree节点
+	          			surfunc.init(layui.setter.path).distributeUserRole(o.data.id , o.data.platform);  // 填充弹窗中的数据
+	          			$('#func-list').slimscroll({		// 自定义滚动条
+	          				color: '#666',
+	          				size: '10px',
+	          				width: 'auto',
+	          				height: '640px'  
+	          			});
+	          		},
+	          		yes : function(index , layero){
+	          			pageDialog.submitRoleFunc(index , o);
+	          		},
+          			btn2 : function(index, layero){ // 按钮【解绑】的回调
+          				pageDialog.relieveRoleFunc(index , o);
+          				return false;
+          			}, 
+          			cancel : function(){  // 右上角关闭回调
+          				// return false; // 开启该代码可禁止点击该按钮关闭
+          			}
+		        });
 			},
 			
+			// 提交与角色关联好的功能 
+			submitRoleFunc : function(index , o){ 
+				var roleId = o.data.id;  
+		    	var tree = $.fn.zTree.getZTreeObj("user-role-tree");
+		    	var checkArray = tree.getChangeCheckedNodes(); // 获取所有被选节点 
+		    	var ids = ''; 
+		    	for(var i = 0 ; i < checkArray.length ; i ++){
+		    		var t = checkArray[i];
+		    		if(t.navType != -1){
+		    			ids += t.id + ",";
+		    		}
+		    	}
+		    	ids = ids.substring(0 , ids.length -1); 
+		    	
+		        var url_ = layui.setter.path + 'sysrole/ajax_btn_edit_mc_role.do';
+		    	var data_ = {
+		    			mcRoleId:roleId,
+		    			ids:ids,
+	        			eleValue:o.key
+		    	};  
+		    	var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
+				if(obj.status == 'success'){
+	            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+	            		$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
+	            		layer.close(a);
+	            		layer.close(index);
+            		});
+	            }else{
+	            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+	            }
+		    },
+		    
+		    // 解绑按钮
+		    relieveRoleFunc : function(index , o){
+		    	var roleId = o.data.id;  
+		    	var tree = $.fn.zTree.getZTreeObj("user-role-tree");
+		    	var checkArray = tree.getChangeCheckedNodes(); // 获取所有被选节点 
+		    	var ids = ''; 
+		    	for(var i = 0 ; i < checkArray.length ; i ++){
+		    		var t = checkArray[i];
+		    		if(t.navType != -1){
+		    			ids += t.id + ",";
+		    		}
+		    	}
+		    	ids = ids.substring(0 , ids.length -1); 
+		    	
+		        var url_ = layui.setter.path + 'sysrole/ajax_relieve_mc_role.do';
+		    	var data_ = {
+		    			mcRoleId:roleId,
+		    	};  
+		    	var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
+				if(obj.status == 'success'){
+	            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+	            		$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
+	            		tree.checkAllNodes(false);
+	            		layer.close(a);
+            		});
+	            }else{
+	            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+	            }
+		    },
 			
 			// 绘制添加和编辑弹框
 			drawDialogPage : function(type , key , e){
@@ -220,6 +313,20 @@ layui.config({
 				return html;
 			},
 			
+			// 绘制角色功能弹层
+			drawRoleFuncDialog : function(o){
+				var html = '<div class="layui-card-header"><h3>';
+					html += '<a herf="javascript:void(0)" onclick="surfunc.closeNavi(\'user-role-tree\')" style="cursor: pointer; color:#FB9337; " title="收起导航栏从而方便您的操作">收起导航</a> | ';
+					html += '<a herf="javascript:void(0)" onclick="surfunc.closeMenu(\'user-role-tree\')" style="cursor: pointer; color:#FB9337; " title="收起一级菜单栏从而方便您的操作">收起菜单</a>';
+				html += '</h3></div>';
+				html += '<div id="func-list" class="layui-card-body mousescroll" style="width: 520px;height: auto;">';
+					html += '<input id="func-ids"  type="hidden" value="" >';
+					html += '<ul id="user-role-tree" class="ztree" ></ul>';
+				html += '</div>';
+				return html;
+			},
+			
+			
 			
 			
 			// 绘制平台分配Radio框
@@ -257,10 +364,14 @@ layui.config({
 		          	// content : '../../iframe/layer/iframe.html'
 	          		content : '<div style="padding: 20px;">放入任意HTML</div>',
 	          		skin: 'layui-layer-molv', 	// 
-	          		anim : 1 ,							// 弹窗从上掉落
+	          		anim : 0 ,							// 0 默认 | 1 弹窗从上掉落 | 2 由下方向上出现
 	          		btnAlign : 'r',   					// 按钮排列。.btnAlign: 'l'	按钮左对齐|btnAlign: 'c'	按钮居中对齐|btnAlign: 'r'	按钮右对齐。默认值，不用设置
 	          		closeBtn : 1,    					// layer提供了两种风格的关闭按钮，可通过配置1和2来展示，如果不显示，则closeBtn: 0。默认：1
 	          		btn : ['提交' , '取消'],
+	          		success: function(layero, index){	// 弹层绘制完成后的回调方法，携带两个参数，分别是当前层DOM当前层索引。
+	          		},
+          			end : function(){  // 弹窗销毁后的回调函数
+	          		},
 	          		yes : function(index , layero){
 	          			 // 按钮【提交】的回调
 	          			layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){

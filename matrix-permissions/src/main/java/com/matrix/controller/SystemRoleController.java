@@ -44,6 +44,71 @@ public class SystemRoleController  extends BaseController{
 	 
 	
 	/**
+	 * @description: 添加系统功能到数据库-mc_sys_function表添加记录
+	 * 
+	 * @param e
+	 * @param session 
+	 * @author Yangcl 
+	 * @date 2017年3月1日 上午11:05:51 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_add_tree_node", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxAddTreeNode(McSysFunction e , HttpSession session){
+		super.userBehavior(session, logger, "ajax_add_tree_node", "添加系统功能到数据库-mc_sys_function表添加记录");
+		e.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.addInfo(e);	
+	}
+	
+	/**
+	 * @description: 更新系统功能到数据库-mc_sys_function表添加记录
+	 * 
+	 * @param e
+	 * @author Yangcl 
+	 * @date 2017年3月1日 下午5:33:30 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_edit_tree_node", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxEditTreeNode(McSysFunction e , HttpSession session){
+		super.userBehavior(session, logger, "ajax_edit_tree_node", "更新一个节点到数据库");
+		e.setUserCache((McUserInfoView) session.getAttribute("userInfo")); 
+		return mcSysFunctionService.editInfo(e);	
+	}
+	
+	/**
+	 * @description: 系统功能同层节点拖拽更新
+	 * 
+	 * @param dto.ustring id@seqnum,id@seqnum 
+	 * @author Yangcl 
+	 * @date 2017年3月2日 下午5:33:07 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_update_tree_nodes", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxUpdateTreeNodes(McSysFunctionDto dto, HttpSession session){
+		super.userBehavior(session, logger, "ajax_update_tree_nodes", "更新拖拽后的同层节点");
+		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.updateTreeNodes(dto);	
+	}
+	
+	/**
+	 * @description: 删除一个系统功能节点及其子节点
+	 *
+	 * @param dto.ids 
+	 * @author Yangcl
+	 * @date 2018年10月15日 下午3:00:50 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_delete_node", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxDeleteNode(McSysFunctionDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_delete_node", "删除一个系统功能节点及其子节点");
+		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.deleteNode(dto);	
+	}
+	
+	/**
 	 * @description: 获取树列表|sys-user-role-function.js使用2次
 	 * 
 	 * @param dto.platform 如果不为空则获取指定平台下的功能节点|只有Leader平台会固定传入platform字段，用于区分【角色功能】显示哪些树节点下的内容
@@ -140,6 +205,46 @@ public class SystemRoleController  extends BaseController{
 		return mcSysFunctionService.deleteMcRole(dto);	
 	}
 	
+	/**
+	 * @description: 修改角色功能|【角色列表】->【角色功能】->【提交】按钮
+	 * 
+	 * @param d
+	 * @author Yangcl 
+	 * @date 2017年4月19日 下午4:22:28 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_edit_mc_role", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnEditMcRole(McRoleDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_edit_mc_role", "修改角色功能|【角色列表】->【角色功能】->【提交】按钮");
+		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.editMcRole(dto);	
+	}
+	
+	/**
+	 * @description: 修改角色功能|【角色列表】->【角色功能】->【解绑】按钮|TODO 尚未在matrix-manager-api中添加类
+	 *
+	 * @param dto
+	 * @author Yangcl
+	 * @date 2019年11月20日 下午3:41:54 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_relieve_mc_role", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxRelieveMcRole(McRoleDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_relieve_mc_role", "修改角色功能|【角色列表】->【角色功能】->【解绑】按钮");
+		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.ajaxRelieveMcRole(dto);	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -160,93 +265,12 @@ public class SystemRoleController  extends BaseController{
 		return mcRoleService.userRoleList(role , request);
 	}
 	
-	/**
-	 * @description: 修改角色功能|【角色列表】->【角色功能】->【提交按钮】
-	 * 
-	 * @param d
-	 * @author Yangcl 
-	 * @date 2017年4月19日 下午4:22:28 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "edit_mc_role", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject editMcRole(McRoleDto dto , HttpSession session){
-		super.userBehavior(session, logger, "edit_mc_role", " 修改系统角色|【角色列表】->【角色功能】");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.editMcRole(dto);	
-	}
 	
 	
-	/**
-	 * @description: 添加系统功能到数据库-mc_sys_function表添加记录
-	 * 
-	 * @param e
-	 * @param session 
-	 * @author Yangcl 
-	 * @date 2017年3月1日 上午11:05:51 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "ajax_add_tree_node", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxAddTreeNode(McSysFunction e , HttpSession session){
-		super.userBehavior(session, logger, "ajax_add_tree_node", "添加系统功能到数据库-mc_sys_function表添加记录");
-		e.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.addInfo(e);	
-	}
-	
-	
-	/**
-	 * @description: 更新系统功能到数据库-mc_sys_function表添加记录
-	 * 
-	 * @param e
-	 * @author Yangcl 
-	 * @date 2017年3月1日 下午5:33:30 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "ajax_edit_tree_node", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxEditTreeNode(McSysFunction e , HttpSession session){
-		super.userBehavior(session, logger, "ajax_edit_tree_node", "更新一个节点到数据库");
-		e.setUserCache((McUserInfoView) session.getAttribute("userInfo")); 
-		return mcSysFunctionService.editInfo(e);	
-	}
-	
-	/**
-	 * @description: 系统功能同层节点拖拽更新
-	 * 
-	 * @param dto.ustring id@seqnum,id@seqnum 
-	 * @author Yangcl 
-	 * @date 2017年3月2日 下午5:33:07 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "ajax_update_tree_nodes", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxUpdateTreeNodes(McSysFunctionDto dto, HttpSession session){
-		super.userBehavior(session, logger, "ajax_update_tree_nodes", "更新拖拽后的同层节点");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.updateTreeNodes(dto);	
-	}
-	
-	
-	/**
-	 * @description: 删除一个系统功能节点及其子节点
-	 *
-	 * @param dto.ids 
-	 * @author Yangcl
-	 * @date 2018年10月15日 下午3:00:50 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "ajax_delete_node", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxDeleteNode(McSysFunctionDto dto , HttpSession session){
-		super.userBehavior(session, logger, "ajax_delete_node", "删除一个系统功能节点及其子节点");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.deleteNode(dto);	
-	}
 
 	
 	/**
-	 * @description: 创建系统角色
+	 * @description: 创建系统角色                                       TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   未找到页面直接使用的地方
 	 * 
 	 * @param dto
 	 * @author Yangcl 
