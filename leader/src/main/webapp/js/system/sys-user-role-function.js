@@ -625,7 +625,7 @@ var surfunc = {
         
         /**
          * 开始创建角色
-         * 向managercenter.mc_role表、managercenter.mc_role_function表添加数据
+         * 向managercenter.mc_role表、managercenter.mc_role_function表添加数据				TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   未找到页面直接使用的地方
          */
         addMcRole:function(){
         	// 开始判断树是否没有被勾选
@@ -656,7 +656,7 @@ var surfunc = {
         
 
         /**
-         * 开始更新角色信息
+         * 开始更新角色信息										TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   未找到页面直接使用的地方
          * @param obj
          */
         editMcRole:function(roleId){ 
