@@ -32,7 +32,7 @@ public class McUserInfoDto extends BaseDto{
   
     private String orgIds;
 
-    private String oldPassWord;
+    private String oldPassWord;  // 页面修改密码时传入原始的密码。如果页面传入的旧密码和原始密码不相等则返回错误提示
 
 	public String getOldPassWord() {
 		return oldPassWord;

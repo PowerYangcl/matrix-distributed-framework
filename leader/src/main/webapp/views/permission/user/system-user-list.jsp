@@ -10,6 +10,39 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" href="${layui}/layui/css/layui.css" media="all">
 		<link rel="stylesheet" href="${layui}/style/admin.css" media="all">
+		<script src="${layui}/layui/layui.js"></script>  
+		
+		<style type="text/css">
+			form input[type=text],select,textarea{
+			    border: 1px solid #ccc;
+			    padding: 8px 5px;
+			    min-width: 40%;
+			    border-radius: 2px;
+			 	box-shadow: inset 1px 1px 2px #cddc398f;
+			    color: #666;
+			    font-size: 12px;
+			    letter-spacing: normal;
+			    word-spacing: normal;
+			    text-transform: none;
+			    text-indent: 0px;
+			    text-shadow: none;
+			    text-align: start;
+			    outline: none;
+			    display: inline-block;
+			    margin: 0;
+			}
+			
+			form input[type=text] {
+			    width: 255px; 
+			}
+			
+			form select {
+			    width: 280px; 
+			}		   	
+		</style>
+		
+		
+		
 	</head>
 	<body>
 		<div class="layui-fluid">
@@ -27,15 +60,21 @@
 							<table id="table-toolbar" class="layui-hide" lay-filter="table-toolbar"></table>
 							
 							<script id="table-search-toolbar" type="text/html">
-              					<div class="layui-btn-container">
-                					<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-                					<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-                					<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+								<div class="layui-btn-container">
+									<div class="layui-table-search-div" >用户姓名：</div>
+									<input id="user-name" name="userName" class="layui-table-search" autocomplete="off">
+									<div class="layui-table-search-div" >手机号：</div>
+									<input id="mobile" name="mobile" class="layui-table-search" autocomplete="off">
+                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
-              					<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-              					<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+              					<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:edit" lay-event="edit">修改</a>
+								<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:password_reset" lay-event="password">重置密码</a>
+								<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:user_role" lay-event="userRole">用户角色</a>
+              					<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="system_user_list:delete" lay-event="del">删除</a>
             				</script>
             				
 						</div>
@@ -46,103 +85,8 @@
 	</body>
 </html>
 
+<script type="text/javascript" src="${views}/permission/user/system-user-list.js"></script>
 
-<script src="${layui}/layui/layui.js"></script>  
-<script>
-  	layui.config({
-    	base: '../layuiadmin/' //静态资源所在路径
-  	}).extend({
-    	index: 'lib/index' //主入口模块
-  	}).use(['index', 'table'], function(){
-  	    var table = layui.table;
-  	    table.render({
-    		id: 'page-table-reload',  			// 页面查询按钮需要table.reload
-	      	elem: '#table-toolbar',				// 表格控制句柄
-  	      	url : layui.setter.path + 'userInfo/ajax_system_user_list.do',
-  	      	toolbar: '#table-search-toolbar',
-  	      	title: '系统用户列表',
-  	      	height: 'full-100', 
- 	      	limit: 16,
-  	      	cols: [
-  	      		[
-  	      			{type: 'checkbox', fixed: 'left'},
-	  	         	{field:'id', title:'ID', width:160,unresize: true, sort: true},  //  fixed: 'left', 
-	  	         	{field:'userName', title:'用户名', width:120},
-					 {
-						field:'email', 
-						title:'E-mail', 
-						width:200, 
-						edit: 'text', 
-						style:'background-color: #ffd6b9; color: #fff;',
-						templet: function(res){
-					  		return '<a>'+ res.email +'</a>'
-						}
-					 },
-		        	 {
-						 field:'sex', 
-						 title:'性别', 
-						 width:80, 
-						 edit: 'text', 
-						 sort: true, 
-						 templet: function(res){
-							 var html_ = '男';
-							 if(res.sex == 2){
-								 html_ = '女';
-							 }
-					  		 return '<a>'+ html_ +'</a>'
-						 }
-					 },
-		  	         {field:'remark', title:'签名'},
-		  	         {field:'type', title:'用户类型', width:100, sort: true},
-		  	         {field:'mobile', title:'手机号码', width:120, sort: true},
-		  	         {field:'createTime', title:'加入时间', width:180},
-		  	         {fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:150}
-	    	  	]
-  	      	],
-  	      	page: true
-  	    });
-  	    
-  		// 头部工具栏事件
-  	    table.on('toolbar(table-toolbar)', function(obj){
-  	      	var checkStatus = table.checkStatus(obj.config.id);
-  	      	switch(obj.event){
-  		        case 'getCheckData':
-  		          	var data = checkStatus.data;
-  		          	layer.alert(JSON.stringify(data));
-  		        	break;
-  		        case 'getCheckLength':
-  		          	var data = checkStatus.data;
-  		          	layer.msg('选中了：'+ data.length + ' 个');
-  		        	break;
-  		        case 'isAll':
-  		          	layer.msg(checkStatus.isAll ? '全选': '未全选');
-  		        	break;
-  		      };
-  	    });
-  	    
-  	    // 监听行工具事件
-  	    table.on('tool(table-toolbar)', function(obj){
-  	      	var data = obj.data;
-  			if(obj.event === 'del'){
-  			  	layer.confirm('真的删除行么', function(index){
-  			    	obj.del();
-  			    	layer.close(index);
-  			  	});
-  			}else if(obj.event === 'edit'){
-  			  	layer.prompt({
-  			    	formType: 2,
-  			    	value: data.email
-  			  	},function(value, index){
-  			  		obj.update({
-  			      		email: value
-  			    	});
-  			    	layer.close(index);
-  			  	});
-  			}
-  	    });
-  	    
-  	});
-</script>
 
 
 

@@ -23,7 +23,6 @@ import com.matrix.service.IMcUserInfoService;
  * @date 2019年10月10日 下午8:12:52 
  * @version 1.0.0.1
  */
-
 @Controller
 @RequestMapping("userInfo")
 public class UserInfoControllor  extends BaseController{
@@ -71,6 +70,76 @@ public class UserInfoControllor  extends BaseController{
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.ajaxSystemUserList(dto , request);
 	}
+	
+	/**
+	 * @description: 添加用户
+	 *		add_sys_user
+	 * @author Yangcl
+	 * @date 2019年12月5日 上午10:28:56 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_add_system_user", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnAddSystemUser(McUserInfoDto info , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_btn_add_system_user", "添加用户");
+		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcUserInfoService.addSysUser(info);
+	}
+	
+	
+	/**
+	 * @description: 修改用户信息
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月5日 下午2:28:38 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_edit_sys_user", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnEditSysUser(McUserInfoDto info , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_btn_edit_sys_user", "修改用户信息");
+		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcUserInfoService.editSysUser(info);
+	}
+	
+	
+	/**
+	 * @description: 修改用户密码
+	 * 
+	 * @author Yangcl
+	 * @date 2019年12月5日 下午4:18:07 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_password_reset", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnPasswordReset(McUserInfoDto info , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_btn_password_reset", "修改用户密码");
+		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcUserInfoService.ajaxPasswordReset(info);
+	}
+	
+	/**
+	 * @description: 删除一个用户 | 不保留数据库中的记录
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月5日 下午5:21:34 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_delete_system_user", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnDeleteSystemUser(McUserInfoDto dto , HttpSession session) {
+		super.userBehavior(session, logger, "ajax_btn_delete_system_user", "删除一个用户|不保留数据库中的记录");
+		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcUserInfoService.deleteUser(dto);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
 
 

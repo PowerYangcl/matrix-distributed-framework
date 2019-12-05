@@ -240,7 +240,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		return result;
 	}
 
-	
+	/**
+	 * @description: 添加用户
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月5日 上午10:28:56 
+	 * @version 1.0.0.1
+	 */
 	public JSONObject addSysUser(McUserInfoDto info) {
 		JSONObject result = new JSONObject();
 		McUserInfoView userCache = info.getUserCache(); //(McUserInfoView) session.getAttribute("userInfo");
@@ -361,6 +367,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	}
 
 
+	/**
+	 * @description: 修改用户信息
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月5日 下午2:28:38 
+	 * @version 1.0.0.1
+	 */
 	public JSONObject editSysUser(McUserInfoDto info) {
 		JSONObject result = new JSONObject();
 		if (StringUtils.isBlank(info.getUserName())) {
@@ -394,9 +407,9 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			McUserInfo e = new McUserInfo();
 			e.setId(info.getId()); 
 			e.setUserName(info.getUserName());
-			if(StringUtils.isNotBlank(info.getPassword())) {
-				e.setPassword(SignUtil.md5Sign(info.getPassword()));
-			}
+//			if(StringUtils.isNotBlank(info.getPassword())) {						更新密码作为单独的权限进行剥离 - Yangcl
+//				e.setPassword(SignUtil.md5Sign(info.getPassword()));
+//			}
 			e.setMobile(info.getMobile());
 			e.setEmail(info.getEmail());
 			e.setSex(info.getSex());   
@@ -407,14 +420,11 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			e.setQq(info.getQq());
 			e.setRemark(info.getRemark());
 			e.setPicUrl(info.getPicUrl());			// 更新用户头像
-			// Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
-			if(master.getType().equals("leader") && StringUtils.isNotBlank(info.getPlatform()) && StringUtils.contains(info.getPlatform(), "@")) { 
-				e.setPlatform(info.getPlatform().split("@")[1]);	// 非Leader平台创建的用户，不会更新平台码
-			} 
+//			e.setPlatform(null);   // 平台标识码不允许修改
+			
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1){
 				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(info.getUserName() + "," + info.getPassword());
-//				launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(info.getUserName() + "," + info.getPassword());
 				result.put("status", "success");
 				result.put("msg", this.getInfo(101010024));	// 101010024=更新成功
 			}else{
@@ -444,20 +454,23 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			result.put("msg", this.getInfo(101010037));  // 101010037=用户密码不得为空
 			return result;
 		}
+		if(info.getPassword().length() < 6) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010047));  // 101010047=新密码长度不得小于6位
+			return result;
+		}
+		
 		
 		McUserInfo user = mcUserInfoMapper.find(info.getId());
 		if(user == null) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(101010038));  // 101010038=用户密码重置失败
+			result.put("msg", this.getInfo(101010038));  // 101010038=用户密码重置失败，未找到指定用户，请重试
 			return result;
 		}
-		//判断原始密码是否相等  msh 21018 12 19
-		if(StringUtils.isNotBlank(info.getOldPassWord())){
-			if (user.getPassword().equals(SignUtil.md5Sign(info.getOldPassWord()))){
-
-			}else{
+		if(StringUtils.isNotBlank(info.getOldPassWord())){		// 判断原始密码是否相等 
+			if (!user.getPassword().equals(SignUtil.md5Sign(info.getOldPassWord()))){
 				result.put("status", "error");
-				result.put("msg", this.getInfo(101010042));  // 101010042=原始密码不正确
+				result.put("msg", this.getInfo(101010042));  // 101010042=用户密码重置失败，原始密码不正确
 				return result;
 			}
 		}
@@ -475,10 +488,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			result.put("msg", this.getInfo(101010038));  // 101010038=用户密码重置失败
 			return result;
 		}
-		
 		launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(user.getUserName() + "," + user.getPassword());
-		launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(user.getUserName() + "," + info.getPassword());  // 缓存重置
-
+		String val = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(user.getUserName() + "," + e.getPassword());  // 缓存重置
+		this.getLogger(null).sysoutInfo(val, this.getClass());
+		
 		result.put("status", "success");
 		result.put("msg", this.getInfo(101010024));	// 101010024=更新成功
 		return result;

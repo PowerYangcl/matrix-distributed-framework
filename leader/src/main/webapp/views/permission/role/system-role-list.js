@@ -24,7 +24,7 @@ layui.config({
  	  	         	{field:'type', title:'平台名称', width:250, sort: true},
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:200}
+ 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:180}
  	    	  	]
   	      	],
   	    	page: true
@@ -174,7 +174,8 @@ layui.config({
 					}, 
 					function(index , ele) {  // 取消按钮
 						layer.close(index);
-					});
+					}
+				);
 	        },
 	        
 			// 角色功能弹层
@@ -291,7 +292,7 @@ layui.config({
 				
 				var html = '<form id="dialog-role-form"><table class="dialog-form" style="width:100%">';
 					html += '<tr>';
-						html += '<td align="right">角色名称：</td>';
+						html += '<td align="right" style="width:195px">角色名称：</td>';
 						html += '<td align="left"><input type="text" id="name" name="roleName" value="' + roleName + '" placeholder="角色名称 20个字以内 " autocomplete="off" style="margin-bottom: 10px;" maxlength="20"></td>';
 					html += '</tr>';
 					html += '<tr>';
@@ -299,9 +300,7 @@ layui.config({
 						html += '<td align="left"><input type="text" id="roleDesc" name="roleDesc" value="' + roleDesc + '" placeholder="角色名称 50个字以内 " autocomplete="off" style="margin-bottom: 10px;" maxlength="50"></td>';
 					html += '</tr>';
 					if(type == 'add'){
-						html += '<tr>';
-							html += pageDialog.drawPlatformRadio();
-						html += '</tr>';
+						html += pageDialog.drawPlatformRadio();
 					}else{
 						html += '<input type="hidden" name="id" value="' + id + '">';
 						html += '<input type="hidden" name="oldRoleName" value="' + oldRoleName + '">';
@@ -331,7 +330,7 @@ layui.config({
 			
 			// 绘制平台分配Radio框
 			drawPlatformRadio : function(){
-				var html_ = '<td align="right">平台分配：</td><td align="left">';
+				var html_ = '<tr><td align="right">平台分配：</td><td align="left">';
 				var url_ = layui.setter.path + 'manager/ajax_platform_info_list.do';
 				var data_ = null;
 				var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
@@ -349,7 +348,7 @@ layui.config({
 						}
 					}
 				}
-				return html_ + '</td>';
+				return html_ + '</td></tr>';
 			},
 			
 			demoDialog : function(){
@@ -392,7 +391,20 @@ layui.config({
           			cancel : function(){  // 右上角关闭回调。return false; // 开启该代码可禁止点击该按钮关闭
           			}
 		        });
-			}
+			},
+			
+			demoPrompt : function(o){
+				layer.prompt(
+					{
+						title: '系统提示：*******************', 
+						formType: 0, 	 // 输入框类型。0：文本 | 1：密码(默认) | 2：多行文本
+						maxlength: 40, // 可输入文本的最大长度，默认500
+					}, 
+					function(value , index){
+						layer.close(index);
+			        }
+				);
+			},
 		}
 
 	});
