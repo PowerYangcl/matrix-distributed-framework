@@ -54,6 +54,19 @@ public class PermissionsController extends BaseController{
 	}
 	
 	/**
+	 * @description: 返回系统用户列表-角色列表弹窗页面
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月6日 下午5:47:59 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping("dialog_permissions_system_role_list")
+	public String dialogPermissionsSystemRoleList(HttpSession session){
+		super.userBehavior(session, logger, "dialog_permissions_system_role_list", "返回系统用户列表-角色列表弹窗页面dialog-system-role-list.jsp");
+		return "views/permission/user/dialog-system-role-list";
+	}
+	
+	/**
 	 * @description: 前往系统功能列表界面
 	 *
 	 * @author Yangcl

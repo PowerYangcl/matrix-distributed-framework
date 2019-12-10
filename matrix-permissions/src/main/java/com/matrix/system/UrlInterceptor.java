@@ -24,6 +24,7 @@ import com.matrix.pojo.view.McUserInfoView;
  * 	系统强制要求：
  * 			api.do：系统开放接口
  * 			page_：二级菜单栏对应请求，例如：page_user_list。page代表页面，user代表用户模块，list代表列表页面
+ * 			dialog_：系统页面弹框；基于layer.open打开的jsp页面，通常是弹框分页列表，极少数情况是复杂的添加/编辑页。
  * 			ajax_：系统所有异步ajax请求必须以此开头
  * 	其他请求全部会被拦截，无法访问
  *
@@ -63,12 +64,33 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         		return true;	// 如果用户已经登录则可以访问首页        
         	}
         	
-        	if(StringUtils.startsWith(url, "page_")){ 
+        	
+        	if(StringUtils.startsWith(url, "dialog_")) {
         		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(info.getId().toString()), McUserRoleCache.class);
+        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
         		List<McSysFunction> list = cache.getMsfList();
         		for(McSysFunction sf : list) {
-        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 内部跳转页面
+        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+        			if(sf.getNavType() != null && sf.getNavType() == 5){ 
+        				String [] arr = sf.getFuncUrl().split("/");
+        				if(arr[arr.length -1].equals(url)){
+        					return true;
+        				}
+        			}
+        		}
+        		
+        		String ajaxErrorUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-error.html" ;
+    			response.sendRedirect(ajaxErrorUrl);
+    			return false;
+        	}
+        	
+        	if(StringUtils.startsWith(url, "page_")){ 
+        		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+        		System.out.println(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()));
+        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
+        		List<McSysFunction> list = cache.getMsfList();
+        		for(McSysFunction sf : list) {
+        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
         			if(sf.getNavType() != null && sf.getNavType() == 3){ 
         				String [] arr = sf.getFuncUrl().split("/");
         				if(arr[arr.length -1].equals(url)){
@@ -76,6 +98,10 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         				}
         			}
         		}
+        		
+        		String pageErrorUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/page-error.html" ;
+        		response.sendRedirect(pageErrorUrl);
+		        return false;
         	}
         	
         	if(StringUtils.startsWith(url, "ajax_")) {
@@ -83,18 +109,18 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
         			String btn = request.getParameter("eleValue");
         			String ajaxErrorUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-error.html" ;
         			if(StringUtils.isBlank(btn)) {
-        				// 如果请求被排除则跳转到默认提示页面  				TODO 此处应该提示缺少按钮级权限->按钮权限标识丢失
+        				// 如果请求被排除则跳转到默认提示页面
         		        response.sendRedirect(ajaxErrorUrl);
         		        return false;
         			}
         			
         			// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-            		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "InitMcUserRole").get(info.getId().toString()), McUserRoleCache.class);
+            		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
             		List<McSysFunction> list = cache.getMsfList();
             		for(McSysFunction sf : list) {
-            			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 内部跳转页面
-            			if(sf.getNavType() != null && sf.getNavType() > 3){ 	// 4 页面按钮|5 内部跳转页面
-            				if(btn.equals(sf.getEleValue())){
+            			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+            			if(sf.getNavType() != null && sf.getNavType() == 4){
+            				if(btn.equals(sf.getEleValue()) && url.equals(sf.getAjaxBtnUrl())){  // ajax_btn_*****需要与eleValue匹配
             					return true;
             				}
             			}

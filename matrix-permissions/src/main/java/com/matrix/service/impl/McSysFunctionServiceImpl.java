@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseServiceImpl;
-import com.matrix.base.interfaces.IBaseCache;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -38,7 +37,6 @@ import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcSysFunctionService;
 import com.matrix.util.DateUtil;
 import com.matrix.util.NetUtil;
-import com.matrix.util.UuidUtil;
 
 @Service("mcSysFunctionService") 
 public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFunction , McSysFunctionDto , McSysFunctionView> implements IMcSysFunctionService {
@@ -63,8 +61,6 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	/**
 	 * @description: 添加系统功能到数据库-mc_sys_function表添加记录
 	 * 
-	 * @param e
-	 * 
 	 * @author Yangcl 
 	 * @date 2017年3月1日 上午11:05:51 
 	 * @version 1.0.0.1
@@ -77,30 +73,67 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			entity.setCreateUserName(userInfo.getUserName()); 
 			entity.setUpdateUserId(userInfo.getId());
 			entity.setUpdateUserName(userInfo.getUserName());
-			if(entity.getNavType() == 0) {		// 平台默认标识码|nav_type=0，此处为系统生成默认值
-				entity.setPlatform(DateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + DateUtil.getDateLongHex("HHmmss").toUpperCase());                           
-			}else if(entity.getNavType() == 2){
-				entity.setStyleKey(UuidUtil.uid());
-			}else if(entity.getNavType() == 4 || entity.getNavType() == 5){  // 4: 页面按钮 5: 内部跳转页面 
-//				entity.setEleValue("btn-" + UuidUtil.uid()); 
+			
+			switch(entity.getNavType()){
+			    case 0 :		// 平台默认标识码|nav_type=0，此处为系统生成默认值
+			    	entity.setPlatform(DateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + DateUtil.getDateLongHex("HHmmss").toUpperCase());     
+			        break;  
+			    case 1 :			// 1 横向导航栏
+			        break; 
+			    case 2 :		 	// 1 级菜单栏
+			        break; 
+			    case 3 :			// 2级菜单栏
+			    	if(StringUtils.isBlank(entity.getFuncUrl())) {
+			    		result.put("status", "error");
+						result.put("msg", this.getInfo(101010049));		// 101010049=系统功能添加失败! 【页面跳转地址】不得为空
+						return result;
+					}
+			    	entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+			        break; 
+			    case 4 :			// 页面按钮
+			    	if(StringUtils.isBlank(entity.getEleValue())) {
+						result.put("status", "error");
+						result.put("msg", this.getInfo(101010048));		// 101010048=系统功能添加失败! 【页面按钮标识】不得为空
+						return result;
+					}
+			    	if(StringUtils.isBlank(entity.getAjaxBtnUrl())) {
+			    		result.put("status", "error");
+						result.put("msg", this.getInfo(101010051));		// 101010051=系统功能添加失败! 【按钮请求路径】不得为空
+						return result;
+			    	}
+			    	entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+			        break; 
+			    case 5 :			//  按钮内包含跳转页面(dialog或新页面)
+			    	if(StringUtils.isBlank(entity.getEleValue())) {
+						result.put("status", "error");
+						result.put("msg", this.getInfo(101010048));		// 101010048=系统功能添加失败! 【页面按钮标识】不得为空
+						return result;
+					}
+			    	if(StringUtils.isBlank(entity.getFuncUrl())) {
+			    		result.put("status", "error");
+						result.put("msg", this.getInfo(101010050));		// 101010050=系统功能添加失败! 【按钮跳转地址】不得为空
+						return result;
+					}
+			    	entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+			        break; 
 			}
+			
 			
 			int count = mcSysFunctionMapper.insertSelective(entity);
 			if(count == 1){
 				result.put("status", "success");
-				result.put("msg", "添加成功!");
+				result.put("msg", this.getInfo(101010022));		// 101010022=添加成功
 				// 开始创建缓存
 				launch.loadDictCache(DCacheEnum.McSysFunc , null).set(entity.getId().toString(), JSONObject.toJSONString(entity) , 30*24*60*60); 
 				result.put("entity", entity);
 			}else{
 				result.put("status", "error");
-				result.put("msg", "添加失败!");
+				result.put("msg", this.getInfo(101010023));			// 101010023=添加失败
 			}
 		}else{
 			result.put("status", "error");
-			result.put("msg", "功能名称|父节点不能为空!");
+			result.put("msg", this.getInfo(101010059));   // 101010059=功能名称 | 父节点不能为空 ! 
 		}
-		
 		return result;
 	}
 
@@ -119,6 +152,50 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			entity.setUpdateTime(new Date());
 			entity.setUpdateUserId(userInfo.getId());
 			entity.setUpdateUserName(userInfo.getUserName()); 
+			
+			Integer type = entity.getNavType();  // navTpye = 4 or 5会由前端JS传入，其他则需要查询数据库来判断
+			if(entity.getNavType() == null) {
+				McSysFunction find = mcSysFunctionMapper.find(entity.getId());
+				type = find.getNavType();
+			}
+			switch(type){
+			    case 3 :			// 2级菜单栏
+			    	if(StringUtils.isBlank(entity.getFuncUrl())) {
+			    		result.put("status", "error");
+						result.put("msg", this.getInfo(101010053));		// 101010053=系统功能更新失败! 【页面跳转地址】不得为空
+						return result;
+					}
+			    	entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+			        break; 
+			    case 4 :			// 页面按钮
+			    	if(StringUtils.isBlank(entity.getEleValue())) {
+						result.put("status", "error");
+						result.put("msg", this.getInfo(101010052));		// 101010052=系统功能更新失败! 【页面按钮标识】不得为空
+						return result;
+					}
+			    	if(StringUtils.isBlank(entity.getAjaxBtnUrl())) {
+			    		result.put("status", "error");
+						result.put("msg", this.getInfo(101010055));		// 101010055=系统功能更新失败! 【按钮请求路径】不得为空
+						return result;
+			    	}
+			    	entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+			        break; 
+			    case 5 :			//  按钮内包含跳转页面(dialog或新页面)
+			    	if(StringUtils.isBlank(entity.getEleValue())) {
+						result.put("status", "error");
+						result.put("msg", this.getInfo(101010052));		// 101010052=系统功能更新失败! 【页面按钮标识】不得为空
+						return result;
+					}
+			    	if(StringUtils.isBlank(entity.getFuncUrl())) {
+			    		result.put("status", "error");
+						result.put("msg", this.getInfo(101010054));		// 101010054=系统功能更新失败! 【按钮跳转地址】不得为空
+						return result;
+					}
+			    	entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+			        break; 
+			}
+			
+			
 			int count = mcSysFunctionMapper.updateSelective(entity);
 			if(count == 1){
 				result.put("status", "success");
@@ -132,9 +209,8 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			}
 		}else{
 			result.put("status", "error");
-			result.put("msg", "功能名称不能为空!");
+			result.put("msg", this.getInfo(101010058));   // 101010058=功能名称不能为空!
 		}
-		
 		return result;
 	}
 
@@ -232,7 +308,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			}
 		} else {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(100090001)); // 结果集为空
+			result.put("msg", this.getInfo(100090001)); // 100090001=结果集为空
 		}
 		return result;  
 	}
@@ -580,40 +656,34 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 
 
 	/**
-	 * @deprecated
 	 * @description: 重新加载系统字典缓存
-	 * 
-	 * @param session
-	 * @author Yangcl 
-	 * @date 2017年4月24日 下午2:43:35 
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月10日 下午3:49:25 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject sysDictCacheReload() {
+	public JSONObject ajaxBtnUserCacheReload() {
 		JSONObject result = new JSONObject();
-//		try {
-//			IBaseCache dictCache = null;
-//			String package_ = this.getConfig("matrix-cache.default_package_url");
-//			String dictCacheClass = this.getConfig("matrix-cache.sub_project_cache_init");
-//			if(StringUtils.isNotBlank(dictCacheClass)){
-//				String [] arr = dictCacheClass.split(",");
-//				for(int i = 0 ; i < arr.length ; i ++){
-//					Class<?> clazz = Class.forName(package_ + arr[i]);   
-//					if (clazz != null && clazz.getDeclaredMethods() != null){
-//						dictCache = (IBaseCache) clazz.newInstance();
-//						dictCache.refresh(null);
-//					}
-//				}
-//			}
-//		} catch (Exception e) {
-//			result.put("status", "error");
-//			result.put("msg", this.getInfo(101010008)); // 系统异常
-//			return result;
-//		}
+		try {
+			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.McRole , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDel("");
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010008)); // 系统异常
+			return result;
+		}
 		
 		result.put("status", "success");
 		result.put("msg", this.getInfo(101010011)); // 系统字典缓存刷新完成!
 		return result;
 	}
+	
+	
+	
+	
+	
 
 	public JSONObject ajaxFuncRole(McUserInfo e, HttpServletRequest request) {
 		JSONObject result = new JSONObject();

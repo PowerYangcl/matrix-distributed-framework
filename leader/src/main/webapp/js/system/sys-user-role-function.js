@@ -429,11 +429,13 @@ var surfunc = {
             	html_ += '页面按钮位置：<select id="btnArea" name="btnArea" class="radius3"  style="margin-left:0px; margin-bottom: 10px;">';
 				html_ += '<option value="10001">功能区域</option><option value="10002">查询区域</option><option value="10003">数据区域</option></select><br/>';
 				
-            	html_ += '页面按钮类型：<select id="navType" name="navType" class="radius3" onchange="surfunc.changeNodeType()" style="margin-left:0px; margin-bottom: 10px;">';        
+            	html_ += '页面按钮类型：<select id="navType" name="navType" class="radius3" onchange="surfunc.changeNodeType(1)" style="margin-left:0px; margin-bottom: 10px;">';        
             	html_ += '<option value="4">页面按钮</option><option value="5">内部跳转页面</option></select><br/>';
-				html_ += '<div id = "node-type" style="margin-bottom: 10px;"></div>';
+				html_ += '<div id = "node-type" style="margin-bottom: 10px;">';
+				html_ += '按钮请求路径：<input type="text" name="ajaxBtnUrl" class="smallinput " placeholder="如：ajax_btn_func_add"  style="margin-bottom: 10px;" value="" ><br/>';
+				html_ += '</div>';	
 				
-				html_ += '页面按钮标识：<input type="text" name="eleValue" class="smallinput " placeholder="如：二级菜单功能:按钮用途"  style="margin-bottom: 10px;" value="" ><br/>' 
+				html_ += '页面按钮标识：<input type="text" name="eleValue" class="smallinput " placeholder="如：二级菜单功能:按钮用途"  style="margin-bottom: 10px;" value="" ><br/>';
             	
             	html_ += '<textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput "  placeholder="备注信息描述" style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
@@ -462,15 +464,18 @@ var surfunc = {
             	}
             	html_ += '</select><br/>';
             	
-            	html_ += '页面按钮类型：<select id="navType" name="navType" class="radius3" onchange="surfunc.changeNodeType()" style="margin-left:0px; margin-bottom: 10px;">'; 
+            	html_ += '页面按钮类型：<select id="navType" name="navType" class="radius3" onchange="surfunc.changeNodeType(2)" style="margin-left:0px; margin-bottom: 10px;">'; 
             	if(treeNode.navType == 4){
             		html_ += '<option value="4" selected>页面按钮</option><option value="5">内部跳转页面</option></select><br/>';
-					html_ += '<div id = "node-type" style="margin-bottom: 10px;"></div>';
-	            	html_ += '<input type="hidden" name="funcUrl" value="" >';  // 更新时，此处置空
+					html_ += '<div id = "node-type" style="margin-bottom: 10px;">';
+						html_ += '<input type="hidden" name="funcUrl" value="" >';  				// 更新时，此处置空
+						html_ += '按钮请求路径：<input type="text" name="ajaxBtnUrl" class="smallinput " placeholder="如：ajax_btn_func_add"  style="margin-bottom: 10px;" value="' + treeNode.ajaxBtnUrl + '" ><br/>' 
+	            	html_ += '</div>';
             	}else{
             		html_ += '<option value="4">页面按钮</option><option value="5"  selected>内部跳转页面</option></select><br/>';
             		html_ += '<div id = "node-type" style="margin-bottom: 10px;">';
-            		html_ += '按钮跳转地址：<input type="text" class="smallinput " placeholder="funcUrl" style="margin-bottom: 10px;" name="funcUrl" value="' + treeNode.funcUrl + '" ><br/>'; 
+            			html_ += '按钮跳转地址：<input type="text" class="smallinput " placeholder="funcUrl" style="margin-bottom: 10px;" name="funcUrl" value="' + treeNode.funcUrl + '" ><br/>';
+            			html_ += '<input type="hidden" name="ajaxBtnUrl" value="" >';  				// 更新时，此处置空
             		html_ += '</div>';
             	}
             	
@@ -481,16 +486,24 @@ var surfunc = {
             $("#tree-node-edit").append(html_);
         },
 
-        changeNodeType:function(){
+        changeNodeType:function(flag){
+        	var funcUrl_ = "";
+        	var ajaxBtnUrl_ = "";
+        	if(flag == 2){
+        		funcUrl_ = surfunc.currentNode.funcUrl;
+        		ajaxBtnUrl_ = surfunc.currentNode.ajaxBtnUrl;
+        	}
         	$("#node-type").empty(); 
         	var val_ = $("#navType").val();
-        	$("input[name='funcUrl']").remove();
+        	// $("input[name='funcUrl']").remove();
         	var html_ = '';
         	if(val_ == 4){      // 页面按钮
-        		html_ += '<input type="hidden" name="funcUrl" value="" >';   // 更新时，此处置空
+        		html_ += '<input type="hidden" name="funcUrl" value="" >';   		// 更新时，此处置空
+        		html_ += '按钮请求路径：<input type="text" name="ajaxBtnUrl" class="smallinput " placeholder="如：ajax_btn_func_add"  style="margin-bottom: 10px;" value="' + ajaxBtnUrl_ + '" ><br/>' 
         		$("#node-type").append(html_); 
         	}else{  // 内部跳转页面 
-        		html_ += '按钮跳转地址：<input type="text" class="smallinput " placeholder="exa/example.do" style="margin-bottom: 10px;" name="funcUrl" value="" ><br/>';
+        		html_ += '按钮跳转地址：<input type="text" class="smallinput " placeholder="exa/example.do" style="margin-bottom: 10px;" name="funcUrl" value="' + funcUrl_ + '" ><br/>';
+        		html_ += '<input type="hidden" name="ajaxBtnUrl" value="" >';   // 更新时，此处置空
         		$("#node-type").append(html_); 
         	}
         },
@@ -525,6 +538,7 @@ var surfunc = {
                         styleClass : e.styleClass,
                         styleKey : e.styleKey,
                         funcUrl : e.funcUrl,
+                        ajaxBtnUrl : e.ajaxBtnUrl,
                         remark : e.remark,
                         btnArea : e.btnArea,
                         eleValue : e.eleValue

@@ -24,6 +24,7 @@
 		<result column="style_class" property="styleClass" jdbcType="VARCHAR" />
 		<result column="style_key" property="styleKey" jdbcType="VARCHAR" />
 		<result column="func_url" property="funcUrl" jdbcType="VARCHAR" />
+		<result column="ajax_btn_url" property="ajaxBtnUrl" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="VARCHAR" />
 		<result column="btn_area" property="btnArea" jdbcType="VARCHAR" />  
 		<result column="ele_value" property="eleValue" jdbcType="VARCHAR" />  
@@ -141,6 +142,9 @@
 			<if test="funcUrl != null">
 				func_url,
 			</if>
+			<if test="ajaxBtnUrl != null">
+				ajax_btn_url,
+			</if>
 			<if test="remark != null">
 				remark,
 			</if> 
@@ -203,6 +207,9 @@
 			</if>
 			<if test="funcUrl != null">
 				#{funcUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="ajaxBtnUrl != null">
+				#{ajaxBtnUrl , jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				#{remark,jdbcType=VARCHAR},
@@ -268,6 +275,9 @@
 			</if>
 			<if test="funcUrl != null">
 				func_url = #{funcUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="ajaxBtnUrl != null">
+				ajax_btn_url = #{ajaxBtnUrl , jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				remark = #{remark,jdbcType=VARCHAR},

@@ -11,12 +11,13 @@ public class McSysFunction extends BaseEntity{
     private String name;
     private String parentId;
     private Integer seqnum;
-    private Integer navType;		// -1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 内部跳转页面
+    private Integer navType;		// -1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
     private Integer authorize;      // 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
     private String platform; 			// 平台默认标识码|nav_type=0，此处为系统生成默认值
     private String styleClass;
     private String styleKey;
-    private String funcUrl;
+    private String funcUrl;			// nav_type=3或5; 标识为一个跳转页面 如：example/page_form_example.do
+    private String ajaxBtnUrl; 	// 按钮请求路径|nav_type=4时保存所请求的接口与本条记录中ele_value的值一一对应|虽然都是按钮但nav_type=5通常此处为空
     private String remark;
     /**
      * 按钮节点所在页面的位置，只有只有导航树的最后一层：按钮节点才会有。
@@ -26,8 +27,7 @@ public class McSysFunction extends BaseEntity{
      */
     private String btnArea; 
     /**
-     * 元素ID标识 配合btn_area使用。btnArea = 10003，则eleValue在页面表达为一个类(html class)
-     * btnArea = 10001 或 btnArea = 10002 则eleValue在页面表达为一个id(html id)
+     * 按钮权限唯一标识
      */
     private String eleValue;
     
@@ -85,6 +85,12 @@ public class McSysFunction extends BaseEntity{
 	}
 	public void setFuncUrl(String funcUrl) {
 		this.funcUrl = funcUrl;
+	}
+	public String getAjaxBtnUrl() {
+		return ajaxBtnUrl;
+	}
+	public void setAjaxBtnUrl(String ajaxBtnUrl) {
+		this.ajaxBtnUrl = ajaxBtnUrl;
 	}
 	public String getRemark() {
 		return remark;

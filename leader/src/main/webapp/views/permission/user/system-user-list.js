@@ -58,6 +58,9 @@ layui.config({
 			case 'add':
 				pageDialog.addDialog(o);
 				break;
+			case 'reload':
+				pageDialog.userInfoReload(o);
+				break;
 		}
     });
     
@@ -69,6 +72,8 @@ layui.config({
 			pageDialog.editDialog(o);
 		}else if (o.event === 'password') {
 			pageDialog.resetPassword(o)
+		}else if(o.event === 'userRoleList'){
+			pageDialog.userRoleList(o);
 		}
     });
     
@@ -200,7 +205,7 @@ layui.config({
 		},
 		
 		// 删除系统用户
-		deleteSystemUser : function(o){
+	    deleteSystemUser : function(o){
 			layer.confirm('您确定要删除这个用户【' + o.data.userName + '】吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 				function(index , ele) {  // 确定按钮
 					var type_ = 'post';
@@ -226,7 +231,56 @@ layui.config({
 			);
 		},
 		
+		// 重置所有用户的信息
+		userInfoReload : function(o){
+			layer.confirm('您确定要重置所有用户的信息吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+				function(index , ele) {  // 确定按钮
+					var type_ = 'post';
+		            var url_ = layui.setter.path + 'sysrole/ajax_btn_user_cache_reload.do';
+		        	var data_ = {
+		        			eleValue : o.key
+	        			}; 
+		        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
+		            if(obj.status == 'success'){
+		            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+		            		$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
+		            		layer.close(a);
+		            		layer.close(index);
+	            		});
+		            }else{
+		            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+		            }
+				}, 
+				function(index , ele) {  // 取消按钮
+					layer.close(index);
+				}
+			);
+		},
 		
+		// 用户角色列表
+		userRoleList : function(o){
+			layer.open({
+				title : '系统角色列表',
+	          	type : 2,	// 1：解析HTML代码段；2：解析url
+	          	area : ['1500px', '722px'],
+	          	maxmin : true,				// 开启弹层最小化和最大化按钮
+	          	fixed : false,
+	          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
+	          	resize : false,        // 是否允许拉伸 默认：true
+          		content : layui.setter.path + 'permissions/dialog_permissions_system_role_list.do',
+          		anim : 0 ,		// 弹窗从上掉落
+          		btn : ['提交' , '取消'],
+          		yes : function(index , layero){
+					
+          		},
+      			btn2 : function(index, layero){ // 按钮【取消】的回调
+      				//return false 开启该代码可禁止点击该按钮关闭
+      			}, 
+      			cancel : function(){  // 右上角关闭回调
+      				// return false; // 开启该代码可禁止点击该按钮关闭
+      			}
+	        });
+		},
 		
 		
 		drawDialogPage : function(type , key , e){
@@ -334,6 +388,11 @@ layui.config({
 			}
 			return html_ + '</td></tr>';
 		},
+	
+	
+	
+	
+	
 	};
 	
 	

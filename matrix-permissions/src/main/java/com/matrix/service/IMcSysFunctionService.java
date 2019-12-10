@@ -47,7 +47,14 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 
 	public JSONObject deleteUserRole(McUserRoleDto d);
 
-	public JSONObject sysDictCacheReload();
+	/**
+	 * @description: 重新加载系统字典缓存
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月10日 下午3:49:25 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxBtnUserCacheReload();
 
 	public JSONObject ajaxFuncRole(McUserInfo entity, HttpServletRequest request);
 
