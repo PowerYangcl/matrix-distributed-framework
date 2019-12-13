@@ -328,9 +328,6 @@ layui.config({
 				return html;
 			},
 			
-			
-			
-			
 			// 绘制平台分配Radio框
 			drawPlatformRadio : function(){
 				var html_ = '<tr><td align="right">平台分配：</td><td align="left">';
@@ -390,7 +387,18 @@ layui.config({
 	          		},
           			end : function(){  // 弹窗销毁后的回调函数
 	          		},
-	          		yes : function(index , layero){
+	          		
+	          		/**
+	          		 * 弹层框按钮回调方法中的参数说明(其他按钮回调方法通用)：
+	          		 * 
+	          		 * 	index 		当前窗体标识，用户关闭指定弹窗，layer.js原装参数。
+	          		 * 	layero		当前弹窗窗体对象，layer.js原装参数。
+	          		 * 	btn			当前按钮的jquery对象，可以获取btn.attr("key")，该参数为再次封装layer.js对象后的新参数
+	          		 * 					当前按钮html文本为：<a position="0" class="layui-layer-btn0" key="system_role_list:dialog_submit">提交</a>
+	          		 * 					position：按钮位置，从0开始计数；key：当前权限的按钮标识。
+	          		 * 					该参数有使用意义的情况为当前layer弹层需要使用权限控制，在layer.js中搜索position可以定位到相关修改后的代码。
+	          		 */
+	          		yes : function(index , layero , btn){
 	          			 // 按钮【提交】的回调
 	          			layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
 	          				$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
@@ -398,7 +406,7 @@ layui.config({
 		            		layer.close(index);
 	            		});
 	          		},
-          			btn2 : function(index , layero){ 		// 按钮【取消】的回调。return false 开启该代码可禁止点击该按钮关闭
+          			btn2 : function(index , layero , btn){ 		// 按钮【取消】的回调。return false 开启该代码可禁止点击该按钮关闭
           				layer.confirm('您确定要删除吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
           					function(index , ele) {  // 确定按钮
           							

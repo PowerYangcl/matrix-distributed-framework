@@ -269,7 +269,7 @@ layui.config({
 	          	resize : false,        // 是否允许拉伸 默认：true
           		content : layui.setter.path + 'permissions/dialog_permissions_system_role_list.do',
           		anim : 0 ,		// 弹窗从上掉落
-          		btn : ['提交' , '取消'],
+//          		btn : ['提交' , '取消'],
           		yes : function(index , layero){
 					
           		},
