@@ -214,7 +214,45 @@ Class.pt.config = {
   moveType: 1,
   resize: true,
   scrollbar: true, //是否允许浏览器滚动条
-  tips: 2
+  tips: 2,
+  
+  /**	securityKey：非必选项。与userPageBtns属性结合使用 - Yangcl
+   * 	只用在以layer.open所打开的弹框中，以【数组】形式保存这个弹框中每个按钮所对应的权限key
+   * 	例如，layer.open中的属性：btn : ['提交' , '解绑' , '流转']。代表弹框中的三个按钮，其默认渲染
+   * 	顺序为0-提交，1-解绑，2-流转；其中【流转】按钮不需要权限控制。
+   * 	那么securityKey的值为：securityKey : ['system_role_list:submit' , 'system_role_list:cancel' , '']
+   * 	其中：【提交】对应'system_role_list:submit'；【解绑】对应'system_role_list:cancel'
+   * 	【流转】按钮则对应一个空值，占位使用。
+   * 	请参考：system-role-list.js中的roleFuncDialog()的使用。
+   */
+  securityKey : null,
+  
+  /** userPageBtns：非必选项。与securityKey属性结合使用 - Yangcl
+   * 	系统用户在当前页面所拥有的权限；与securityKey配合使用。
+   * 	只用在以layer.open所打开的弹框中，以【数组】形式保存。
+   */
+  userPageBtns : null,
+  
+  // 过滤出当前tab页面中的按钮，需要结合userPageBtns属性使用 - Yangcl
+  dialogBtns : function(){
+	  if(this.userPageBtns == null || typeof this.userPageBtns == 'undefined'){
+		  return new Array();  // 返回一个空数组，避免后面判空
+	  }
+	  
+	  var checkArr = layui.$(".layui-this" , parent.document);
+	  var tabId = null;
+	  if(checkArr.length > 1){
+		  tabId = layui.$(".layui-this" , parent.document)[1].id;
+	  }else{
+		  tabId = layui.$(".layui-this" , parent.document)[0].id;
+	  }
+	  var result = this.userPageBtns.get('btns-' + tabId);
+	  if(typeof result == 'undefined' || result == null || result.length == 0){
+		  return new Array();
+	  }
+	  
+	  return result.split(",");
+  }
 };
 
 //容器
@@ -246,9 +284,29 @@ Class.pt.vessel = function(conType, callback){
       + (config.btn ? function(){
         var button = '';
         typeof config.btn === 'string' && (config.btn = [config.btn]);
+        
+        
         for(var i = 0, len = config.btn.length; i < len; i++){
-          button += '<a class="'+ doms[6] +''+ i +'">'+ config.btn[i] +'</a>'
+        	var key = '';
+        	if(config.securityKey != null && config.securityKey.length > 0) {
+        		if(typeof config.securityKey[i] == 'undefined' || config.securityKey[i].length == 0){
+        			key = '';
+        			button += '<a position="'+ i +'" class="'+ doms[6] + i +'" key="">'+ config.btn[i] +'</a>'
+        			continue;
+        		}else{
+        			key = ' key="' + config.securityKey[i] + '" ';
+        		}
+        		
+        		for(var n = 0; n < config.dialogBtns().length; n++){
+        			if(config.securityKey[i] == config.dialogBtns()[n]){
+        				button += '<a position="'+ i +'" class="'+ doms[6] + i +'" ' + key + '>'+ config.btn[i] +'</a>'
+        			}
+        		}
+        	}else{
+        		button += '<a class="'+ doms[6] +''+ i +'" ' + key + '>'+ config.btn[i] +'</a>'
+        	}
         }
+        
         return '<div class="'+ doms[6] +' layui-layer-btn-'+ (config.btnAlign||'') +'">'+ button +'</div>'
       }() : '')
       + (config.resize ? '<span class="layui-layer-resize"></span>' : '')
@@ -635,22 +693,26 @@ Class.pt.callback = function(){
   }
   layer.ie == 6 && that.IE6(layero);
   
-  //按钮
-  layero.find('.'+ doms[6]).children('a').on('click', function(){
-    var index = $(this).index();
-    if(index === 0){
-      if(config.yes){
-        config.yes(that.index, layero)
-      } else if(config['btn1']){
-        config['btn1'](that.index, layero)
-      } else {
-        layer.close(that.index);
-      }
-    } else {
-      var close = config['btn'+(index+1)] && config['btn'+(index+1)](that.index, layero);
-      close === false || layer.close(that.index);
-    }
-  });
+  // 按钮 改动过代码 - Yangcl
+  layero.find('.' + doms[6]).children('a').on('click', function() {
+	    var index = $(this).index();
+	    if (typeof $(this).attr("position") != 'undefined' && $(this).attr("position") != null) {
+	        index = Number($(this).attr("position"));	// securityKey有值的情况 - Yangcl
+	    }
+
+	    if (index === 0) {
+	        if (config.yes) {
+	            config.yes(that.index, layero, $(this))
+	        } else if (config['btn1']) {
+	            config['btn1'](that.index, layero)
+	        } else {
+	            layer.close(that.index);
+	        }
+	    } else {
+	        var close = config['btn' + (index + 1)] && config['btn' + (index + 1)](that.index, layero, $(this));
+	        close === false || layer.close(that.index);
+	    }
+	});
   
   //取消
   function cancel(){
