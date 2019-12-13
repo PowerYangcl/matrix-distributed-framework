@@ -229,12 +229,12 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2019年11月20日 下午3:41:54 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_relieve_mc_role", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_relieve_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxRelieveMcRole(McRoleDto dto , HttpSession session){
-		super.userBehavior(session, logger, "ajax_relieve_mc_role", "修改角色功能|【角色列表】->【角色功能】->【解绑】按钮");
+	public JSONObject ajaxBtnRelieveMcRole(McRoleDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_relieve_mc_role", "修改角色功能|【角色列表】->【角色功能】->【解绑】按钮");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.ajaxRelieveMcRole(dto);	
+		return mcSysFunctionService.ajaxBtnRelieveMcRole(dto);	
 	}
 	
 	

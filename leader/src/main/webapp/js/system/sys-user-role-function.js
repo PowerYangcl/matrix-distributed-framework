@@ -480,6 +480,7 @@ var surfunc = {
             	}
             	
             	html_ += '页面按钮标识：<input type="text" name="eleValue" class="smallinput " placeholder="如：二级菜单功能:按钮用途"  style="margin-bottom: 10px;" value="' + treeNode.eleValue + '" ><br/>' 
+            	html_ += '<textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput "  placeholder="备注信息描述" style="margin-bottom: 10px;">' + treeNode.remark + '</textarea><br/>';
             	html_ += '<input type="hidden" name="id" value="' + treeNode.id +'" >'; 
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
             }

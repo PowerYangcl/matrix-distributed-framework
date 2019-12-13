@@ -482,7 +482,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @date 2019年11月20日 下午3:41:54 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxRelieveMcRole(McRoleDto dto) {
+	public JSONObject ajaxBtnRelieveMcRole(McRoleDto dto) {
 		JSONObject result = new JSONObject();
 		
 		McUserInfoView userInfo = dto.getUserCache(); 

@@ -190,7 +190,9 @@ layui.config({
 		          	resize : false,        // 是否允许拉伸 默认：true
 	          		content : pageDialog.drawRoleFuncDialog(o),
 	          		anim : 0 ,		// 弹窗从上掉落
-	          		btn : ['提交' , '解绑' , '取消'],
+	          		btn : ['提交' , '解绑'],
+	          		securityKey : ['system_role_list:dialog_submit' , 'system_role_list:dialog_cancel'],
+	          		userPageBtns : window.parent.layui.setter.pageBtns,
 	          		success: function(layero, index){	// 开始追加ztree节点
 	          			surfunc.init(layui.setter.path).distributeUserRole(o.data.id , o.data.platform);  // 填充弹窗中的数据
 	          			$('#func-list').slimscroll({		// 自定义滚动条
@@ -200,11 +202,11 @@ layui.config({
 	          				height: '640px'  
 	          			});
 	          		},
-	          		yes : function(index , layero){
-	          			pageDialog.submitRoleFunc(index , o);
+	          		yes : function(index , layero , btn){
+	          			pageDialog.submitRoleFunc(index , o , btn.attr("key"));
 	          		},
-          			btn2 : function(index, layero){ // 按钮【解绑】的回调
-          				pageDialog.relieveRoleFunc(index , o);
+          			btn2 : function(index, layero , btn){ // 按钮【解绑】的回调
+          				pageDialog.relieveRoleFunc(index , o , btn.attr("key"));
           				return false;
           			}, 
           			cancel : function(){  // 右上角关闭回调
@@ -214,7 +216,7 @@ layui.config({
 			},
 			
 			// 提交与角色关联好的功能 
-			submitRoleFunc : function(index , o){ 
+			submitRoleFunc : function(index , o , eleValue_){ 
 				var roleId = o.data.id;  
 		    	var tree = $.fn.zTree.getZTreeObj("user-role-tree");
 		    	var checkArray = tree.getChangeCheckedNodes(); // 获取所有被选节点 
@@ -231,7 +233,7 @@ layui.config({
 		    	var data_ = {
 		    			mcRoleId:roleId,
 		    			ids:ids,
-	        			eleValue:o.key
+	        			eleValue:eleValue_
 		    	};  
 		    	var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 				if(obj.status == 'success'){
@@ -246,7 +248,7 @@ layui.config({
 		    },
 		    
 		    // 解绑按钮
-		    relieveRoleFunc : function(index , o){
+		    relieveRoleFunc : function(index , o , eleValue_){
 		    	var roleId = o.data.id;  
 		    	var tree = $.fn.zTree.getZTreeObj("user-role-tree");
 		    	var checkArray = tree.getChangeCheckedNodes(); // 获取所有被选节点 
@@ -259,9 +261,10 @@ layui.config({
 		    	}
 		    	ids = ids.substring(0 , ids.length -1); 
 		    	
-		        var url_ = layui.setter.path + 'sysrole/ajax_relieve_mc_role.do';
+		        var url_ = layui.setter.path + 'sysrole/ajax_btn_relieve_mc_role.do';
 		    	var data_ = {
 		    			mcRoleId:roleId,
+		    			eleValue:eleValue_
 		    	};  
 		    	var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 				if(obj.status == 'success'){
@@ -367,6 +370,22 @@ layui.config({
 	          		btnAlign : 'r',   					// 按钮排列。.btnAlign: 'l'	按钮左对齐|btnAlign: 'c'	按钮居中对齐|btnAlign: 'r'	按钮右对齐。默认值，不用设置
 	          		closeBtn : 1,    					// layer提供了两种风格的关闭按钮，可通过配置1和2来展示，如果不显示，则closeBtn: 0。默认：1
 	          		btn : ['提交' , '取消'],
+	          		
+					 /**	securityKey：非必选项。与userPageBtns属性结合使用 - Yangcl
+					  * 	只用在以layer.open所打开的弹框中，以【数组】形式保存这个弹框中每个按钮所对应的权限key - Yangcl
+					  * 	例如，layer.open中的属性：btn : ['提交' , '解绑' , '流转']。代表弹框中的三个按钮，其默认渲染
+					  * 	顺序为0-提交，1-解绑，2-流转；其中【流转】按钮不需要权限控制。
+					  * 	那么securityKey的值为：securityKey : ['system_role_list:submit' , 'system_role_list:cancel' , '']
+					  * 	其中：【提交】对应'system_role_list:submit'；【解绑】对应'system_role_list:cancel'
+					  * 	【流转】按钮则对应一个空值，占位使用。
+					  */
+	          		securityKey : ['system_role_list:submit' , 'system_role_list:cancel' , '' , '' , ''    ],
+	          		/** userPageBtns：非必选项。与securityKey属性结合使用 - Yangcl
+	          		 * 	系统用户在当前页面所拥有的权限；与securityKey配合使用。
+	          		 * 	只用在以layer.open所打开的弹框中，以【数组】形式保存。
+	          		 */
+	          		userPageBtns : window.parent.layui.setter.pageBtns,  // 因为是iframe嵌套所以这里获取父窗体的setter对象(此页面在子窗体中嵌套)。
+	          		
 	          		success: function(layero, index){	// 弹层绘制完成后的回调方法，携带两个参数，分别是当前层DOM当前层索引。
 	          		},
           			end : function(){  // 弹窗销毁后的回调函数

@@ -36,11 +36,11 @@
 			}
 			
 			form input[type=text] {
-			    width: 255px; 
+			    width: 398px
 			}
 			
 			form select {
-			    width: 280px; 
+			    width: 410px; 
 			}		   	
 		</style>
 		

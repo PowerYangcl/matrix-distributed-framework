@@ -26,7 +26,11 @@ layui.define([ 'laytpl', 'layer', 'element', 'util' ], function(exports) {
 		MOD_NAME : 'admin'  , 	// 模块事件名
 		debug : true 	 , 	// 是否开启调试模式。如开启，接口异常时会抛出异常 URL 等信息
 		
-		// 安全权限操作
+		/**
+		 * 安全权限操作
+		 * table.js：Class.prototype.pullData = function(curr) {} 使用2次
+		 * 
+		 */
 		security : function(btnMap){
 			var checkArr = layui.$(".layui-this" , parent.document);
 			var tabId = null;
@@ -35,11 +39,16 @@ layui.define([ 'laytpl', 'layer', 'element', 'util' ], function(exports) {
 			}else{
 				tabId = layui.$(".layui-this" , parent.document)[0].id;
 			}
-			var barr = btnMap.get('btns-' + tabId).split(",");
+			var result = btnMap.get('btns-' + tabId);
+			if(typeof result == 'undefined' || result == null || result.length == 0){
+				return;
+			}
+			
+			var barr = result.split(",");
 			for(var i = 0 ; i < barr.length ; i ++){
-				var key = barr[i].split("@")[1];
-				layui.$(".security-btn[key='" + key + "']").show();
-				layui.$(".security-btn[key='" + key + "']").removeClass("security-btn"); 
+//				var key = barr[i];
+				layui.$(".security-btn[key='" + barr[i] + "']").show();
+				layui.$(".security-btn[key='" + barr[i] + "']").removeClass("security-btn"); 
 			}
 			layui.$("a.layui-btn").removeAttr("style");	// 数据表格 操作列中的按钮移除元素本身的style样式，保留css样式
 			layui.$(".security-btn").remove();

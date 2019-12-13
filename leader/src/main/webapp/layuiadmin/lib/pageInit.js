@@ -105,7 +105,7 @@ layui.define([ 'view'] , function(exports){
 											var btns = sarr[s].btns;
 											if(btns.length != 0){
 												for(var b = 0 ; b < btns.length; b ++){
-													str += btns[b].data.btnArea + "@" + btns[b].data.eleValue + "," ; 
+													str += btns[b].data.eleValue + "," ; 
 												}
 												str = str.substring(0 , str.length - 1);
 											}

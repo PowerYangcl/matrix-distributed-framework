@@ -68,7 +68,7 @@
                 					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
                 					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
                 					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
-									<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:add" lay-event="reload">权限重置</button>
+									<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:reload" lay-event="reload">权限重置</button>
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
