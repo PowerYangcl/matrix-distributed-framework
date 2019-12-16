@@ -1,6 +1,14 @@
 /**
  * 系统权限配置 / 系统用户相关 / 系统用户列表/用户角色列表弹窗
  */
+
+parentTr : null;	// 保存父页面传递到子页面的当前行数据对象(请谨慎使用全局变量)
+// 父页面layer.open中的success方法调用此方法传入一个对象参数
+function currentTr (e){ // 当前行(tr)
+	parentTr = e;
+}
+
+
 layui.config({
     	base: '../layuiadmin/' //静态资源所在路径
   	}).extend({
@@ -14,8 +22,8 @@ layui.config({
   	      	elem: '#table-toolbar',				// 表格控制句柄
   	      	url : layui.setter.path + 'sysrole/ajax_user_role_list.do',
   	      	where: {
-  	      		userId:2,
-  	      		platform : '133C9CB27E18'
+  	      		userId : parentTr.id,
+  	      		platform : parentTr.platform
       		},
   	      	toolbar: '#table-search-toolbar',
   	      	title: '系统角色列表',
@@ -74,7 +82,7 @@ layui.config({
 			reset : function(){
 				$('#role-name').val('');
 				search.reload();
-			}
+			},
 		};
 		
 		// 页面弹窗对象

@@ -12,9 +12,9 @@ layui.config({
     table.render({
 		id: 'page-table-reload',  			// 页面查询按钮需要table.reload
       	elem: '#table-toolbar',				// 表格控制句柄
+      	title: '系统用户列表',
       	url : layui.setter.path + 'userInfo/ajax_system_user_list.do',
       	toolbar: '#table-search-toolbar',
-      	title: '系统用户列表',
       	height: 'full-100', 
       	limit: 16,
       	cols: [
@@ -269,16 +269,10 @@ layui.config({
 	          	resize : false,        // 是否允许拉伸 默认：true
           		content : layui.setter.path + 'permissions/dialog_permissions_system_role_list.do',
           		anim : 0 ,		// 弹窗从上掉落
-//          		btn : ['提交' , '取消'],
-          		yes : function(index , layero){
-					
+          		success: function(layero, index){	// 弹层绘制完成后的回调方法，携带两个参数，分别是当前层DOM当前层索引。
+                    var iframe = window['layui-layer-iframe' + index];  // 获取子页面的iframe
+                    iframe.currentTr(o.data); // 向子页面的全局函数child传参
           		},
-      			btn2 : function(index, layero){ // 按钮【取消】的回调
-      				//return false 开启该代码可禁止点击该按钮关闭
-      			}, 
-      			cancel : function(){  // 右上角关闭回调
-      				// return false; // 开启该代码可禁止点击该按钮关闭
-      			}
 	        });
 		},
 		
@@ -400,10 +394,6 @@ layui.config({
 	
 	
 });
-
-
-
-
 
 
 
