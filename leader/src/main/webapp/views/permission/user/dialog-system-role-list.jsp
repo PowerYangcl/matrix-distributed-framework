@@ -58,12 +58,12 @@
 								<div class="layui-btn-container">
 									<div class="layui-table-search-div" >角色名称：</div>
 									<input id="user-name" name="userName" class="layui-table-search" autocomplete="off">
-                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
-                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:dialog_search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:dialog_reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
-              					<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:edit" lay-event="edit">修改</a>
+              					<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_cancel" lay-event="edit">分配|取消</a>
             				</script>
             				
 						</div>

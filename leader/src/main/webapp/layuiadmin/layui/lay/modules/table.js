@@ -653,7 +653,11 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
                     }
                     
                     // 显示数据中的按钮 - Yangcl
-                    layui.setter.security(window.parent.layui.setter.pageBtns);
+                    if(window.parent.layui.setter.pageBtns.size != 0){
+                    	layui.setter.security(parent.layui.setter.pageBtns);
+                    }else{	// layer.open打开了弹框内嵌了列表页面的情况
+                    	layui.setter.security(parent.parent.layui.setter.pageBtns);
+                    }
                 },
                 error: function(e, m) {
                     that.errorView('Http数据接口请求异常，请检查您的网络：' + m);
@@ -661,7 +665,11 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
                     that.setColsWidth();
                     
                     // 显示数据中的按钮 - Yangcl
-                    layui.setter.security(window.parent.layui.setter.pageBtns);
+                    if(window.parent.layui.setter.pageBtns.size != 0){
+                    	layui.setter.security(parent.layui.setter.pageBtns);
+                    }else{ // layer.open打开了弹框内嵌了列表页面的情况
+                    	layui.setter.security(parent.parent.layui.setter.pageBtns);
+                    }
                 }
             });
         } else if (options.data.list && options.data.list.constructor === Array) { //已知数据

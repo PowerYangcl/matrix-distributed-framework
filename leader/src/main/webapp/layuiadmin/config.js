@@ -34,11 +34,30 @@ layui.define([ 'laytpl', 'layer', 'element', 'util' ], function(exports) {
 		security : function(btnMap){
 			var checkArr = layui.$(".layui-this" , parent.document);
 			var tabId = null;
-			if(checkArr.length > 1){
-				tabId = layui.$(".layui-this" , parent.document)[1].id;
-			}else{
-				tabId = layui.$(".layui-this" , parent.document)[0].id;
+			
+			switch(checkArr.length) {
+				 case 2:
+					 // 此种情况：主窗体左侧百叶窗焦点未丢失
+			    	 tabId = checkArr[1].id;
+			    	 break;
+			     case 1:
+			    	 // 此种情况：主窗体左侧百叶窗焦点已经丢失，只剩下tab页
+			    	 tabId = checkArr[0].id;
+			    	 break;
+			     case 0:		
+			    	 // 此种情况：layer.open打开的弹窗中引入的是一个新的列表页面
+			    	 checkArr = layui.$(".layui-this" , parent.parent.document);
+			    	 switch(checkArr.length) {
+				    	case 2:
+					    	tabId = checkArr[1].id;
+					    	break;
+					    case 1:
+					    	tabId = checkArr[0].id;
+					    	break;
+			    	 }
+			    	 break;			     
 			}
+			
 			var result = btnMap.get('btns-' + tabId);
 			if(typeof result == 'undefined' || result == null || result.length == 0){
 				return;

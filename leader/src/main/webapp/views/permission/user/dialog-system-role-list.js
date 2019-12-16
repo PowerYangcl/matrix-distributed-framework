@@ -22,7 +22,7 @@ layui.config({
  	  	         	{field:'roleName', title:'角色名称', width:200},
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:70}
+ 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:100}
  	    	  	]
   	      	],
   	    	page: true
