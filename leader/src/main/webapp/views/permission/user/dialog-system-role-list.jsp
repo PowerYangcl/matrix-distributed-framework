@@ -63,7 +63,11 @@
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
-              					<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_cancel" lay-event="edit">分配|取消</a>
+       						{{#  if(d.userId == -1){ }}
+            						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_cancel" lay-event="edit">分配</a>
+          						{{#  } else { }}
+            						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_cancel" lay-event="edit">取消</a>
+         						{{#  } }}
             				</script>
             				
 						</div>

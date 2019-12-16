@@ -12,7 +12,11 @@ layui.config({
   	    table.render({
   	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload
   	      	elem: '#table-toolbar',				// 表格控制句柄
-  	      	url : layui.setter.path + 'sysrole/ajax_system_role_list.do',
+  	      	url : layui.setter.path + 'sysrole/ajax_user_role_list.do',
+  	      	where: {
+  	      		userId:2,
+  	      		platform : '133C9CB27E18'
+      		},
   	      	toolbar: '#table-search-toolbar',
   	      	title: '系统角色列表',
   	      	height: 'full-100', 
@@ -22,7 +26,7 @@ layui.config({
  	  	         	{field:'roleName', title:'角色名称', width:200},
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:100}
+ 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:70}
  	    	  	]
   	      	],
   	    	page: true

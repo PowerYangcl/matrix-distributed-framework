@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseServiceImpl;
+import com.matrix.base.RpcResultCode;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -309,27 +310,35 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			dto.setPlatform(userCache.getPlatform()); 
 		}
 		
-		List<McRoleView> list = mcRoleMapper.queryPageView(dto);
-		if (list != null && list.size() > 0) {
-			List<McUserRole> urList = mcUserRoleMapper.selectByMcUserId(dto.getUserId());  
-			if(urList != null && urList.size() != 0){
-				for(int i = 0 ; i < list.size() ; i ++){
-					for(McUserRole ur : urList){
-						if(list.get(i).getId().longValue() == ur.getMcRoleId().longValue()){
-							list.get(i).setUserId(ur.getMcUserId()); 
+		try {
+			List<McRoleView> list = mcRoleMapper.queryPageView(dto);
+			result.put("status", "success");
+			if (list != null && list.size() > 0) {
+				List<McUserRole> urList = mcUserRoleMapper.selectByMcUserId(dto.getUserId());  
+				if(urList != null && urList.size() != 0){
+					for(int i = 0 ; i < list.size() ; i ++){
+						for(McUserRole ur : urList){
+							if(list.get(i).getId().longValue() == ur.getMcRoleId().longValue()){
+								list.get(i).setUserId(ur.getMcUserId()); 
+							}
 						}
 					}
 				}
+				result.put("code" , RpcResultCode.SUCCESS);
+			}else {
+				result.put("code" , RpcResultCode.RESULT_NULL);
+				result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
 			}
-			result.put("status", "success");
-		} else {
+			PageInfo<McRoleView> pageList = new PageInfo<McRoleView>(list);
+			result.put("data", pageList);
+			result.put("entity", dto);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
+			return result;
 		}
-		PageInfo<McRoleView> pageList = new PageInfo<McRoleView>(list);
-		result.put("data", pageList);
-		result.put("entity", dto);
-		return result;
 	}
 	
 }

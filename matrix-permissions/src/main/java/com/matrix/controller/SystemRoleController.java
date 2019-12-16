@@ -237,7 +237,6 @@ public class SystemRoleController  extends BaseController{
 		return mcSysFunctionService.ajaxBtnRelieveMcRole(dto);	
 	}
 	
-	
 	/**
 	 * @description: 重新加载系统字典缓存
 	 *
@@ -252,39 +251,44 @@ public class SystemRoleController  extends BaseController{
 		return mcSysFunctionService.ajaxBtnUserCacheReload();
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
-	 * @descriptions 展示权限列表|如果用户已经有权限了则标识出来
+	 * @description: 展示权限列表|如果用户没有这个权限了则标识为【分配】，如果已经有了这个按钮则标识位【取消】
+	 * 
+	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发的弹框中显示的列表
 	 *
-	 * @date 2017年5月24日 上午12:02:01
-	 * @author Yangcl 
+	 * @param role.userId
+	 * @param role.platform
+	 * 
+	 * @author Yangcl
+	 * @date 2019年12月16日 下午4:15:53 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "user_role_list", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_user_role_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject userRoleList(McRoleDto role , HttpSession session , HttpServletRequest request) {
-		super.userBehavior(session, logger, "user_role_list", "展示权限列表|如果用户已经有权限了则标识出来");  
+	public JSONObject ajaxUserRoleList(McRoleDto role , HttpSession session , HttpServletRequest request) {
+		super.userBehavior(session, logger, "user_role_list", "系统权限配置 / 系统用户相关 / 系统用户列表-【展示权限列表】");  
 		role.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcRoleService.userRoleList(role , request);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
