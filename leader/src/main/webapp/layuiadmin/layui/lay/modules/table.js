@@ -685,14 +685,14 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
         }
     };
 
-    //遍历表头
+    // 遍历表头
     Class.prototype.eachCols = function(callback) {
         var that = this;
         table.eachCols(null, callback, that.config.cols);
         return that;
     };
 
-    //数据渲染
+    // 数据渲染
     Class.prototype.renderData = function(res, curr, count_, sort) {
         var that = this;
         var options = that.config;
@@ -702,7 +702,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
         var trs_fixed_r = [];
 
         var count = data.total;
-        //渲染视图
+        // 渲染视图
         var render = function() { 		// 后续性能提升的重点
             var thisCheckedRowIndex;
             if (!sort && that.sortKey) {
@@ -794,7 +794,17 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
 
             that.layBody.scrollTop(0);
             that.layMain.find('.' + NONE).remove();
+            
+            // 开始渲染权限按钮 - Yangcl 
+            that.layMain.find('tbody').hide();
             that.layMain.find('tbody').html(trs.join(''));
+            if(window.parent.layui.setter.pageBtns.size != 0){
+            	layui.setter.security(parent.layui.setter.pageBtns);
+            }else{	// layer.open打开了弹框内嵌了列表页面的情况
+            	layui.setter.security(parent.parent.layui.setter.pageBtns);
+            }
+            that.layMain.find('tbody').show();
+            
             that.layFixLeft.find('tbody').html(trs_fixed.join(''));
             that.layFixRight.find('tbody').html(trs_fixed_r.join(''));
 
