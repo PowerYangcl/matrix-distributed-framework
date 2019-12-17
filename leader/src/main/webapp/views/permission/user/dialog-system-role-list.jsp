@@ -64,9 +64,9 @@
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
        						{{#  if(d.userId == -1){ }}
-            						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_cancel" lay-event="edit">分配</a>
+            						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_submit" lay-event="allotSubmit"> 分&nbsp&nbsp&nbsp配 </a>
           						{{#  } else { }}
-            						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_cancel" lay-event="edit">取消</a>
+            						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_remove" lay-event="allotRemove"> 移&nbsp&nbsp&nbsp除 </a>
          						{{#  } }}
             				</script>
             				

@@ -271,9 +271,58 @@ public class SystemRoleController  extends BaseController{
 		return mcRoleService.userRoleList(role , request);
 	}
 	
+	/**
+	 * @description: 给指定用户分配一个角色
+	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮
+	 *
+	 * @param entity.mcRoleId
+	 * @param entity.mcUserId
+	 *  
+	 * @author Yangcl
+	 * @date 2019年12月17日 下午5:30:40 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_allot_user_role_submit", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnAllotUserRoleSubmit(McUserRole entity , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_allot_user_role_submit", "给指定用户分配一个角色<系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮>");
+		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.addUserRole(entity);
+	}
+
+	/**
+	 * @description: 解除角色绑定，同时删除缓存
+	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【取消】按钮
+	 *
+	 * @param dto.userId
+	 * @param dto.mcRoleId
+	 *  
+	 * @author Yangcl
+	 * @date 2019年12月17日 下午5:39:55 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_allot_user_role_remove", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnAllotUserRoleRemove(McUserRoleDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_allot_user_role_remove", "解除角色绑定，同时删除缓存");
+		return mcSysFunctionService.deleteUserRole(dto);	
+	}
 	
-	
-	
+	/**
+	 * @description: 提供功能角色支撑
+	 *
+	 * @param entity
+	 * @param request      
+	 * @author Yangcl
+	 * @date 2018年2月5日 下午2:18:32 
+	 * @version 1.0.0
+	 */
+	@RequestMapping(value = "api_func_role", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxFuncRole(McUserInfo entity , HttpServletRequest request , HttpSession session){
+		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.ajaxFuncRole(entity, request);
+	}
 	
 	
 	
@@ -311,54 +360,9 @@ public class SystemRoleController  extends BaseController{
 	}
 
 	
-	/**
-	 * @description: 提供功能角色支撑
-	 *
-	 * @param entity
-	 * @param request      
-	 * @author Yangcl
-	 * @date 2018年2月5日 下午2:18:32 
-	 * @version 1.0.0
-	 */
-	@RequestMapping(value = "api_func_role", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxFuncRole(McUserInfo entity , HttpServletRequest request , HttpSession session){
-		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.ajaxFuncRole(entity, request);
-	}
 	
 	
-	/**
-	 * @description: 关联用户与某一个角色
-	 * 
-	 * @param entity
-	 * @author Yangcl 
-	 * @date 2017年4月20日 下午7:29:12 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "ajax_sysrole_add_user_role", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxSysroleAddUserRole(McUserRole entity , HttpSession session){
-		super.userBehavior(session, logger, "ajax_sysrole_add_user_role", "关联用户与某一个角色");
-		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.addUserRole(entity);
-	}
-
 	
-	/**
-	 * @description: 解除角色绑定，同时删除缓存
-	 * 
-	 * @param dto
-	 * @author Yangcl 
-	 * @date 2017年4月24日 下午3:27:22 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "remove_user_role", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject deleteUserRole(McUserRoleDto dto , HttpSession session){
-		super.userBehavior(session, logger, "remove_user_role", "解除角色绑定，同时删除缓存");
-		return mcSysFunctionService.deleteUserRole(dto);	
-	}
 	
 
 }

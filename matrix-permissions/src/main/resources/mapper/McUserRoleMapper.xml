@@ -86,8 +86,6 @@
 		delete from mc_user_role where id = #{id,jdbcType=BIGINT}
 	</delete>
 	
-	<!-- TODO 等待处理的废弃方法！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！可替换为 deleteByDto -->
-	<!-- <delete id="deleteByCondition" parameterType="com.matrix.pojo.dto.McUserRoleDto"> -->
 	<delete id="deleteByDto" parameterType="com.matrix.pojo.dto.McUserRoleDto">
 		delete from 
 			mc_user_role 

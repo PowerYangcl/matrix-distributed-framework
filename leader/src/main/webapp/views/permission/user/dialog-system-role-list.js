@@ -34,7 +34,7 @@ layui.config({
  	  	         	{field:'roleName', title:'角色名称', width:200},
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:70}
+ 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:80}
  	    	  	]
   	      	],
   	    	page: true
@@ -54,10 +54,10 @@ layui.config({
 
 		// 监听行工具事件
 		table.on('tool(table-toolbar)', function(o) {
-			if (o.event === 'del') {
-				pageDialog.deleteMcRole(o);
-			} else if (o.event === 'edit') {
-			}else if (o.event === 'role') {
+			if (o.event === 'allotSubmit') {
+				pageDialog.allotSubmit(o);
+			} else if (o.event === 'allotRemove') {
+				pageDialog.allotRemove(o);
 			}
 		});
 		
@@ -87,14 +87,14 @@ layui.config({
 		
 		// 页面弹窗对象
 		var pageDialog = {
-			
-			deleteMcRole:function(o){
-	        	layer.confirm('您确定要删除这个角色【' + o.data.roleName + '】吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+			allotSubmit:function(o){
+	        	layer.confirm('您确定要分配这个角色【' + o.data.roleName + '】给用户：' + parentTr.userName +' 吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
 						var type_ = 'post';
-			            var url_ = layui.setter.path + 'sysrole/ajax_btn_delete_mc_role.do';
+			            var url_ = layui.setter.path + 'sysrole/ajax_btn_allot_user_role_submit.do';
 			        	var data_ = {
 			        			mcRoleId : o.data.id ,
+			        			mcUserId : parentTr.id,
 			        			eleValue : o.key
 		        			}; 
 			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
@@ -114,6 +114,32 @@ layui.config({
 				);
 	        },
 	        
+	        allotRemove:function(o){
+	        	layer.confirm('您确定要为用户：' + parentTr.userName +' 移除这个角色【' + o.data.roleName + '】吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+					function(index , ele) {  // 确定按钮
+						var type_ = 'post';
+			            var url_ = layui.setter.path + 'sysrole/ajax_btn_allot_user_role_remove.do';
+			        	var data_ = {
+			        			mcRoleId : o.data.id ,
+			        			userId : parentTr.id,
+			        			eleValue : o.key
+		        			}; 
+			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
+			            if(obj.status == 'success'){
+			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+			            		$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
+			            		layer.close(a);
+			            		layer.close(index);
+		            		});
+			            }else{
+			            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+			            }
+					}, 
+					function(index , ele) {  // 取消按钮
+						layer.close(index);
+					}
+				);
+	        },
 		}
 
 	});

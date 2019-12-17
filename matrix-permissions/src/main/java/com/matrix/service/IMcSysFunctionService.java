@@ -43,8 +43,30 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 
 	public JSONObject deleteMcRole(McRoleDto dto);
 
+	/**
+	 * @description: 给指定用户分配一个角色
+	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮
+	 *
+	 * @param entity.mcRoleId
+	 * @param entity.mcUserId
+	 *  
+	 * @author Yangcl
+	 * @date 2019年12月17日 下午5:30:40 
+	 * @version 1.0.0.1
+	 */
 	public JSONObject addUserRole(McUserRole entity);
 
+	/**
+	 * @description: 解除角色绑定，同时删除缓存
+	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【取消】按钮
+	 *
+	 * @param dto.userId
+	 * @param dto.mcRoleId
+	 *  
+	 * @author Yangcl
+	 * @date 2019年12月17日 下午5:39:55 
+	 * @version 1.0.0.1
+	 */
 	public JSONObject deleteUserRole(McUserRoleDto d);
 
 	/**

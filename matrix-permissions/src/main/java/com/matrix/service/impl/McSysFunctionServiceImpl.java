@@ -544,11 +544,14 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	
 	
 	/**
-	 * @descriptions 关联用户与某一个角色
+	 * @description: 给指定用户分配一个角色
+	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮
 	 *
-	 * @param e
-	 * @date 2017年4月23日 上午11:55:29
-	 * @author Yangcl 
+	 * @param entity.mcRoleId
+	 * @param entity.mcUserId
+	 *  
+	 * @author Yangcl
+	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
 	public JSONObject addUserRole(McUserRole e) {
@@ -566,24 +569,29 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			Integer count = mcUserRoleMapper.insertSelective(e);
 			if(count != 0){
 				result.put("status", "success");
+				result.put("msg", this.getInfo(101010056)); // 101010056=系统角色分配成功
 				// 实例化缓存   
 				this.reloadUserFunction(e.getMcUserId());  
 			}else{
 				result.put("status", "error");
-				result.put("msg", this.getInfo(101010007)); // 用户与角色关联失败
+				result.put("msg", this.getInfo(101010007)); // 101010007=系统角色分配失败
 			}
 		} catch (Exception e2) {
 			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 系统异常
+			result.put("msg", this.getInfo(101010008)); // 101010008=系统异常
 		}
 		return result;
 	}
 	
 	/**
-	 * @description: 解除一个用户与某个角色的绑定关系，同时更新缓存信息
-	 * 
-	 * @author Yangcl 
-	 * @date 2017年4月24日 下午3:27:22 
+	 * @description: 解除角色绑定，同时删除缓存
+	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【取消】按钮
+	 *
+	 * @param dto.userId
+	 * @param dto.mcRoleId
+	 *  
+	 * @author Yangcl
+	 * @date 2019年12月17日 下午5:39:55 
 	 * @version 1.0.0.1
 	 */
 	public JSONObject deleteUserRole(McUserRoleDto d) {
@@ -599,7 +607,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			this.reloadUserFunction(d.getUserId()); 
 			
 			result.put("status", "success");
-			result.put("msg", this.getInfo(101010010)); // 角色绑定解除成功! 
+			result.put("msg", this.getInfo(101010010)); // 系统角色移除成功! 
 		} catch (Exception e) {
 			e.printStackTrace(); 
 			result.put("status", "error");
