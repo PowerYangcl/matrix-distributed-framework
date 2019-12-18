@@ -16,12 +16,12 @@ import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
 
 /**
- * @description: 系统用户相关控制器
- *
+ * @description: 系统后台用户控制器
+ * 																											【仅matrix-manager-api项目使用】
  * @author Yangcl
  * @home https://github.com/PowerYangcl
- * @date 2019年10月10日 下午8:12:52 
- * @version 1.0.0.1
+ * @date 2016年11月25日 下午3:30:37 
+ * @version 1.0.0
  */
 @Controller
 @RequestMapping("userInfo")
@@ -33,7 +33,7 @@ public class UserInfoControllor  extends BaseController{
 	
 	
 	/**
-	 * @description: 验证用户登录信息|PC端用户
+	 * @description: 验证用户登录信息|PC端用户|【仅JSP项目使用】
 	 * 
 	 * @author Yangcl 
 	 * @date 2016年11月25日 下午4:17:47 
@@ -73,7 +73,7 @@ public class UserInfoControllor  extends BaseController{
 	
 	/**
 	 * @description: 添加用户
-	 *		add_sys_user
+	 *		
 	 * @author Yangcl
 	 * @date 2019年12月5日 上午10:28:56 
 	 * @version 1.0.0.1
@@ -85,7 +85,6 @@ public class UserInfoControllor  extends BaseController{
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.addSysUser(info);
 	}
-	
 	
 	/**
 	 * @description: 修改用户信息
@@ -101,7 +100,6 @@ public class UserInfoControllor  extends BaseController{
 		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.editSysUser(info);
 	}
-	
 	
 	/**
 	 * @description: 修改用户密码
