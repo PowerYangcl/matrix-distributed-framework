@@ -52,7 +52,7 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
             }
         }
         
-        if(url.equals("api.do")){		// 系统开放接口则跳过验证。
+        if(StringUtils.startsWith(url, "api")){		// 系统开放接口则跳过验证。
         	return true;
         }
         
