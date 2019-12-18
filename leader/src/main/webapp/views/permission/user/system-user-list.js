@@ -236,7 +236,7 @@ layui.config({
 			layer.confirm('您确定要重置所有用户的信息吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 				function(index , ele) {  // 确定按钮
 					var type_ = 'post';
-		            var url_ = layui.setter.path + 'sysrole/ajax_btn_user_cache_reload.do';
+		            var url_ = layui.setter.path + 'userInfo/ajax_btn_user_cache_reload.do';
 		        	var data_ = {
 		        			eleValue : o.key
 	        			}; 

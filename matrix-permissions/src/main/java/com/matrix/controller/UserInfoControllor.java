@@ -133,7 +133,19 @@ public class UserInfoControllor  extends BaseController{
 		return mcUserInfoService.deleteUser(dto);
 	}
 	
-	
+	/**
+	 * @description: 重新加载系统用户缓存
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月10日 下午3:49:25 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_user_cache_reload", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnUserCacheReload(HttpSession session , HttpServletRequest request){
+		super.userBehavior(session, logger, "ajax_btn_user_cache_reload", "重新加载系统用户缓存");
+		return mcUserInfoService.ajaxBtnUserCacheReload();
+	}
 	
 	
 	

@@ -538,6 +538,34 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		
 		return result;
 	}
+	
+	/**
+	 * @description: 重新加载系统用户缓存
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月10日 下午3:49:25 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxBtnUserCacheReload() {
+		JSONObject result = new JSONObject();
+		try {
+			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.McRole , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDel("");
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010008)); // 系统异常
+			return result;
+		}
+		
+		result.put("status", "success");
+		result.put("msg", this.getInfo(101010011)); // 系统字典缓存刷新完成!
+		return result;
+	}
+	
+	
+	
 
 	public JSONObject updatePageStyle(McUserInfoDto dto) {
 		JSONObject result = new JSONObject();

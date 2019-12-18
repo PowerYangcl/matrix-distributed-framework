@@ -19,6 +19,17 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	public JSONObject editSysUser(McUserInfoDto info);
 
 	public JSONObject deleteUser(McUserInfoDto dto);
+	
+	/**
+	 * @description: 重新加载系统用户缓存
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月10日 下午3:49:25 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxBtnUserCacheReload();
+	
+	
 
 	public JSONObject logout(HttpSession session);
 

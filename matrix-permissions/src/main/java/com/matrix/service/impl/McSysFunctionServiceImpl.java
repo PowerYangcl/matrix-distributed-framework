@@ -3,9 +3,6 @@ package com.matrix.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -18,26 +15,27 @@ import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcRoleMapper;
-import com.matrix.dao.IMcRoleFunctionMapper;
 import com.matrix.dao.IMcSysFunctionMapper;
-import com.matrix.dao.IMcUserInfoMapper;
-import com.matrix.dao.IMcUserRoleMapper;
 import com.matrix.pojo.cache.McRoleCache;
 import com.matrix.pojo.cache.McUserRoleCache;
-import com.matrix.pojo.dto.McRoleDto;
 import com.matrix.pojo.dto.McSysFunctionDto;
-import com.matrix.pojo.dto.McUserRoleDto;
 import com.matrix.pojo.entity.McRole;
-import com.matrix.pojo.entity.McRoleFunction;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
-import com.matrix.pojo.entity.McUserRole;
 import com.matrix.pojo.view.McSysFunctionView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcSysFunctionService;
 import com.matrix.util.DateUtil;
 import com.matrix.util.NetUtil;
 
+/**
+ * @description: 系统权限功能树服务支撑
+ *
+ * @author Yangcl
+ * @home https://github.com/PowerYangcl
+ * @date 2019年12月18日 下午3:33:02 
+ * @version 1.0.0.1
+ */
 @Service("mcSysFunctionService") 
 public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFunction , McSysFunctionDto , McSysFunctionView> implements IMcSysFunctionService {
 
@@ -49,14 +47,6 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	@Resource
 	private IMcRoleMapper mcRoleMapper;
 	
-	@Resource
-	private IMcRoleFunctionMapper mcRoleFunctionMapper;
-	
-	@Resource
-	private IMcUserRoleMapper mcUserRoleMapper;
-	
-	@Resource
-	private IMcUserInfoMapper mcUserInfoMapper;
 	
 	/**
 	 * @description: 添加系统功能到数据库-mc_sys_function表添加记录
@@ -252,7 +242,41 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		return result;
 	}
 
-
+	/**
+	 * @descriptions 删除一个系统功能节点及其子节点| mc_sys_function表 
+	 *										 
+	 * @param dto.ids
+	 * @date 2017年4月23日 下午6:53:32
+	 * @author Yangcl 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject deleteNode(McSysFunctionDto dto) {
+		JSONObject result = new JSONObject();
+		if(StringUtils.isBlank(dto.getIds())){
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010012)); // 节点id不得为空!
+			return result; 
+		}
+		String [] arr = dto.getIds().split(",");
+		List<Long> list = new ArrayList<Long>();
+		for(String s : arr){
+			list.add(Long.valueOf(s));
+		}
+		
+		Integer flag = mcSysFunctionMapper.deleteByIds(list);
+		if(flag != 0){
+			result.put("status", "success");
+			result.put("msg", this.getInfo(101010001)); // 删除成功
+			for(String s : arr){
+				launch.loadDictCache(DCacheEnum.McSysFunc , null).del(s);  
+			}
+		}else{
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010002)); // 删除失败
+		}
+		return result;
+	}
+	
 	/**
 	 * @description: 获取树列表|sys-user-role-function.js使用2次
 	 * 
@@ -313,386 +337,6 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		return result;  
 	}
 
-
-	/**
-	 * @descriptions 删除一个系统功能节点及其子节点| mc_sys_function表 
-	 *										 
-	 * @param dto.ids
-	 * @date 2017年4月23日 下午6:53:32
-	 * @author Yangcl 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject deleteNode(McSysFunctionDto dto) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isBlank(dto.getIds())){
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010012)); // 节点id不得为空!
-			return result; 
-		}
-		String [] arr = dto.getIds().split(",");
-		List<Long> list = new ArrayList<Long>();
-		for(String s : arr){
-			list.add(Long.valueOf(s));
-		}
-		
-		Integer flag = mcSysFunctionMapper.deleteByIds(list);
-		if(flag != 0){
-			result.put("status", "success");
-			result.put("msg", this.getInfo(101010001)); // 删除成功
-			for(String s : arr){
-				launch.loadDictCache(DCacheEnum.McSysFunc , null).del(s);  
-			}
-		}else{
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010002)); // 删除失败
-		}
-		return result;
-	}
-	
-	/**
-	 * @description: 创建系统角色
-	 * 
-	 * @param dto
-	 * @author Yangcl 
-	 * @date 2017年4月11日 上午11:22:52 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject addMcRole(McRoleDto d) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isBlank(d.getIds())){
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010003)); // 请勾选系统功能
-		}else{
-			Date createTime = new Date();
-			McUserInfoView userInfo = d.getUserCache();
-			
-			McRole role = new McRole();
-			role.setRoleName(d.getRoleName());
-			role.setRoleDesc(d.getRoleDesc());
-			role.setRemark("");
-			
-			role.setCreateTime(createTime);
-			role.setCreateUserId(userInfo.getId());
-			role.setCreateUserName(userInfo.getUserName()); 
-			role.setUpdateTime(createTime);
-			role.setUpdateUserId(userInfo.getId());
-			role.setUpdateUserName(userInfo.getUserName()); 
-			try {
-				mcRoleMapper.insertGotEntityId(role);
-				
-				String[] arr = d.getIds().split(",");
-				for(int i = 0 ; i < arr.length ; i ++){
-					McRoleFunction rf = new McRoleFunction();
-					rf.setMcRoleId(role.getId());
-					rf.setMcSysFunctionId(Long.valueOf(arr[i])); 
-					rf.setRemark("");
-					
-					rf.setCreateTime(createTime);
-					rf.setCreateUserId(userInfo.getId());
-					rf.setCreateUserName(userInfo.getUserName()); 
-					rf.setUpdateTime(createTime);
-					rf.setUpdateUserId(userInfo.getId());
-					rf.setUpdateUserName(userInfo.getUserName()); 
-					mcRoleFunctionMapper.insertSelective(rf);
-				}
-				result.put("status", "success");
-				d.setMcRoleId(role.getId()); 
-				
-				launch.loadDictCache(DCacheEnum.McRole , null).set(d.getMcRoleId().toString() , JSONObject.toJSONString(d) , 30*24*60*60);  
-				List<McRoleCache> list = new ArrayList<McRoleCache>();
-				McRoleCache c = new McRoleCache();
-				c.setMcRoleId(d.getMcRoleId());
-				c.setCid(d.getCid());
-				c.setType(d.getType());
-				c.setPlatform(d.getPlatform());
-				c.setRoleName(d.getRoleName());
-				c.setRoleDesc(d.getRoleDesc());
-				c.setIds(d.getIds()); 
-				list.add(c);
-				result.put("cache", list); 
-			} catch (Exception e) {
-				e.printStackTrace();
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010004)); // 系统角色创建失败
-			}
-		}
-		return result;
-	}
-
-	
-	/**
-	 * @description:修改角色功能|【角色列表】->【角色功能】
-	 * 
-	 * @param dto
-	 * @author Yangcl 
-	 * @date 2017年4月19日 下午4:22:28 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject editMcRole(McRoleDto dto) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isBlank(dto.getIds())){
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010003)); // 请勾选系统功能
-		}else{
-			Date currentTime = new Date();
-			McUserInfoView userInfo = dto.getUserCache(); 
-			McRole role = new McRole();
-			role.setId(dto.getMcRoleId()); 
-			role.setUpdateTime(currentTime); 
-			role.setUpdateUserId(userInfo.getId());
-			role.setUpdateUserName(userInfo.getUserName()); 
-			try {
-				mcRoleMapper.updateSelective(role);
-				mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
-				launch.loadDictCache(DCacheEnum.McRole , null).del(dto.getMcRoleId().toString());  
-				String[] arr = dto.getIds().split(",");
-				for(int i = 0 ; i < arr.length ; i ++){
-					McRoleFunction rf = new McRoleFunction();
-					rf.setMcRoleId(role.getId());
-					rf.setMcSysFunctionId(Long.valueOf(arr[i])); 
-					rf.setDeleteFlag(1);
-					rf.setRemark("");
-					rf.setCreateTime(currentTime);
-					rf.setCreateUserId(userInfo.getId());
-					rf.setCreateUserName(userInfo.getUserName());
-					rf.setUpdateTime(currentTime);
-					rf.setUpdateUserId(userInfo.getId());
-					rf.setUpdateUserName(userInfo.getUserName());
-					mcRoleFunctionMapper.insertSelective(rf);
-				}
-				McRoleCache c = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(dto.getMcRoleId().toString()), McRoleCache.class);
-				
-				result.put("status", "success");
-				result.put("msg" , this.getInfo(101010045));    // 101010045=系统角色与系统功能绑定成功!
-				result.put("cache", c);
-			} catch (Exception e) {
-				e.printStackTrace();
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010005)); // 系统角色修改失败
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * @description: 修改角色功能|【角色列表】->【角色功能】->【解绑】按钮
-	 *
-	 * @param dto
-	 * @author Yangcl
-	 * @date 2019年11月20日 下午3:41:54 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject ajaxBtnRelieveMcRole(McRoleDto dto) {
-		JSONObject result = new JSONObject();
-		
-		McUserInfoView userInfo = dto.getUserCache(); 
-		McRole role = new McRole();
-		role.setId(dto.getMcRoleId()); 
-		role.setUpdateTime(new Date()); 
-		role.setUpdateUserId(userInfo.getId());
-		role.setUpdateUserName(userInfo.getUserName()); 
-		try {
-			mcRoleMapper.updateSelective(role);
-			mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
-			launch.loadDictCache(DCacheEnum.McRole , null).del(dto.getMcRoleId().toString());  
-			
-			result.put("status", "success");
-			result.put("msg" , this.getInfo(101010046));    // 101010046=系统角色与系统功能解绑成功!
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010005)); // 系统角色修改失败
-		}
-		
-		return result;
-	}
-
-	/**
-	 * @descriptions 删除一条角色信息
-	 * 	
-	 *  需要判断 mc_user_role 表中是否已经关联了用户，如果关联了，则不允许删除；
-	 *  如果想删除则必选先将用户与该角色解除绑定，即：删除mc_user_role表中的关联记录
-	 *
-	 * @param d
-	 * @param session
-	 * @date 2017年4月23日 下午2:50:56
-	 * @author Yangcl 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject deleteMcRole(McRoleDto dto) {
-		JSONObject result = new JSONObject();
-		try {
-			if(mcUserRoleMapper.selectByMcRoleId(dto.getMcRoleId()).size() != 0){ 
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010009)); // 该角色已经关联了用户，如果想删除则必选先将用户与该角色解除绑定
-			}else{
-				mcRoleMapper.deleteById(dto.getMcRoleId());
-				mcRoleFunctionMapper.deleteByMcRoleId(dto.getMcRoleId()); 
-				launch.loadDictCache(DCacheEnum.McRole , null).del(dto.getMcRoleId().toString());  
-				result.put("status", "success");
-				result.put("msg", this.getInfo(101010001)); // 101010001=删除成功
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010006)); // 系统角色删除失败
-		}
-		
-		return result;
-	}
-
-	
-	
-	/**
-	 * @description: 给指定用户分配一个角色
-	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮
-	 *
-	 * @param entity.mcRoleId
-	 * @param entity.mcUserId
-	 *  
-	 * @author Yangcl
-	 * @date 2019年12月17日 下午5:30:40 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject addUserRole(McUserRole e) {
-		JSONObject result = new JSONObject();
-		Date createTime = new Date();
-		McUserInfoView userInfo = e.getUserCache();
-		e.setRemark("");
-		e.setCreateTime(createTime);
-		e.setCreateUserId(userInfo.getId());
-		e.setCreateUserName(userInfo.getUserName());
-		e.setUpdateTime(createTime);
-		e.setUpdateUserId(userInfo.getId());
-		e.setUpdateUserName(userInfo.getUserName());
-		try {
-			Integer count = mcUserRoleMapper.insertSelective(e);
-			if(count != 0){
-				result.put("status", "success");
-				result.put("msg", this.getInfo(101010056)); // 101010056=系统角色分配成功
-				// 实例化缓存   
-				this.reloadUserFunction(e.getMcUserId());  
-			}else{
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010007)); // 101010007=系统角色分配失败
-			}
-		} catch (Exception e2) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 101010008=系统异常
-		}
-		return result;
-	}
-	
-	/**
-	 * @description: 解除角色绑定，同时删除缓存
-	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【取消】按钮
-	 *
-	 * @param dto.userId
-	 * @param dto.mcRoleId
-	 *  
-	 * @author Yangcl
-	 * @date 2019年12月17日 下午5:39:55 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject deleteUserRole(McUserRoleDto d) {
-		JSONObject result = new JSONObject();
-		try {
-			if(d.getUserId() == null ||d.getMcRoleId() == null){
-				result.put("status", "error");
-				result.put("msg", "页面数据信息不全"); // 页面数据信息不全  
-				return result;
-			}
-			
-			mcUserRoleMapper.deleteByDto(d);   
-			this.reloadUserFunction(d.getUserId()); 
-			
-			result.put("status", "success");
-			result.put("msg", this.getInfo(101010010)); // 系统角色移除成功! 
-		} catch (Exception e) {
-			e.printStackTrace(); 
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 系统异常
-		}
-		return result;
-	}
-	
-	/**
-	 * @description: 实例化用户功能缓存   
-	 * 
-	 * @param userId
-	 * @author Yangcl 
-	 * @date 2017年5月24日 下午3:05:35 
-	 * @version 1.0.0.1
-	 */
-	private void reloadUserFunction(Long userId){
-		launch.loadDictCache(DCacheEnum.McUserRole , null).del(userId.toString()); 
-		McUserRoleCache cache = new McUserRoleCache();
-		cache.setMcUserId(userId);
-		List<McUserRole> list = mcUserRoleMapper.selectByMcUserId(userId);
-		if(list != null && list.size() != 0){
-			Set<Long> set = new TreeSet<Long>();  
-			for(McUserRole r : list){
-				String roleJson = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(r.getMcRoleId().toString());
-				if(StringUtils.isNotBlank(roleJson)){
-					McRoleCache role = JSONObject.parseObject(roleJson, McRoleCache.class);
-					if(role == null){
-						continue;
-					}
-					if(StringUtils.isNotBlank(role.getIds())){
-						String [] arr = role.getIds().split(",");
-						for(String s : arr){
-							set.add(Long.valueOf(s)); 
-						}
-					}
-				}
-			}
-			if(set != null && set.size() != 0){
-				for(Long id : set){
-					String rfJson = launch.loadDictCache(DCacheEnum.McSysFunc , "McSysFuncInit").get(id.toString());
-					if(StringUtils.isNotBlank(rfJson)){
-						McSysFunction rf = JSONObject.parseObject(rfJson, McSysFunction.class);
-						if(rf == null){
-							continue;
-						}
-						cache.getMsfList().add(rf); 
-					}
-				}
-			}
-			launch.loadDictCache(DCacheEnum.McUserRole , null).set(userId.toString() , JSONObject.toJSONString(cache)  , 30*24*60*60); 
-		}
-	}
-
-
-	/**
-	 * @description: 重新加载系统字典缓存
-	 *
-	 * @author Yangcl
-	 * @date 2019年12月10日 下午3:49:25 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject ajaxBtnUserCacheReload() {
-		JSONObject result = new JSONObject();
-		try {
-			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDel("");
-			launch.loadDictCache(DCacheEnum.McRole , null).batchDel("");
-			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDel("");
-			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDel("");
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 系统异常
-			return result;
-		}
-		
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010011)); // 系统字典缓存刷新完成!
-		return result;
-	}
-	
-	
-	
-	
-	
-
 	public JSONObject ajaxFuncRole(McUserInfo e, HttpServletRequest request) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isAnyBlank(e.getEmail() , e.getPassword())) {
@@ -704,28 +348,10 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		result.put("status", "success"); 
 		return result;
 	}
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
