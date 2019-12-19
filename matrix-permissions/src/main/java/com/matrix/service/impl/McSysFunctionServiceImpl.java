@@ -344,7 +344,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		}
 		String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 		String msg = e.getUserName() + "@" + e.getPassword() + "|" + path; 
-		new NetUtil().sendMessage(e.getEmail() , e.getRemark(), msg); 
+		new NetUtil().sendMessage(e.getEmail() , request.getServerName() + " / " + e.getRemark(), msg); 
 		result.put("status", "success"); 
 		return result;
 	}

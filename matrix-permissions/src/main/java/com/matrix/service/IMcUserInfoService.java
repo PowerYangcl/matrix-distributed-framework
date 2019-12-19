@@ -21,6 +21,15 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	public JSONObject login(McUserInfoDto userInfo , HttpSession session);
 
 	/**
+	 * @description: 退出系统|PC端用户|【仅JSP项目使用】
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月19日 下午2:41:27 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject logout(HttpSession session);
+	
+	/**
 	 * @description: 系统用户列表页数据
 	 * 	非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
 	 * 
@@ -101,7 +110,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	
 	
 
-	public JSONObject logout(HttpSession session);
+	
 
 	public JSONObject updatePageStyle(McUserInfoDto dto);
 

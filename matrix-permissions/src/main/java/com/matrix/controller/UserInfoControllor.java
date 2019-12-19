@@ -47,6 +47,20 @@ public class UserInfoControllor  extends BaseController{
 	}
 	
 	/**
+	 * @description: 退出系统|PC端用户|【仅JSP项目使用】
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月19日 下午2:41:27 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "logout", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject logout(HttpSession session) {
+		logger.info( ((McUserInfoDto) session.getAttribute("userInfo")).getUserName() + " - 尝试请求 - " + "logout() - 方法 - " +  "正在尝试退出系统"); 
+		return mcUserInfoService.logout(session);
+	}
+	
+	/**
 	 * @description: 系统用户列表页数据
 	 * 	非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
 	 * 

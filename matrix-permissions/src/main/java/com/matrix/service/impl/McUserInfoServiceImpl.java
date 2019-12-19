@@ -109,6 +109,21 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	}
 	
 	/**
+	 * @description: 退出系统|PC端用户|【仅JSP项目使用】
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月19日 下午2:41:27 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject logout(HttpSession session) {
+		JSONObject result = new JSONObject();
+		session.removeAttribute("userInfo"); 
+		result.put("status", "success");
+		result.put("msg", this.getInfo(101010015));  		// 101010015=系统已经退出
+		return result;
+	}
+	
+	/**
 	 * @description: 系统用户列表页数据
 	 * 	非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
 	 * 
@@ -546,20 +561,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	
 	
 	
-	/**
-	 * @descriptions 退出登录
-	 *
-	 * @date 2017年5月25日 下午10:48:50
-	 * @author Yangcl 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject logout(HttpSession session) {
-		JSONObject result = new JSONObject();
-		session.removeAttribute("userInfo"); 
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010015));  // 101010015=系统已经退出
-		return result;
-	}
 	
 	/**
 	 * @description: 退出系统登录|客户端用户：nodejs/IOS平板等
