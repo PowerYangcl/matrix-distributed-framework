@@ -366,57 +366,78 @@ layui.extend(
 	    	var iframe = admin.tabsBody(admin.tabsPage.index).find(ELEM_IFRAME);
 	    	iframe[0].contentWindow.location.reload(true);
 	    },
-
 	    
-	    
-	    
-	    
-		    // 输入框搜索
-		   serach: function(othis){
-			   alert("admin.js line 374 禁用这个功能！！！！！！！！！");
-		      othis.off('keypress').on('keypress',function(e){
-		        if(!this.value.replace(/\s/g, '')) return;
-		        //回车跳转
-		        if(e.keyCode === 13){
-		          var href = othis.attr('lay-action')
-		          ,text = othis.attr('lay-text') || '搜索';
-		          
-		          href = href + this.value;
-		          text = text + ' <span style="color: #FF5722;">'+ admin.escape(this.value) +'</span>';
-		          
-		          //打开标签页
-//		          layui.index.openTabsPage(href, text); 此方法增加了参数
-		          
-		          //如果搜索关键词已经打开，则刷新页面即可
-		          events.serach.keys || (events.serach.keys = {});
-		          events.serach.keys[admin.tabsPage.index] = this.value;
-		          if(this.value === events.serach.keys[admin.tabsPage.index]){
-		            events.refresh(othis);
-		          }
-		          
-		          //清空输入框
-		          this.value = '';
-		        }       
-		      });
-		    }
-		    
-		    //点击消息
-		    ,message: function(othis){
-		      othis.find('.layui-badge-dot').remove();
-		    }
-		    
-		    //弹出主题面板
-		    ,theme: function(){
-		      admin.popupRight({
-		        id: 'LAY_adminPopupTheme'
-		        ,success: function(){
-		          view(this.id).render('system/theme')
+	    // 输入框搜索
+		serach: function(othis) {
+			alert("admin.js line 372 禁用这个功能！！！！！！！！！");
+		    othis.off('keypress').on('keypress',function(e){
+		        if(!this.value.replace(/\s/g, '')) {
+		        	return;
+		        }
+		        // 回车跳转
+		        if(e.keyCode === 13) {
+		        	var href = othis.attr('lay-action'), text = othis.attr('lay-text') || '搜索';
+			        href = href + this.value;
+			        text = text + ' <span style="color: #FF5722;">'+ admin.escape(this.value) +'</span>';
+			        
+			        // 打开标签页  此方法增加了参数 - Yangcl 
+			        // layui.index.openTabsPage(href, text); 
+			        // 如果搜索关键词已经打开，则刷新页面即可
+			        events.serach.keys || (events.serach.keys = {});
+			        events.serach.keys[admin.tabsPage.index] = this.value;
+			        if(this.value === events.serach.keys[admin.tabsPage.index]){
+			        	events.refresh(othis); 
+		        	}
+			        //清空输入框
+			        this.value = '';
 		        }
 		      });
-		    }
+		},
+		
+		logout: function(othis) {
+			var url_ =  layui.setter.path + 'userInfo/logout.do';
+			var data_ = null;
+			var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
+			if(obj.status == 'success'){
+				window.location.href = layui.setter.path + 'permissions/page_permissions_index.do';
+            }else{
+            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+            }
+		},
+		    
+	    // 点击消息
+	    message: function(othis){
+	    	othis.find('.layui-badge-dot').remove();
+	    },
+		    
+	    // 弹出主题面板
+	    theme: function(){
+	    	admin.popupRight(
+    			{
+    				id: 'LAY_adminPopupTheme',
+    				success: function(){
+    					view(this.id).render('system/theme')
+    				}
+		      });
+	    },
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 		    
 		    //便签
-		    ,note: function(othis){
+		    note: function(othis){
 		      var mobile = admin.screen() < 2
 		      ,note = layui.data(setter.tableName).note;
 		      

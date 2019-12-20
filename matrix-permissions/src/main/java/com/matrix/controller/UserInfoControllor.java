@@ -56,7 +56,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "logout", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public JSONObject logout(HttpSession session) {
-		logger.info( ((McUserInfoDto) session.getAttribute("userInfo")).getUserName() + " - 尝试请求 - " + "logout() - 方法 - " +  "正在尝试退出系统"); 
+		logger.info( ((McUserInfoView) session.getAttribute("userInfo")).getUserName() + " - 尝试请求 - " + "logout() - 方法 - " +  "正在尝试退出系统"); 
 		return mcUserInfoService.logout(session);
 	}
 	
