@@ -40,7 +40,7 @@ import com.matrix.pojo.view.McUserInfoView;
 	    	"cid":"1",
 	    	"name":"组织机构名称",
 	    	"platform":"平台标识码",
-	    		……  详细信息请参考：InitMcOrganization.java
+	    		……  详细信息请参考：McOrganizationInit.java
 	    		
 	    	"address":"机构地址信息"
 	    }
@@ -88,6 +88,7 @@ public class UserInfoNpInit extends BaseClass implements ILoadCache<String> {
 				view.setMcOrg(JSONObject.parseObject(mcOrg));
 			}
 			launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 4*60*60);
+			launch.loadDictCache(DCacheEnum.UserInfoId , null).set(view.getId().toString() , e.getUserName() + "," + e.getPassword() , 4*60*60);  // 依据user info id，方便操作
 			return value;
 		}
 		return "";
