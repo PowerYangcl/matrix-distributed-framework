@@ -453,25 +453,41 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		return result;
 	}
 	
+	/**
+	 * @description: 获取平台信息列表|ManagerCenterController使用
+	 *
+	 * @param info
+	 * @author Yangcl
+	 * @date 2018年9月22日 下午2:23:23 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxPlatformInfoList() {
+		JSONObject result = new JSONObject();
+		try {
+			McSysFunction e = new McSysFunction();
+			e.setNavType(0);
+			e.setAuthorize(0); 		// 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
+			List<McSysFunction> sflist = mcSysFunctionMapper.getSysFuncList(e);
+			result.put("status", "success");
+			result.put("sflist", sflist);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(101010032));	// 101010044=获取平台信息列表失败，状态查询异常
+		}
+		return result;
+	}
 	
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////【仅项目使用】////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	/**
-	 * @description: 验证用户登录信息|客户端用户：nodejs/IOS平板等
+	 * @description: 【仅matrix-manager-api项目使用】
+	 * 		验证用户登录信息|客户端用户：nodejs/IOS平板等
 	 *
 	 * @param dto
 	 * @author Yangcl
@@ -559,11 +575,9 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		}
 	}
 	
-	
-	
-	
 	/**
-	 * @description: 退出系统登录|客户端用户：nodejs/IOS平板等
+	 * @description: 【仅matrix-manager-api项目使用】
+	 * 		退出系统登录|客户端用户：nodejs/IOS平板等
 	 *
 	 * @param session
 	 * @author Yangcl
@@ -584,11 +598,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		return result;
 	}
 
-
-	
 	
 	/**
-	 * @description: 获取用户详情
+	 * @description: 【仅matrix-manager-api项目使用】
+	 * 		获取用户详情
 	 *
 	 * @param dto
 	 * @param session 
@@ -619,60 +632,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	}
 
 
-	
-	
-	
 
-	
-	
-	
-	
-	
-	
-
-	public JSONObject updatePageStyle(McUserInfoDto dto) {
-		JSONObject result = new JSONObject();
-		McUserInfoView master = dto.getUserCache();
-		McUserInfo e = new McUserInfo();
-		e.setId(dto.getId());
-		e.setPageCss(dto.getPageCss()); 
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(master.getId());
-		e.setUpdateUserName(master.getUserName()); 
-		mcUserInfoMapper.updateSelective(e);
-		
-		McUserInfoView view = mcUserInfoMapper.loadUserInfo(dto.getId());
-		launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(view.getUserName() + "," + view.getPassword() , JSONObject.toJSONString(view) , 30*24*60*60);
-		
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010024));	// 101010024=更新成功
-		return result;
-	}
-
-	/**
-	 * @description: 获取平台信息列表
-	 *
-	 * @param info
-	 * @author Yangcl
-	 * @date 2018年9月22日 下午2:23:23 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject ajaxPlatformInfoList() {
-		JSONObject result = new JSONObject();
-		try {
-			McSysFunction e = new McSysFunction();
-			e.setNavType(0);
-			e.setAuthorize(0); 		// 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
-			List<McSysFunction> sflist = mcSysFunctionMapper.getSysFuncList(e);
-			result.put("status", "success");
-			result.put("sflist", sflist);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010032));	// 101010044=获取平台信息列表失败，状态查询异常
-		}
-		return result;
-	}
 
 
 

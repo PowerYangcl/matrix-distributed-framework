@@ -94,31 +94,32 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 */
 	public JSONObject ajaxBtnUserCacheReload();
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-	
-
-	
-	
-
-	
-
-	public JSONObject updatePageStyle(McUserInfoDto dto);
-
-	public JSONObject ajaxPlatformInfoList();
-
-
 	/**
-	 * @description: 验证用户登录信息|客户端用户：nodejs/IOS平板等
+	 * @description: 获取平台信息列表|ManagerCenterController使用
+	 *
+	 * @return 
+	 * @author Yangcl
+	 * @date 2019年12月20日 下午3:31:38 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxPlatformInfoList();
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+	
+
+	
+	
+	/**
+	 * @description: 【仅matrix-manager-api项目使用】
+	 * 		验证用户登录信息|客户端用户：nodejs/IOS平板等
 	 *
 	 * @param request
 	 * @param dto
@@ -130,7 +131,8 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	public JSONObject ajaxClientLogin(HttpServletRequest request, McUserInfoDto dto);
 
 	/**
-	 * @description: 退出系统登录|客户端用户：nodejs/IOS平板等
+	 * @description: 【仅matrix-manager-api项目使用】
+	 * 		退出系统登录|客户端用户：nodejs/IOS平板等
 	 *
 	 * @param session
 	 * @author Yangcl
@@ -138,9 +140,13 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @version 1.0.0.1
 	 */
 	public JSONObject ajaxClientLogout(McUserInfoDto dto);
+	
+
+
 
 	/**
-	 * @description: 获取用户详情
+	 * @description: 【仅matrix-manager-api项目使用】
+	 * 	获取用户详情
 	 *
 	 * @param dto
 	 * @param session 

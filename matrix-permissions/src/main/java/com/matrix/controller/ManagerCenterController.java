@@ -26,8 +26,6 @@ public class ManagerCenterController extends BaseController{
 	/**
 	 * @description: 获取平台信息列表
 	 * 
-	 * 		修改前名称：ajax_draw_add_user_page
-	 *
 	 * @author Yangcl
 	 * @date 2019年11月12日 下午4:33:53 
 	 * @version 1.0.0.1

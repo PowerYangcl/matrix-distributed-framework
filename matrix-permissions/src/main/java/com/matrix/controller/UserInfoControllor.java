@@ -17,7 +17,7 @@ import com.matrix.service.IMcUserInfoService;
 
 /**
  * @description: 系统后台用户控制器
- * 																											【仅matrix-manager-api项目使用】
+ * 																											
  * @author Yangcl
  * @home https://github.com/PowerYangcl
  * @date 2016年11月25日 下午3:30:37 
