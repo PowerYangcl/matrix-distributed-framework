@@ -97,7 +97,7 @@
 <!-- 系统角色权限 -->
 <script type="text/javascript" src="${js}/system/sys-user-role-function.js"></script>
 <script>
-	$(document).ready(function(){
+	$(function(){
 		surfunc.init(window.top.basePath).sysTreeOperation();
 		
 		// 自定义滚动条 | 执行此代码自定义滚动条则生效
@@ -108,6 +108,7 @@
 			height: '700px'  
 		});
 	});
+
 	
 </script>
 

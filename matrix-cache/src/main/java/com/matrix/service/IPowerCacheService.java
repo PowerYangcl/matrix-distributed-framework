@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface IPowerCacheService {
 
-    public JSONObject getCacheValue(String prefix, String key, String type);
+    public JSONObject ajaxBtnGetCache(String prefix, String key, String type);
 
     /**
      * @description: 删除缓存中的数据
@@ -16,7 +16,7 @@ public interface IPowerCacheService {
      * @date 2018年11月14日 上午11:14:52
      * @version 1.0.0.1
      */
-    public JSONObject ajaxDeleteCache(String prefix, String key, String type);
+    public JSONObject ajaxBtnDeleteCache(String prefix, String key, String type);
 
 
     /**
@@ -31,7 +31,7 @@ public interface IPowerCacheService {
      *@version 1.0.1
      */
 
-    public JSONObject ajaxBatchDeleteCache(String prefix, String key, String type);
+    public JSONObject ajaxBtnBatchDeleteCache(String prefix, String key, String type);
 
     /**
      * @description: 重新设置一个缓存值
@@ -44,7 +44,7 @@ public interface IPowerCacheService {
      * @date 2018年11月14日 下午19:42:26
      * @version 1.0.0.1
      */
-    public JSONObject ajaxResetCache(String prefix, String key, String type, String jsonStr);
+    public JSONObject ajaxBtnResetCache(String prefix, String key, String type, String jsonStr);
 
     /**
      * @description: 重新设置一个缓存值|永久生效
@@ -57,7 +57,7 @@ public interface IPowerCacheService {
      * @date 2018年11月14日 下午19:42:26
      * @version 1.0.0.1
      */
-	public JSONObject ajaxResetCacheForever(String prefix, String key, String type, String jsonStr);
+	public JSONObject ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr);
 
 }
 

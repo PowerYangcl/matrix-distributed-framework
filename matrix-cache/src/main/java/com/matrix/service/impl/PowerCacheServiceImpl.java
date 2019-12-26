@@ -28,7 +28,7 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 	 * @date 2017年5月26日 下午1:16:56 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject getCacheValue(String prefix , String key  , String type) {
+	public JSONObject ajaxBtnGetCache(String prefix , String key  , String type) {
 		JSONObject result = new JSONObject();
 		
 		if(StringUtils.isBlank(key)){
@@ -40,10 +40,10 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		try {
 			if(type.equals("dict")){
 				DCacheEnum [] arr = DCacheEnum.values();
-				value = launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , "Init" + prefix ).get(key);
+				value = launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key);
 			}else{
 				SCacheEnum [] arr = SCacheEnum.values();
-				value = launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , "Init" + prefix ).get(key); 
+				value = launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key); 
 			}
 		} catch (Exception e) {
 			result.put("status", "error");
@@ -78,7 +78,7 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 	 * @date 2018年11月14日 上午11:14:52 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxDeleteCache(String prefix, String key, String type) {
+	public JSONObject ajaxBtnDeleteCache(String prefix, String key, String type) {
 		JSONObject result = new JSONObject();
 		
 		if(StringUtils.isBlank(key)){
@@ -144,7 +144,7 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
      * @date 2018/11/21 10:55
      * @version 1.0.0.1
      */
-	public JSONObject ajaxBatchDeleteCache(String prefix, String key, String type) {
+	public JSONObject ajaxBtnBatchDeleteCache(String prefix, String key, String type) {
 		JSONObject result = new JSONObject();
 //		if(StringUtils.isBlank(key)){
 //			result.put("status", "error");
@@ -186,7 +186,7 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 	 * @date 2018年11月14日 下午19:42:26 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxResetCache(String prefix, String key, String type , String jsonStr) {
+	public JSONObject ajaxBtnResetCache(String prefix, String key, String type , String jsonStr) {
 		JSONObject result = new JSONObject();
 		
 		if(StringUtils.isBlank(key)){
@@ -225,7 +225,7 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 	 * @date 2018年11月14日 下午19:42:26
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxResetCacheForever(String prefix, String key, String type, String jsonStr) {
+	public JSONObject ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(key)){
 			result.put("status", "error");
