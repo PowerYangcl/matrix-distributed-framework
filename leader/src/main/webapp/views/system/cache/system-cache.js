@@ -107,7 +107,6 @@ layui.config({
   	  			$("#redis-key").html(key);
   	  		});
   	  		
-  	  		// TODO  onchange 
   	  		$("#type").on("change",function(e){
 	  			var key = $("#type > option:selected").attr("dict") + "-" + $("#prefix").val() + "-" + $("#cache-key").val();
 	  			$("#redis-key").html(key);
