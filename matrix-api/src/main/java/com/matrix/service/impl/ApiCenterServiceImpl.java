@@ -211,19 +211,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	
 	
 	/**
-	 * @description: 前往跨域白名单列表页面
-	 *
-	 * @param session
-	 * @return 
-	 * @author Yangcl
-	 * @date 2017年11月15日 上午11:19:17 
-	 * @version 1.0.0
-	 */
-	public String apiIncludeDomainList() {
-		return "jsp/api/domain/api-include-domain-list";
-	}
-
-	/**
 	 * @description: 跨域白名单列表数据请求
 	 *
 	 * @param entity

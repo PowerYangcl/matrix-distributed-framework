@@ -22,7 +22,6 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	public JSONObject ajaxBtnApiProjectDelete(AcApiProject entity, HttpSession session);
 	
 	// ac_include_domain 表
-	public String apiIncludeDomainList();
 	public JSONObject ajaxIncludeDomainPageList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session);
 	public JSONObject ajaxIncludeDomainList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session);         
 	public JSONObject ajaxApiDomainAdd(AcIncludeDomain entity, HttpSession session);
