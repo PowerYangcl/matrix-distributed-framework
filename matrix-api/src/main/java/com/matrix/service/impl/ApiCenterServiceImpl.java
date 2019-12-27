@@ -17,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseServiceImpl;
+import com.matrix.base.RpcResultCode;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -64,17 +65,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	@Resource
 	private IAcRequestOpenApiMapper acRequestOpenApiMapper;
 	
-	/**
-	 * @description: api所属项目列表
-	 *
-	 * @param session
-	 * @author Yangcl
-	 * @date 2017年11月13日 下午7:50:27 
-	 * @version 1.0.0
-	 */
-	public String apiProjectList(){ 
-		return "jsp/api/project/api-project-list";  
-	}
 
 	/**
 	 * @description: ac_api_project 列表数据信息
@@ -85,34 +75,43 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月14日 上午9:38:58 
 	 * @version 1.0.0
 	 */
-	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request, HttpSession session) {
+	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request) {
 		JSONObject result = new JSONObject();
-		String pageNum = request.getParameter("pageNum"); // 当前第几页
-		String pageSize = request.getParameter("pageSize"); // 当前页所显示记录条数
-		int num = 1;
-		int size = 10;
-		if (StringUtils.isNotBlank(pageNum)) {
-			num = Integer.parseInt(pageNum);
-		}
-		if (StringUtils.isNotBlank(pageSize)) {
-			size = Integer.parseInt(pageSize);
-		}
-		PageHelper.startPage(num, size);
-		List<AcApiProjectView> list = acApiProjectMapper.queryPageList(entity); 
-		if (list != null && list.size() > 0) {
+		try {
+			String pageNum = request.getParameter("pageNum"); // 当前第几页
+			String pageSize = request.getParameter("pageSize"); // 当前页所显示记录条数
+			int num = 1;
+			int size = 10;
+			if (StringUtils.isNotBlank(pageNum)) {
+				num = Integer.parseInt(pageNum);
+			}
+			if (StringUtils.isNotBlank(pageSize)) {
+				size = Integer.parseInt(pageSize);
+			}
+			PageHelper.startPage(num, size);
+			List<AcApiProjectView> list = acApiProjectMapper.queryPageList(entity); 
 			result.put("status", "success");
-		} else {
+			if (list != null && list.size() > 0) {
+				result.put("code" , RpcResultCode.SUCCESS);
+				result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
+			} else {
+				result.put("code" , RpcResultCode.RESULT_NULL);
+				result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+			PageInfo<AcApiProjectView> pageList = new PageInfo<AcApiProjectView>(list);
+			result.put("data", pageList);
+			result.put("entity", entity);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
+			return result;
 		}
-		PageInfo<AcApiProjectView> pageList = new PageInfo<AcApiProjectView>(list);
-		result.put("data", pageList);
-		result.put("entity", entity);
-		return result;
 	}
 
 	@Override
-	public JSONObject ajaxApiProjectAdd(AcApiProject e, HttpSession session) {
+	public JSONObject ajaxBtnApiProjectAdd(AcApiProject e, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(e.getTarget())) {
 			result.put("status", "error");
@@ -131,16 +130,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		if(flag == 1) {
 			result.put("status", "success");
 			result.put("msg", this.getInfo(600010061));  // 600010061=数据添加成功!
-			List<AcApiProjectView> list = acApiProjectMapper.findAll();
-			if(list != null && list.size() > 0) {
-				JSONObject cache = new JSONObject();
-				cache.put("status", "success");
-				cache.put("data", list);
-				launch.loadDictCache(DCacheEnum.ApiProject , null).set("all" , cache.toJSONString());  
-			}else {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(600010065));  // 600010065=服务器异常，数据缓存修改失败!
-			}
+			launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
 		}else {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010062));  // 600010062=服务器异常，数据添加失败!
@@ -149,17 +139,13 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	}
 
 	/**
-	 * @description: 更新与删除都会走这里的逻辑 
+	 * @description: 更新
 	 *
-	 * @param e
-	 * @param session
-	 * @return 
 	 * @author Yangcl
 	 * @date 2017年11月14日 下午4:07:46 
 	 * @version 1.0.0
 	 */
-	@Override
-	public JSONObject ajaxApiProjectEdit(AcApiProject e, HttpSession session) {
+	public JSONObject ajaxBtnApiProjectEdit(AcApiProject e, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(e.getTarget())) {
 			result.put("status", "error");
@@ -175,23 +161,55 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		if(flag == 1) {
 			result.put("status", "success");
 			result.put("msg", this.getInfo(600010063));  // 600010063=数据修改成功!
-			List<AcApiProjectView> list = acApiProjectMapper.findAll();
-			if(list != null && list.size() > 0) {
-				JSONObject cache = new JSONObject();
-				cache.put("status", "success");
-				cache.put("data", list);
-				launch.loadDictCache(DCacheEnum.ApiProject , null).set("all" , cache.toJSONString());   
-			}else {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(600010065));  // 600010065=服务器异常，数据缓存修改失败!
-			}
+			launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
 		}else {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败! 
 		}
 		return result;
 	}
+	
+	/**
+	 * @description: 删除
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月27日 下午3:17:41 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxBtnApiProjectDelete(AcApiProject e, HttpSession session) {
+		JSONObject result = new JSONObject();
+		if(e.getId() == null) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(600010088));  // 600010088=数据删除失败
+			return result;
+		}
+		
+		McUserInfoView user = (McUserInfoView) session.getAttribute("userInfo");
+		e.setUpdateTime(new Date());
+		e.setUpdateUserId(user.getId());
+		e.setUpdateUserName(user.getUserName());
+		
+		try {
+			int flag = acApiProjectMapper.deleteById(e.getId());
+			if(flag == 1) {
+				result.put("status", "success");
+				result.put("msg", this.getInfo(600010089));  // 600010089=数据删除成功!
+				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
+			}else {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(600010090));  // 600010090=服务器异常，数据删除失败! 
+			}
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(600010090));  // 600010090=服务器异常，数据删除失败! 
+		}
+		return result;
+	}
 
+	
+	
 	/**
 	 * @description: 前往跨域白名单列表页面
 	 *
@@ -252,7 +270,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxIncludeDomainList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session) {
 		JSONObject result = new JSONObject();
-		String value = launch.loadDictCache(DCacheEnum.ApiDomain , "InitApiDomain").get("all");  
+		String value = launch.loadDictCache(DCacheEnum.ApiDomain , "ApiDomainInit").get("all");  
 		if (StringUtils.isNoneBlank(value)) {
 			return JSONObject.parseObject(value);
 		} else {
@@ -384,7 +402,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxApiInfoList(AcApiInfo e, HttpSession session) {
 		JSONObject result = new JSONObject();
-		String project = launch.loadDictCache(DCacheEnum.ApiProject , "InitApiProject").get("all");
+		String project = launch.loadDictCache(DCacheEnum.ApiProject , "ApiProjectInit").get("all");
 		if(StringUtils.isBlank(project)) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010068));  // 600010068=API树形结构加载失败!api所属项目未能正常初始化，请重试.
@@ -458,7 +476,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			result.put("msg", this.getInfo(600010074 , dto.getAtype()));  // 600010074=【业务处理实现】路径输入错误!应该以{0}起始
 			return result;
 		}
-		String isRecord = launch.loadDictCache(DCacheEnum.ApiInfo , "InitApiInfo").get(dto.getTarget());
+		String isRecord = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(dto.getTarget());
 		if(StringUtils.isNotBlank(isRecord)) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010075 , dto.getTarget() ));  // 600010075=系统接口名称：{0} 已经在数据库中存在,请修改.
@@ -545,7 +563,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			result.put("msg", this.getInfo(600010076));  // 600010076=系统接口标识"target"参数不得为空!
 			return result;
 		}
-		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "InitApiInfo").get(dto.getTarget());
+		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(dto.getTarget());
 		if(StringUtils.isBlank(record)) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010077 , dto.getTarget()));  // 600010077=目标接口: {0} 不存在!
@@ -649,7 +667,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		}
 		
 		launch.loadDictCache(DCacheEnum.ApiInfo , null).del(api.getTarget()); 
-		JSONObject cache = JSONObject.parseObject( launch.loadDictCache(DCacheEnum.ApiInfo , "InitApiInfo").get(api.getTarget()) ); 
+		JSONObject cache = JSONObject.parseObject( launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(api.getTarget()) ); 
 		cache.put("status", "success");
 		cache.put("msg", this.getInfo(600010080));  // 600010080=API接口信息修改成功!
 		return cache;
@@ -866,7 +884,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxFindRequestDto(String target) {
 		JSONObject result = new JSONObject();
-		String apiInfoStr = launch.loadDictCache(DCacheEnum.ApiInfo , "InitApiInfo").get(target);  
+		String apiInfoStr = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(target);  
 		System.out.println("apiInfoStr" + apiInfoStr);
 		if(StringUtils.isBlank(apiInfoStr)){
 			result.put("status", "error");

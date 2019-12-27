@@ -37,7 +37,7 @@ import com.matrix.pojo.view.AcRequestOpenApiView;
  * @date 2017年11月20日 下午9:34:34 
  * @version 1.0.0.1
  */
-public class InitApiRequester extends BaseClass implements ILoadCache<String> {
+public class ApiRequesterInit extends BaseClass implements ILoadCache<String> {
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	@Inject

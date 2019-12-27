@@ -19,7 +19,7 @@ import com.matrix.dao.IAcIncludeDomainMapper;
 import com.matrix.pojo.entity.AcApiInfo;
 import com.matrix.pojo.view.AcApiDomainView;
 
-public class InitApiInfo  extends BaseClass implements ILoadCache<String>{
+public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	

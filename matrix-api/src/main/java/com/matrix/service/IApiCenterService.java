@@ -16,10 +16,10 @@ import com.matrix.pojo.view.AcApiInfoView;
 public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView>{
 
 	// ac_api_project 表
-	public String apiProjectList();
-	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request, HttpSession session);
-	public JSONObject ajaxApiProjectAdd(AcApiProject entity, HttpSession session);
-	public JSONObject ajaxApiProjectEdit(AcApiProject entity, HttpSession session);
+	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request);
+	public JSONObject ajaxBtnApiProjectAdd(AcApiProject entity, HttpSession session);
+	public JSONObject ajaxBtnApiProjectEdit(AcApiProject entity, HttpSession session);
+	public JSONObject ajaxBtnApiProjectDelete(AcApiProject entity, HttpSession session);
 	
 	// ac_include_domain 表
 	public String apiIncludeDomainList();

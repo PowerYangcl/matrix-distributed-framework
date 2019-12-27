@@ -159,7 +159,18 @@ public class UserInfoControllor  extends BaseController{
 		return mcUserInfoService.ajaxBtnUserCacheReload();
 	}
 	
-	
+	/**
+	 * @description: 绕过权限控制，重新加载系统用户缓存
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月27日 下午2:46:47 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "api_reload", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject apiReload(HttpSession session , HttpServletRequest request){
+		return mcUserInfoService.ajaxBtnUserCacheReload();
+	}
 	
 	
 	

@@ -29,6 +29,19 @@ layui.config({
  	  	         	{field:'id', title:'角色ID', width:100,unresize: true, sort: true},  //  fixed: 'left', 
  	  	         	{field:'roleName', title:'角色名称', width:200},
  	  	         	{field:'type', title:'平台名称', width:250, sort: true},
+ 	  	         	{
+ 						 field:'sex', 
+ 						 title:'性别', 
+ 						 width:80, 
+ 						 sort: true, 
+ 						 templet: function(res){
+ 							 var html_ = '男';
+ 							 if(res.sex == 2){
+ 								 html_ = '女';
+ 							 }
+ 					  		 return '<a>'+ html_ +'</a>'
+ 						 }
+ 					 },
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},
  	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:180}

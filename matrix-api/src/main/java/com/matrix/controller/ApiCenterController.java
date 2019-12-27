@@ -40,7 +40,6 @@ public class ApiCenterController extends BaseController {
 	private IApiCenterService service;  
 	
 	
-	
 	//////////////////////////////////////////////////////////////////////////////【api所属项目】/////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @description: 跳转到api所属项目列表页面
@@ -50,11 +49,12 @@ public class ApiCenterController extends BaseController {
 	 * @date 2017年11月13日 下午7:50:27 
 	 * @version 1.0.0
 	 */
-	@RequestMapping("page_apicenter_project_list")  
+	@RequestMapping("page_apicenter_api_project_list")  
 	public String apiProjectList(HttpSession session){ 
-		super.userBehavior(session, logger, "page_apicenter_project_list", "api所属项目列表");
-		return service.apiProjectList(); 
+		super.userBehavior(session, logger, "page_apicenter_api_project_list", "前往api所属项目列表");
+		return "views/api/project/api-project-list";
 	}
+	
 	/**
 	 * @description: ac_api_project 列表数据信息
 	 *
@@ -67,9 +67,10 @@ public class ApiCenterController extends BaseController {
 	@RequestMapping(value = "ajax_api_project_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public JSONObject ajaxApiProjectList(AcApiProject entity , HttpServletRequest request, HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_project_list", "ac_api_project 列表数据信息");
-		return service.ajaxApiProjectList(entity, request, session);  
+		super.userBehavior(session, logger, "ajax_api_project_list", "获取api所属项目列表页数据");
+		return service.ajaxApiProjectList(entity, request);  
 	}
+	
 	/**
 	 * @description: ac_api_project表添加信息
 	 *
@@ -79,27 +80,39 @@ public class ApiCenterController extends BaseController {
 	 * @date 2017年11月14日 上午10:34:12 
 	 * @version 1.0.0
 	 */
-	@RequestMapping(value = "ajax_api_project_add", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_api_project_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiProjectAdd(AcApiProject entity , HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_project_add", "向ac_api_project表添加信息");
-		return service.ajaxApiProjectAdd(entity, session);  
+	public JSONObject ajaxBtnApiProjectAdd(AcApiProject entity , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_project_add", "向ac_api_project表添加信息");
+		return service.ajaxBtnApiProjectAdd(entity, session);  
 	}
 	
 	/**
 	 * @description: ac_api_project表修改信息
 	 *
-	 * @param entity
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月14日 上午10:34:12 
 	 * @version 1.0.0
 	 */
-	@RequestMapping(value = "ajax_api_project_edit", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_api_project_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiProjectEdit(AcApiProject entity , HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_project_edit", "向ac_api_project表修改信息");
-		return service.ajaxApiProjectEdit(entity, session);  
+	public JSONObject ajaxBtnApiProjectEdit(AcApiProject entity , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_project_edit", "向ac_api_project表修改信息");
+		return service.ajaxBtnApiProjectEdit(entity, session);  
+	}
+	
+	/**
+	 * @description: 删除一条记录
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月27日 下午2:59:18 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_api_project_delete", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnApiProjectDelete(AcApiProject entity , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_project_delete", "向ac_api_project表删除一条记录");
+		return service.ajaxBtnApiProjectDelete(entity, session);  
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////【跨域白名单】/////////////////////////////////////////////////////////////////////////////////////////

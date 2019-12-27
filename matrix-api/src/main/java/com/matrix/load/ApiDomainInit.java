@@ -47,7 +47,7 @@ import com.matrix.pojo.view.AcIncludeDomainView;
  * @date 2017年11月23日 下午14:42:28 
  * @version 1.0.0
  */
-public class InitApiDomain extends BaseClass implements ILoadCache<String>{
+public class ApiDomainInit extends BaseClass implements ILoadCache<String>{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	

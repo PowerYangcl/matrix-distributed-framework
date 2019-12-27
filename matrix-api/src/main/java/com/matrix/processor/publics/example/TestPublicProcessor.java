@@ -9,9 +9,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.Head;
 import com.matrix.pojo.dto.ProcessorTestDto;
-import com.matrix.pojo.entity.AcApiProject;
 import com.matrix.service.IApiCenterService;
 
 
@@ -36,7 +34,7 @@ public class TestPublicProcessor extends BaseClass implements IBaseProcessor {
 		
 		
 		
-		return service.ajaxApiProjectList(null, request, null); 
+		return service.ajaxApiProjectList(null, request); 
 	}
 
 }

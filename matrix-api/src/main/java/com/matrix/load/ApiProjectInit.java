@@ -55,7 +55,7 @@ import com.matrix.pojo.view.AcApiProjectView;
  * @date 2017年11月23日 下午14:42:28 
  * @version 1.0.0
  */
-public class InitApiProject extends BaseClass implements ILoadCache<String>{
+public class ApiProjectInit extends BaseClass implements ILoadCache<String>{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	
