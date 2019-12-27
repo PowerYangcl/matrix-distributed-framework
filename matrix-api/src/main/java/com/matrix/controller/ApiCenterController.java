@@ -168,11 +168,11 @@ public class ApiCenterController extends BaseController {
 	 * @date 2017年11月17日 下午11:11:25 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_api_domain_add", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_api_domain_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiDomainAdd(AcIncludeDomain entity , HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_domain_add", "向ac_api_project表添加信息");
-		return service.ajaxApiDomainAdd(entity, session);  
+	public JSONObject ajaxBtnApiDomainAdd(AcIncludeDomain entity , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_domain_add", "添加跨域白名单");
+		return service.ajaxBtnApiDomainAdd(entity, session);  
 	}
 	/**
 	 * @description: 编辑跨域白名单|删除修改走同一套逻辑

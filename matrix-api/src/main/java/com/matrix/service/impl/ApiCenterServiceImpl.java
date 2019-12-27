@@ -110,7 +110,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		}
 	}
 
-	@Override
 	public JSONObject ajaxBtnApiProjectAdd(AcApiProject e, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(e.getTarget())) {
@@ -221,36 +220,42 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxIncludeDomainPageList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session) {
 		JSONObject result = new JSONObject();
-		String pageNum = request.getParameter("pageNum"); // 当前第几页
-		String pageSize = request.getParameter("pageSize"); // 当前页所显示记录条数
-		int num = 1;
-		int size = 10;
-		if (StringUtils.isNotBlank(pageNum)) {
-			num = Integer.parseInt(pageNum);
-		}
-		if (StringUtils.isNotBlank(pageSize)) {
-			size = Integer.parseInt(pageSize);
-		}
-		PageHelper.startPage(num, size);
-		List<AcIncludeDomainView> list = acIncludeDomainMapper.queryPageList(entity); 
-		if (list != null && list.size() > 0) {
+		try {
+			String pageNum = request.getParameter("pageNum"); // 当前第几页
+			String pageSize = request.getParameter("pageSize"); // 当前页所显示记录条数
+			int num = 1;
+			int size = 10;
+			if (StringUtils.isNotBlank(pageNum)) {
+				num = Integer.parseInt(pageNum);
+			}
+			if (StringUtils.isNotBlank(pageSize)) {
+				size = Integer.parseInt(pageSize);
+			}
+			PageHelper.startPage(num, size);
+			List<AcIncludeDomainView> list = acIncludeDomainMapper.queryPageList(entity); 
 			result.put("status", "success");
-		} else {
+			if (list != null && list.size() > 0) {
+				result.put("code" , RpcResultCode.SUCCESS);
+				result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
+			} else {
+				result.put("code" , RpcResultCode.RESULT_NULL);
+				result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据! 
+			}
+			PageInfo<AcIncludeDomainView> pageList = new PageInfo<AcIncludeDomainView>(list);
+			result.put("data", pageList);
+			result.put("entity", entity);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
+			return result;
 		}
-		PageInfo<AcIncludeDomainView> pageList = new PageInfo<AcIncludeDomainView>(list);
-		result.put("data", pageList);
-		result.put("entity", entity);
-		return result;
 	}
 	
 	/**
 	 * @description: 全量跨域白名单列表数据，不分页
 	 *
-	 * @param entity
-	 * @param request
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月27日 下午11:22:33 
 	 * @version 1.0.0.1
@@ -276,7 +281,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月17日 下午11:11:25 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxApiDomainAdd(AcIncludeDomain e, HttpSession session) {
+	public JSONObject ajaxBtnApiDomainAdd(AcIncludeDomain e, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(e.getDomain())) {
 			result.put("status", "error");
