@@ -326,13 +326,11 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: 编辑跨域白名单
 	 *
-	 * @param entity
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月18日 下午9:56:10 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxApiDomainEdit(AcIncludeDomain e, HttpSession session) {
+	public JSONObject ajaxBtnApiDomainEdit(AcIncludeDomain e, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(e.getDomain())) {
 			result.put("status", "error");
@@ -349,38 +347,63 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		e.setUpdateTime(new Date());
 		e.setUpdateUserId(u.getId());
 		e.setUpdateUserName(u.getUserName());
-		
-		int flag = acIncludeDomainMapper.updateSelective(e);
-		if(flag == 1){
-			result.put("status", "success");
-			result.put("msg", this.getInfo(600010063));  // 600010063=数据修改成功!
-			List<AcIncludeDomainView> list = acIncludeDomainMapper.queryPageList(null); 
-			if(list != null && list.size() > 0) {
-				JSONObject cache = new JSONObject();
-				cache.put("status", "success");
-				cache.put("data", list);
-				launch.loadDictCache(DCacheEnum.ApiDomain , null).set("all" , cache.toJSONString());  
+		try {
+			int flag = acIncludeDomainMapper.updateSelective(e);
+			if(flag == 1){
+				result.put("status", "success");
+				result.put("msg", this.getInfo(600010063));  // 600010063=数据修改成功!
+				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
+				launch.loadDictCache(DCacheEnum.ApiInfo , null).batchDel("");
 			}else {
 				result.put("status", "error");
-				result.put("msg", this.getInfo(600010065));  // 600010065=服务器异常，数据缓存修改失败!
+				result.put("msg", this.getInfo(600010023));  // 600010023=数据库异常，数据修改失败! 
 			}
-		}else {
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败! 
+			result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败!
 		}
 		return result;
 	}
-
+	
 	/**
-	 * @description: api信息树 
+	 * @description: 删除一条跨域白名单记录
 	 *
-	 * @param session
 	 * @author Yangcl
-	 * @date 2017年11月19日 下午2:33:26 
-	 * @version 1.0.0
+	 * @date 2020年1月7日 上午10:20:16 
+	 * @version 1.0.0.1
 	 */
-	public String apiInfoList() {
-		return "jsp/api/info/api-info-list";  
+	public JSONObject ajaxBtnApiDomainDelete(AcIncludeDomain e, HttpSession session) {
+		JSONObject result = new JSONObject();
+		if(e.getId() == null) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(600010091));  // 600010091=数据删除失败，主键为空
+			return result;
+		}
+		
+		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
+		e.setUpdateTime(new Date());
+		e.setUpdateUserId(u.getId());
+		e.setUpdateUserName(u.getUserName());
+		e.setDeleteFlag(0);
+		
+		try {
+			int flag = acIncludeDomainMapper.updateSelective(e);
+			if(flag == 1){
+				result.put("status", "success");
+				result.put("msg", this.getInfo(600010089));  // 600010089=数据删除成功!
+				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
+				launch.loadDictCache(DCacheEnum.ApiInfo , null).batchDel("");
+			}else {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(600010088));  // 600010088=数据删除失败
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(600010090));  // 600010090=服务器异常，数据删除失败!
+		}
+		return result;
 	}
 
 	/**

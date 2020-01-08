@@ -130,7 +130,7 @@ layui.config({
 	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
-	          			var url_ =  layui.setter.path + 'apicenter/ajax_btn_api_project_edit.do';
+	          			var url_ =  layui.setter.path + 'apicenter/ajax_btn_api_domain_edit.do';
 						var data_ = $("#dialog-api-form").serializeArray();
 						var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 						if(obj.status == 'success'){
@@ -153,10 +153,10 @@ layui.config({
 			},
 			
 			deleteMcRole:function(o){
-	        	layer.confirm('您确定要删除这个角色【' + o.data.target + '】吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+	        	layer.confirm('您确定要删除这个域名【' + o.data.domain + '】吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
 						var type_ = 'post';
-			            var url_ = layui.setter.path + 'apicenter/ajax_btn_api_project_delete.do';
+			            var url_ = layui.setter.path + 'apicenter/ajax_btn_api_domain_delete.do';
 			        	var data_ = {
 		        			id : o.data.id ,
 		        			eleValue : o.key
@@ -181,33 +181,27 @@ layui.config({
 	        // 绘制添加和编辑弹框
 			drawDialogPage : function(type , key , e){
 				var id = "";
-				var target = "";
-				var serviceUrl = "";
-				var private_ = "checked";
-				var public_ = "";
+				var domain = "";
+				var companyName = "";
 				
 				if(type == 'edit') {
 					id = e.id;
-					target = e.target;
-					serviceUrl = e.serviceUrl;
-					if(e.atype === "public"){
-						private_ = "";
-						public_ = "checked";
-					}
+					domain = e.domain;
+					companyName = e.companyName;
 				}
 				
 				var html = '<form id="dialog-api-form"><table class="dialog-form" style="width:100%">';
 					html += '<tr>';
 						html += '<td align="right" style="width:195px">跨域域名：</td>';
 						html += '<td align="left">';
-							html += '<input type="text" name="domain" value="' + target + '" placeholder="角色名称 20个字以内 " autocomplete="off" style="margin-bottom: 10px;" maxlength="50">';
+							html += '<input type="text" name="domain" value="' + domain + '" placeholder="角色名称 20个字以内 " autocomplete="off" style="margin-bottom: 10px;" maxlength="50">';
 						html += '</td>';
 					html += '</tr>';
 					
 					html += '<tr>';
 						html += '<td align="right">所属公司：</td>';
 						html += '<td align="left">';
-							html += '<input type="text" name="companyName" value="' + serviceUrl + '" placeholder="请填写公司名称" autocomplete="off" style="margin-bottom: 10px;" maxlength="20">';
+							html += '<input type="text" name="companyName" value="' + companyName + '" placeholder="请填写公司名称" autocomplete="off" style="margin-bottom: 10px;" maxlength="20">';
 						html += '</td>';
 					html += '</tr>';
 					

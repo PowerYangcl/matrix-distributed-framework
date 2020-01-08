@@ -175,7 +175,7 @@ public class ApiCenterController extends BaseController {
 		return service.ajaxBtnApiDomainAdd(entity, session);  
 	}
 	/**
-	 * @description: 编辑跨域白名单|删除修改走同一套逻辑
+	 * @description: 编辑跨域白名单
 	 *
 	 * @param entity
 	 * @param session
@@ -183,13 +183,26 @@ public class ApiCenterController extends BaseController {
 	 * @date 2017年11月18日 下午9:56:10 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_api_domain_edit", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_api_domain_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiDomainEdit(AcIncludeDomain entity , HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_domain_edit", "向ac_api_project表添加信息");
-		return service.ajaxApiDomainEdit(entity, session);  
+	public JSONObject ajaxBtnApiDomainEdit(AcIncludeDomain entity , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_domain_edit", "编辑跨域白名单");
+		return service.ajaxBtnApiDomainEdit(entity, session);  
 	}
 	
+	/**
+	 * @description: 删除一条跨域白名单记录
+	 *
+	 * @author Yangcl
+	 * @date 2020年1月7日 上午10:20:16 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_btn_api_domain_delete", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxBtnApiDomainDelete(AcIncludeDomain entity , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_domain_delete", "删除一条跨域白名单记录");
+		return service.ajaxBtnApiDomainDelete(entity, session);  
+	}
 	//////////////////////////////////////////////////////////////////////////////【系统api信息】/////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @description: api信息树 
@@ -199,10 +212,10 @@ public class ApiCenterController extends BaseController {
 	 * @date 2017年11月19日 下午2:33:26 
 	 * @version 1.0.0
 	 */
-	@RequestMapping("page_apicenter_api_info_list")  
-	public String apiInfoList(HttpSession session){ 
-		super.userBehavior(session, logger, "page_apicenter_api_info_list", "前往api信息树页面");
-		return service.apiInfoList(); 
+	@RequestMapping("page_apicenter_api_tree")  
+	public String pageApicenterApiTree(HttpSession session){ 
+		super.userBehavior(session, logger, "page_apicenter_api_tree", "前往api信息树页面");
+		return "views/api/info/api-tree"; 
 	}
 	
 	/**

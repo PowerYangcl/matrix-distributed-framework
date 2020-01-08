@@ -25,10 +25,10 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	public JSONObject ajaxIncludeDomainPageList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session);
 	public JSONObject ajaxIncludeDomainList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session);         
 	public JSONObject ajaxBtnApiDomainAdd(AcIncludeDomain entity, HttpSession session);
-	public JSONObject ajaxApiDomainEdit(AcIncludeDomain entity, HttpSession session);
+	public JSONObject ajaxBtnApiDomainEdit(AcIncludeDomain entity, HttpSession session);
+	public JSONObject ajaxBtnApiDomainDelete(AcIncludeDomain entity, HttpSession session);
 	
 	// ac_api_info 表
-	public String apiInfoList();
 	public JSONObject ajaxApiInfoList(AcApiInfo e, HttpSession session);
 	public JSONObject ajaxApiInfoAdd(AcApiInfoDto d, HttpSession session);
 	public JSONObject ajaxApiInfoFind(AcApiInfoDto dto);
