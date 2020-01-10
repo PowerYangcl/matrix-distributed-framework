@@ -268,7 +268,7 @@ var apiInfo = {
             $("#tree-node-edit").append(html_);
             
             if(treeNode.name != "新建结点") {
-            	html_ = '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:remove" onclick="apiInfo.openTestDialog(this)" style="margin-left:20px"> 删除 </button>'
+            	html_ = '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:remove" onclick="apiInfo.removeApi()" style="margin-left:20px"> 删除 </button>'
             	html_ += '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:test" onclick="apiInfo.openTestDialog(this)" style="margin-left:20px"> 测试 </button>'
         		$("#tree-node-edit").append(html_);
             	var data_ = {target:treeNode.target};
@@ -402,12 +402,57 @@ var apiInfo = {
 			}
         },
         
+        // 删除一条记录
+        removeApi : function(){
+        	var node = apiInfo.currentNode;
+        	var data_ = {
+        			id : node.id
+        	};
+        	var url_ = apiInfo.path + "ajax_api_info_remove.do";
+            var obj = JSON.parse(ajaxs.sendAjax('post' , url_ , data_));
+			if(obj.status == 'success'){
+				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+					var zTree = apiInfo.zTree;
+	            	zTree.removeNode(node);
+	            	apiInfo.currentNode = null;
+	            	$($("#tree-node-edit")[0].childNodes).remove();
+                    
+                    layer.close(a);
+        		});
+				
+			}else{
+				layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+			}
+        },
+        
         openDiscardWarning:function(o){
+        	if($(o).attr("checked")){
+        		return ;
+        	}
+        	
         	var val_ = $(o).val();
         	if($(o).val() == 0){
-        		malert('选择此项并点击提交按钮后, 系统接口将会立刻熔断! 所有对此接口的访问都会失效!' , '高风险操作!');
+        		var msg = '警告! 选择此项并点击提交按钮后, 系统接口将会立刻熔断! 所有对此接口的访问都会失效!'
+        		layer.confirm(msg , { title:'高风险操作 !', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+					function(index , ele) {  // 确定按钮
+							
+					}, 
+					function(index , ele) {  // 取消按钮  
+						// TODO 返回以前的选择状态
+						layer.close(index);
+					}
+				);
         	}else{
-        		malert('选择此项并点击提交按钮后, 系统接口将会恢复使用! 如果接口曾因为风险被关闭,请仔细确认并核对后开启!' , '系统提示!');
+        		var msg = '选择此项并点击提交按钮后, 系统接口将会恢复使用! 如果接口曾因为风险被关闭,请仔细确认并核对后开启!'
+        		layer.confirm(msg , { title:'高风险操作 !', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+					function(index , ele) {  // 确定按钮
+							
+					}, 
+					function(index , ele) {  // 取消按钮
+						// TODO 返回以前的选择状态
+						layer.close(index);
+					}
+				);
         	}
         },
         
@@ -427,7 +472,8 @@ var apiInfo = {
         	}
         	$("input[name='domain'][value='" + o.domain + "']").attr("checked","checked");
         	$("input[name='login'][value='" + o.login + "']").attr("checked","checked");
-        	$("input[name='discard'][value='" + o.discard + "']").attr("checked","checked");
+        	$("input[name='discard']").removeAttr("checked");
+        	$("input[name='discard'][value='" + o.discard + "']").prop("checked","checked");
         	$("#dto-info").val(o.dtoInfo ); 
         	$("#remark").val(o.remark ); 
         },

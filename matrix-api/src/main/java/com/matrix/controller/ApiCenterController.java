@@ -269,8 +269,6 @@ public class ApiCenterController extends BaseController {
 	/**
 	 * @description: 修改api信息 
 	 *
-	 * @param d
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月30日 下午3:26:55 
 	 * @version 1.0.0
@@ -282,6 +280,19 @@ public class ApiCenterController extends BaseController {
 		return service.ajaxApiInfoEdit(d, session);  
 	}
 	
+	/**
+	 * @description: 删除一个API
+	 *
+	 * @author Yangcl
+	 * @date 2020年1月10日 下午4:44:37 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_api_info_remove", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxApiInfoRemove(AcApiInfoDto d , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_api_info_remove", "删除api信息");
+		return service.ajaxApiInfoRemove(d, session);  
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////【请求者信息维护】/////////////////////////////////////////////////////////////////////////////////////////
 	/**

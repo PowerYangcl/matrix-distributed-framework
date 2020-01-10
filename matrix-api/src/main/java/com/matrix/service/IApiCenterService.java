@@ -33,6 +33,7 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	public JSONObject ajaxApiInfoAdd(AcApiInfoDto d, HttpSession session);
 	public JSONObject ajaxApiInfoFind(AcApiInfoDto dto);
 	public JSONObject ajaxApiInfoEdit(AcApiInfoDto d, HttpSession session);
+	public JSONObject ajaxApiInfoRemove(AcApiInfoDto d, HttpSession session);
 	
 	// ac_request_info 表 
 	public String requestInfoList();

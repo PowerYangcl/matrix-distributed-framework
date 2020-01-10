@@ -97,7 +97,7 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 			}
 		}
 		String value = cache.toJSONString();
-		launch.loadDictCache(DCacheEnum.ApiInfo , null).set(key , value , 30*24*60*60); 
+		launch.loadDictCache(DCacheEnum.ApiInfo , null).set(key , value , 24*60*60); 
 		return value;
 	}
 

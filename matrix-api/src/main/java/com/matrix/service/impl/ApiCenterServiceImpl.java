@@ -687,6 +687,50 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		cache.put("msg", this.getInfo(600010080));  // 600010080=API接口信息修改成功!
 		return cache;
 	}
+	
+	/**
+	 * @description: 删除一个API
+	 *
+	 * @author Yangcl
+	 * @date 2020年1月10日 下午4:44:37 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxApiInfoRemove(AcApiInfoDto dto, HttpSession session) {
+		JSONObject result = new JSONObject();
+		try {
+			AcApiInfo api = acApiInfoMapper.find(dto.getId());
+			if(api == null) {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(600010078 , dto.getTarget()));  // 600010078=目标接口: {0} 不存在!数据库无此记录,修改失败!
+				return result;
+			}
+			
+			AcApiInfo e = new AcApiInfo();
+			e.setId(dto.getId());  
+			e.setDeleteFlag(0);
+			McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
+			e.setUpdateTime(new Date());
+			e.setUpdateUserId(u.getId());
+			e.setUpdateUserName(u.getUserName());
+			int flag = acApiInfoMapper.updateSelective(e);
+			if(flag == 1) {
+				result.put("status", "success");
+				result.put("msg", this.getInfo(600010089));  // 600010089=数据删除成功!
+				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(api.getTarget()); 
+			}else {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(600010088));  // 600010088=数据删除失败!
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(600010090));  // 600010090=服务器异常，数据删除失败! 
+			return result;
+		}
+		return result;
+	}
+	
+	
 
 	/**
 	 * @description: 请求者信息维护页面
