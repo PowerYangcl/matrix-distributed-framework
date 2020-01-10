@@ -8,6 +8,46 @@ var apiInfo = {
 		
 		apiServiceUrl:null,   // 部署的api服务器路径 
 		
+		security : function(btnMap){
+			var checkArr = $(".layui-this" , parent.document);
+			var tabId = null;
+			switch(checkArr.length) {
+				 case 2:
+					 // 此种情况：主窗体左侧百叶窗焦点未丢失
+			    	 tabId = checkArr[1].id;
+			    	 break;
+			     case 1:
+			    	 // 此种情况：主窗体左侧百叶窗焦点已经丢失，只剩下tab页
+			    	 tabId = checkArr[0].id;
+			    	 break;
+			     case 0:		
+			    	 // 此种情况：layer.open打开的弹窗中引入的是一个新的列表页面
+			    	 checkArr = $(".layui-this" , parent.parent.document);
+			    	 switch(checkArr.length) {
+				    	case 2:
+					    	tabId = checkArr[1].id;
+					    	break;
+					    case 1:
+					    	tabId = checkArr[0].id;
+					    	break;
+			    	 }
+			    	 break;			     
+			}
+			
+			var result = btnMap.get('btns-' + tabId);
+			if(typeof result == 'undefined' || result == null || result.length == 0){
+				return;
+			}
+			
+			var barr = result.split(",");
+			for(var i = 0 ; i < barr.length ; i ++){
+				$(".security-btn[key='" + barr[i] + "']").show();
+				$(".security-btn[key='" + barr[i] + "']").removeClass("security-btn"); 
+			}
+			$("a.layui-btn").removeAttr("style");	// 数据表格 操作列中的按钮移除元素本身的style样式，保留css样式
+			$(".security-btn").remove();
+		},
+		
 		/**
 		 * 实例化对象
 		 */
@@ -224,13 +264,13 @@ var apiInfo = {
             	} 
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >'; 
             }
-            html_ += '<button class="layui-btn layui-btn-radius" onclick="apiInfo.addOrUpdate(\'' + url_ +'\')"> 提 交 </button>'
+            html_ += '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:submit" onclick="apiInfo.addOrUpdate(\'' + url_ +'\')"> 提 交 </button>'
             $("#tree-node-edit").append(html_);
             
             if(treeNode.name != "新建结点") {
-            	html_ = '<button class="layui-btn layui-btn-radius" onclick="apiInfo.openTestDialog(this)" style="margin-left:20px"> 测试 </button>'
+            	html_ = '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:remove" onclick="apiInfo.openTestDialog(this)" style="margin-left:20px"> 删除 </button>'
+            	html_ += '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:test" onclick="apiInfo.openTestDialog(this)" style="margin-left:20px"> 测试 </button>'
         		$("#tree-node-edit").append(html_);
-            	
             	var data_ = {target:treeNode.target};
             	var api_ = JSON.parse(ajaxs.sendAjax('post' , apiInfo.path + 'ajax_api_info_find.do' , data_));  
             	if(api_.status == 'success'){
@@ -239,6 +279,10 @@ var apiInfo = {
             		layer.alert(api_.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
             	}
             }
+            
+            if(window.parent.layui.setter.pageBtns.size != 0){
+        		apiInfo.security(window.parent.layui.setter.pageBtns);
+        	}
         },
         
         // 清空 domainList 隐藏域中的值
@@ -322,13 +366,12 @@ var apiInfo = {
             var data_ = $("#tree-node-edit").serializeArray();
             var obj = JSON.parse(ajaxs.sendAjax('post' , url_ , data_));
 			if(obj.status == 'success'){
-				malert(obj.msg , '系统提示' , function(){
+				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
 					var zTree = apiInfo.zTree;
 	            	var parent = zTree.getNodeByTId(apiInfo.currentNode.parentTId);
 	            	var e = obj;
 	            	
 	            	zTree.removeNode(apiInfo.currentNode);
-	            	apiInfo.currentNode = null;
 	            	
                     var new_ = { // 节点元素重新追加
                         id : e.id,
@@ -346,10 +389,16 @@ var apiInfo = {
                         remark:e.remark 
                     };
                     zTree.addNodes(parent ,  new_);
-                    apiInfo.parentNode = null;
-				});
+                    
+                    var node = zTree.getNodeByParam("id", e.id, null);
+                    zTree.selectNode(node);
+                    apiInfo.currentNode = node
+                    
+                    layer.close(a);
+        		});
+				
 			}else{
-				malert(obj.msg , '系统提示');
+				layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
 			}
         },
         

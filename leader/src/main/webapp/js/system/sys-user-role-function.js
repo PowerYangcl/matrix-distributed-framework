@@ -523,29 +523,52 @@ var surfunc = {
 					var zTree = $.fn.zTree.getZTreeObj("sys-tree");
 	            	var parent = zTree.getNodeByTId(surfunc.currentNode.parentTId);
 	            	var e = obj.entity;
+	            	var node = null;
 	            	
-	            	zTree.removeNode(surfunc.currentNode);
-	            	surfunc.currentNode = null;
-	            	
-                    var new_ = { // 节点元素重新追加
-                        id : e.id,
-                        pId : parent.id,
-                        flag:1,  // 新增节点标记
-                        name: e.name ,
-                        parentId : e.parentId,
-                        seqnum : e.seqnum,
-                        navType : e.navType,
-                        platform : e.platform,
-                        styleClass : e.styleClass,
-                        styleKey : e.styleKey,
-                        funcUrl : e.funcUrl,
-                        ajaxBtnUrl : e.ajaxBtnUrl,
-                        remark : e.remark,
-                        btnArea : e.btnArea,
-                        eleValue : e.eleValue
-                    };
-                    zTree.addNodes(parent ,  new_);
-                    surfunc.parentNode = null;
+	            	if($("input[name='id']").length == 0){		// 新增节点
+	            		zTree.removeNode(surfunc.currentNode);
+	            		var new_ = { // 节点元素重新追加
+	                            id : e.id,
+	                            pId : parent.id,
+	                            flag:1,  // 新增节点标记
+	                            name: e.name ,
+	                            parentId : e.parentId,
+	                            seqnum : e.seqnum,
+	                            navType : e.navType,
+	                            platform : e.platform,
+	                            styleClass : e.styleClass,
+	                            styleKey : e.styleKey,
+	                            funcUrl : e.funcUrl,
+	                            ajaxBtnUrl : e.ajaxBtnUrl,
+	                            remark : e.remark,
+	                            btnArea : e.btnArea,
+	                            eleValue : e.eleValue
+	                        };
+                        zTree.addNodes(parent ,  new_);
+                        node = zTree.getNodeByParam("id", e.id, null);
+	            	}else{		// 修改节点
+	            		node = zTree.getNodeByParam("id", e.id, null);
+	            		node.id = e.id;
+	            		node.pId = parent.id;
+	            		node.flag=1;  // 新增节点标记
+	            		node.name= e.name ;
+	            		node.parentId = e.parentId;
+	            		node.seqnum = e.seqnum;
+	            		node.navType = e.navType;
+	            		node.platform = e.platform;
+	            		node.styleClass = e.styleClass;
+	            		node.styleKey = e.styleKey;
+	            		node.funcUrl = e.funcUrl;
+	            		node.ajaxBtnUrl = e.ajaxBtnUrl;
+	            		node.remark = e.remark;
+	            		node.btnArea = e.btnArea;
+	            		node.eleValue = e.eleValue;
+	            		
+	                    zTree.updateNode(node);
+	            	}
+                    
+                    zTree.selectNode(node);
+                    surfunc.currentNode = node;
                     
                     layer.close(index);  // 进行主动关闭确定按钮
 				});

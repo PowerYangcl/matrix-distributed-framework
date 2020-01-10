@@ -10,7 +10,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" href="${layui}/layui/css/layui.css" media="all">
 		<link rel="stylesheet" href="${layui}/style/admin.css" media="all">
-		
 		<link rel="stylesheet" href="${css}/ztree/zTreeStyle.css" type="text/css" />
 		<style type="text/css">
 			.flow-default{width: 500px; height: auto; overflow: auto; font-size: 16; }
@@ -97,8 +96,7 @@
 <script type="text/javascript" src="${js}/utils/ajaxs.js"></script>
 <script type="text/javascript" src="${js}/plugins/jquery.slimscroll-1.3.8.js"></script>
 <script type="text/javascript" src="${js}/ztree/jquery.ztree.all.js"></script>
-<!-- 系统角色权限 -->
-<script type="text/javascript" src="${js}/system/sys-user-role-function.js"></script>
+
 <script type="text/javascript" src="${views}/api/info/api-tree.js"></script>
 <script>
 	$(function(){
