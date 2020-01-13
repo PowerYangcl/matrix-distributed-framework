@@ -34,6 +34,7 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	public JSONObject ajaxApiInfoFind(AcApiInfoDto dto);
 	public JSONObject ajaxApiInfoEdit(AcApiInfoDto d, HttpSession session);
 	public JSONObject ajaxApiInfoRemove(AcApiInfoDto d, HttpSession session);
+	public JSONObject ajaxApiInfoDiscard(AcApiInfo e, HttpSession session);     
 	
 	// ac_request_info 表 
 	public String requestInfoList();
@@ -45,6 +46,6 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	// 页面接口测试
 	public String pageApicenterApiTest();
 	public JSONObject ajaxFindRequestDto(String target);
-	public JSONObject ajaxFindRequestValue(String key);        
+	public JSONObject ajaxFindRequestValue(String key);
  
 }

@@ -294,6 +294,20 @@ public class ApiCenterController extends BaseController {
 		return service.ajaxApiInfoRemove(d, session);  
 	}
 	
+	/**
+	 * @description: 系统接口熔断：恢复启用|立刻熔断
+	 *
+	 * @author Yangcl
+	 * @date 2020年1月13日 下午2:48:18 
+	 * @version 1.0.0.1
+	 */
+	@RequestMapping(value = "ajax_api_info_discard", produces = { "application/json;charset=utf-8" })
+	@ResponseBody
+	public JSONObject ajaxApiInfoDiscard(AcApiInfo e , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_api_info_discard", "删除api信息");
+		return service.ajaxApiInfoDiscard(e, session);  
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////【请求者信息维护】/////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @description: 请求者信息维护页面

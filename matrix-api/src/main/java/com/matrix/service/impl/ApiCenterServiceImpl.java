@@ -641,7 +641,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		e.setModule(dto.getModule());
 		e.setDomain(dto.getDomain());
 		e.setSeqnum(dto.getSeqnum());
-		e.setDiscard(dto.getDiscard());
+//		e.setDiscard(dto.getDiscard());      // 系统接口熔断标识进行单独更新
 		e.setLogin(dto.getLogin());
 		e.setRemark(dto.getRemark());
 		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
@@ -730,7 +730,47 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		return result;
 	}
 	
-	
+	/**
+	 * @description: 系统接口熔断：恢复启用|立刻熔断
+	 *
+	 * @author Yangcl
+	 * @date 2020年1月13日 下午2:48:18 
+	 * @version 1.0.0.1
+	 */
+	public JSONObject ajaxApiInfoDiscard(AcApiInfo entity, HttpSession session) {
+		JSONObject result = new JSONObject();
+		try {
+			AcApiInfo api = acApiInfoMapper.find(entity.getId());
+			if(api == null) {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(600010078 , entity.getTarget()));  // 600010078=目标接口: {0} 不存在!数据库无此记录,修改失败!
+				return result;
+			}
+			
+			AcApiInfo e = new AcApiInfo();
+			e.setId(entity.getId());  
+			e.setDiscard(entity.getDiscard());
+			McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
+			e.setUpdateTime(new Date());
+			e.setUpdateUserId(u.getId());
+			e.setUpdateUserName(u.getUserName());
+			int flag = acApiInfoMapper.updateSelective(e);
+			if(flag == 1) {
+				result.put("status", "success");
+				result.put("msg", this.getInfo(600010063));  // 600010063=数据修改成功!
+				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(api.getTarget()); 
+			}else {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(100010123));  // 100010123=数据修改失败，数据库连接异常!
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			result.put("status", "error");
+			result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败! 
+			return result;
+		}
+		return result;
+	}
 
 	/**
 	 * @description: 请求者信息维护页面

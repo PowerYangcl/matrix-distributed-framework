@@ -430,15 +430,37 @@ var apiInfo = {
         		return ;
         	}
         	
+        	var node = apiInfo.currentNode;
+        	var url_ = apiInfo.path + "ajax_api_info_discard.do";
         	var val_ = $(o).val();
         	if($(o).val() == 0){
         		var msg = '警告! 选择此项并点击提交按钮后, 系统接口将会立刻熔断! 所有对此接口的访问都会失效!'
         		layer.confirm(msg , { title:'高风险操作 !', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
-							
+	                	var data_ = {
+	                			id : node.id,
+	                			discard : 0
+	                	};
+	                    var obj = JSON.parse(ajaxs.sendAjax('post' , url_ , data_));
+	        			if(obj.status == 'success'){
+	        				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+	        					var zTree = apiInfo.zTree;
+	        					var node_ = zTree.getNodeByParam("id", node.id, null);
+	        					node_.discard = 0;
+	        					zTree.updateNode(node_);
+	        					zTree.selectNode(node_);
+	        					
+	                            layer.close(a);
+	                            layer.close(index);
+	                		});
+	        			}else{
+	        				layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+	        			}
 					}, 
 					function(index , ele) {  // 取消按钮  
-						// TODO 返回以前的选择状态
+						// 返回以前的选择状态
+						$("input[name='discard']").removeAttr("checked");
+						$("input[name='discard'][value='1']").prop("checked","checked");
 						layer.close(index);
 					}
 				);
@@ -446,10 +468,30 @@ var apiInfo = {
         		var msg = '选择此项并点击提交按钮后, 系统接口将会恢复使用! 如果接口曾因为风险被关闭,请仔细确认并核对后开启!'
         		layer.confirm(msg , { title:'高风险操作 !', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
-							
+	        			var data_ = {
+	                			id : node.id,
+	                			discard : 1
+	                	};
+	                    var obj = JSON.parse(ajaxs.sendAjax('post' , url_ , data_));
+	        			if(obj.status == 'success'){
+	        				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+	        					var zTree = apiInfo.zTree;
+	        					var node_ = zTree.getNodeByParam("id", node.id, null);
+	        					node_.discard = 1;
+	        					zTree.updateNode(node_);
+	        					zTree.selectNode(node_);
+	        					
+	                            layer.close(a);
+	                            layer.close(index);
+	                		});
+	        			}else{
+	        				layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+	        			}
 					}, 
 					function(index , ele) {  // 取消按钮
-						// TODO 返回以前的选择状态
+						// 返回以前的选择状态
+						$("input[name='discard']").removeAttr("checked");
+						$("input[name='discard'][value='0']").prop("checked","checked");
 						layer.close(index);
 					}
 				);
