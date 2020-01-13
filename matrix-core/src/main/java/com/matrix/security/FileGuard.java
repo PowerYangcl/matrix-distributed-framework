@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.IBaseExecute;
+import com.matrix.util.ExceptionUtils;
 import com.matrix.util.FileUtil;
 
 /**
@@ -27,6 +28,14 @@ public class FileGuard extends BaseClass implements IBaseExecute {
 		String type = param.getString("type");
 		if(type.equals("list")) {
 			return this.list(param).toJSONString();
+		}
+		
+		if(type.equals("add")) {
+			return this.add(param).toJSONString();
+		}
+		
+		if(type.equals("del")) {
+			return this.del(param).toJSONString();
 		}
 		
 		return null;
@@ -58,8 +67,50 @@ public class FileGuard extends BaseClass implements IBaseExecute {
 		return result;
 	}
 	
+	private JSONObject add(JSONObject param) {
+		JSONObject result = new JSONObject();
+		
+		
+		return result;
+	}
 	
+	private JSONObject del(JSONObject param) {
+		JSONObject result = new JSONObject();
+		try {
+			String file = param.getString("file");
+			if(StringUtils.isBlank(file)) {
+				result.put("status", "error");
+				result.put("msg", this.getInfo(100090002));  // 100090002=没有查询到可以显示的数据
+				return result;
+			}
+			
+			File f = new File(file);
+			this.delFile(f);
+			result.put("status", "success");
+			result.put("data", f.listFiles().length);
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("msg", "系统异常");
+			result.put("data", ExceptionUtils.getExceptionInfo(e));
+			return result;
+		}
+		return result;
+	}
 	
+	private boolean delFile(File file) {
+        if (!file.exists()) {
+            return false;
+        }
+        if (file.isFile()) {
+            return file.delete();
+        } else {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                delFile(f);
+            }
+            return file.delete();
+        }
+    }
 }
 
 
