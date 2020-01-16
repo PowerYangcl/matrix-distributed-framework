@@ -40,7 +40,21 @@
 			
 			form select {
 			    width: 410px; 
-			}		   	
+			}	
+			
+			.dialog-domain-list-head{
+				margin-top:10px;
+				margin-left:20px;
+				margin-right:20px;
+				border-bottom:thick double #009f95;
+			}
+			
+			.dialog-domain-list{
+				margin-top:10px;
+				margin-left:20px;
+				margin-right:20px;
+				border-bottom:medium double #009f95;
+			}	   	
 		</style>
 		
 	</head>

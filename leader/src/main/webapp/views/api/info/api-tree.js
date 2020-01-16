@@ -301,29 +301,47 @@ var apiInfo = {
     			width: 'auto',
     			height: '180px' // '208px'
     		});
-    		apiInfo.drawDomainDialog();
     		
-    		window.parent.$.blockUI({
-    			showOverlay:true ,
-    			css:{
-    				cursor:'auto',
-    				left:($(window.parent).width() - $(dialogId).width())/2 + 'px',
-    				width:$(dialogId).width()+'px',
-    				height:350,
-    				top:($(window.parent).height()-$(dialogId).height())/2 + 'px',
-    				position:'fixed', //居中
-    				textAlign:'left',
-    				border: '3px solid #FB9337'   // 边界,
-    			},
-    			message: $(dialogId),
-    			fadeIn: 500,//淡入时间
-    			fadeOut: 1000  //淡出时间
-    		});
+    		layer.open({
+				title : '跨域域名列表',
+	          	type : 1,								// 1：解析HTML代码段；2：解析url
+	          	area : ['700px', '450px'],
+	          	fixed : false,
+	          	maxmin : false,				// 开启弹层最小化和最大化按钮
+	          	shadeClose : false,			// 鼠标点击遮罩层是否可以关闭弹框，默认false
+          		content : apiInfo.drawDomainDialog(),
+          		skin: 'layui-layer-molv', 	// 
+          		anim : 0 ,							// 0 默认 | 1 弹窗从上掉落 | 2 由下方向上出现
+          		btnAlign : 'r',   					// 按钮排列。.btnAlign: 'l'	按钮左对齐|btnAlign: 'c'	按钮居中对齐|btnAlign: 'r'	按钮右对齐。默认值，不用设置
+          		closeBtn : 1,    					// layer提供了两种风格的关闭按钮，可通过配置1和2来展示，如果不显示，则closeBtn: 0。默认：1
+          		btn : ['提交' , '取消'],
+          		yes : function(index , layero , btn){
+          			 // 按钮【提交】的回调
+          			layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+          				$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
+	            		layer.close(a);
+	            		layer.close(index);
+            		});
+          		},
+      			cancel : function(){  // 右上角关闭回调。return false; // 开启该代码可禁止点击该按钮关闭
+      				
+      			}
+	        });
         },
         
         // 请求后台，绘制弹窗数据
         drawDomainDialog:function(){
-        	$("#api-include-domain-list li").remove();
+        	var html = '<form id="dialog-role-form"><table style="width:100%">';
+				html += '<tr>';
+					html += '<td align="left" colspan="2"><div class=""><div class="dialog-domain-list-head"><h3 id="platform-title">每个api可对多个域名开放</h3></div></div></td>';
+				html += '</tr>';
+				html += apiInfo.getDomainList();
+			html += '</table></form>';
+			return html;
+        },
+        
+        getDomainList : function(){
+        	var html = '';
         	var type_ = 'post';
             var url_ = apiInfo.path + 'ajax_include_domain_list.do'; 		 
             var data_ = null;   
@@ -332,21 +350,23 @@ var apiInfo = {
             if(obj.status == 'success'){
                 var arr = obj.data;
                 for(var i = 0 ; i < arr.length ; i ++){
-                	html_ += '<li><div class="entry_wrap"><div class=""><h4><span>' + arr[i].companyName + '</span></h4>';
-                	html_ += '<span><input type="checkbox" name="domainId"  value="' + arr[i].id + '" domain-data="' + arr[i].domain + '" style="vertical-align:middle;"/>&nbsp&nbsp';
-                	html_ += '<span style="vertical-align:middle;">' + arr[i].domain + '</span></span></div></div></li>'; 
+                	html += '<tr>';
+						html += '<td align="left">';
+							html += '<div class=""><div class="dialog-domain-list"><h4><span>' + arr[i].companyName + '</span></h4>';
+		                	html += '<span><input type="checkbox" name="domainId"  value="' + arr[i].id + '" domain-data="' + arr[i].domain + '" style="vertical-align:middle;"/>&nbsp&nbsp';
+		                	html += '<span style="vertical-align:middle;">' + arr[i].domain + '</span></span></div></div>'; 
+						html += '</td>';
+					html += '</tr>';
                 }
             }else{
-            	html_ += '<li><div class="entry_wrap"><div class=""><h4><span>跨域白名单尚未配置</span></h4>';
-            	html_ += '<span>';
-            	html_ += '<span style="vertical-align:middle;">' + obj.msg + '</span></span></div></div></li>'; 
+            	html += '<li><div class="entry_wrap"><div class=""><h4><span>跨域白名单尚未配置</span></h4>';
+            	html += '<span>';
+            	html += '<span style="vertical-align:middle;">' + obj.msg + '</span></span></div></div></li>'; 
             }
-            $("#api-include-domain-list").append(html_);
-            var arr = $("#domain-list").val().split(",");
-            for(var k = 0 ; k < arr.length ; k ++){
-            	$("input[value='" + arr[k] + "']").attr("checked","checked");
-            }
+            
+            return html;
         },
+        
         
         // 保存勾选的跨域信息到隐藏域中
         saveOpenDomain:function(){
