@@ -328,9 +328,35 @@ public class MatrixRouteServiceImpl extends BaseClass implements IMatrixRouteSer
 		return result;
 	}
 
-	
 
-
+	public JSONObject chiefCommand(PowerCacheDto dto) {
+		JSONObject result = new JSONObject();
+		if(StringUtils.isAnyBlank(dto.getKey() , dto.getDubboAddr())) {
+			result.put("status", "error");
+			result.put("msg", this.getInfo(108010002));  // 108010002=重要参数异常
+			return result;
+		}
+		
+		DubboGeneric dubboGeneric = new DubboGeneric();
+		try {
+			GenericService genericService = dubboGeneric.getDubboRpc(
+					false, 
+					"dubbo://" + dto.getDubboAddr(), 
+					"com.matrix.rpc.IMatrixRouteRpcService", 
+					null);
+			Object obj = genericService.$invoke("routeExecute", new String[]{"com.matrix.pojo.dto.PowerCacheDto"}, new Object[]{dto});
+			result.put("status", "success");
+			result.put("data", obj);
+		} catch (Exception e) {
+			result.put("status", "error");
+			result.put("msg", ExceptionUtils.getExceptionInfo(e));
+		}finally {
+			dubboGeneric.destroy();
+		}
+		
+		result.put("dto", dto);
+		return result;
+	}
 
 }
 
