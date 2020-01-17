@@ -40,25 +40,17 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 					    "target": "ORDER-INFO",
 					    "discard": 0,
 					    "login":1,                                           ---------------- 当前接口是否需要登录后访问：1 需要登录后访问 0不需要
-					    "createUserId": 1,
-					    "updateUserId": 1,
 					    "seqnum": 1,
 					    "module": "matrix-api",
 					    "remark": "ORDER-INFO",
-					    "updateTime": 1512032208000,
-					    "list": [
-					        "http://api.baidu.com",
-					        "http://sub.model.firos.com.cn"
-					    ],
 					    "processor": "private.order.OrderInfomation",
 					    "parentId": 1,
-					    "domainIds": [
-					        "4",
-					        "5"
-					    ],
-					    "createTime": 1511922954000,
 					    "atype": "private",
-					    "domain": 1
+					    "domain": 1,
+					    "list": [			------------------------------------------------API入口做跨域判断使用
+					        "http://api.baidu.com",
+					        "http://sub.model.firos.com.cn"
+					    ]
 					}
 	 * @param key  AcApiInfo.target
 	 * @param field null
@@ -82,18 +74,21 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 		// 开始初始化API缓存
 		JSONObject cache = JSONObject.parseObject(JSONObject.toJSONString(e)); 
 		cache.put("list", new ArrayList<String>()); 
-		cache.put("domainIds", new ArrayList<String>()); 
 		if(e.getDomain() == 1) {		// 针对可跨域情况
 			List<AcApiDomainView> adList = acApiDomainMapper.selectByApiInfoId(e.getId());
 			if(adList != null && adList.size() != 0) {
-				List<String> ids = new ArrayList<>();
-				List<String> domains = new ArrayList<>();
+				List<JSONObject> domains = new ArrayList<JSONObject>();
+				List<String> list = new ArrayList<String>();
 				for(AcApiDomainView v : adList) {
-					ids.add(v.getId().toString());
-					domains.add(v.getDomain());
+					JSONObject include = new JSONObject();
+					include.put("id", v.getId());
+					include.put("domain", v.getDomain());
+					include.put("companyName", v.getCompanyName());
+					domains.add(include);
+					list.add(v.getDomain());
 				}
-				cache.put("list", domains); 
-				cache.put("domainIds", ids); 
+				cache.put("domains", domains); 
+				cache.put("list", list); 
 			}
 		}
 		String value = cache.toJSONString();

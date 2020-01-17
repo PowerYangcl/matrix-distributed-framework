@@ -546,15 +546,9 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 				return result;
 			}
 			
-			// 开始初始化API缓存
-			JSONObject cache = JSONObject.parseObject(JSONObject.toJSONString(e)); 
-			cache.put("list", dto.getDomainContentList().split(",")); 
-			cache.put("domainIds", dto.getDomainList().split(",")); 
-			launch.loadDictCache(DCacheEnum.ApiInfo , null).set(dto.getTarget() , cache.toJSONString()); 
-			
-			cache.put("status", "success");
-			cache.put("msg", this.getInfo(600010061));  // 600010061=数据添加成功!
-			return cache;  // 标识成功并返回全部缓存信息
+			result.put("status", "success");
+			result.put("msg", this.getInfo(600010061));  // 600010061=数据添加成功!
+			return result;  // 标识成功并返回全部缓存信息
 		}else {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010062));  // 600010062=服务器异常，数据添加失败!

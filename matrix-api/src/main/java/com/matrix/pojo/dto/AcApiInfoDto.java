@@ -18,15 +18,8 @@ public class AcApiInfoDto extends BaseDto{
     private Integer discard;
     private Integer login;  // 当前接口是否需要登录后访问：1 需要登录后访问 0不需要
     private String remark;
-    private String domainList;
-    private String domainContentList;
+    private String domainList; // ac_include_domain 列表
     
-	public String getDomainContentList() {
-		return domainContentList;
-	}
-	public void setDomainContentList(String domainContentList) {
-		this.domainContentList = domainContentList;
-	}
 	public Long getId() {
 		return id;
 	}

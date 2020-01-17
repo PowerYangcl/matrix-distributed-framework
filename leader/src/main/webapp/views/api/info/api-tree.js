@@ -236,7 +236,6 @@ var apiInfo = {
 	            html_ += '<input type="radio" name="domain" value="0" checked onclick="apiInfo.cleanDomainInfo()" style="vertical-align:middle;"> <span style="vertical-align:middle;">不允许</span> &nbsp&nbsp';
 	            html_ += '<input type="radio" name="domain"  value="1" onclick="apiInfo.openDomainDialog()" style="vertical-align:middle;"> <span style="vertical-align:middle;">允许</span>';
 	            html_ += '<input type="hidden" id="domain-list" name="domainList"  value="">';
-	            html_ += '<input type="hidden" id="domain-content-list" name="domainContentList"  value="">';
             html_ += '</div>';
             
             html_ += '<div style="margin-bottom: 10px;"><span style="vertical-align:middle;">接口登录限制：</span>&nbsp&nbsp';
@@ -285,23 +284,13 @@ var apiInfo = {
         	}
         },
         
-        // 清空 domainList 隐藏域中的值
+        // 接口跨域限制：不允许。清空 domainList 隐藏域中的值
         cleanDomainInfo:function(){
         	$("#domain-list").val("");
-        	$("#domain-content-list").val("");
         },
         
         // 打开跨域列表弹窗
         openDomainDialog:function(){
-        	var dialogId = "#ul-dialog-div";
-    		// 自定义滚动条 | 执行此代码自定义滚动条则生效
-    		$('#interface-list').slimscroll({
-    			color: '#666',
-    			size: '10px',
-    			width: 'auto',
-    			height: '180px' // '208px'
-    		});
-    		
     		layer.open({
 				title : '跨域域名列表',
 	          	type : 1,								// 1：解析HTML代码段；2：解析url
@@ -315,23 +304,40 @@ var apiInfo = {
           		btnAlign : 'r',   					// 按钮排列。.btnAlign: 'l'	按钮左对齐|btnAlign: 'c'	按钮居中对齐|btnAlign: 'r'	按钮右对齐。默认值，不用设置
           		closeBtn : 1,    					// layer提供了两种风格的关闭按钮，可通过配置1和2来展示，如果不显示，则closeBtn: 0。默认：1
           		btn : ['提交' , '取消'],
-          		yes : function(index , layero , btn){
-          			 // 按钮【提交】的回调
-          			layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
-          				$(".layui-laypage-btn").click();  // 定位在当前页同时刷新数据
-	            		layer.close(a);
-	            		layer.close(index);
+          		success : function(){
+          			// 自定义滚动条 | 执行此代码自定义滚动条则生效
+            		$('#dialog-domain-list').slimscroll({
+            			color: '#666',
+            			size: '10px',
+            			width: 'auto',
+            			height: '340px' // '208px'
             		});
+            		
+            		if(apiInfo.trim($("#domain-list").val()).length != 0){
+            			var arr = $("#domain-list").val().split(",");
+                        for(var k = 0 ; k < arr.length ; k ++){
+                        	$("input[name='domainId'][value='" + arr[k] + "']").prop("checked","checked");
+                        }
+            		}
+            		
+          		},
+          		yes : function(index , layero , btn){
+          			var arr = new Array();
+                	$("input[name='domainId']:checked").each(function(){ 
+                		arr.push($(this).val());
+            		});  
+                	$("#domain-list").val(arr.join());
+                	
+                	layer.close(index);
           		},
       			cancel : function(){  // 右上角关闭回调。return false; // 开启该代码可禁止点击该按钮关闭
-      				
       			}
 	        });
         },
         
         // 请求后台，绘制弹窗数据
         drawDomainDialog:function(){
-        	var html = '<form id="dialog-role-form"><table style="width:100%">';
+        	var html = '<form id="dialog-domain-list"><table style="width:100%">';
 				html += '<tr>';
 					html += '<td align="left" colspan="2"><div class=""><div class="dialog-domain-list-head"><h3 id="platform-title">每个api可对多个域名开放</h3></div></div></td>';
 				html += '</tr>';
@@ -367,19 +373,6 @@ var apiInfo = {
             return html;
         },
         
-        
-        // 保存勾选的跨域信息到隐藏域中
-        saveOpenDomain:function(){
-        	var arr = new Array();
-        	var dcl = new Array();
-        	$("input[name='domainId']:checked" , window.parent.document).each(function(){ 
-        		arr.push($(this).val());
-        		dcl.push($(this).attr("domain-data")); 
-    		});  
-        	$("#domain-list").val(arr.join());
-        	$("#domain-content-list").val(dcl.join()); 
-        	apiInfo.closeDialog();
-        },
         
         // 添加或更新一条记录
         addOrUpdate:function(url_){
@@ -526,12 +519,14 @@ var apiInfo = {
         	$("#target").attr("readonly","readonly");
         	$("#processor").val(o.processor );
         	$("#module").val(o.module );
-        	if(o.domainIds.length != 0){
-        		$("#domain-list").val(o.domainIds.join(",") );
+        	if(o.domains.length != 0){
+        		var arr = new Array();
+        		for(var i = 0; i < o.domains.length; i ++){
+        			arr.push(o.domains[i].id);
+        		}
+        		$("#domain-list").val(arr.join(",") );
         	}
-        	if(o.list.length != 0){
-        		$("#domain-content-list").val(o.list.join(",")); 
-        	}
+        	
         	$("input[name='domain'][value='" + o.domain + "']").attr("checked","checked");
         	$("input[name='login'][value='" + o.login + "']").attr("checked","checked");
         	$("input[name='discard']").removeAttr("checked");
