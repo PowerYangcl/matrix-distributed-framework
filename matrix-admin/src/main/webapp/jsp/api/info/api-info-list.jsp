@@ -199,6 +199,9 @@
 						<button class="stdbtn btn_orange" onclick="subpage.apiInfo.getResponseMsg()">获取结果</button> 
 					</div>
 				</form>
+				
+				
+				
 			</div>
 		</div>
 	</div>

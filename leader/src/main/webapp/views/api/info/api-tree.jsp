@@ -54,7 +54,19 @@
 				margin-left:20px;
 				margin-right:20px;
 				border-bottom:medium double #009f95;
-			}	   	
+			}
+			
+			.dialog-test-form{
+			    border: 1px solid #ddd;
+			    padding: 10px;
+			    overflow: hidden;
+			   	margin-top:10px;
+			   	margin-bottom:10px;
+			   	margin-left:20px;
+			   	margin-right:20px;
+			    border-radius: 2px;
+			    background: #fcfcfc
+		    }
 		</style>
 		
 	</head>
@@ -114,6 +126,40 @@
 <script type="text/javascript" src="${views}/api/info/api-tree.js"></script>
 <script>
 	$(function(){
+		
+		/**
+	     * @描述: 格式化数据库里由action或Controller向页面传来的时间
+	     * @作者: Yangcl
+	     * @时间: 2015-08-22 : 22-29-56
+	     * @原理:
+	     *             数据库里的时间为：2017-08-17 16:40:24；当传向页面的时候变为了Aug 17, 2017 4:40:24 PM
+	     *             而WdatePicker.js时间控件中要显示为2017-08-17 16:40:24格式，所以对Date进行扩展。
+	     *             调用方式：new Date("Aug 17, 2017 4:40:24 PM").format("yyyy-MM-dd hh:mm:ss");
+	     *									new Date().format("yyyy-MM-dd hh:mm:ss");
+	     
+									     	var date = new Date(); 
+											date.setTime(1545721982); 
+											date.format("yyyy-MM-dd hh:mm:ss");
+	     * @注意: 这个方法需要提前声明才能使用
+	     */
+	    Date.prototype.format = function(format){
+	        var o = {
+	            "M+" : this.getMonth()+1, //month
+	            "d+" : this.getDate(),    //day
+	            "h+" : this.getHours(),   //hour
+	            "m+" : this.getMinutes(), //minute
+	            "s+" : this.getSeconds(), //second
+	            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+	            "S" : this.getMilliseconds() //millisecond
+	        }
+	        if(/(y+)/.test(format))
+	            format=format.replace(RegExp.$1,(this.getFullYear()+"").substr(4 - RegExp.$1.length));
+	        for(var k in o)if(new RegExp("("+ k +")").test(format))
+	            format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+	        return format;
+	    }
+		
+		
 		// 开始初始化树型结构
 		apiInfo.launch('${basePath}').apiTreeInit();  
 		

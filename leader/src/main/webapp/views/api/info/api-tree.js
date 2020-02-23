@@ -519,7 +519,7 @@ var apiInfo = {
         	$("#target").attr("readonly","readonly");
         	$("#processor").val(o.processor );
         	$("#module").val(o.module );
-        	if(o.domains.length != 0){
+        	if(typeof o.domains != 'undefined' && o.domains.length != 0){
         		var arr = new Array();
         		for(var i = 0; i < o.domains.length; i ++){
         			arr.push(o.domains[i].id);
@@ -556,39 +556,91 @@ var apiInfo = {
         ///////////////////////////////////////////////////////////////////////////////////////////////////Api测试相关功能//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // 显示测试弹窗列表
         openTestDialog : function(){
-        	var dialogId = "#api-test-dialog";
-    		apiInfo.drawTestDialog();
-    		window.parent.$.blockUI({
-    			showOverlay:true ,
-    			css:{
-    				cursor:'auto',
-    				left:($(window.parent).width() - $(dialogId).width())/2 + 'px',
-    				width:$(dialogId).width()+'px',
-    				height:800,
-    				top:($(window.parent).height()-$(dialogId).height())/2 + 'px',
-    				position:'fixed', //居中
-    				textAlign:'left',
-    				border: '3px solid #FB9337'   // 边界,
-    			},
-    			message: $(dialogId),
-    			fadeIn: 500,//淡入时间
-    			fadeOut: 1000  //淡出时间
-    		});
+        	layer.open({
+				title : '模拟测试接口请求',
+	          	type : 1,								// 1：解析HTML代码段；2：解析url
+	          	area : ['900px', '750px'],
+	          	fixed : false,
+	          	maxmin : false,				// 开启弹层最小化和最大化按钮
+	          	shadeClose : false,			// 鼠标点击遮罩层是否可以关闭弹框，默认false
+          		content : apiInfo.drawTestDialog(),
+          		skin: 'layui-layer-molv', 	// 
+          		anim : 0 ,							// 0 默认 | 1 弹窗从上掉落 | 2 由下方向上出现
+          		btnAlign : 'r',   					// 按钮排列。.btnAlign: 'l'	按钮左对齐|btnAlign: 'c'	按钮居中对齐|btnAlign: 'r'	按钮右对齐。默认值，不用设置
+          		closeBtn : 1,    					// layer提供了两种风格的关闭按钮，可通过配置1和2来展示，如果不显示，则closeBtn: 0。默认：1
+          		btn : ['获取结果'],
+          		success : function(){
+          			var n = apiInfo.currentNode; 
+                	var serviceUrl = n.getParentNode().serviceUrl;
+                	$("#api-target").val(n.target);
+                	$("#service-url").val(serviceUrl);
+                	$("#request-time").val(new Date().format("yyyy-MM-dd hh:mm:ss"));
+                	$("#json-response").val(""); 
+//                	apiInfo.apiServiceUrl = serviceUrl + 'matrix/api.do';
+                	// 在后续设计中，开始分离API入口，形成网关矩阵；故这里需要显示指定访问的URL，比如：https://api-cloud.300.cn/mip-web/matrix/api.do  2019-03-21 - Yangcl
+                	apiInfo.apiServiceUrl = serviceUrl;  //  + 'matrix/api.do'    
+                	apiInfo.findRequestDto(n.target);
+          		},
+          		yes : function(index , layero , btn){
+                	layer.close(index);
+          		},
+      			cancel : function(){  // 右上角关闭回调。return false; // 开启该代码可禁止点击该按钮关闭
+      			}
+	        });
         },
         
-        // 绘制测试弹窗中的数据	serviceUrl		
+        
         drawTestDialog : function(){
-        	var n = apiInfo.currentNode; 
-        	var serviceUrl = n.getParentNode().serviceUrl;
-        	$("#api-target").val(n.target);
-        	$("#service-url").val(serviceUrl);
-        	$("#request-time").val(new Date().format("yyyy-MM-dd hh:mm:ss"));
-        	$("#json-response").val(""); 
-//        	apiInfo.apiServiceUrl = serviceUrl + 'matrix/api.do';
-        	// 在后续设计中，开始分离API入口，形成网关矩阵；故这里需要显示指定访问的URL，比如：https://api-cloud.300.cn/mip-web/matrix/api.do  2019-03-21 - Yangcl
-        	apiInfo.apiServiceUrl = serviceUrl;  //  + 'matrix/api.do'    
-        	apiInfo.findRequestDto(n.target);
+        	var html = '<div class="dialog-test-form" ><form id="api-test-form" action="javascript:void(0)">';
+	        	html += '<div style="margin-bottom: 10px;">';
+		        	html += '<span style="vertical-align:middle;">接 口 请 求 者：</span>&nbsp;&nbsp;';
+		        	html += '<input type="radio" name="requester" value="133C9CB27DA0" style="vertical-align:middle;" checked="checked">';
+		        	html += '<span style="vertical-align:middle;">developer-private</span> &nbsp;&nbsp;';
+		        	html += '<input type="radio" name="requester" value="133C9CB27E18" style="vertical-align:middle;">';
+		        	html += '<span style="vertical-align:middle;">developer-public<span style="color:red">&nbsp;&nbsp (请注意! 接口请求者列表中的这两条记录不可删除!)</span></span>';
+	        	html += '</div>';
+	        	html += '<div>';
+	        		html += '系统接口名称：';
+	        		html += '<input type="text" id="api-target" name="target" placeholder="比如：TEST-PRIVATE-PROCESSOR" style="width: 300px; margin-bottom: 10px;">';
+	        	html += '</div>';
+	        	html += '<div>';
+		        	html += '用户登录令牌：';
+		        	html += '<input type="text" id="access-token" name="accessToken" placeholder="比如：63a9f0ea7bb98050796b6490796b649e85481845" style="width: 300px; margin-bottom: 10px;">';
+	        	html += '</div>';
+	        	html += '<div style="margin-bottom: 10px;">';
+		        	html += '<span style="vertical-align:middle;">客 户 端 类 型：</span>&nbsp;&nbsp;';
+		        	html += '<input type="radio" name="client" value="0" style="vertical-align:middle;">';
+		        	html += '<span style="vertical-align:middle;">IOS</span> &nbsp;&nbsp;';
+		        	html += '<input type="radio" name="client" value="1" style="vertical-align:middle;">';
+		        	html += '<span style="vertical-align:middle;">Android</span>&nbsp;&nbsp;';
+		        	html += '<input type="radio" name="client" value="2" style="vertical-align:middle;">';
+		        	html += '<span style="vertical-align:middle;">微信</span>&nbsp;&nbsp;';
+		        	html += '<input type="radio" name="client" value="3" style="vertical-align:middle;" checked="checked"> ';
+		        	html += '<span style="vertical-align:middle;">服务器</span> ';
+	        	html += '</div>';
+	        	html += '<div>';
+		        	html += '客 户 端 版 本：';
+		        	html += '<input type="text" id="version" name="version" value="vsesion-2.0.0.1" placeholder="比如：vsesion-2.0.0.1" style="width: 300px; margin-bottom: 10px;">';
+	        	html += '</div>';
+	        	html += '<div>';
+		        	html += '请求发起时间：';
+		        	html += '<input type="text" id="request-time" name="requestTime" value=""  placeholder="比如：2017-11-28 11:17:47" style="width: 300px; margin-bottom: 10px;">';
+	        	html += '</div>';
+	        	html += '<div>';
+		        	html += '请求通路类型：';
+		        	html += '<input type="text" id="channel" name="channel" value="页面测试" style="width: 300px; margin-bottom: 10px;">';
+	        	html += '</div>';
+	        	html += '<div style="padding-right: 20px; margin-top: 10px; margin-bottom: 15px;">';
+	        		html += '<textarea id="dto-json-str" name="" cols="" rows="" style="height: 80px; width:827px" placeholder="这里将显示请求参数信息, 请回填关键数据"></textarea>';
+	        	html += '</div>';
+	        	html += '<div style="padding-right: 20px; margin-top: 10px; margin-bottom: 15px;">';
+	        		html += '<textarea id="json-response" name="" cols="" rows="" style="height: 150px; width:827px" placeholder="这里将显示数据请求结果"></textarea>';	        	
+	        	html += '</div>';
+	        	html += '<input type="hidden" id="service-url" name="serviceUrl" value="">';
+        	html += '</form></div>';
+        	return html;
         },
+        
         
         // 请求数据头部封装
         requestHeadInit : function(target_){
