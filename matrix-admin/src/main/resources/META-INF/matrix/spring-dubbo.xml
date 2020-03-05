@@ -8,22 +8,31 @@
 
 
 	<!-- 提供方应用信息，用于计算依赖关系 -->
-   <dubbo:application name="${dubbo.application.name}" owner="${dubbo.application.owner}"/>
+   <dubbo:application name="${dubbo.application.name}" owner="${dubbo.application.owner}">
+        <dubbo:parameter key="qos.enable" value="false"/>
+    </dubbo:application>
 
 	<!-- 使用Zookeeper注册中心暴露服务地址 -->
    <dubbo:registry protocol="zookeeper" address="${dubbo.registry.address}" client="curator" />
 	
+	<dubbo:protocol name="dubbo" port="${dubbo.protocol.port}"/>
 	
+	    <dubbo:provider delay="300"
+                    timeout="10000"
+                    executes="30"
+                    actives="10"
+                    loadbalance="roundrobin"
+                    cluster="failover"
+                    retries="0"/>
+                    
+  
 
 	<!-- 作为消费者引入dubbo-2.6.0中提供的服务 -->
-    <dubbo:reference id="registryService" interface="com.alibaba.dubbo.registry.RegistryService" check="false" />
-    
-    <!-- 基础消息路由 - 误删！- 20190104 - Yangcl -->
-    <dubbo:reference id="matrixRouteRpcService" interface="com.matrix.rpc.IMatrixRouteRpcService" check="false" generic="true" timeout="60000" retries="0"/>
-    
-    
-    <!-- 消费者示例 - Yangcl - 20180914 -->
-    <!-- <dubbo:reference id="mipDemoRpcService" interface="com.matrix.rpc.IMipDemoRpcService" check="true"/> -->
+    <dubbo:reference id="registryService" interface="com.alibaba.dubbo.registry.RegistryService" />
+
+     <!-- 系统间消息路由服务|Yangcl 2018-11-20 -->
+    <dubbo:service ref="matrixRouteRpcService" version="1.0.0" interface="com.matrix.rpc.IMatrixRouteRpcService"/>  
+    <bean id="matrixRouteRpcService" class="com.matrix.rpcimpl.MatrixRouteRpcServiceImpl"/>
 </beans>           
 
 

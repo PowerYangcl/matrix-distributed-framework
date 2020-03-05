@@ -207,7 +207,7 @@ public class NetUtil extends BaseClass {
         try {
 			message.setFrom(new InternetAddress(send, "Power-matrix", "UTF-8"));
 			message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiver, "Master", "UTF-8"));
-	        message.setSubject(title, "UTF-8");
+	        message.setSubject(msg, "UTF-8");
 	        message.setContent(msg , "text/html;charset=UTF-8");
 	        message.setSentDate(new Date());
 	        message.saveChanges();

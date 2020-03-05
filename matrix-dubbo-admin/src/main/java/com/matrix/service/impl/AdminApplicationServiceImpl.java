@@ -578,7 +578,7 @@ public class AdminApplicationServiceImpl extends AbstractDubboAdminService imple
                 }
             }
         }
-		
+        
         result.put("status", "success");
         if(StringUtils.isBlank(dto.getApplication()) && StringUtils.isBlank(dto.getUsername()) && dto.getType() == null) {
         	result.put("list", this.listNode(applicationList));
@@ -662,6 +662,12 @@ public class AdminApplicationServiceImpl extends AbstractDubboAdminService imple
                 nodes.add(node);
             }
         }
+        // DubboNodeView av = new DubboNodeView();
+        // av.setApplication("matrix-admin");
+        // av.setDubboAddr("10.8.0.40:20680");
+        // av.setUsername("online-retail-release");
+        // av.setType(ApplicationView.PROVIDER_AND_CONSUMER);
+        // nodes.add(av);
         return nodes;
 	}
 	

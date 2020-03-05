@@ -32,11 +32,11 @@
 		</dependency> 
 		
 		 <!-- 开启matrix-dubbo-admin 就会不断刷日志，原因不明 -->
-<!-- 		<dependency> 
+		<dependency> 
 			<groupId>com.matrix</groupId>
 			<artifactId>matrix-dubbo-admin</artifactId>
 			<version>${project.version}</version>
-		</dependency> -->
+		</dependency> <!-- 		-->
 		
 		<dependency>
 			<groupId>com.matrix</groupId>

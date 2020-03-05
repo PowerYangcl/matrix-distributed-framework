@@ -115,6 +115,20 @@ public class PowerCacheController extends BaseController {
     public JSONObject ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr, HttpSession session) {
         return powerApiService.ajaxBtnResetCacheForever(prefix, key, type, jsonStr);
     }
+    
+    /**
+     * @description: 缓存API实例化
+     *
+     * @param dto
+     * @author Yangcl
+     * @date 2018年12月22日 上午9:21:15 
+     * @version 1.0.0.1
+     */
+    @RequestMapping(value = "api_cache_init", produces = {"application/json;charset=utf-8"})
+    @ResponseBody
+    public JSONObject apiCacheInit(JSONObject dto, HttpSession session) {
+        return powerApiService.apiCacheInit(dto , session);
+    }
 }
 
 

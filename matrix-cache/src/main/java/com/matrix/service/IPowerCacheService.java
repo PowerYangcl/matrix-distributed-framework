@@ -1,5 +1,7 @@
 package com.matrix.service;
 
+import javax.servlet.http.HttpSession;
+
 import com.alibaba.fastjson.JSONObject;
 
 public interface IPowerCacheService {
@@ -58,6 +60,16 @@ public interface IPowerCacheService {
      * @version 1.0.0.1
      */
 	public JSONObject ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr);
+
+    /**
+     * @description: 缓存API实例化
+     *
+     * @param dto
+     * @author Yangcl
+     * @date 2018年12月22日 上午9:21:15 
+     * @version 1.0.0.1
+     */
+	public JSONObject apiCacheInit(JSONObject dto, HttpSession session);
 
 }
 
