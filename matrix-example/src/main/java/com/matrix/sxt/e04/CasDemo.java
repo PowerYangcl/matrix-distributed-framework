@@ -7,7 +7,7 @@ public class CasDemo {
         AtomicInteger ai = new AtomicInteger(5);
         ai.getAndIncrement();
         boolean flag1 = ai.compareAndSet(6, 2020);
-        boolean flag2 = ai.compareAndSet(6, 289);
+        boolean flag2 = ai.compareAndSet(6, 2021);
         System.out.println(flag1 + " 当前值：" + ai.get());
         System.out.println(flag2 + " 当前值：" + ai.get());
     }
