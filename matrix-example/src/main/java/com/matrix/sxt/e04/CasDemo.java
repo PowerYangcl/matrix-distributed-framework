@@ -12,3 +12,5 @@ public class CasDemo {
         System.out.println(flag2 + " 当前值：" + ai.get());
     }
 }
+
+
