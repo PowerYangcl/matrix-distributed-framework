@@ -1,3 +1,5 @@
+package com.matrix.sxt.e04;
+
 import java.util.Random;
 
 public class TestLockFreeBST implements Runnable

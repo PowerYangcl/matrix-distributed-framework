@@ -1,3 +1,5 @@
+package com.matrix.sxt.e04;
+
 import java.util.concurrent.atomic.AtomicStampedReference;
 
 public class Node
