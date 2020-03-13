@@ -96,20 +96,6 @@ public class FileUploadController  extends BaseController{
 		
 		return result;
 	}
-	
-	/**
-	 * @description: TODO 一个需要完善的方法
-	 *
-	 * @param request 
-	 * @author Yangcl
-	 * @date 2018年2月6日 下午12:28:07 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "api_file_remote_inject", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject apiFileRemoteInject(HttpServletRequest request){
-		return service.apiFileRemoteInject(request);
-	}
 }
 
 

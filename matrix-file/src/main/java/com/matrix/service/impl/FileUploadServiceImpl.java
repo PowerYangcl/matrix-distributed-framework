@@ -164,21 +164,6 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 		return result;
 	}
 
-
-	@Override
-	public JSONObject apiFileRemoteInject(HttpServletRequest request) {
-		JSONObject result = null;
-		List<FileItem> fileItems = this.getFileFromRequest(request);
-		if(fileItems != null && fileItems.size() != 0){ 
-			JarUtil.getInstance().jarInject(this.getConfig("matrix-core.spring_core") , fileItems.get(0));
-		}else{
-			result = new JSONObject();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(500010006));   // 500010006=未发现要上传的文件，请核实。
-		}
-		return result;
-	}
-
 }
 
 
