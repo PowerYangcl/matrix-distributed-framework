@@ -5,11 +5,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ReentrantLockDemo implements Runnable{
     private Lock lock = new ReentrantLock();
-
     public void run() {
         sendSms();
     }
-
     private void sendSms(){
         lock.lock();
         try {
@@ -21,7 +19,6 @@ public class ReentrantLockDemo implements Runnable{
             lock.unlock();
         }
     }
-
     private void sendEmail(){
         lock.lock();
         try {
@@ -33,5 +30,4 @@ public class ReentrantLockDemo implements Runnable{
             lock.unlock();
         }
     }
-
 }
