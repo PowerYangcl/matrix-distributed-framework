@@ -10,12 +10,14 @@ public class ReentrantLockDemo implements Runnable{
     }
     private void sendSms(){
         lock.lock();
+        lock.lock();
         try {
             System.out.println(Thread.currentThread().getName() + "  发送短信完成");
             this.sendEmail();
         }catch (Exception e){
             e.printStackTrace();
         }finally {
+            lock.unlock();
             lock.unlock();
         }
     }
