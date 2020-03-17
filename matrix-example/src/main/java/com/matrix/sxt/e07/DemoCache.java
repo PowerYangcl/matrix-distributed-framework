@@ -7,6 +7,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DemoCache {
+	
     private volatile Map<String , Object> map  = new HashMap<>();
     private  ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -28,7 +29,6 @@ public class DemoCache {
         Object result =null;
         lock.readLock().lock();
         try {
-            System.out.println(Thread.currentThread().getName() + " 正在读取：" + key);
             result = map.get(key);
             System.out.println(Thread.currentThread().getName() + " 读取完成：" + key + " = " + result);
             return result;
