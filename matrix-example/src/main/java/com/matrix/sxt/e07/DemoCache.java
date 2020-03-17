@@ -11,11 +11,38 @@ public class DemoCache {
     private  ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public void put(String key , Object value){
-
+        lock.writeLock().lock();
         try {
-            TimeUnit.SECONDS.sleep(2);} catch (InterruptedException e) {e.printStackTrace();}
-        map.put(key , value);
+            System.out.println(Thread.currentThread().getName() + " 正在写入：" + key + " = " + value);
+            try {TimeUnit.SECONDS.sleep(2);} catch (InterruptedException e) {e.printStackTrace();}
+            map.put(key , value);
+            System.out.println(Thread.currentThread().getName() + " 写入完成：" + key + " = " + value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            lock.writeLock().unlock();
+        }
+    }
 
+    public Object get(String key){
+        Object result =null;
+        lock.readLock().lock();
+        try {
+            System.out.println(Thread.currentThread().getName() + " 正在读取：" + key);
+            result = map.get(key);
+            System.out.println(Thread.currentThread().getName() + " 读取完成：" + key + " = " + result);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            lock.readLock().unlock();
+        }
+        return result;
+    }
 
+    public  void remove(String key){
+    }
+
+    public void clearAll(){
     }
 }
