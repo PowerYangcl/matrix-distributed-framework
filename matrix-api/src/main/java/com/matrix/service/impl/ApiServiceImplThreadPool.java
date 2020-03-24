@@ -54,6 +54,8 @@ import com.matrix.base.BaseClass;
 public class ApiServiceImplThreadPool extends BaseClass { //  implements IApiService {
 	
 	
+	private static Integer coreSize = Runtime.getRuntime().availableProcessors();
+	
 	private static ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("ApiController线程池-%s").build();
 	 
     /**
