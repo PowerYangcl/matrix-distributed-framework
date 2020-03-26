@@ -32,7 +32,7 @@ import redis.clients.jedis.JedisCluster;
  *					加锁和解锁必须是同一个客户端，客户端自己不能把别人加的锁给解了。
  *
  *			Redis锁参考如下文章：
- *				https://www.cnblogs.com/linjiqin/p/8003838.html
+ *				https://www.cnblogs.com/number7/p/8320259.html
  *				https://blog.csdn.net/xiaoliu598906167/article/details/82218525| RedisTemplate使用PipeLine的总结，redisTemplate.execute使用
  *				https://www.jianshu.com/p/8cc44d008177
  *
