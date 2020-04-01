@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.matrix.rocket.GroupTransTestRocket;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -85,7 +86,6 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
 	 * 
 	 * @param type uploadimage:上传图片|uploadfile:上传文件
 	 * @param request
-	 * @param response
 	 * @return
 	 * @author 付强 
 	 * @date 2017年6月8日 下午3:21:48 
@@ -177,11 +177,11 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
 		JSONObject result= new JSONObject();
 		
 		// 顺序消息使用示例
-		Date date = new Date();
+		/*Date date = new Date();
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     	String dateStr = sdf.format(date);
     	BaseMqProducer baseMqProducer = GroupDefaultTestRocket.getInstance().getBaseMqProducer();
-    	
+
     	try {
     		for(int i = 1 ; i <= 5 ; i ++) {
     			String body = dateStr + " 订单编号-1-" + i;
@@ -241,25 +241,25 @@ public class ExampleServiceImpl  extends BaseServiceImpl<Long , UserDemo, UserDe
     		}
 		} catch (MQClientException | RemotingException | MQBrokerException | InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		
 		// 事物消息使用示例
-		/*BaseTransactionMqProducer transProducer = GroupDefaultTestRocket.getInstance().getTransProducer();
+		BaseTransactionMqProducer transProducer = GroupTransTestRocket.getInstance().getTransProducer();
 		String body = "Hello-Transaction-RocketMq-";
 		String[] args = new String[] {"TagA", "TagB", "TagC", "TagD", "TagE"};
 		for(int i = 1 ; i < args.length + 1 ; i ++) {
 			Message msg = transProducer.initMqMessage(
-					"TopicOrder",				 Topic 
-					"TagOrder", 					 Tag   
+					"TopicOrder",				// Topic
+					"TagOrder", 					// Tag
 					body + i);
 			msg.putUserProperty("up", "user-property-" + i);
 			
-			JSONObject obj = GroupTransTestSupport.getInstance().getTransProducer().sendMsg(msg, args[i-1]);
+			JSONObject obj = GroupTransTestRocket.getInstance().getTransProducer().sendMsg(msg, args[i-1]);
 			
 			System.err.println(args[i-1] + " Producer SendResult " + msg.getUserProperty("up") 
 								+ " SendStatus = " + obj.getJSONObject("data").getString("sendStatus")); 
-		}*/
+		}
 		return result;
 	}
 
