@@ -4,12 +4,9 @@ import com.matrix.sxt.e14.HelloGc;
 import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
-
 import java.lang.reflect.Method;
 
 public class MetaspaceDemo {
-    static class OOMTest{}
-
     public static void main(String[] args) {
         int i = 0;
         try {
@@ -26,7 +23,6 @@ public class MetaspaceDemo {
                 });
                 enhancer.create();
             }
-
         }catch (Throwable e){
             System.out.println("类创建了【" + i + "】次后发生异常");
             e.printStackTrace();

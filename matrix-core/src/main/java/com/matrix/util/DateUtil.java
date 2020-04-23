@@ -10,6 +10,15 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+/**
+ * @deprecated
+ * @description: 基本时间操作工具类
+ *
+ * @author Yangcl
+ * @home https://github.com/PowerYangcl
+ * @date 2017年12月24日 上午10:17:26 
+ * @version 1.0.0.1
+ */
 public class DateUtil {
 
 	/**
