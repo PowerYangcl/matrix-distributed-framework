@@ -831,7 +831,8 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			result.put("msg", this.getInfo(600010081));  // 600010081=接口请求者关键信息不得为空! 
 			return result;
 		}
-		e.setKey(DateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + DateUtil.getDateLongHex("HHmmss").toUpperCase());  
+		DateUtil dateUtil = new DateUtil();
+		e.setKey(dateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + dateUtil.getDateLongHex("HHmmss").toUpperCase());  
 		e.setValue(UuidUtil.uid().toUpperCase());  
 		e.setFlag(1); 
 		

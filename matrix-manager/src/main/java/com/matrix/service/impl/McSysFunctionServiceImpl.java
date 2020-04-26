@@ -78,7 +78,8 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			entity.setUpdateUserId(userInfo.getId());
 			entity.setUpdateUserName(userInfo.getUserName());
 			if(entity.getNavType() == 0) {		// 平台默认标识码|nav_type=0，此处为系统生成默认值
-				entity.setPlatform(DateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + DateUtil.getDateLongHex("HHmmss").toUpperCase());                           
+				DateUtil dateUtil = new DateUtil();
+				entity.setPlatform(dateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + dateUtil.getDateLongHex("HHmmss").toUpperCase());                           
 			}else if(entity.getNavType() == 2){
 				entity.setStyleKey(UuidUtil.uid());
 			}else if(entity.getNavType() == 4 || entity.getNavType() == 5){  // 4: 页面按钮 5: 内部跳转页面 

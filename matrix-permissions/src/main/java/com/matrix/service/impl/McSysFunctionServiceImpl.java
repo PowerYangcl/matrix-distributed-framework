@@ -66,7 +66,8 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			
 			switch(entity.getNavType()){
 			    case 0 :		// 平台默认标识码|nav_type=0，此处为系统生成默认值
-			    	entity.setPlatform(DateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + DateUtil.getDateLongHex("HHmmss").toUpperCase());     
+			    	DateUtil dateUtil = new DateUtil();
+			    	entity.setPlatform(dateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + dateUtil.getDateLongHex("HHmmss").toUpperCase());     
 			        break;  
 			    case 1 :			// 1 横向导航栏
 			        break; 

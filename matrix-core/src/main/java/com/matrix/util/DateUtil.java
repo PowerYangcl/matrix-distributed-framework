@@ -2,16 +2,25 @@ package com.matrix.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
- * @deprecated
  * @description: 基本时间操作工具类
  *
  * @author Yangcl
@@ -22,173 +31,372 @@ import org.apache.commons.lang3.time.DateUtils;
 public class DateUtil {
 
 	/**
-	 * 定义默认的日期时间格式
+	 * @description: 格式化当前服务器时间为字符串
+	 *
+	 * @param pattern	24小时制：yyyy-MM-dd HH:mm:ss | 12小时制：yyyy-MM-dd hh:mm:ss
+	 * @author Yangcl
+	 * @date 2020年4月26日 下午7:02:12 
+	 * @version 1.0.0.1
 	 */
-	public final static String CONST_PARSE_DATETIME = "yyyy-MM-dd HH:mm:ss";
+	public String formatDate(String pattern) {
+		return this.formatDate(pattern , new Date());
+	}
+	
+	/**
+	 * @description: 格式化一个指定的时间为字符串
+	 *
+	 * @param pattern	24小时制：yyyy-MM-dd HH:mm:ss | 12小时制：yyyy-MM-dd hh:mm:ss
+	 * @param date
+	 * @author Yangcl
+	 * @date 2020年4月26日 下午7:04:06 
+	 * @version 1.0.0.1
+	 */
+	public String formatDate(String pattern ,  Date date) {
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		return format.format(date);
+	}
+	
+	/**
+	 * @descriptions 获取16进制表示的当前时间
+	 *
+	 * @date 2017年8月2日 下午3:32:12
+	 * @author Yangcl 
+	 * @version 1.0.0.1
+	 */
+	public String getDateHex() {
+		return Integer.toHexString(Integer.valueOf(this.formatDate("yyMMdd")));
+	}
+	
+	public String getDateLongHex(String format) {
+		return Long.toHexString(Integer.valueOf(this.formatDate(format)));
+	}
+	
+	/**
+	 * @description: 返回第几周的开始与结束日期
+	 *			Map<String, String> map = new DeluxeDateUtils().getScopeForweeks(2020, 4, 5);
+	 *
+	 * @param year
+	 * @param month
+	 * @param weeks
+	 * @author Yangcl
+	 * @date 2020年4月23日 上午9:59:27 
+	 * @version 1.0.0.1
+	 */
+	public Map<String, String> getScopeForWeeks(int year, int month, int weeks) {
+		Map<String, String> map = new HashMap<String, String>();
+		String time = year + "-" + getMonthToStr(month);
+		Map<String, Integer> result = this.getDateScope(time);  // 获取天数和周数
+		int totalDays = result.get("days");
+		int totalWeeks = result.get("weeks");
+		
+		if (weeks > totalWeeks) {	// 如果参数周数大于实际周数 则返回一个不存在的日期 默认设置为当前 天数+1
+			int days = totalDays + 1;
+			String beginDate = year + "-" + getMonthToStr(month) + "-" + days;
+			map.put("beginDate", beginDate);
+			map.put("endDate", beginDate);
+		} else {	// 获取当月第一天属于周几
+			map = this.getScope(time, totalDays, totalWeeks).get(weeks);
+		}
+		return map;
+	}
 
 	/**
-	 * 定义月份的默认格式
+	 * @description: 获取当前月份下，每一周的开始日期和结束日期
+	 *
+	 * @param date 2020-04
+	 * @author Yangcl
+	 * @date 2020年4月24日 下午3:56:35 
+	 * @version 1.0.0.1
 	 */
-	public final static String CONST_PARSE_MONTH = "yyyy-MM";
-
-	/**
-	 * 定义Code的起始值
-	 */
-	public final static String CONST_PARSE_CODE = "YYMMdd";
-
-	/**
-	 * 获取月度第一天
-	 */
-	public final static String CONST_PARSE_MONTH_FIRST_DAY = "yyyy-MM-01 00:00:00";
-
-	/**
-	 * 获取每天0时0分0秒
-	 */
-	public final static String CONST_PARSE_DATETIME_0 = "yyyy-MM-dd 00:00:00";
-
-	public static final String DATE_FORMAT_DATEONLY = "yyyy-MM-dd"; // 年/月/日
-
-	public static final String DATE_FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss"; // 年/月/日
-
-	public static final SimpleDateFormat sdfDateOnly = new SimpleDateFormat(DateUtil.DATE_FORMAT_DATEONLY);
-
-	public static final SimpleDateFormat sdfDateTime = new SimpleDateFormat(DateUtil.DATE_FORMAT_DATETIME);
-
-	/**
-	 * 强制转换日期
-	 * 
-	 * @param sDate
-	 * @return
-	 */
-	public static Date parseDate(String sDate) {
-		try {
-			return DateUtils.parseDate(sDate, new String[] { CONST_PARSE_DATETIME });
-		} catch (ParseException e) {
-			e.printStackTrace();
+	public Map<Integer , JSONObject> getMonthWeeks(String date){
+		if(StringUtils.isBlank(date)) {
 			return null;
 		}
-
+		Map<String, Integer> result = this.getDateScope(date);		// 获取天数以及周数
+		Map<Integer, Map<String, String>> scope = this.getScope(date, result.get("days"), result.get("weeks"));
+		
+		Map<Integer , JSONObject> info = new TreeMap<Integer, JSONObject>();
+		scope.forEach((key , value) -> {
+			JSONObject o = new JSONObject();
+			o.put("startTime", value.get("beginDate"));
+			o.put("endTime", value.get("endDate"));
+			info.put(key, o) ;
+		}); 
+		return info;
 	}
-
+	
 	/**
-	 * alias upDate 获取日期的格式
-	 * 
-	 * @param dDate
-	 * @return
+	 * @description: 获取 某年某月 的【总天数】以及【总周数】
+	 *
+	 * @param time 格式：yyyy-MM
+	 * @author Yangcl
+	 * @date 2020年4月23日 上午10:28:45 
+	 * @version 1.0.0.1
 	 */
-	public static String formatDate(Date dDate) {
-
-		return formatDate(dDate, CONST_PARSE_DATETIME);
-	}
-
-	/**
-	 * 获取每天0时0分0秒
-	 * 
-	 * @param dDate
-	 * @return
-	 */
-	public static String formatDateZero(Date dDate) {
-
-		return formatDate(dDate, CONST_PARSE_DATETIME_0);
-	}
-
-	/**
-	 * alias upDate 获取日期的格式
-	 * 
-	 * @param dDate
-	 * @param sParse
-	 *            规则表达式
-	 * @return
-	 */
-	public static String formatDate(Date dDate, String sParse) {
-		SimpleDateFormat sFormat = new SimpleDateFormat(sParse);
-		return sFormat.format(dDate);
-	}
-
-	/**
-	 * 根据时间返回月份
-	 * 
-	 * @param sDateTime
-	 * @return
-	 */
-	public static String upMonth(String sDateTime) {
-		return formatDate(parseDate(sDateTime), CONST_PARSE_MONTH);
-	}
-
-	/**
-	 * 获取当前时间
-	 * 
-	 * @return
-	 */
-	public static String upNow() {
-		return formatDate(new Date());
-	}
-
-	/**
-	 * 获取当前时间的指定格式
-	 * 
-	 * @param sExp
-	 *            表达式<br/>
-	 *            d:表示日<br/>
-	 *            s:表示秒<br/>
-	 *            M:表示月<br/>
-	 *            h:表示小时<br/>
-	 * @return
-	 */
-	public static String upDateTimeAdd(String sExp) {
-
-		String sEndType = sExp.substring(sExp.length() - 1);
-
-		int iExp = Integer.valueOf(sExp.substring(0, sExp.length() - 1));
-
-		String sExpString = "";
-
-		if (sEndType.equals("d")) {
-			sExpString = upDateTimeAdd(new Date(), Calendar.DATE, iExp);
-		} else if (sEndType.equals("M")) {
-			sExpString = upDateTimeAdd(new Date(), Calendar.MONTH, iExp);
-		} else if (sEndType.equals("s")) {
-			sExpString = upDateTimeAdd(new Date(), Calendar.SECOND, iExp);
-		} else if (sEndType.equals("h")) {
-			sExpString = upDateTimeAdd(new Date(), Calendar.HOUR, iExp);
-		} else {
-			sExpString = upNow();
+	public Map<String, Integer> getDateScope(String time) {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		try {
+			if (time.length() <= 7) {  // 保证日期位数
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = sdf.parse(time + "-01");
+				Calendar c = Calendar.getInstance();
+				c.setTime(date);
+				int days = c.getActualMaximum(Calendar.DAY_OF_MONTH);		// 获取天数
+				int weeks = c.getActualMaximum(Calendar.WEEK_OF_MONTH);		// 获取周数
+				map.put("days", days);
+				map.put("weeks", weeks);
+			} else {
+				throw new RuntimeException("日期格式不正确");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		return sExpString;
-
+		return map;
+	}
+	
+	/**
+	 * @description: 获取日期属于周几
+	 *
+	 * @param time 格式：yyyy-MM-dd 
+	 * @author Yangcl
+	 * @date 2020年4月23日 上午9:47:15 
+	 * @version 1.0.0.1
+	 */
+	public String getWeekOfDate(String time) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String week = "";
+		try {
+			Date date = sdf.parse(time);
+			String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+			if (w < 0) {
+				w = 0;
+			}
+			week = weekDays[w];
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return week;
 	}
 
 	/**
-	 * 获取制定日期的特定格式
-	 * 
-	 * @param date
-	 * @param iType
-	 * @param iAmount
-	 * @return
+	 * @description: 根据当前星期几，判断这周剩余天数(不包括当天)
+	 *
+	 * @param week  "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"
+	 * @author Yangcl
+	 * @date 2020年4月23日 上午9:51:31 
+	 * @version 1.0.0.1
 	 */
-	public static String upDateTimeAdd(Date date, int iType, int iAmount) {
-
-		Calendar cal = Calendar.getInstance();
-
-		cal.setTime(date);
-
-		cal.add(iType, iAmount);
-
-		return formatDate(cal.getTime());
-
+	public int getSurplusDays(String week) {
+		int surplusDays = 0;  // surplusDays 
+		if ("星期日".equals(week)) {
+			surplusDays = 0;
+		} else if ("星期一".equals(week)) {
+			surplusDays = 6;
+		} else if ("星期二".equals(week)) {
+			surplusDays = 5;
+		} else if ("星期三".equals(week)) {
+			surplusDays = 4;
+		} else if ("星期四".equals(week)) {
+			surplusDays = 3;
+		} else if ("星期五".equals(week)) {
+			surplusDays = 2;
+		} else if ("星期六".equals(week)) {
+			surplusDays = 1;
+		}
+		return surplusDays;
 	}
-
+	
 	/**
-	 * 获取时间段之内的月份
+	 * @description: 获取本月周区间
+	 *
+	 * @param date   yyyy-mm 日期
+	 * @param days   天数
+	 * @param weeks 天数
 	 * 
-	 * @param beginMonth
-	 * @param endMonth
-	 * @return
+	 * @return 
+	 * 	{
+	 *			1={beginDate=2020-04-01,endDate=2020-04-05}, 
+	 *			2={beginDate=2020-04-06,endDate=2020-04-12}, 
+	 *			3={beginDate=2020-04-13,endDate=2020-04-19}, 
+	 *			4={beginDate=2020-04-20,endDate=2020-04-26},
+	 *			5={beginDate=2020-04-27,endDate=2020-04-30}
+	 *		}
+	 * 
+	 * @author Yangcl
+	 * @date 2020年4月23日 上午10:01:07 
+	 * @version 1.0.0.1
 	 */
-	public static List<String> getMonthList(String beginMonth, String endMonth) {
+	public Map<Integer, Map<String, String>> getScope(String date, int days, int weeks) {
+		Map<Integer, Map<String, String>> map = new TreeMap<Integer, Map<String, String>>();   // key为周数，数字1到5之间；value为当前第几周所对应的开始日期和结束日期
+		int midNum = 0; 	// 记录本周周日那天的数字
+		for (int i = 1; i <= weeks; i++) {	// 遍历周数
+			// 第一周
+			if(i == 1) {
+				String time = date + "-01";
+				String week = this.getWeekOfDate(time);
+				// 获取第一周还有多少天
+				int firstDays = this.getSurplusDays(week);
+				// 获取第一周结束日期
+				int endDays = 1 + firstDays;
+				String time2 = date + "-0" + endDays;
+				Map<String, String> data = new HashMap<String, String>();
+				data.put("beginDate", time);
+				data.put("endDate", time2);
+				map.put(i , data);
+				midNum = endDays;
+			}else {
+				if ( (midNum + 7) <= days) {  // 当前日期数+7 比较 当月天数
+					int beginNum = midNum + 1;
+					int endNum = midNum + 7;
+					String time1 = date + "-" + this.getNum(beginNum);
+					String time2 = date + "-" + this.getNum(endNum);
+					Map<String, String> data = new HashMap<String, String>();
+					data.put("beginDate", time1);
+					data.put("endDate", time2);
+					map.put(i, data);
+					midNum = endNum;
+				} else {
+					int beginNum = midNum + 1;
+					int endNum = days;
+					String time1 = date + "-" + this.getNum(beginNum);
+					String time2 = date + "-" + this.getNum(endNum);
+					Map<String, String> data = new HashMap<String, String>();
+					data.put("beginDate", time1);
+					data.put("endDate", time2);
+					map.put(i , data);
+					midNum = endNum;
+				}
+			}
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * @description: 输入一个月份，返回其对应的字符串
+	 *
+	 * @param month
+	 * @author Yangcl
+	 * @date 2020年4月23日 上午10:04:36 
+	 * @version 1.0.0.1
+	 */
+	public String getMonthToStr(int month) {
+		String str = "";
+		switch (month) {
+			case 1:
+				str = "01";
+				break;
+			case 2:
+				str = "02";
+				break;
+			case 3:
+				str = "03";
+				break;
+			case 4:
+				str = "04";
+				break;
+			case 5:
+				str = "05";
+				break;
+			case 6:
+				str = "06";
+				break;
+			case 7:
+				str = "07";
+				break;
+			case 8:
+				str = "08";
+				break;
+			case 9:
+				str = "09";
+				break;
+			case 10:
+				str = "10";
+				break;
+			case 11:
+				str = "11";
+				break;
+			case 12:
+				str = "12";
+				break;
+		}
+		return str;
+	}
+	
+	/**
+	 * @description: 获取指定年份内的所有月份开始 / 结束时间信息
+	 *
+	 * @param year：2020
+	 * @param format_：yyyy-MM-dd HH:mm:ss
+	 * @author Yangcl
+	 * @date 2020年4月24日 下午2:56:51 
+	 * @version 1.0.0.1
+	 */
+	public Map<Integer , JSONObject> monthInfo(String year , String format_) {
+		Map<Integer , JSONObject> info = new TreeMap<Integer, JSONObject>();
+		SimpleDateFormat sdf = new SimpleDateFormat(format_);
+
+		for(int i = 1; i <= 12 ; i ++) {
+			Date startTime = getBeginTime(Integer.valueOf(year) , i);	
+			Date endTime = getEndTime(Integer.valueOf(year) , i);
+			JSONObject o = new JSONObject();
+			o.put("startTime", sdf.format(startTime));
+			o.put("endTime", sdf.format(endTime));
+			info.put(i, o);
+		}
+        return info;
+	}
+	
+	/**
+	 * @description: 获取指定年月的开始日期
+	 *
+	 * @param year
+	 * @param month
+	 * @author Yangcl
+	 * @date 2020年4月24日 下午2:49:55 
+	 * @version 1.0.0.1
+	 */
+	public Date getBeginTime(int year, int month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate localDate = yearMonth.atDay(1);
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        ZonedDateTime zonedDateTime = startOfDay.atZone(ZoneId.of("Asia/Shanghai"));
+        return Date.from(zonedDateTime.toInstant());
+    }
+ 
+	/**
+	 * @description: 获取指定年月的结束日期
+	 *
+	 * @param year
+	 * @param month
+	 * @author Yangcl
+	 * @date 2020年4月24日 下午2:49:55 
+	 * @version 1.0.0.1
+	 */
+    public Date getEndTime(int year, int month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate endOfMonth = yearMonth.atEndOfMonth();
+        LocalDateTime localDateTime = endOfMonth.atTime(23, 59, 59, 999);
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Shanghai"));
+        return Date.from(zonedDateTime.toInstant());
+    }
+    
+	/**
+	 * @description: 获取时间段之内的月份
+	 *
+	 * @param beginMonth 2019-11
+	 * @param endMonth 2020-04
+	 * @return [2019-11, 2019-12, 2020-01, 2020-02, 2020-03, 2020-04]
+	 * @author Yangcl
+	 * @date 2020年4月26日 下午7:08:38 
+	 * @version 1.0.0.1
+	 */
+	public List<String> getMonthList(String beginMonth, String endMonth) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM");
-		List<String> monthList = new ArrayList<String>();
+		List<String> list = new ArrayList<String>();
 		try {
 			Date begin = format.parse(beginMonth);
 			Date end = format.parse(endMonth);
@@ -196,132 +404,28 @@ public class DateUtil {
 			Calendar endCalendar = Calendar.getInstance();
 			beginCalendar.setTime(begin);
 			endCalendar.setTime(end);
-			int months = (endCalendar.get(Calendar.YEAR) - beginCalendar.get(Calendar.YEAR)) * 12
-					+ (endCalendar.get(Calendar.MONTH) - beginCalendar.get(Calendar.MONTH));
-			monthList.add(beginMonth);
+			int months = (endCalendar.get(Calendar.YEAR) - beginCalendar.get(Calendar.YEAR)) * 12 + (endCalendar.get(Calendar.MONTH) - beginCalendar.get(Calendar.MONTH));
+			list.add(beginMonth);
 			for (int i = 0; i < months; i++) {
 				beginCalendar.add(Calendar.MONTH, 1);
-				monthList.add(format.format(beginCalendar.getTime()));
+				list.add(format.format(beginCalendar.getTime()));
 			}
-
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return null;
 		}
-
-		return monthList;
+		return list;
 	}
-
-	/**
-	 * 根据时间类型获取时间，比如：时间中的年，时间中的月，时间中的日
-	 * 
-	 * @param sDateTime
-	 *            可以为null或""
-	 * @param timeType
-	 * @return
-	 */
-	public static int getTimeEleByType(String sDateTime, int timeType) {
-
-		Calendar calendar = Calendar.getInstance();
-		if (null == sDateTime || "" == sDateTime)
-			calendar.setTime(new Date());
-		else
-			calendar.setTime(parseDate(sDateTime));
-
-		int timeEle = 0;
-
-		switch (timeType) {
-		case Calendar.DAY_OF_MONTH:
-			timeEle = calendar.get(Calendar.DAY_OF_MONTH);
-			break;
-		case Calendar.MONTH:
-			timeEle = calendar.get(Calendar.MONTH) + 1;
-			break;
-		case Calendar.YEAR:
-			timeEle = calendar.get(Calendar.YEAR);
-			break;
-		default:
-			timeEle = -1;
-			break;
+    
+	private String getNum(int num) {
+		int result = num / 10;
+		if (result == 0) {
+			return "0" + num;
+		} else {
+			return num + "";
 		}
-
-		return timeEle;
-	}
-
-	public static String upCodeStart() {
-		SimpleDateFormat sFormat = new SimpleDateFormat(CONST_PARSE_CODE);
-		return sFormat.format(new Date());
-	}
-
-	/**
-	 * 判断时间是否在某个范围内 只精确到时分秒的判断 忽略日期
-	 * 
-	 * @param sTime
-	 * @param sStart
-	 * @param sEnd
-	 * @return
-	 */
-	public static boolean upTimeBetween(String sTime, String sStart, String sEnd) {
-		boolean bFlag = true;
-
-		sTime = StringUtils.right(sTime, 8);
-		if (StringUtils.isNotBlank(sStart)) {
-			bFlag = sTime.compareTo(sStart) > 0;
-		}
-
-		if (StringUtils.isNotBlank(sEnd)) {
-			bFlag = sTime.compareTo(sEnd) < 0;
-		}
-
-		return bFlag;
-	}
-
-	/**
-	 * 
-	 * 方法: getSysDate <br>
-	 * 描述: 获取当前系统日期 <br>
-	 * 作者: zhy<br>
-	 * 时间: 2016年8月1日 上午7:26:21
-	 * 
-	 * @return
-	 */
-	public static String getSysDate() {
-		return sdfDateOnly.format(new Date());
-	}
-
-	/**
-	 * 
-	 * 方法: getSysDateTime <br>
-	 * 描述: 获取当前系统时间 <br>
-	 * 作者: zhy<br>
-	 * 时间: 2016年8月1日 上午7:26:54
-	 * 
-	 * @return
-	 */
-	public static String getSysDateTime() {
-		return sdfDateTime.format(new Date());
-	}
-
-	public static String formatDate(String pattern) {
-		SimpleDateFormat sFormat = new SimpleDateFormat(pattern);
-		return sFormat.format(new Date());
 	}
 	
-	/**
-	 * @descriptions 获取16进制表示的当前时间
-	 *
-	 * @return
-	 * @date 2017年8月2日 下午3:32:12
-	 * @author Yangcl 
-	 * @version 1.0.0.1
-	 */
-	public static String getDateHex() {
-		return Integer.toHexString(Integer.valueOf(formatDate("yyMMdd")));
-	}
-	
-	public static String getDateLongHex(String format) {
-		return Long.toHexString(Integer.valueOf(formatDate(format)));
-	}
 }
 
 

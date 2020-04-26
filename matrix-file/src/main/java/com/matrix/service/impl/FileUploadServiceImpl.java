@@ -130,7 +130,7 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 		}
 		
 		// 文件保存路径
-		String hexFolder = DateUtil.getDateHex();
+		String hexFolder = new DateUtil().getDateHex();
 		String filePath = this.getConfig("matrix-file.server_basic_folder_" + this.getConfig("matrix-core.model")) + File.separator 
 				+ this.getConfig("matrix-file.upload_path_" + postfix) + File.separator + hexFolder + File.separator;
 		try {
