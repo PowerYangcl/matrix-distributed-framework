@@ -31,6 +31,89 @@ import com.alibaba.fastjson.JSONObject;
 public class DateUtil {
 
 	/**
+	 * @description: 指定一个日期，获取其属于当前月的第几周，以及这一周的开始和结束时间
+	 *
+	 * @param date
+	 * @author Yangcl
+	 * @date 2020年4月28日 下午3:07:49 
+	 * @version 1.0.0.1
+	 */
+	public Map<String, String> getWeekMonToSun(Date date){
+		if(date == null) {
+			return null;
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String day = sdf.format(date);
+		String month = day.substring(0 , 7);
+		Map<Integer, JSONObject> monthWeeks = this.getMonthWeeks(month);
+		Map<String , String > map  = new HashMap<String, String>();
+		monthWeeks.forEach((key , value) -> {
+			if(this.compareDate(value.getString("startTime"), day) && this.compareDate(day , value.getString("endTime"))) {
+				map.put("startTime", value.getString("startTime"));
+				map.put("endTime" , value.getString("endTime"));
+			}
+		});
+		return map;
+	}
+	
+	/**
+	 * @description: 比较两个时间大小
+	 * 	String a = "2016-09-18 15:00:00";   String b = "2016-09-18 16:00:00"; 
+	 * 	System.out.println(compareDate(a, b)); // true
+	 *
+	 * @param a
+	 * @param b
+	 * @author Yangcl
+	 * @date 2020年4月28日 下午3:17:23 
+	 * @version 1.0.0.1
+	 */
+	public boolean compareDate(String a , String b){
+		if(StringUtils.isAnyBlank(a , b)){
+			return false;
+		}
+		return a.compareTo(b) < 0;
+	}
+	
+	/**
+	 * @description: String 转化Date
+	 *
+	 * @param str 2020-04-28
+	 * @param format_ 	24小时制：yyyy-MM-dd HH:mm:ss  12小时制：yyyy-MM-dd hh:mm:ss
+	 * @author Yangcl
+	 * @date 2020年4月28日 下午3:45:28 
+	 * @version 1.0.0.1
+	 */
+	public Date stringToDate(String str , String format_) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format_);
+		Date date = null;
+		try {
+			date = sdf.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
+	}
+	
+	/**
+	 * @description: 获取当前天的开始时间和结束时间
+	 *
+	 * @author Yangcl
+	 * @date 2020年4月27日 下午3:59:08 
+	 * @version 1.0.0.1
+	 */
+	public Map<String, String> getCurrDayStarttimeAndEndtime(){
+		Map<String, String> map = new HashMap<String, String>(2);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+		String startTime = sdf.format(new Date());
+		sdf = new SimpleDateFormat("yyyy-MM-dd 23:59:59");
+		String endTime = sdf.format(new Date());;
+		map.put("startTime" , startTime);
+		map.put("endTime" , endTime);
+		return map;
+	}
+	
+	/**
 	 * @description: 格式化当前服务器时间为字符串
 	 *
 	 * @param pattern	24小时制：yyyy-MM-dd HH:mm:ss | 12小时制：yyyy-MM-dd hh:mm:ss
