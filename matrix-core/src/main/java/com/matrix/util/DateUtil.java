@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +94,50 @@ public class DateUtil {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	/**
+	 * @description: 获取第N天的时间
+	 *
+	 * @param date 日期 Date
+	 * @param num	把日期往后增加N天； .整数往后推 , 负数往前移动。
+	 * @param format yyyy-MM-dd 
+	 * 
+	 * @author Yangcl
+	 * @date 2020年4月30日 下午5:14:06 
+	 * @version 1.0.0.1
+	 */
+	public String getDate(Date date , int num , String format){
+		 Calendar calendar = new GregorianCalendar();
+		 calendar.setTime(date);
+		 calendar.add(calendar.DATE , num);   // 
+		 date=calendar.getTime();      // 这个时间就是日期往后推一天的结果 
+		 SimpleDateFormat formatter = new SimpleDateFormat(format);
+		 
+		 return formatter.format(date);
+	}
+	
+	/**
+	 * @description: 获取第N天的时间
+	 *
+	 * @param date 日期  String
+	 * @param num	把日期往后增加N天； .整数往后推 , 负数往前移动。
+	 * @param format yyyy-MM-dd 
+	 * 
+	 * @author Yangcl
+	 * @date 2020年4月30日 下午5:14:06 
+	 * @version 1.0.0.1
+	 */
+	public String getDateByString(String date , int num , String format){
+		SimpleDateFormat formatter = new SimpleDateFormat(format);
+		 Calendar calendar = new GregorianCalendar();
+		 try {
+			calendar.setTime(formatter.parse(date));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		 calendar.add(calendar.DATE , num); 
+		 return formatter.format(calendar.getTime());
 	}
 	
 	/**
@@ -209,6 +254,46 @@ public class DateUtil {
 	}
 	
 	/**
+	 * @description: 获取当前月份下，每一周的开始日期和结束日期（跨月）。如果第一周的开始日期不是星期一，则此周不计入返回结果
+	 * {
+	 * 	1 = { "startTime": "2020-04-06", "endTime": "2020-04-12" }, 
+	 * 	2 = { "startTime": "2020-04-13", "endTime": "2020-04-19" }, 
+     * 	3 = { "startTime": "2020-04-20", "endTime": "2020-04-26" }, 
+     * 	4 = { "startTime": "2020-04-27", "endTime": "2020-05-03" }         2020-05-03是跨月的信息
+     * }
+	 *
+	 * @param date 2020-04
+	 * @author Yangcl
+	 * @date 2020年4月24日 下午3:56:35 
+	 * @version 1.0.0.1
+	 */
+	public Map<Integer , JSONObject> getMonthWeeksBeginMonday(String date){
+		if(StringUtils.isBlank(date)) {
+			return null;
+		}
+		Map<String, Integer> result = this.getDateScope(date);		// 获取天数以及周数
+		Map<Integer, Map<String, String>> scope = this.getScope(date, result.get("days"), result.get("weeks"));
+		Map<Integer , JSONObject> info = new TreeMap<Integer, JSONObject>();
+		int i = 1;
+		for(Integer key : scope.keySet()){
+			Map<String, String> value = scope.get(key);
+			if(!this.getWeekOfDate(value.get("beginDate")).equals("星期一")) {
+				continue;
+			}
+			JSONObject o = new JSONObject();
+			o.put("startTime", value.get("beginDate"));
+			o.put("endTime", value.get("endDate"));
+			if(i == 4) {
+				String endDate = this.getDateByString(value.get("beginDate") , 6, "yyyy-MM-dd");
+				o.put("endTime", endDate);
+			}
+			info.put( i , o) ;
+			i ++;
+		}
+		return info;
+	}
+	
+	/**
 	 * @description: 获取 某年某月 的【总天数】以及【总周数】
 	 *
 	 * @param time 格式：yyyy-MM
@@ -226,6 +311,9 @@ public class DateUtil {
 				c.setTime(date);
 				int days = c.getActualMaximum(Calendar.DAY_OF_MONTH);		// 获取天数
 				int weeks = c.getActualMaximum(Calendar.WEEK_OF_MONTH);		// 获取周数
+				if(weeks > 5) {
+					weeks = 5;
+				}
 				map.put("days", days);
 				map.put("weeks", weeks);
 			} else {
