@@ -1,4 +1,4 @@
-package com.reflect.demo;
+package com.matrix.reflects.reflect;
 
 public class ReflectPoint {
 	

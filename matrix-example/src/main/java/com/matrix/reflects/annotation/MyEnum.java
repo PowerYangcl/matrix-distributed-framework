@@ -1,4 +1,4 @@
-package com.annotation.demo;
+package com.matrix.reflects.annotation;
 
 public enum MyEnum {
 	ONE,TWO,THREE;
