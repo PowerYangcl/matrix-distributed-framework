@@ -32,6 +32,40 @@ import com.alibaba.fastjson.JSONObject;
 public class DateUtil {
 
 	/**
+	 * @description: 两个日期的时间差计算
+	 *
+	 * @param startTime
+	 * @param endTime
+	 * @param type	1：天数差  2：小时差  3：分钟差
+	 * @author Yangcl
+	 * @date 2020年5月21日 上午11:52:31 
+	 * @version 1.0.0.1
+	 */
+	public Integer timeInterval(String startTime , String endTime , int type) {
+		if(!this.compareDate(startTime, endTime)) {
+			return 0;
+		}
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			long start = format.parse(startTime).getTime();
+			long end = format.parse(endTime).getTime();
+			if(type == 1) {	// 天数差
+				return (int) ((end - start) / (1000 * 60 * 60 * 24));
+			}
+			if(type == 2) {	// 小时差
+				return (int) ((end - start) / (1000 * 60 * 60));
+			}
+			if(type == 3) {	// 分钟差
+				return (int) ((end - start) / (1000 * 60));
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	/**
 	 * @description: 指定一个日期，获取其属于当前月的第几周，以及这一周的开始和结束时间
 	 *
 	 * @param date
@@ -94,6 +128,12 @@ public class DateUtil {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	public String dataToString(Date date , String format_) {
+		SimpleDateFormat sdf = new SimpleDateFormat(format_);
+		String str = sdf.format(date);
+		return str;
 	}
 	
 	/**
@@ -554,6 +594,14 @@ public class DateUtil {
         ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Shanghai"));
         return Date.from(zonedDateTime.toInstant());
     }
+    
+    public String getBeginTimeString(int year, int month , String format_) {
+		return this.dataToString(this.getBeginTime(year, month), format_);
+	}
+    
+    public String getEndTimeString(int year, int month , String format_) {
+		return this.dataToString(this.getEndTime(year, month), format_);
+	}
     
 	/**
 	 * @description: 获取时间段之内的月份
