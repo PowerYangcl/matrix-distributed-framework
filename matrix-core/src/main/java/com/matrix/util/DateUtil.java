@@ -130,7 +130,7 @@ public class DateUtil {
 		return date;
 	}
 	
-	public String dataToString(Date date , String format_) {
+	public String dateToString(Date date , String format_) {
 		SimpleDateFormat sdf = new SimpleDateFormat(format_);
 		String str = sdf.format(date);
 		return str;
@@ -596,11 +596,11 @@ public class DateUtil {
     }
     
     public String getBeginTimeString(int year, int month , String format_) {
-		return this.dataToString(this.getBeginTime(year, month), format_);
+		return this.dateToString(this.getBeginTime(year, month), format_);
 	}
     
     public String getEndTimeString(int year, int month , String format_) {
-		return this.dataToString(this.getEndTime(year, month), format_);
+		return this.dateToString(this.getEndTime(year, month), format_);
 	}
     
 	/**
