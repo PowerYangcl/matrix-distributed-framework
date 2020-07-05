@@ -153,7 +153,11 @@ public class NetUtil extends BaseClass {
 	}
 	 
     //将map型转为请求参数型
-    public static String urlencode(Map<String,Object>data) {
+    public static String urlencode(Map<String,Object> data) {
+    	if(data == null) {
+    		return "";
+    	}
+    	
         StringBuilder sb = new StringBuilder();
         for (Map.Entry i : data.entrySet()) {
             try {

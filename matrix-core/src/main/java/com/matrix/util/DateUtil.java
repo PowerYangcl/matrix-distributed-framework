@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,9 +35,11 @@ public class DateUtil {
 
 	/**
 	 * @description: 两个日期的时间差计算
+	 *			int num = du.timeInterval("2020-06-02 00:00:00", "2020-06-03 00:00:00", 1);
+	 *			System.out.println(num); 输出1
 	 *
-	 * @param startTime
-	 * @param endTime
+	 * @param startTime 需要精确到时分秒
+	 * @param endTime 需要精确到时分秒
 	 * @param type	1：天数差  2：小时差  3：分钟差
 	 * @author Yangcl
 	 * @date 2020年5月21日 上午11:52:31 
@@ -270,7 +274,28 @@ public class DateUtil {
 
 	/**
 	 * @description: 获取当前月份下，每一周的开始日期和结束日期
-	 *
+ 			 {
+			    1={
+			        "startTime":"2020-04-01",  04-01：星期三
+			        "endTime":"2020-04-05"
+			    },
+			    2={
+			        "startTime":"2020-04-06",
+			        "endTime":"2020-04-12"
+			    },
+			    3={
+			        "startTime":"2020-04-13",
+			        "endTime":"2020-04-19"
+			    },
+			    4={
+			        "startTime":"2020-04-20",
+			        "endTime":"2020-04-26"
+			    },
+			    5={
+			        "startTime":"2020-04-27",
+			        "endTime":"2020-04-30"  04-30：星期四
+			    }
+			}
 	 * @param date 2020-04
 	 * @author Yangcl
 	 * @date 2020年4月24日 下午3:56:35 
@@ -323,7 +348,7 @@ public class DateUtil {
 			JSONObject o = new JSONObject();
 			o.put("startTime", value.get("beginDate"));
 			o.put("endTime", value.get("endDate"));
-			if(i == 4) {
+			if( !this.getWeekOfDate(value.get("endDate")).equals("星期日") ) {
 				String endDate = this.getDateByString(value.get("beginDate") , 6, "yyyy-MM-dd");
 				o.put("endTime", endDate);
 			}
@@ -334,9 +359,91 @@ public class DateUtil {
 	}
 	
 	/**
-	 * @description: 获取 某年某月 的【总天数】以及【总周数】
+	 * @description: 获取当前月份下，每一周的开始日期和结束日期（跨月）。如果第一周的开始日期不是星期一，依然计入返回结果
+	 * {
+	 * 	1 = { "startTime": "2020-03-30", "endTime": "2020-04-05" },		 2020-03-30是跨月的信息
+	 * 	2 = { "startTime": "2020-04-06", "endTime": "2020-04-12" }, 
+	 * 	3 = { "startTime": "2020-04-13", "endTime": "2020-04-19" }, 
+     * 	4 = { "startTime": "2020-04-20", "endTime": "2020-04-26" }, 
+     * 	5 = { "startTime": "2020-04-27", "endTime": "2020-05-03" }         2020-05-03是跨月的信息
+     * }
 	 *
-	 * @param time 格式：yyyy-MM
+	 * @param date 2020-04
+	 * @author Yangcl
+	 * @date 2020年7月5日 下午8:31:46 
+	 * @version 1.0.0.1
+	 */
+	public Map<Integer , JSONObject> getWeeksInMonth(String date){
+		if(StringUtils.isBlank(date)) {
+			return null;
+		}
+		Map<String, Integer> result = this.getDateScope(date);		// 获取天数以及周数
+		Map<Integer, Map<String, String>> scope = this.getScope(date, result.get("days"), result.get("weeks"));
+		Map<Integer , JSONObject> info = new TreeMap<Integer, JSONObject>();
+		int i = 1;
+		for(Integer key : scope.keySet()){
+			Map<String, String> value = scope.get(key);
+			JSONObject o = new JSONObject();
+			o.put("startTime", value.get("beginDate"));
+			o.put("endTime", value.get("endDate"));
+			
+			if(!this.getWeekOfDate(value.get("beginDate")).equals("星期一")) {
+				// 如果开始日期不是星期一，则取星期日的日期向前推6天，则为跨月的日期，星期一。
+				String startDate = this.getDateByString(value.get("endDate") , -6, "yyyy-MM-dd");
+				o.put("startTime", startDate);
+			}
+			if(!this.getWeekOfDate(value.get("endDate")).equals("星期日")) {
+				// 如果结束日期不是星期日，则取星期一的日期向后推6天，则为跨月的日期，星期日。
+				String endDate = this.getDateByString(value.get("beginDate") , 6, "yyyy-MM-dd");
+				o.put("endTime", endDate);
+			}
+			info.put( i , o) ;
+			i ++;
+		}
+		return info;
+	}
+	
+	/**
+	 * @description: 指定一个日期，获取其周一对应的日期和周日对应的日期
+	 *
+	 * @param date
+	 * @return 
+	 * @author Yangcl
+	 * @date 2020年7月5日 下午9:57:27 
+	 * @version 1.0.0.1
+	 */
+	public Map<String , String> getWeeksStartEnd(String date){
+		if(StringUtils.isBlank(date)) {
+			return null;
+		}
+		Map<String , String> map = new HashMap<String, String>(1);
+		map.put("startTime", "");
+		map.put("endTime", "");
+		String month = date.split("-")[0] + "-"+date.split("-")[1];
+		Map<Integer, JSONObject> maps = this.getWeeksInMonth(month);
+		for(Integer key : maps.keySet()) {
+			JSONObject value = maps.get(key);
+			String startTime = value.getString("startTime");
+			String endTime = value.getString("endTime");
+			if(date.equals(startTime) || date.equals(endTime)) {
+				map.put("startTime", startTime);
+				map.put("endTime", endTime);
+				return map;
+			}
+			if(this.compareDate(startTime, date) && this.compareDate(date, endTime)) {
+				map.put("startTime", startTime);
+				map.put("endTime", endTime);
+				return map;
+			}
+		}
+		
+		return map;
+	}
+	
+	/**
+	 * @description: 获取 某年某月 的【总天数】以及【总周数】
+	 *			返回：{weeks=5, days=31}
+	 * @param time 格式：yyyy-MM，2020-07
 	 * @author Yangcl
 	 * @date 2020年4月23日 上午10:28:45 
 	 * @version 1.0.0.1
@@ -366,9 +473,28 @@ public class DateUtil {
 	}
 	
 	/**
-	 * @description: 获取日期属于周几
+	 * @description: 获取 某年某月 的【总天数】
 	 *
-	 * @param time 格式：yyyy-MM-dd 
+	 * @param year 2020
+	 * @param month 7
+	 * @return 31
+	 * @author Yangcl
+	 * @date 2020年5月12日 下午3:36:47 
+	 * @version 1.0.0.1
+	 */
+	public Integer daysOfMonth(int year , int month) {
+		LocalDate startDay = LocalDate.of(year , month, 1);
+		LocalDate endDay = LocalDate.of(year , month, 1);
+		endDay = endDay.with(TemporalAdjusters.lastDayOfMonth());
+		return (int) (startDay.until(endDay, ChronoUnit.DAYS) + 1);
+	}
+	
+	
+	/**
+	 * @description: 获取日期属于星期几
+	 *
+	 * @param time 格式：yyyy-MM-dd，2020-07-05
+	 * @return 星期日
 	 * @author Yangcl
 	 * @date 2020年4月23日 上午9:47:15 
 	 * @version 1.0.0.1
@@ -595,10 +721,12 @@ public class DateUtil {
         return Date.from(zonedDateTime.toInstant());
     }
     
+    // return 2020-07-01 00:00:00
     public String getBeginTimeString(int year, int month , String format_) {
 		return this.dateToString(this.getBeginTime(year, month), format_);
 	}
     
+    // return 2020-07-31 23:59:59    
     public String getEndTimeString(int year, int month , String format_) {
 		return this.dateToString(this.getEndTime(year, month), format_);
 	}
@@ -636,6 +764,47 @@ public class DateUtil {
 		return list;
 	}
     
+	/**
+	 * @description: 根据年月获取对应的月份工作日天数
+	 *
+	 * @param year
+	 * @param month
+	 * @author Yangcl
+	 * @date 2020年6月24日 下午11:32:03 
+	 * @version 1.0.0.1
+	 */
+	public int workDayCount(int year , int month) {
+		Calendar c  = Calendar.getInstance();
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, month);
+		// 当月最后一天日期
+		int max = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+		// 开始日期为1号
+		int start = 1;
+		// 计数
+		int count = 0;
+		while(start < max) {
+			c.set(Calendar.DAY_OF_MONTH , start);
+			if(this.isWorkDay(c)) {
+				count ++;
+			}
+			start ++;
+		}
+		return count;
+	}
+
+	/**
+	 * @description: 判断是否为工作日。周六日返回false
+	 *
+	 * @author Yangcl
+	 * @date 2020年6月24日 下午11:30:30 
+	 * @version 1.0.0.1
+	 */
+	public boolean isWorkDay(Calendar c) {
+		int week = c.get(Calendar.DAY_OF_WEEK);
+		return week != Calendar.SUNDAY && week != Calendar.SATURDAY;
+	}
+	
 	private String getNum(int num) {
 		int result = num / 10;
 		if (result == 0) {
