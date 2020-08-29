@@ -141,6 +141,18 @@ public class DateUtil {
 	}
 	
 	/**
+	 * @description: 将不标准的带"T"时间字符串替换成标准的时间字符串格式：yyyy-MM-dd HH:mm:ss
+	 * 
+	 * @param target  "2019-12-16T14:55:10.505+08:00";
+	 * @author Yangcl
+	 * @date 2020年7月30日 下午5:54:18 
+	 * @version 1.0.0.1
+	 */
+	public String normDateString(String target) {
+		return target.substring(0, 18).replace("T", " ");
+	}
+	
+	/**
 	 * @description: 获取第N天的时间
 	 *
 	 * @param date 日期 Date
@@ -244,30 +256,31 @@ public class DateUtil {
 	}
 	
 	/**
-	 * @description: 返回第几周的开始与结束日期
-	 *			Map<String, String> map = new DeluxeDateUtils().getScopeForweeks(2020, 4, 5);
+	 * @description: 获取日期信息。当前日期所在月份、第几周等
 	 *
-	 * @param year
-	 * @param month
-	 * @param weeks
+	 * @param date：2020-07-06
+	 * @return {week=2, month=7}
 	 * @author Yangcl
-	 * @date 2020年4月23日 上午9:59:27 
+	 * @date 2020年7月6日 下午2:18:21 
 	 * @version 1.0.0.1
+	 * @throws ParseException 
 	 */
-	public Map<String, String> getScopeForWeeks(int year, int month, int weeks) {
+	public Map<String, String> getDateInfo(String date) {
 		Map<String, String> map = new HashMap<String, String>();
-		String time = year + "-" + getMonthToStr(month);
-		Map<String, Integer> result = this.getDateScope(time);  // 获取天数和周数
-		int totalDays = result.get("days");
-		int totalWeeks = result.get("weeks");
+		map.put("month", "0");
+		map.put("week", "0");
 		
-		if (weeks > totalWeeks) {	// 如果参数周数大于实际周数 则返回一个不存在的日期 默认设置为当前 天数+1
-			int days = totalDays + 1;
-			String beginDate = year + "-" + getMonthToStr(month) + "-" + days;
-			map.put("beginDate", beginDate);
-			map.put("endDate", beginDate);
-		} else {	// 获取当月第一天属于周几
-			map = this.getScope(time, totalDays, totalWeeks).get(weeks);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			Date date_ = sdf.parse(date);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date_);
+			int month = calendar.get(Calendar.MONTH) + 1;
+			int week = calendar.get(Calendar.WEEK_OF_MONTH);
+			map.put("month", month + "");
+			map.put("week", week + "");
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
 		return map;
 	}
@@ -731,6 +744,25 @@ public class DateUtil {
 		return this.dateToString(this.getEndTime(year, month), format_);
 	}
     
+    /**
+     * @description: 获取指定日期所在的年和月
+     *
+     * @author Yangcl
+     * @date 2020年8月24日 下午2:39:32 
+     * @version 1.0.0.1
+     */
+    public Map<String , Integer> getMonthAndYear(Date date){
+    	if(date == null) {
+    		date = new Date();
+    	}
+    	String dateToString = this.dateToString(date, "yyyy-MM-dd");
+    	String[] arr = dateToString.split("-");
+    	Map<String , Integer> map = new HashMap<String, Integer>();
+    	map.put("year", Integer.valueOf(arr[0]));
+    	map.put("month", Integer.valueOf(arr[1]));
+    	return map;
+    }
+    
 	/**
 	 * @description: 获取时间段之内的月份
 	 *
@@ -793,6 +825,74 @@ public class DateUtil {
 		return count;
 	}
 
+	/**
+	 * @description: 返回时间段内的日期列表；如果开始日期与结束日期相等则返回列表数据为1个日期。
+	 *
+	 * @param startTime 2020-07-01
+	 * @param endTime	 2020-07-08
+	 * @return [2020-07-01, 2020-07-02, 2020-07-03, 2020-07-04, 2020-07-05, 2020-07-06, 2020-07-07, 2020-07-08]
+	 * @author Yangcl
+	 * @date 2020年7月6日 下午7:28:30 
+	 * @version 1.0.0.1
+	 */
+	public List<String> dateList(String startTime , String endTime){
+		List<String> list = new ArrayList<String>();
+		if(startTime.equals(endTime)) {
+			list.add(startTime);
+			return list;
+		}
+		if(!this.compareDate(startTime, endTime)) {
+			return list;
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			List<Date> dates = this.dateList(sdf.parse(startTime), sdf.parse(endTime));
+			for(Date e : dates) {
+				list.add(sdf.format(e));
+			}
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		}
+		return list;
+	}
+
+	public List<Date> dateList(Date begin, Date end) {
+	     List<Date> list = new ArrayList<Date>();
+	     list.add(begin);
+	     Calendar calBegin = Calendar.getInstance();
+	     calBegin.setTime(begin);	// 使用给定的 Date 设置此 Calendar 的时间
+	     Calendar calEnd = Calendar.getInstance();
+	     calEnd.setTime(end);	// 使用给定的 Date 设置此 Calendar 的时间
+	     while (end.after(calBegin.getTime())){	// 测试此日期是否在指定日期之后
+	    	 calBegin.add(Calendar.DAY_OF_MONTH, 1);		// 根据日历的规则，为给定的日历字段添加或减去指定的时间量
+	    	 list.add(calBegin.getTime());
+	     }
+	     return list;
+	}
+	
+	/**
+	 * @description: 返回时间段内的工作日数量
+	 *
+	 * @param startTime 2020-07-01
+	 * @param endTime	 2020-07-15
+	 * @author Yangcl
+	 * @date 2020年7月6日 下午7:41:53 
+	 * @version 1.0.0.1
+	 */
+	public Integer workDays(String startTime, String endTime) {
+		int count = 0;
+		List<String> list = this.dateList(startTime, endTime);
+		for(String s : list) {
+			if(this.getWeekOfDate(s).equals("星期六") || this.getWeekOfDate(s).equals("星期日")) {
+				continue;
+			}
+			count ++;
+		}
+        return count;
+    }
+	
+	
 	/**
 	 * @description: 判断是否为工作日。周六日返回false
 	 *
