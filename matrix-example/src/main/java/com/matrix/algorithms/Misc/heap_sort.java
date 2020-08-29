@@ -1,4 +1,4 @@
-package Misc;
+package com.matrix.algorithms.Misc;
 
 public class heap_sort {
     public void sort(int[] arr) {

@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 
 public class FindMaxRecursion {
     public static void main(String[] args) {

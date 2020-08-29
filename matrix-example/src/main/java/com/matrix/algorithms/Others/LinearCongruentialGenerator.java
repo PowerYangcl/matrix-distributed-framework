@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 
 /***
  * A pseudorandom number generator.

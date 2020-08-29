@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 
 /**
  * Amicable numbers are two different numbers so related

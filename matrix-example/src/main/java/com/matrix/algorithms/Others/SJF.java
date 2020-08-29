@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 /**
  * <h2>Shortest job first.</h2>
  * <p>Shortest job first (SJF) or shortest job next, is a scheduling policy

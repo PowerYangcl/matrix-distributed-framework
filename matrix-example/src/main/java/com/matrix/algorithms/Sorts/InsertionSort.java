@@ -1,7 +1,7 @@
-package Sorts;
+package com.matrix.algorithms.Sorts;
 
-import static Sorts.SortUtils.less;
-import static Sorts.SortUtils.print;
+import static com.matrix.algorithms.Sorts.SortUtils.less;
+import static com.matrix.algorithms.Sorts.SortUtils.print;
 
 /**
  * @author Varun Upadhyay (https://github.com/varunu28)

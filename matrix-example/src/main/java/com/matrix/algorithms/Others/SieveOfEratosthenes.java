@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 
 /**
  * @author Varun Upadhyay (https://github.com/varunu28)

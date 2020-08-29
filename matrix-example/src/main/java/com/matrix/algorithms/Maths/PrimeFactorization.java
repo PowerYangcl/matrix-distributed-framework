@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 
 import java.lang.Math;
 import java.util.Scanner;

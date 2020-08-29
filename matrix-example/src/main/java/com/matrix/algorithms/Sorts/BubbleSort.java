@@ -1,6 +1,6 @@
-package Sorts;
+package com.matrix.algorithms.Sorts;
 
-import static Sorts.SortUtils.*;
+import static com.matrix.algorithms.Sorts.SortUtils.*;
 
 /**
  * @author Varun Upadhyay (https://github.com/varunu28)

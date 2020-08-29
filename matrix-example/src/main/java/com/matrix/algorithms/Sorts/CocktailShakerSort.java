@@ -1,4 +1,4 @@
-package Sorts;
+package com.matrix.algorithms.Sorts;
 
 /**
  * @author Mateus Bizzo (https://github.com/MattBizzo)

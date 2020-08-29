@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 
 /**
  * You can read more about Euler's totient function

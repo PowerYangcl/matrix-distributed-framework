@@ -1,4 +1,4 @@
-package Searches;
+package com.matrix.algorithms.Searches;
 
 public class JumpSearch implements SearchAlgorithm {
 

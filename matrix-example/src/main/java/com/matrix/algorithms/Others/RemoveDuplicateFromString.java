@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

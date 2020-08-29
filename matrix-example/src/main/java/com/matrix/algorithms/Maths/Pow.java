@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 
 //POWER (exponentials) Examples (a^b)
 public class Pow {

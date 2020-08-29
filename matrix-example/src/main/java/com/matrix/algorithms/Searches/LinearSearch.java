@@ -1,4 +1,4 @@
-package Searches;
+package com.matrix.algorithms.Searches;
 
 import java.util.Random;
 import java.util.stream.Stream;

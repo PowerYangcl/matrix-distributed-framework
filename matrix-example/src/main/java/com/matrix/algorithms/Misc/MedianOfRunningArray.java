@@ -1,4 +1,4 @@
-package Misc;
+package com.matrix.algorithms.Misc;
 
 import java.util.Collections;
 import java.util.PriorityQueue;

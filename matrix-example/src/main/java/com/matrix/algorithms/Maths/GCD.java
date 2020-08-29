@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 
 /**
  * This is Euclid's algorithm which is used to find the greatest common denominator

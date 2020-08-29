@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 
 import java.util.ArrayList;
 import java.util.Collections;

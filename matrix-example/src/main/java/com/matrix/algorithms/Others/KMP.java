@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 
 /**
  * Implementation of Knuth–Morris–Pratt algorithm

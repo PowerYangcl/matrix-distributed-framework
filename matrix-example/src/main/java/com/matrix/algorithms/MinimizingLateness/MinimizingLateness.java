@@ -1,4 +1,4 @@
-package MinimizingLateness;
+package com.matrix.algorithms.MinimizingLateness;
 
 
 import java.io.BufferedReader;

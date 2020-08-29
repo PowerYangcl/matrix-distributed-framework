@@ -1,4 +1,4 @@
-package Searches;
+package com.matrix.algorithms.Searches;
 
 /**
  * The common interface of most searching algorithms

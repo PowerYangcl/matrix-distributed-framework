@@ -1,4 +1,4 @@
-package Others;
+package com.matrix.algorithms.Others;
 
 /**
  * An Abecadrian is a word where each letter is in alphabetical order

@@ -1,6 +1,6 @@
-package Sorts;
+package com.matrix.algorithms.Sorts;
 
-import static Sorts.SortUtils.print;
+import static com.matrix.algorithms.Sorts.SortUtils.print;
 
 /**
  * This method implements the Generic Merge Sort

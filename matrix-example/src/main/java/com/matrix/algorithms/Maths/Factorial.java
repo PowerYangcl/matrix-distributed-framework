@@ -1,4 +1,4 @@
-package Maths;
+package com.matrix.algorithms.Maths;
 import java.util.*; //for importing scanner
 
 public class Factorial {

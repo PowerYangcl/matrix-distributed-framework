@@ -1,4 +1,4 @@
-package Sorts;
+package com.matrix.algorithms.Sorts;
 
 import java.util.Arrays;
 import java.util.List;

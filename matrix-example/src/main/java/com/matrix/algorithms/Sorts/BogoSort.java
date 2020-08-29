@@ -1,4 +1,4 @@
-package Sorts;
+package com.matrix.algorithms.Sorts;
 
 import java.util.Random;
 
