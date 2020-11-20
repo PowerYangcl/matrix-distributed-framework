@@ -21,7 +21,6 @@
         <module>matrix-dubbo-admin</module>
         <module>matrix-route</module>
         <module>matrix-quartz</module>
-        <module>matrix-mongodb</module>
         <module>matrix-rocket-mq</module>
 		<module>matrix-permissions</module>
     </modules>
