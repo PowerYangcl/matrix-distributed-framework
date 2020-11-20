@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.matrix</groupId>
     <artifactId>matrix-distributed-framework</artifactId>
@@ -10,64 +11,37 @@
     
     <modules>
         <module>matrix-core</module>
-		<module>leader</module>
-		<module>matrix-admin</module>
-        <module>matrix-cache</module>
-        <module>matrix-manager</module>
-        <module>matrix-manager-api</module>
-        <module>matrix-file</module>
-        <module>matrix-api</module>
-        <module>matrix-example</module>
-        <module>matrix-dubbo-admin</module>
-        <module>matrix-route</module>
-        <module>matrix-quartz</module>
-        <module>matrix-rocket-mq</module>
-		<module>matrix-permissions</module>
     </modules>
     
     <properties>
         <!-- 全局性控制项目编码为UTF-8 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring.version>4.3.10.RELEASE</spring.version>
-        <mybatis.version>3.4.0</mybatis.version>
-        <mybatis-spring.version>1.3.0</mybatis-spring.version>
+        
+        <spring.version>5.2.9.RELEASE</spring.version>
         <mysql-connector.version>6.0.2</mysql-connector.version>
         <druid.version>1.1.10</druid.version> <!-- 需要和mysql-connector一起升级 -->
-        <junit.version>4.11</junit.version>
-        <aspectjweaver.version>1.8.9</aspectjweaver.version>
+        <!--MyBatis-Spring		MyBatis	Spring 	Spring Framework    参考建议见官网：http://mybatis.org/spring/zh/index.html-->
+        <!--2.0	                            3.5+	                    5.0+ -->
+        <mybatis.version>3.5.6</mybatis.version>
+        <mybatis-spring.version>2.0.6</mybatis-spring.version>
+        <pagehelper.version>5.1.10</pagehelper.version>
+        
+        <log4j.version>1.2.17</log4j.version>
+       <aspectjweaver.version>1.9.6</aspectjweaver.version>
         <commons-lang3.version>3.2.1</commons-lang3.version>
         <commons-collections.version>3.2.1</commons-collections.version>
-        <slf4j.version>1.7.12</slf4j.version>
-        <log4j.version>1.2.17</log4j.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
-        <fastjson.version>1.2.46</fastjson.version>
-        <poi.version>3.8</poi.version>
-        <itextpdf.version>5.4.0</itextpdf.version>
-        <xmlworker.version>5.5.5</xmlworker.version>
-        <itext-asian.version>5.2.0</itext-asian.version>
-        <httpclient.version>4.5.1</httpclient.version>
-        <pagerhelper.version>4.0.3</pagerhelper.version>
-        <jdom.version>2.0.2</jdom.version>
-        <dubbo.version>2.6.5</dubbo.version>
-        <spring-data-mongodb.version>1.10.7.RELEASE</spring-data-mongodb.version>
-        <spring.data.mongodb.cross.store.version>1.10.7.RELEASE</spring.data.mongodb.cross.store.version>
-        <!-- 使用4.*中最高版本的Netty覆盖所有引用到的第三方项目中的低版本netty -->
-        <netty-all.version>4.1.36.Final</netty-all.version>
-        
-        <jedis.version>2.9.0</jedis.version>
-		<spring.data.redis.version>1.8.10.RELEASE</spring.data.redis.version>
-		<!-- ZooKeeper 版本 -->
-        <zookeeper.version>3.4.11</zookeeper.version>
-        <!-- Curator(ZooKeeper客户端)版本 -->
-        <curator.version>4.0.0</curator.version>
-        <redisson.version>3.10.7</redisson.version>
+        <fastjson.version>1.2.75</fastjson.version>
+        <zookeeper.version>3.4.11</zookeeper.version>		<!-- ZooKeeper 版本 -->
+        <curator.version>4.0.0</curator.version>					<!-- Curator(ZooKeeper客户端)版本 -->
         
     </properties>
     
     <dependencies>
+    	<!-- spring framework -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
+            <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -77,17 +51,12 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
+   		<dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
+            <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -97,22 +66,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-aspects</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
             <version>${spring.version}</version>
         </dependency>
         <dependency>
@@ -120,17 +74,6 @@
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        
         
         <!-- Mybatis -->
         <dependency>
@@ -146,47 +89,44 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper</artifactId>
-            <version>${pagerhelper.version}</version>
-        </dependency>
-        <!-- Mybatis 分页插件 4.0.2所依赖jar包 -->
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>0.9.1</version>
+            <version>${pagehelper.version}</version>
         </dependency>
         <!-- 用于Mybatis的分页插件，提供了服务器端的分页和排序功能。http://my.oschina.net/miemiedev/blog/135516 -->
-        <dependency>
+        <!-- <dependency>
             <groupId>com.github.miemiedev</groupId>
             <artifactId>mybatis-paginator</artifactId>
             <version>1.2.17</version>
-        </dependency>
-
-        <!-- druid是一个JDBC组件 DruidDriver 代理Driver，能够提供基于Filter－Chain模式的插件体系。 DruidDataSource
-            高效可管理的数据库连接池。 see: http://www.oschina.net/p/druid/ -->
+        </dependency> -->
+        
+        
+        <!-- 日志记录 -->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
         </dependency>
-        <!--从5.1.31升级到6.0.6 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
+        
+        <!-- 由于SpringAOP的配置过于繁琐，因此使用了AspectJ依赖注解开发  -->
+       	<!-- AspectJ是一个面向切面编程的框架，支持原生的Java，只需要加上AspectJ提供的注解即可 -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectjweaver.version}</version>
         </dependency>
-
+        
+        <!-- ajax jackson整合 Long 和 BigDecimal 序列化等-->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.6.5</version>
+        </dependency>
+        
+        <!-- commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -202,27 +142,41 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.3.1</version>
         </dependency>
-        <dependency>
+        <dependency>		<!-- 解析Properties Configuration 配置文件使用。貌似只用了一次。-->
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>1.9</version>
         </dependency>
+        
+        <!-- 二维码生成 -->
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.2</version>
         </dependency>
-        <!-- ============log================= -->
+        
+         <!-- 定时任务job -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.0</version>
         </dependency>
+        
+        <!-- ehcache缓存 -->
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>2.7.6</version>
         </dependency>
+        
+        <!-- 邮件 -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        
+        <!-- servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -233,150 +187,15 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-        <!-- ============json============ -->
-        <!--从1.2.6升级到1.2.10 -->
+        
+        <!--从1.2.6升级到1.2.75 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <!-- ajax jackson整合 -->
-        <dependency>
-            <!-- 以前只有这个 -->
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.13</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.6.5</version>
-        </dependency>
-        
-        
-        <!-- 定时任务job -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.2.0</version>
-        </dependency>
-        <!-- ehcache缓存 -->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>2.7.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.6.0</version>
-        </dependency>
-        
-        <!-- 为ueditor 上传图片添加 -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.9</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20170516</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency> 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>${httpclient.version}</version>
-        </dependency>
-
-        <!-- 增加解析xml -->
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>${jdom.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>dubbo</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
-            <version>${spring-data-mongodb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb-cross-store</artifactId>
-            <version>${spring.data.mongodb.cross.store.version}</version>
-        </dependency>
-        
-         <!-- 二维码生成 -->
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>core</artifactId>
-            <version>3.3.2</version>
-        </dependency>
-        
-        <!-- 轻量级密码术包，对称加密和非对称加密。使用类：RSAUtil.java and RsaUtils.java -->
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.58</version>
-        </dependency>
-
-		<dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>${netty-all.version}</version>
-        </dependency>
 		
-		<dependency>
-		    <groupId>com.google.guava</groupId>
-		    <artifactId>guava</artifactId>
-		    <version>28.1-jre</version>
-		</dependency>
-		
-		
-		<!-- Redis and zookeeper start -->
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>${jedis.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId> 
-			<version>${spring.data.redis.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.redisson</groupId>
-		    <artifactId>redisson</artifactId>
-		    <version>${redisson.version}</version>
-		</dependency>
+		<!-- zookeeper -->
 		<dependency>
 		    <groupId>org.apache.zookeeper</groupId>
 		    <artifactId>zookeeper</artifactId>
@@ -397,17 +216,14 @@
 		    <artifactId>curator-recipes</artifactId>
 		    <version>${curator.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
-			<version>1.3.0.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session</artifactId>
-			<version>1.3.0.RELEASE</version>
-		</dependency>
-		<!-- Redis and zookeeper end -->
+		
+		
+		
+		
+		
+		
+		
+		
 		
     </dependencies>
 
@@ -428,64 +244,7 @@
         </plugins>
     </build>
 
-    <!-- 开发测试环境 -->
-    <!-- -->
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Nexus Release Repository</name>
-            <url>http://10.12.40.166:8081/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://10.12.40.166:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>nexus</id>
-            <name>Team Maven Repository</name>
-            <url>http://10.12.40.166:8081/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>netflix</id>
-            <name>NetFlix OSS Maven Repository</name>
-            <url>https://dl.bintray.com/netflixoss/maven/</url>
-        </repository>
-    </repositories>
-
-
-    <!-- 线上环境 -->
-    <!--
-        <distributionManagement>
-            <repository>
-                <id>releases</id>
-                <name>Nexus Release Repository</name>
-                <url>http://nexus.300.cn:8081/nexus/content/repositories/releases/</url>
-            </repository>
-            <snapshotRepository>
-                <id>snapshots</id>
-                <name>Nexus Snapshot Repository</name>
-                <url>http://nexus.300.cn:8081/nexus/content/repositories/snapshots/</url>
-            </snapshotRepository>
-        </distributionManagement>
-
-        <repositories>
-            <repository>
-                <id>nexus</id>
-                <name>Team Maven Repository</name>
-                <url>http://nexus.300.cn:8081/nexus/content/groups/public</url>
-            </repository>
-            <repository>
-                <id>netflix</id>
-                <name>NetFlix OSS Maven Repository</name>
-                <url>https://dl.bintray.com/netflixoss/maven/</url>
-            </repository>
-        </repositories>
-    -->
-
+   
 </project>
 
 

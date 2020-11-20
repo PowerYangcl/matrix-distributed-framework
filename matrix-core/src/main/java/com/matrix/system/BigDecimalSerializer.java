@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 /**
- * @description: bigDecimal 序列化
+ * @description: BigDecimal 序列化
  *
- * @author wanghao
+ * @author Yangcl
  * @date 2019年10月18日 下午12:07:38 
  * @version 1.0.0.1
  */

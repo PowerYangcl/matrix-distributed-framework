@@ -153,7 +153,7 @@ public class Express100Util extends BaseClass {
      */
     public Boolean subscribe() {
         String result = NetUtil.post(SUBSCRIBE_URL, this.param);
-        this.getLogger(logger).logInfo("express return: " + result);
+        this.getLogger(logger).logInfo("express return: " + result , this.getClass());
         Map<String, Object> map = (Map) JSONObject.parse(result);
         return (Boolean) map.get("result");
     }

@@ -26,7 +26,7 @@ public class BaseController extends BaseClass{
 		if(e != null){
 			name = "用户:  " + e.getUserName();
 		}
-		this.getLogger(logger).logInfo(name + " - 尝试请求 - " + action + "() - 方法 - " + remark); 
+		this.getLogger(logger).logInfo(name + " - 尝试请求 - " + action + "() - 方法 - " + remark , this.getClass()); 
 		return true;
 	}
 	

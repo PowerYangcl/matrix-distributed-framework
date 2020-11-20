@@ -57,16 +57,16 @@ public class BaseLog{
 	 * @date 2018年9月18日 下午3:07:14 
 	 * @version 1.0.0.1
 	 */
-	public void logInfo(int infoCode) {
-		this.logger.info("[" + sdf.format(System.currentTimeMillis()) +  "][" + PropVisitor.getLogInfo(infoCode) + "]");
+	public void logInfo(int infoCode , Class<?> clazz) {
+		this.logger.info("[" + sdf.format(System.currentTimeMillis()) +  "][" + clazz.getName() + "][" + PropVisitor.getLogInfo(infoCode) + "]");
 	}
 	
-	public void logInfo(int infoCode, Object... sParms) {
-		this.logger.info("[" + sdf.format(System.currentTimeMillis()) +  "][" + formatLog(infoCode, sParms) + "]");
+	public void logInfo(int infoCode , Class<?> clazz, Object... sParms) {
+		this.logger.info("[" + sdf.format(System.currentTimeMillis()) +  "][" + clazz.getName() + "][" + formatLog(infoCode, sParms) + "]");
 	}
 	
-	public void logInfo(String content) {
-		this.logger.info("[" + sdf.format(System.currentTimeMillis()) +  "][" + content + "]");
+	public void logInfo(String content , Class<?> clazz) {
+		this.logger.info("[" + sdf.format(System.currentTimeMillis()) +  "][" + clazz.getName() + "][" + content + "]");
 	}
 	
 	

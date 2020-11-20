@@ -25,7 +25,7 @@ public class MatrixObjectMapper extends ObjectMapper{
 		simpleModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
         simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
-        simpleModule.addSerializer(BigDecimal.class,BigDecimalSerializer.instance);
+        simpleModule.addSerializer(BigDecimal.class, BigDecimalSerializer.instance);
         registerModule(simpleModule);
 	}
 	

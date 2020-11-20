@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.matrix.base.BaseInit;
 import com.matrix.system.cache.PropConfig;
 import com.matrix.system.cache.PropInfo;
