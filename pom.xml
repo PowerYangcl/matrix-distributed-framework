@@ -43,7 +43,7 @@
         <log4j.version>1.2.17</log4j.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <fastjson.version>1.2.46</fastjson.version>
-        <poi.version>3.8</poi.version>
+        <poi.version>4.1.2</poi.version>
         <itextpdf.version>5.4.0</itextpdf.version>
         <xmlworker.version>5.5.5</xmlworker.version>
         <itext-asian.version>5.2.0</itext-asian.version>
