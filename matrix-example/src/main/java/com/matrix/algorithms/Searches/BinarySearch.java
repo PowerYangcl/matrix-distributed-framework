@@ -67,29 +67,30 @@ class BinarySearch implements SearchAlgorithm {
         }
     }
 
-    // Driver Program
     public static void main(String[] args) {
-        // Just generate data
-        Random r = ThreadLocalRandom.current();
-
+    	// 生成100个有序的随机数作为测试数据源，随机数的最大值为：100000
+    	Random random = ThreadLocalRandom.current();
         int size = 100;
         int maxElement = 100000;
+        Integer[] arrs = IntStream.generate(() -> random.nextInt(maxElement)).limit(size).sorted().boxed().toArray(Integer[]::new);
 
-        Integer[] integers = IntStream.generate(() -> r.nextInt(maxElement)).limit(size).sorted().boxed().toArray(Integer[]::new);
-
-
-        // The element that should be found
-        int shouldBeFound = integers[r.nextInt(size - 1)];
+        int targetKey = arrs[random.nextInt(size - 1)];  // 从100个测试数据中心随机选择一个作为要查找的数据
 
         BinarySearch search = new BinarySearch();
-        int atIndex = search.find(integers, shouldBeFound);
+        int atIndex = search.find(arrs, targetKey);
+        System.out.println(format("查找目标key：%d；发现：%d； 数组下标：%d. 当前测试数据源数组长度：%d", targetKey, arrs[atIndex], atIndex, size ));
 
-        System.out.println(format(
-            "Should be found: %d. Found %d at index %d. An array length %d",
-            shouldBeFound, integers[atIndex], atIndex, size
-        ));
-
-        int toCheck = Arrays.binarySearch(integers, shouldBeFound);
-        System.out.println(format("Found by system method at an index: %d. Is equal: %b", toCheck, toCheck == atIndex));
+        int systemCheckIndex = Arrays.binarySearch(arrs, targetKey);
+        System.out.println(format("JDK自身提供方法进行验证，结果为：%d。对比自定义方法结果：%b", systemCheckIndex, systemCheckIndex == atIndex));
     }
 }
+
+
+
+
+
+
+
+
+
+

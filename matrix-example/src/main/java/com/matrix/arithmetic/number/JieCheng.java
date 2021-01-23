@@ -26,7 +26,7 @@ public class JieCheng {
 	public int doFactorial2(int n) {			// 非递归
 		int result = 1;
 		if (n < 0) {
-			return -1;// 返回-1，说明传入数据不合法
+			return -1;			// 返回-1，说明传入数据不合法
 		}
 		if (n == 0) {
 			return 1;
