@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Configuration;
  * @path matrix-core/com.matrix.launch.Launch.java
  * @version 1.0.0.1
  */
-@Configuration
-@ComponentScan({"com.matrix.dao,com.matrix.service,com.matrix.rpcimpl"})
+//@Configuration
+//@ComponentScan({"com.matrix.dao,com.matrix.service,com.matrix.rpcimpl"})
 public class ContextLaunch {
 
 }

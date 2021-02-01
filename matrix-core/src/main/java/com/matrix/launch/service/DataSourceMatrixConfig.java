@@ -31,7 +31,7 @@ public class DataSourceMatrixConfig {
     @Bean(name = "matrixDatasource")
     @ConfigurationProperties(prefix = "spring.datasource.matrix")
     public DruidDataSource datasource() {
-    	System.err.println("开始初始化matrix核心库数据源链接。。。。"); 
+    	System.err.println("开始初始化matrix-core核心库数据源链接。。。。"); 
         return DruidDataSourceBuilder.create().build();
     }
 

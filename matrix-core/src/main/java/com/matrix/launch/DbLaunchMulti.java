@@ -19,19 +19,5 @@ import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
  * @path matrix-core/com.matrix.launch.DbLaunchMulti.java
  * @version 1.0.0.1
  */
-@Configuration
-@Profile("multi-datasource")
 public class DbLaunchMulti {
-    @Primary
-    @Bean(initMethod = "init")
-    @ConfigurationProperties("spring.datasource.druid.one")
-    public DataSource dataSourceOne(){
-        return DruidDataSourceBuilder.create().build();
-    }
-
-    @Bean(initMethod = "init")
-    @ConfigurationProperties("spring.datasource.druid.two")
-    public DataSource dataSourceTwo(){
-        return DruidDataSourceBuilder.create().build();
-    }
 }
