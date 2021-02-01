@@ -11,6 +11,8 @@
     
     <modules>
         <module>matrix-core</module>
+        <module>matrix-cache</module>
+        <module>matrix-permissions</module>
     </modules>
     
    	<parent>	<!-- 使用最高版本的spring-boot覆盖所有引用到的第三方项目中的低版本spring-boot -->
@@ -142,6 +144,10 @@
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>1.9</version>
+        </dependency>
+        <dependency> <!-- Base64 -->
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
         
         <!-- 二维码生成 -->

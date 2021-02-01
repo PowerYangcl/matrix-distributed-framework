@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IStoreInfoMapper">
+
+    <!-- 基类字段映射 -->
+    <resultMap id="BaseMap" type="com.matrix.base.BaseEntity">
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="create_user_id" property="createUserId" jdbcType="BIGINT"/>
+        <result column="create_user_name" property="createUserName" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="update_user_id" property="updateUserId" jdbcType="BIGINT"/>
+        <result column="update_user_name" property="updateUserName" jdbcType="VARCHAR"/>
+        <result column="delete_flag" property="deleteFlag" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap" type="com.matrix.pojo.entity.StoreInfo" extends="BaseMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="cid" property="cid" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="mc_organization_id" property="mcOrganizationId" jdbcType="BIGINT"/>
+        <result column="province_id" property="provinceId" jdbcType="BIGINT"/>
+        <result column="city_id" property="cityId" jdbcType="BIGINT"/>
+        <result column="area_id" property="areaId" jdbcType="BIGINT"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="star_level" property="starLevel" jdbcType="SMALLINT"/>
+        <result column="type" property="type" jdbcType="SMALLINT"/>
+        <result column="status" property="status" jdbcType="SMALLINT"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="dict_vocation_info_id" property="dictVocationInfoId" jdbcType="BIGINT"/>
+        <result column="longitude" property="longitude" jdbcType="VARCHAR"/>
+        <result column="latitude" property="latitude" jdbcType="VARCHAR"/>
+        <result column="manager_id" property="managerId" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,
+        cid,
+        create_time,
+        create_user_id,
+        create_user_name,
+        update_time,
+        update_user_id,
+        update_user_name,
+        delete_flag,
+        NAME,
+        mc_organization_id,
+        province_id,
+        city_id,
+        area_id,
+        address,
+        phone,
+        star_level,
+        type,
+        status,
+        remark,
+        dict_vocation_info_id,
+        longitude,
+        latitude,
+        manager_id
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        	store_info
+        where
+        	id = #{id,jdbcType=BIGINT}
+    </select>
+    
+    <select id="findByOrgId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        	store_info
+        where 
+                mc_organization_id = #{mcOrganizationId , jdbcType=BIGINT}
+    </select>
+    
+    <select id="findEntityByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.StoreInfoDto">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            store_info
+        where
+            delete_flag = 1
+        and
+            cid = #{cid,jdbcType=BIGINT}
+        <if test="id !=null" >
+            and id = #{id,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from store_info where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+	<delete id="deleteByOrgId" parameterType="java.lang.Long">
+        delete from store_info where mc_organization_id = #{mcOrganizationId , jdbcType=BIGINT}
+    </delete>
+
+
+    <!-- 根据条件查询列表数据 - sjh -->
+    <select id="queryPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.StoreInfoDto">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            store_info
+        where
+            delete_flag = 1
+        and cid = #{cid,jdbcType=BIGINT}
+        <if test="name != null ">
+            and name like CONCAT('%' , #{name}, '%')
+        </if>
+
+    </select>
+
+
+    <insert id="insertSelective" parameterType="com.matrix.pojo.entity.StoreInfo">
+        insert into store_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="cid != null">
+                cid,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createUserId != null">
+                create_user_id,
+            </if>
+            <if test="createUserName != null">
+                create_user_name,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateUserId != null">
+                update_user_id,
+            </if>
+            <if test="updateUserName != null">
+                update_user_name,
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="mcOrganizationId != null">
+                mc_organization_id,
+            </if>
+            <if test="provinceId != null">
+                province_id,
+            </if>
+            <if test="cityId != null">
+                city_id,
+            </if>
+            <if test="areaId != null">
+                area_id,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="starLevel != null">
+                star_level,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="dictVocationInfoId != null">
+                dict_vocation_info_id,
+            </if>
+            <if test="longitude != null">
+                longitude,
+            </if>
+            <if test="latitude != null">
+                latitude,
+            </if>
+            <if test="managerId != null">
+                manager_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="cid != null">
+                #{cid,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUserId != null">
+                #{createUserId,jdbcType=BIGINT},
+            </if>
+            <if test="createUserName != null">
+                #{createUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                #{updateUserId,jdbcType=BIGINT},
+            </if>
+            <if test="updateUserName != null">
+                #{updateUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="mcOrganizationId != null">
+                #{mcOrganizationId , jdbcType=BIGINT},
+            </if>
+            <if test="provinceId != null">
+                #{provinceId,jdbcType=BIGINT},
+            </if>
+            <if test="cityId != null">
+                #{cityId,jdbcType=BIGINT},
+            </if>
+            <if test="areaId != null">
+                #{areaId,jdbcType=BIGINT},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="starLevel != null">
+                #{starLevel,jdbcType=SMALLINT},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=SMALLINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="dictVocationInfoId != null">
+                #{dictVocationInfoId,jdbcType=BIGINT},
+            </if>
+            <if test="longitude != null">
+                #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="managerId != null">
+                #{managerId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="com.matrix.pojo.entity.StoreInfo">
+        update store_info
+        <set>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId,jdbcType=BIGINT},
+            </if>
+            <if test="updateUserName != null">
+                update_user_name = #{updateUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                delete_flag = #{deleteFlag,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="mcOrganizationId != null">
+                mc_organization_id = #{mcOrganizationId , jdbcType=BIGINT},
+            </if>
+            <if test="provinceId != null">
+                province_id = #{provinceId,jdbcType=BIGINT},
+            </if>
+            <if test="cityId != null">
+                city_id = #{cityId,jdbcType=BIGINT},
+            </if>
+            <if test="areaId != null">
+                area_id = #{areaId,jdbcType=BIGINT},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="starLevel != null">
+                star_level = #{starLevel,jdbcType=SMALLINT},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=SMALLINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=SMALLINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="dictVocationInfoId != null">
+                dict_vocation_info_id = #{dictVocationInfoId,jdbcType=BIGINT},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="managerId != null">
+                manager_id = #{managerId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT} 
+    </update>
+
+
+    <!--获取门店列表-->
+    <select id="findListByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.StoreInfoDto">
+        select
+            <include refid="Base_Column_List"/>
+        from
+            store_info
+        where
+            delete_flag=1
+        and
+            cid= #{cid,jdbcType=BIGINT}
+        <if test="name != null">
+            and name like CONCAT('%' , #{name}, '%')
+        </if>
+    </select>
+
+
+</mapper>
