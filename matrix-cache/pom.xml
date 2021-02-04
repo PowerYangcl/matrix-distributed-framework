@@ -31,6 +31,11 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>io.lettuce</groupId>
+		    <artifactId>lettuce-core</artifactId>
+		</dependency>
+		
+		<dependency>
 		    <groupId>org.redisson</groupId>
 		    <artifactId>redisson</artifactId>
 		    <version>${redisson.version}</version>
