@@ -28,6 +28,8 @@ import lombok.EqualsAndHashCode;
  * 		参考：https://www.cnblogs.com/throwable/p/11601538.html
  * 					https://github.com/it235/knife4j-redis-lettuce
  * 					https://my.oschina.net/u/3343218/blog/2989564
+ * 					https://www.lskyf.com/post/68
+ * 					https://my.oschina.net/u/3266761/blog/3023454
  * 		A. 如果只需备份，偶尔才用到的数据，异步存起来就可以了。
  * 		B. 如果一个线程里需要使用get、hget、hgetall等方法，但是同时也有别的事情要做，那么可以使用异步获取；得到future对象后，把其他事情做完再进行阻塞等待。
  * 

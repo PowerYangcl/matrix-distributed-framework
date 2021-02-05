@@ -3,6 +3,7 @@ package com.matrix.cache.inf;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @description: Redis集群模式适配器接口
@@ -37,7 +38,7 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午5:26:44
      * @version 1.0.0.1
      */
-    public void set(String key, String value);
+    public Boolean set(String key, String value);
     
     /**
      * @description: 将字符串值 value 关联到 key 。带自定义超时时间
@@ -50,7 +51,7 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午6:19:51
      * @version 1.0.0.1
      */
-    public void set(String key, String value, long timeout);
+    public Boolean set(String key, String value, long timeout);
 
     /**
      * @description: 将字符串值 value 关联到 key 。带默认超时时间30天
@@ -62,7 +63,7 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午6:19:51
      * @version 1.0.0.1
      */
-    public void setDefalutTimeout(String key, String value);
+    public Boolean setWithDefalutTimeout(String key, String value);
 
 	/**
 	 * @description:自定义 redis key 设置超时时间
@@ -87,6 +88,17 @@ public interface IRedisModel {
      * @version 1.0.0.1
      */
     public Integer appendStringInEnd(String key, String value);
+    
+    /**
+     * @description: 使用pipeline进行大批量数据插入
+     * 		Map<String, String> key and json value
+     * 
+     * @author Yangcl
+     * @date 2021-2-5 16:26:33
+     * @home https://github.com/PowerYangcl
+     * @version 1.0.0.1
+     */
+    public void batchInsert(List<Map<String, String>> list, int timeout);
 
     /**
      * @description: 获取原来key键对应的值并重新赋新值。
@@ -110,7 +122,7 @@ public interface IRedisModel {
     public Long size(String key);
 
     /**
-     * @description: 以增量的方式将long值存储在变量中。
+     * @description: 以增量的方式将long值存储在变量中。返回增加后的结果值。
      *
      * @param key
      * @param delta 增量值，1、2、3等等
@@ -119,7 +131,7 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:06:42
      * @version 1.0.0.1
      */
-    public Long increment(String key, Long delta , long timeout);
+    public Long increment(String key, Long amount , long timeout);
 
     /**
      * @description: 以增量+1的方式将long值存储在变量中，同时在指定时间内过期
@@ -140,7 +152,17 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:15:00
      * @version 1.0.0.1
      */
-    public void del(String key);
+    public Long del(String key);
+    
+    /**
+     * @description: 根据多个key批量删除
+     * 
+     * @author Yangcl
+     * @date 2021-2-5 15:45:33
+     * @home https://github.com/PowerYangcl
+     * @version 1.0.0.1
+     */
+    public Long deleteMore(String ... keys);
 
     /**
      * @description: 通过缓存的删除关键字 批量删除缓存信息
@@ -151,7 +173,7 @@ public interface IRedisModel {
      * @home https://github.com/PowerYangcl
      * @version 1.0.0.1
      */
-    public void batchDeleteByKeyPrefix(String preKey);
+    public void batchDeleteByPrefix(String prefix);
 
 
     /////////////////////////////////////////////////////////////////// 哈希存储 //////////////////////////////////////////////////////////////////////
