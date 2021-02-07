@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.matrix.pojo.entity.RedisEntity;
+
 /**
  * @description: Redis集群模式适配器接口
  * 
@@ -91,14 +93,13 @@ public interface IRedisModel {
     
     /**
      * @description: 使用pipeline进行大批量数据插入
-     * 		Map<String, String> key and json value
      * 
      * @author Yangcl
      * @date 2021-2-5 16:26:33
      * @home https://github.com/PowerYangcl
      * @version 1.0.0.1
      */
-    public void batchInsert(List<Map<String, String>> list, int timeout);
+    public Boolean batchInsert(List<RedisEntity> list, long timeout);
 
     /**
      * @description: 获取原来key键对应的值并重新赋新值。
@@ -165,15 +166,16 @@ public interface IRedisModel {
     public Long deleteMore(String ... keys);
 
     /**
-     * @description: 通过缓存的删除关键字 批量删除缓存信息
+     * @description: 通过缓存的删除关键字 批量删除缓存信息 | 最好不要使用
      * 		需要高版本的Redis，支持多线程，采用异步进行批量删除。
      * 		如缓存key：xs-MipLevel-2-1062173003451863043，用 MipLevel-2 做为关键字批量删除缓存
+     * 
      * @author Yangcl
      * @date 2021-2-4 10:33:25
      * @home https://github.com/PowerYangcl
      * @version 1.0.0.1
      */
-    public void batchDeleteByPrefix(String prefix);
+    public Boolean batchDeleteByPrefix(String prefix);
 
 
     /////////////////////////////////////////////////////////////////// 哈希存储 //////////////////////////////////////////////////////////////////////
@@ -187,7 +189,7 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:53:28
      * @version 1.0.0.1
      */
-    public Object hget(final String key, final String field);
+    public String hget(String key, String field);
 
     /**
      * @description: 返回哈希表 key 中，所有的域和值。
@@ -197,11 +199,12 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:52:39
      * @version 1.0.0.1
      */
-    public Map<Object, Object> hgetAll(String key);
+    public Map<String, String> hgetAll(String key);
 
     /**
      * @description: 将哈希表key中的域 field 的值设为value。如果 key 不存在，
      * 		一个新的哈希表被创建并进行 HSET 操作。如果域 field 已经存在于哈希表中，旧值将被覆盖。
+     *			默认过期时间1天
      *
      * 例如：
      *			redisTemplate.opsForHash().put("hashValue","map1","map1-1");
@@ -215,10 +218,13 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:26:13
      * @version 1.0.0.1
      */
-    public void hset(String key, String field, String value);
+    public Boolean hset(String key, String field, String value);
+    
+    
+    public Boolean hset(String key, String field, String value, long expire);
 
     /**
-     * @description: 以map集合的形式添加键值对。
+     * @description: 以map集合的形式添加键值对，返回添加成功的条数。
      * 例如：
 			    Map newMap = new HashMap();
 			    newMap.put("map3","map3-3");
@@ -233,12 +239,22 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:34:31
      * @version 1.0.0.1
      */
-    public void hsetAll(String key, Map<String, Object> map);
+    public Long hsetAll(String key, Map<String, String> map);
+    
+    /**
+     * @description: 返回添加成功的条数
+     * 
+     * @author Yangcl
+     * @date 2021-2-7 20:43:35
+     * @home https://github.com/PowerYangcl
+     * @version 1.0.0.1
+     */
+    public Long hsetAll(String key, Map<String, String> map, long expire);
 
     /**
      * @description: 删除变量中的键值对，可以传入多个参数，删除多个键值对
      * 例如：
-     *			redisTemplate.opsForHash().delete("hashValue","map1","map2");
+     *			hdel("hashValue","map-key1","map-key2");
      *
      * @param key
      * @param field  建议使用字符串
@@ -247,24 +263,25 @@ public interface IRedisModel {
      * @date 2018年9月18日 下午8:39:20
      * @version 1.0.0.1
      */
-    public Long hdel(String key, Object... field);
+    public Long hdel(String key, String... fields);
 
     /**
      * @description: 判断变量中是否有指定的map键。
      *
      * @param key
-     * @param hashKey
+     * @param hashKey map中的key
      *
      * @author Yangcl
      * @date 2018年9月18日 下午8:46:24
      * @version 1.0.0.1
      */
-    public Boolean hkeyExist(String key, Object hashKey);
+    public Boolean hkeyExist(String key, String hashKey);
 
 
     /////////////////////////////////////////////////////////////////// 无序Set存储|交叉并操作暂未提供 //////////////////////////////////////////////////////////////////////
     /**
-     * @description: 添加一个set集合到redis中
+     * @description: 添加一个set集合到redis中，默认过期时间1天。
+     * 		返回添加成功的值的个数。
      *	例如：
      *			redisTemplate.opsForSet().add("setValue","A","B","C","B","D","E","F");
      * @param key
@@ -275,6 +292,8 @@ public interface IRedisModel {
      * @version 1.0.0.1
      */
     public Long addSet(String key, String... values);
+    
+    public Long addSet(String key, long expire, String... values);
 
     /**
      * @description: 获取变量中的值。

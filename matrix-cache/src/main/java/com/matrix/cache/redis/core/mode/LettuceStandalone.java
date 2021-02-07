@@ -2,18 +2,26 @@ package com.matrix.cache.redis.core.mode;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.springframework.data.redis.connection.lettuce.LettuceConnection;
+import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
 import com.matrix.cache.inf.IRedisModel;
+import com.matrix.pojo.entity.RedisEntity;
 
+import io.lettuce.core.KeyScanCursor;
+import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisFuture;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.ScanArgs;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.sync.RedisCommands;
@@ -164,22 +172,28 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 	    
 	    /**
-	     * @description: 使用pipeline进行大批量数据插入
-	     * 		Map<String, String> key and json value
+	     * @description: 使用pipeline进行大批量数据插入；mset缺少超时时间设置
+	     * 		TODO 重点测试
 	     * 
 	     * @author Yangcl
 	     * @date 2021-2-5 16:26:33
 	     * @home https://github.com/PowerYangcl
 	     * @version 1.0.0.1
 	     */
-	    public void batchInsert(List<Map<String, String>> list, int timeout) {
-	    	// TODO 
-	    	asyncCommands.setAutoFlushCommands(false);
-	    	asyncCommands.setTimeout(Duration.ofSeconds(timeout));
-	    	List<RedisFuture<String>> futures = Lists.newArrayList();
-	    	
-	    	
-	    	
+	    public Boolean batchInsert(List<RedisEntity> list, long timeout) {
+	    	try {
+	    		asyncCommands.setAutoFlushCommands(false);
+	    		List<RedisFuture<?>> futureList = Lists.newArrayList();		// perform a series of independent calls
+	    		for(RedisEntity entity : list) {
+	    			futureList.add(asyncCommands.set(entity.getKey() , entity.getValue()));
+	    			futureList.add(asyncCommands.expire(entity.getKey() , timeout));
+	    		}
+	    		asyncCommands.flushCommands();	// write all commands to the transport layer
+	    		return LettuceFutures.awaitAll(5, TimeUnit.SECONDS, futureList.toArray( new RedisFuture[futureList.size()] ));
+			} catch (Exception ex) {
+				ex.printStackTrace();    // TODO 指定log格式
+			}
+	    	return false;
 	    }
 
 	    /**
@@ -252,7 +266,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 	    
 	    /**
-	     * @description: 根据多个key批量删除
+	     * @description: 根据多个key批量删除| TODO 不建议使用
 	     * 
 	     * @author Yangcl
 	     * @date 2021-2-5 15:45:33
@@ -264,18 +278,41 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 
 	    /**
-	     * @description: 通过缓存的删除关键字 批量删除缓存信息
+	     * @description: 通过缓存的删除关键字 批量删除缓存信息 | 最好不要使用
 	     * 		需要高版本的Redis，支持多线程，采用异步进行批量删除。
 	     * 		如缓存key：xs-MipLevel-2-1062173003451863043，用 MipLevel-2 做为关键字批量删除缓存
+	     * 
 	     * @author Yangcl
 	     * @date 2021-2-4 10:33:25
 	     * @home https://github.com/PowerYangcl
 	     * @version 1.0.0.1
 	     */
-	    public void batchDeleteByPrefix(String prefix){
-	    	commands.del
+	    public Boolean batchDeleteByPrefix(String prefix){
+	    	List<String> list = null;
+	    	try {
+	    		List<RedisFuture<Long>> futureList = Lists.newArrayList();		// perform a series of independent calls
+	    		asyncCommands.setAutoFlushCommands(false);
+	    		do {
+		    		list = commands.scan(new ScanArgs().limit(1000).match(prefix)).getKeys();
+			    	if(list == null || list.size() == 0) {
+			    		break;
+			    	}
+		    		for(String key : list) {
+		    			futureList.add( asyncCommands.del(key) );
+		    		}
+				} while (!CollectionUtils.isEmpty(list)); 
+	    		if(CollectionUtils.isEmpty(futureList)) {
+	    			return true;
+	    		}
+	    		
+	    		asyncCommands.flushCommands();	// write all commands to the transport layer
+	    		return LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futureList.toArray( new RedisFuture[futureList.size()] ));
+			} catch (Exception ex) {
+				ex.printStackTrace();    // TODO 指定log格式
+			}
+	    	return false;
 	    }
-
+	    
 
 	    /////////////////////////////////////////////////////////////////// 哈希存储 //////////////////////////////////////////////////////////////////////
 	    /**
@@ -288,7 +325,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月18日 下午8:53:28
 	     * @version 1.0.0.1
 	     */
-	    public Object hget(final String key, final String field);
+	    public String hget(String key, String field) {
+	    	return commands.hget(key, field);
+	    }
 
 	    /**
 	     * @description: 返回哈希表 key 中，所有的域和值。
@@ -298,11 +337,14 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月18日 下午8:52:39
 	     * @version 1.0.0.1
 	     */
-	    public Map<Object, Object> hgetAll(String key);
+	    public Map<String, String> hgetAll(String key){
+	    	return commands.hgetall(key);
+	    }
 
 	    /**
 	     * @description: 将哈希表key中的域 field 的值设为value。如果 key 不存在，
 	     * 		一个新的哈希表被创建并进行 HSET 操作。如果域 field 已经存在于哈希表中，旧值将被覆盖。
+	     *			默认过期时间1天
 	     *
 	     * 例如：
 	     *			redisTemplate.opsForHash().put("hashValue","map1","map1-1");
@@ -316,10 +358,18 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月18日 下午8:26:13
 	     * @version 1.0.0.1
 	     */
-	    public void hset(String key, String field, String value);
+	    public Boolean hset(String key, String field, String value) {
+	    	return this.hset(key, field, value, 24*60*60);
+	    }
+	    
+	    public Boolean hset(String key, String field, String value, long expire) {
+	    	Boolean hset = commands.hset(key, field, value);
+	    	commands.expire(key, expire);
+	    	return hset;
+	    }
 
 	    /**
-	     * @description: 以map集合的形式添加键值对。
+	     * @description: 以map集合的形式添加键值对，返回添加成功的条数。
 	     * 例如：
 				    Map newMap = new HashMap();
 				    newMap.put("map3","map3-3");
@@ -334,12 +384,28 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月18日 下午8:34:31
 	     * @version 1.0.0.1
 	     */
-	    public void hsetAll(String key, Map<String, Object> map);
+	    public Long hsetAll(String key, Map<String, String> map) {
+	    	return this.hsetAll(key, map, 24*60*60);
+	    }
+	    
+	    /**
+	     * @description: 返回添加成功的条数
+	     * 
+	     * @author Yangcl
+	     * @date 2021-2-7 20:43:35
+	     * @home https://github.com/PowerYangcl
+	     * @version 1.0.0.1
+	     */
+	    public Long hsetAll(String key, Map<String, String> map, long expire) {
+	    	Long hset = commands.hset(key, map);		// the number of fields that were added.
+	    	commands.expire(key, expire);
+	    	return hset;
+	    }
 
 	    /**
 	     * @description: 删除变量中的键值对，可以传入多个参数，删除多个键值对
 	     * 例如：
-	     *			redisTemplate.opsForHash().delete("hashValue","map1","map2");
+	     *			hdel("hashValue","map-key1","map-key2");
 	     *
 	     * @param key
 	     * @param field  建议使用字符串
@@ -348,24 +414,29 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月18日 下午8:39:20
 	     * @version 1.0.0.1
 	     */
-	    public Long hdel(String key, Object... field);
+	    public Long hdel(String key, String... fields) {
+	    	return commands.hdel(key, fields);
+	    }
 
 	    /**
 	     * @description: 判断变量中是否有指定的map键。
 	     *
 	     * @param key
-	     * @param hashKey
+	     * @param hashKey map中的key
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午8:46:24
 	     * @version 1.0.0.1
 	     */
-	    public Boolean hkeyExist(String key, Object hashKey);
+	    public Boolean hkeyExist(String key, String hashKey) {
+	    	return commands.hexists(key, hashKey);
+	    }
 
 
 	    /////////////////////////////////////////////////////////////////// 无序Set存储|交叉并操作暂未提供 //////////////////////////////////////////////////////////////////////
 	    /**
-	     * @description: 添加一个set集合到redis中
+	     * @description: 添加一个set集合到redis中，默认过期时间1天。
+	     * 		返回添加成功的值的个数。
 	     *	例如：
 	     *			redisTemplate.opsForSet().add("setValue","A","B","C","B","D","E","F");
 	     * @param key
@@ -375,8 +446,17 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:22:26
 	     * @version 1.0.0.1
 	     */
-	    public Long addSet(String key, String... values);
+	    public Long addSet(String key, String... values) {
+	    	return this.addSet(key, 24*60*60, values);
+	    }
 
+	    
+	    public Long addSet(String key, long expire, String... values) {
+	    	Long sadd = commands.sadd(key, values); // the number of elements that were added to the set, not including all the elements alreadypresent into the set
+	    	commands.expire(key, expire);
+	    	return sadd;
+	    }
+	    
 	    /**
 	     * @description: 获取变量中的值。
 	     *
