@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.matrix.cache.redis.core.mode.K;
+import com.matrix.cache.redis.core.mode.V;
 import com.matrix.pojo.entity.RedisEntity;
 
 /**
@@ -30,11 +32,7 @@ public interface IRedisModel {
     public String get(String key);
 
     /**
-     * @description: 将字符串值 value 关联到 key 。
-     *		对于某个原本带有生存时间（TTL）的键来说， 当 SET 命令成功在这个键上执行时， 这个键原有的 TTL 将被清除。
-     *
-     * @param key    如果 key 已经持有其他值， SET 就覆写旧值，无视类型。
-     * @param value
+     * @description: 设置一个值，永不过期。
      *
      * @author Yangcl
      * @date 2018年9月18日 下午5:26:44
@@ -43,35 +41,25 @@ public interface IRedisModel {
     public Boolean set(String key, String value);
     
     /**
-     * @description: 将字符串值 value 关联到 key 。带自定义超时时间
-     *
-     * @param key
-     * @param value
-     * @param timeout
+     * @description: 将字符串值value关联到key，带自定义过期时间，单位：秒。
      *
      * @author Yangcl
      * @date 2018年9月18日 下午6:19:51
      * @version 1.0.0.1
      */
-    public Boolean set(String key, String value, long timeout);
+    public Boolean set(String key, String value, long expire);
 
     /**
-     * @description: 将字符串值 value 关联到 key 。带默认超时时间30天
-     *
-     * @param key
-     * @param value
+     * @description: 将字符串值value关联到key，默认过期时间30天。
      *
      * @author Yangcl
      * @date 2018年9月18日 下午6:19:51
      * @version 1.0.0.1
      */
-    public Boolean setWithDefalutTimeout(String key, String value);
+    public Boolean setWithDefExpire(String key, String value);
 
 	/**
 	 * @description:自定义 redis key 设置超时时间
-	 *
-	 * @param key
-	 * @param expireTime
 	 * 
 	 * @author Sjh
 	 * @date 2019/4/10 16:29
@@ -81,9 +69,6 @@ public interface IRedisModel {
 
     /**
      * @description: 在原有的值基础上新增字符串到末尾。
-     *
-     * @param key
-     * @param value
      *
      * @author Yangcl
      * @date 2018年9月18日 下午6:42:07
@@ -99,13 +84,10 @@ public interface IRedisModel {
      * @home https://github.com/PowerYangcl
      * @version 1.0.0.1
      */
-    public Boolean batchInsert(List<RedisEntity> list, long timeout);
+    public Boolean batchInsert(List<RedisEntity> list, long expire);
 
     /**
      * @description: 获取原来key键对应的值并重新赋新值。
-     *
-     * @param key
-     * @param value
      *
      * @author Yangcl
      * @date 2018年9月18日 下午6:46:33
@@ -123,28 +105,28 @@ public interface IRedisModel {
     public Long size(String key);
 
     /**
-     * @description: 以增量的方式将long值存储在变量中。返回增加后的结果值。
+     * @description: 以增量的方式将long值存储在变量中，返回增加后的结果值。
      *
      * @param key
-     * @param delta 增量值，1、2、3等等
+     * @param amount 增量值，1、2、3等等
      *
      * @author Yangcl
      * @date 2018年9月18日 下午8:06:42
      * @version 1.0.0.1
      */
-    public Long increment(String key, Long amount , long timeout);
+    public Long increment(String key, Long amount , long expire);
 
     /**
      * @description: 以增量+1的方式将long值存储在变量中，同时在指定时间内过期
      *
      * @param key 自增Key
-     * @param timeout 过期时间|如果为null，则持久生效
+     * @param expire 过期时间|如果为null，则持久生效
      *
      * @author Yangcl
      * @date 2018年11月19日 下午18:36:26
      * @version 1.0.0.1
      */
-    public Long incrementTimeout(String key, Long timeout);
+    public Long incrementTimeout(String key, Long expire);
 
     /**
      * @description: 删除缓存信息
@@ -316,27 +298,6 @@ public interface IRedisModel {
     public Long setLength(String key);
 
     /**
-     * @description: 随机获取set集合中的元素。
-     *
-     * @param key
-     * @author Yangcl
-     * @date 2018年9月19日 上午10:32:22
-     * @version 1.0.0.1
-     */
-    public String setRandomMember(String key);
-
-    /**
-     * @description: 随机获取set集合中指定个数的元素。
-     *
-     * @param key
-     * @author Yangcl
-     * @date 2018年9月19日 上午10:32:22
-     * @version 1.0.0.1
-     */
-    public List<String> setRandomMembers(String key, long count);
-
-
-    /**
      * @description: 检查给定的元素是否在set集合中。
      *	例如：
      *			boolean isMember = redisTemplate.opsForSet().isMember("setValue","A");
@@ -359,7 +320,7 @@ public interface IRedisModel {
      * @date 2018年9月19日 上午10:41:34
      * @version 1.0.0.1
      */
-    public Long setElementRemove(String key, Object... objects);
+    public Long setElementRemove(String key, String... members);
 
     /////////////////////////////////////////////////////////////////// 有序Set存储|交叉并操作暂未提供 //////////////////////////////////////////////////////////////////////
     /**
@@ -379,12 +340,13 @@ public interface IRedisModel {
      * @version 1.0.0.1
      */
     public Boolean addZset(String key, String value, double sort);
+    
+    public Boolean addZset(String key, String value, double sort , long expire);
 
 
     /**
      * @description: 获取有序set集合中指定区间(set游标为依据)的元素。
-     *	例如：
-     *			Set zSetValue = redisTemplate.opsForZSet().range("zSetValue",0,-1);
+     *	例如：Set zSetValue = redisTemplate.opsForZSet().range("zSetValue",0,-1);
      *
      * @param key
      * @param start
@@ -397,14 +359,14 @@ public interface IRedisModel {
     public Set<String> zsetRangeIndex(String key, long start, long end);
 
     /**
-     * @description: 根据设置的score获取序set集合中的区间值。
-     *
-     * @param key
-     * @param min
-     * @param max
-     *
+     * @description: 根据设置的score获取序set集合中的区间值；可依据此命令实现延时队列。
+     * 
+     * @param min score min
+     * @param max score max
+     * 
      * @author Yangcl
-     * @date 2018年9月19日 上午11:04:08
+     * @date 2021-2-8 11:21:45
+     * @home https://github.com/PowerYangcl
      * @version 1.0.0.1
      */
     public Set<String> zsetRangeByScore(String key, double min, double max);
@@ -413,8 +375,8 @@ public interface IRedisModel {
      * @description: 获取区间值的个数。
      *
      * @param key
-     * @param min
-     * @param max
+     * @param min score min
+     * @param max score max
      *
      * @author Yangcl
      * @date 2018年9月19日 上午11:08:35
@@ -446,7 +408,7 @@ public interface IRedisModel {
     public Long zsetSize(String key);
 
     /**
-     * @description: 批量移除元素根据元素值。
+     * @description: 批量移除元素根据元素值，返回移除元素的数量。
      *
      * @param key
      * @param values
@@ -455,7 +417,7 @@ public interface IRedisModel {
      * @date 2018年9月19日 上午11:13:51
      * @version 1.0.0.1
      */
-    public Long zsetRemove(String key, Object... values);
+    public Long zsetRemove(String key, String... values);
 
     /**
      * @description: 根据分值移除区间元素。
@@ -493,4 +455,45 @@ public interface IRedisModel {
      * @version 1.0.0.1
      */
     public Long getExpire(String key);
+    
+    /**
+     * @description: 在有序Set集合中，递增指定的某个元素的score值
+     * 
+     * @author Yangcl
+     * @date 2021-2-8 15:00:10
+     * @home https://github.com/PowerYangcl
+     * @version 1.0.0.1
+     */
+    public Double zincrby(String key, String member, double amount);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2,22 +2,18 @@ package com.matrix.cache.redis.core.mode;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.springframework.data.redis.connection.lettuce.LettuceConnection;
 import org.springframework.util.CollectionUtils;
 
 import com.google.common.collect.Lists;
-import com.matrix.cache.inf.IRedisModel;
 import com.matrix.pojo.entity.RedisEntity;
 
-import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.LettuceFutures;
+import io.lettuce.core.Range;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisFuture;
 import io.lettuce.core.RedisURI;
@@ -25,7 +21,6 @@ import io.lettuce.core.ScanArgs;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.sync.RedisCommands;
-import io.lettuce.core.cluster.api.async.RedisClusterAsyncCommands;
 import io.lettuce.core.resource.DefaultClientResources;
 
 /**
@@ -43,7 +38,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	private RedisClient client = null;			// 2  创建客户端
 	private StatefulRedisConnection<String, String> connect = null;		// 3 创建线程安全的连接
 	private RedisCommands<String, String> commands = null;			// 4 创建同步命令
-	private RedisAsyncCommands<String, String> asyncCommands = null;		
+	private RedisAsyncCommands<String, String> asyncCommands = null;	
 	
 	public LettuceStandalone() {
 		super();
@@ -92,11 +87,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 
 	    /**
-	     * @description: 将字符串值 value 关联到 key 。
-	     *		对于某个原本带有生存时间（TTL）的键来说， 当 SET 命令成功在这个键上执行时， 这个键原有的 TTL 将被清除。
-	     *
-	     * @param key    如果 key 已经持有其他值， SET 就覆写旧值，无视类型。
-	     * @param value
+	     * @description: 设置一个值，永不过期。
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午5:26:44
@@ -107,57 +98,42 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 	    
 	    /**
-	     * @description: 将字符串值 value 关联到 key 。带自定义超时时间
-	     *
-	     * @param key
-	     * @param value
-	     * @param timeout
+	     * @description: 将字符串值value关联到key，带自定义过期时间，单位：秒。
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午6:19:51
 	     * @version 1.0.0.1
 	     */
-	    public Boolean set(String key, String value, long timeout) {
+	    public Boolean set(String key, String value, long expire) {
 	    	String flag = commands.set(key, value); 
-	    	commands.setTimeout(Duration.ofSeconds(timeout));
+	    	commands.expire(key, expire);
 	    	return "ok".equalsIgnoreCase(flag);
 	    }
 
 	    /**
-	     * @description: 将字符串值 value 关联到 key 。带默认超时时间30天
-	     *
-	     * @param key
-	     * @param value
+	     * @description: 将字符串值value关联到key，默认过期时间30天。
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午6:19:51
 	     * @version 1.0.0.1
 	     */
-	    public Boolean setWithDefalutTimeout(String key, String value) {
-	    	String flag = commands.set(key, value); 
-	    	commands.setTimeout(Duration.ofSeconds(30*24*60*60)); 
-	    	return "ok".equalsIgnoreCase(flag);
+	    public Boolean setWithDefExpire(String key, String value) {
+	    	return this.set(key, value, 30*24*60*60); 
 	    }
 
 		/**
-		 * @description:自定义 redis key 设置超时时间
+		 * @description:自定义redis key，设置超时时间
 		 *
-		 * @param key
-		 * @param expireTime
-		 * 
 		 * @author Sjh
 		 * @date 2019/4/10 16:29
 		 * @version 1.0.1
 		 */
 	    public void setKeyTimeout(String key, Long expire) {
-	    	commands.setTimeout(Duration.ofSeconds(expire));
+	    	commands.expire(key, expire);
 	    }
 
 	    /**
 	     * @description: 在原有的值基础上新增字符串到末尾。
-	     *
-	     * @param key
-	     * @param value
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午6:42:07
@@ -172,7 +148,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 	    
 	    /**
-	     * @description: 使用pipeline进行大批量数据插入；mset缺少超时时间设置
+	     * @description: 使用pipeline进行大批量数据插入
 	     * 		TODO 重点测试
 	     * 
 	     * @author Yangcl
@@ -180,13 +156,13 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @home https://github.com/PowerYangcl
 	     * @version 1.0.0.1
 	     */
-	    public Boolean batchInsert(List<RedisEntity> list, long timeout) {
+	    public Boolean batchInsert(List<RedisEntity> list, long expire) {
 	    	try {
 	    		asyncCommands.setAutoFlushCommands(false);
 	    		List<RedisFuture<?>> futureList = Lists.newArrayList();		// perform a series of independent calls
 	    		for(RedisEntity entity : list) {
 	    			futureList.add(asyncCommands.set(entity.getKey() , entity.getValue()));
-	    			futureList.add(asyncCommands.expire(entity.getKey() , timeout));
+	    			futureList.add(asyncCommands.expire(entity.getKey() , expire));
 	    		}
 	    		asyncCommands.flushCommands();	// write all commands to the transport layer
 	    		return LettuceFutures.awaitAll(5, TimeUnit.SECONDS, futureList.toArray( new RedisFuture[futureList.size()] ));
@@ -198,9 +174,6 @@ public class LettuceStandalone extends AbstractLettuceMode {
 
 	    /**
 	     * @description: 获取原来key键对应的值并重新赋新值。
-	     *
-	     * @param key
-	     * @param value
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午6:46:33
@@ -222,18 +195,18 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    }
 
 	    /**
-	     * @description: 以增量的方式将long值存储在变量中。返回增加后的结果值。
+	     * @description: 以增量的方式将long值存储在变量中，返回增加后的结果值。
 	     *
 	     * @param key
-	     * @param delta 增量值，1、2、3等等
+	     * @param amount 增量值，1、2、3等等
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月18日 下午8:06:42
 	     * @version 1.0.0.1
 	     */
-	    public Long increment(String key, Long amount , long timeout) {
+	    public Long increment(String key, Long amount , long expire) {
 	    	Long incrby = commands.incrby(key, amount);
-	    	commands.setTimeout(Duration.ofSeconds(timeout));
+	    	commands.expire(key, expire);
 	    	return incrby;
 	    }
 
@@ -247,8 +220,8 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年11月19日 下午18:36:26
 	     * @version 1.0.0.1
 	     */
-	    public Long incrementTimeout(String key, Long timeout) {
-	    	Long value = this.increment(key, 1L, timeout);
+	    public Long incrementTimeout(String key, Long expire) {
+	    	Long value = this.increment(key, 1L, expire);
 	    	this.getLogger(null).sysoutInfo("获取缓存开始增量计次|Redis Key = " + key + "  当前增量值 = " + value, this.getClass());
 	    	return value;
 	    }
@@ -301,10 +274,10 @@ public class LettuceStandalone extends AbstractLettuceMode {
 		    			futureList.add( asyncCommands.del(key) );
 		    		}
 				} while (!CollectionUtils.isEmpty(list)); 
+	    		
 	    		if(CollectionUtils.isEmpty(futureList)) {
 	    			return true;
 	    		}
-	    		
 	    		asyncCommands.flushCommands();	// write all commands to the transport layer
 	    		return LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futureList.toArray( new RedisFuture[futureList.size()] ));
 			} catch (Exception ex) {
@@ -312,7 +285,6 @@ public class LettuceStandalone extends AbstractLettuceMode {
 			}
 	    	return false;
 	    }
-	    
 
 	    /////////////////////////////////////////////////////////////////// 哈希存储 //////////////////////////////////////////////////////////////////////
 	    /**
@@ -465,7 +437,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:27:10
 	     * @version 1.0.0.1
 	     */
-	    public Set<String> sget(String key);
+	    public Set<String> sget(String key){
+	    	return commands.smembers(key);
+	    }
 
 	    /**
 	     * @description: 获取set集合的长度
@@ -475,28 +449,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:30:26
 	     * @version 1.0.0.1
 	     */
-	    public Long setLength(String key);
-
-	    /**
-	     * @description: 随机获取set集合中的元素。
-	     *
-	     * @param key
-	     * @author Yangcl
-	     * @date 2018年9月19日 上午10:32:22
-	     * @version 1.0.0.1
-	     */
-	    public String setRandomMember(String key);
-
-	    /**
-	     * @description: 随机获取set集合中指定个数的元素。
-	     *
-	     * @param key
-	     * @author Yangcl
-	     * @date 2018年9月19日 上午10:32:22
-	     * @version 1.0.0.1
-	     */
-	    public List<String> setRandomMembers(String key, long count);
-
+	    public Long setLength(String key) {
+	    	return commands.scard(key);
+	    }
 
 	    /**
 	     * @description: 检查给定的元素是否在set集合中。
@@ -509,7 +464,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:37:15
 	     * @version 1.0.0.1
 	     */
-	    public Boolean isInSet(String key, String value);
+	    public Boolean isInSet(String key, String value) {
+	    	return commands.sismember(key, value);
+	    }
 
 	    /**
 	     * @description: 批量移除set集合中的元素。
@@ -521,7 +478,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:41:34
 	     * @version 1.0.0.1
 	     */
-	    public Long setElementRemove(String key, Object... objects);
+	    public Long setElementRemove(String key, String... members) {
+	    	return commands.srem(key, members);
+	    }
 
 	    /////////////////////////////////////////////////////////////////// 有序Set存储|交叉并操作暂未提供 //////////////////////////////////////////////////////////////////////
 	    /**
@@ -540,13 +499,19 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:22:26
 	     * @version 1.0.0.1
 	     */
-	    public Boolean addZset(String key, String value, double sort);
+	    public Boolean addZset(String key, String value, double sort) {
+	    	return this.addZset(key, value, sort, 24*60*60);
+	    }
 
+	    public Boolean addZset(String key, String value, double sort , long expire) {
+	    	Long count = commands.zadd(key, sort, value);
+	    	commands.expire(key, expire);
+	    	return count > 0;
+	    }
 
 	    /**
 	     * @description: 获取有序set集合中指定区间(set游标为依据)的元素。
-	     *	例如：
-	     *			Set zSetValue = redisTemplate.opsForZSet().range("zSetValue",0,-1);
+	     *			例如：Set zSetValue = redisTemplate.opsForZSet().range("zSetValue",0,-1);
 	     *
 	     * @param key
 	     * @param start
@@ -556,33 +521,39 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午10:59:46
 	     * @version 1.0.0.1
 	     */
-	    public Set<String> zsetRangeIndex(String key, long start, long end);
+	    public Set<String> zsetRangeIndex(String key, long start, long end){
+	    	return new HashSet<String>(commands.zrange(key, start, end));
+	    }
 
 	    /**
-	     * @description: 根据设置的score获取序set集合中的区间值。
-	     *
-	     * @param key
-	     * @param min
-	     * @param max
-	     *
+	     * @description: 根据设置的score获取序set集合中的区间值；可依据此命令实现延时队列。
+	     * 
+	     * @param min score min
+	     * @param max score max
+	     * 
 	     * @author Yangcl
-	     * @date 2018年9月19日 上午11:04:08
+	     * @date 2021-2-8 11:21:45
+	     * @home https://github.com/PowerYangcl
 	     * @version 1.0.0.1
 	     */
-	    public Set<String> zsetRangeByScore(String key, double min, double max);
+	    public Set<String> zsetRangeByScore(String key, double min, double max){
+	    	return new HashSet<String>(commands.zrangebyscore(key, Range.create(min, max)));
+	    }
 
 	    /**
 	     * @description: 获取区间值的个数。
 	     *
 	     * @param key
-	     * @param min
-	     * @param max
+	     * @param min score min
+	     * @param max score max
 	     *
 	     * @author Yangcl
 	     * @date 2018年9月19日 上午11:08:35
 	     * @version 1.0.0.1
 	     */
-	    public Long zsetCount(String key, double min, double max);
+	    public Long zsetCount(String key, double min, double max) {
+	    	return commands.zcount(key, Range.create(min, max));
+	    }
 
 	    /**
 	     * @description: 获取元素的分值。
@@ -594,7 +565,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午11:10:31
 	     * @version 1.0.0.1
 	     */
-	    public Double zsetScore(String key, String value);
+	    public Double zsetScore(String key, String value) {
+	    	return commands.zscore(key, value);
+	    }
 
 	    /**
 	     * @description: 获取变量中元素的个数。
@@ -605,10 +578,12 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午11:12:19
 	     * @version 1.0.0.1
 	     */
-	    public Long zsetSize(String key);
+	    public Long zsetSize(String key) {
+	    	return commands.zcard(key);
+	    }
 
 	    /**
-	     * @description: 批量移除元素根据元素值。
+	     * @description: 批量移除元素根据元素值，返回移除元素的数量。
 	     *
 	     * @param key
 	     * @param values
@@ -617,7 +592,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午11:13:51
 	     * @version 1.0.0.1
 	     */
-	    public Long zsetRemove(String key, Object... values);
+	    public Long zsetRemove(String key, String... values) {
+	    	return commands.zrem(key, values);
+	    }
 
 	    /**
 	     * @description: 根据分值移除区间元素。
@@ -630,7 +607,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午11:15:57
 	     * @version 1.0.0.1
 	     */
-	    public Long zsetRemoveRangeByScor(String key, double min, double max);
+	    public Long zsetRemoveRangeByScor(String key, double min, double max) {
+	    	return commands.zremrangebyscore(key, Range.create(min, max));
+	    }
 
 	    /**
 	     * @description: 根据索引值移除区间元素。
@@ -643,7 +622,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2018年9月19日 上午11:17:30
 	     * @version 1.0.0.1
 	     */
-	    public Long zsetRemoveRange(String key, long start, long end);
+	    public Long zsetRemoveRange(String key, long start, long end) {
+	    	return commands.zremrangebyrank(key, start, end);
+	    }
 
 
 	    /**
@@ -654,7 +635,22 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @date 2019年5月11日 上午9:44:03 
 	     * @version 1.0.0.1
 	     */
-	    public Long getExpire(String key);
+	    public Long getExpire(String key) {
+	    	return commands.objectIdletime(key);
+	    }
+	    
+	    
+	    /**
+	     * @description: 在有序Set集合中，递增指定的某个元素的score值
+	     * 
+	     * @author Yangcl
+	     * @date 2021-2-8 15:00:10
+	     * @home https://github.com/PowerYangcl
+	     * @version 1.0.0.1
+	     */
+	    public Double zincrby(String key, String member, double amount) {
+	    	return commands.zincrby(key, amount, member);
+	    }
 }
 
 
