@@ -2,10 +2,13 @@ package com.matrix.cache.redis.core.mode;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.TimeUnit;
 
 import com.matrix.cache.inf.IRedisModel;
 
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.cluster.ClusterClientOptions;
+import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import io.lettuce.core.cluster.RedisClusterClient;
 import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
@@ -13,6 +16,7 @@ import io.lettuce.core.resource.DefaultClientResources;
 
 /**
  * @description: Cluster集群模式适配器
+ * 		https://www.cnblogs.com/throwable/p/11601538.html
  * 
  * @author Yangcl
  * @date 2021-2-4 10:25:59
@@ -36,8 +40,17 @@ public class LettuceCluster extends AbstractLettuceMode{
 	            .withHost(host)
 	            .withPort(port)		// .withPassword(password)
 	            .withTimeout(Duration.of(2, ChronoUnit.SECONDS))		// 2秒超时
-//	            .withSentinelMasterId("sentinelMasterId")
 	            .build();
+		
+		
+		
+		ClusterTopologyRefreshOptions topologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
+		                .enablePeriodicRefresh(Duration.ofMinutes(10))		// 10分钟
+		                .enableAllAdaptiveRefreshTriggers()
+		                .build();
+		clusterClient.setOptions(ClusterClientOptions.builder()
+		                       .topologyRefreshOptions(topologyRefreshOptions)
+		                       .build());
 	}
 
 	public Boolean close() {

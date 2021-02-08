@@ -12,6 +12,7 @@ import org.springframework.util.CollectionUtils;
 import com.google.common.collect.Lists;
 import com.matrix.pojo.entity.RedisEntity;
 
+import io.lettuce.core.ClientOptions;
 import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisClient;
@@ -56,9 +57,15 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    		.build();
 		
 		client = RedisClient.create(resources, redisUri);
+//		client.setOptions(ClientOptions.builder()
+//				.autoReconnect(false)
+//				.pingBeforeActivateConnection(true)
+//				.build());
 		connect = client.connect();
 		commands = connect.sync(); // 创建同步命令
 		asyncCommands = connect.async();
+		
+		
 	}
 	
 	public Boolean close() {
