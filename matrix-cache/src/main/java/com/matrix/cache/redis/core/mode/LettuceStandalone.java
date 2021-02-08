@@ -33,6 +33,8 @@ import io.lettuce.core.resource.DefaultClientResources;
  * @version 1.0.0.1
  */
 public class LettuceStandalone extends AbstractLettuceMode {
+	
+//	TODO 事务和批量命令执行  模仿内部类的方式解决，对外暴露一个可实现的接口
 
 	// 单机、主从、哨兵三种模式
 	private RedisClient client = null;			// 2  创建客户端
@@ -42,16 +44,16 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	
 	public LettuceStandalone() {
 		super();
+		redisUri = RedisURI.builder()  // 1 创建单机连接的连接信息
+				.withHost(host)
+				.withPort(port)
+				.withAuthentication(username, password)
+				.withTimeout(Duration.of(2, ChronoUnit.SECONDS))		// 2秒超时
+				.build();
 		resources = DefaultClientResources.builder()
 	    		.ioThreadPoolSize(2)							// I/O线程数 default : Runtime.getRuntime().availableProcessors()
 	    		.computationThreadPoolSize(2)		// 任务线程数 default : Runtime.getRuntime().availableProcessors()
 	    		.build();
-		redisUri = RedisURI.builder()  // 1 创建单机连接的连接信息
-	            .withHost(host)
-	            .withPort(port)
-	            .withPassword(password)
-	            .withTimeout(Duration.of(2, ChronoUnit.SECONDS))		// 2秒超时
-	            .build();
 		
 		client = RedisClient.create(resources, redisUri);
 		connect = client.connect();
