@@ -2,7 +2,7 @@ package com.matrix.cache.redis.core.mode;
 
 
 import com.matrix.base.BaseClass;
-import com.matrix.cache.inf.IRedisModel;
+import com.matrix.cache.inf.ICacheFactory;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.resource.ClientResources;
 import lombok.Data;
@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public abstract class AbstractLettuceMode extends BaseClass implements IRedisModel {
+public abstract class AbstractLettuceMode extends BaseClass implements ICacheFactory {
     protected String host;
     protected Integer port;
     protected String username;

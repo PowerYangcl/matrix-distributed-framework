@@ -1,7 +1,7 @@
 package com.matrix.cache.redis.core;
 
 import com.matrix.base.BaseClass;
-import com.matrix.cache.inf.IRedisModel;
+import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.redis.core.mode.LettuceCluster;
 import com.matrix.cache.redis.core.mode.LettuceMasterReplica;
 import com.matrix.cache.redis.core.mode.LettuceSentinel;
@@ -32,23 +32,23 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class RedisTemplateLettuce extends BaseClass {
 	
-	private IRedisModel redisModel;
+	private ICacheFactory cacheFactory;
 	private String config = "standalone";	// 默认为单机模式
 
 	private RedisTemplateLettuce() {
 		config = this.getConfig("matrix-cache.cache_model_" + this.getConfig("matrix-core.model"));
 		switch (config) {
 			case "master-replica":
-				redisModel = new LettuceMasterReplica();
+				cacheFactory = new LettuceMasterReplica();
 				break;
 			case "sentinel":
-				redisModel = new LettuceSentinel();
+				cacheFactory = new LettuceSentinel();
 				break;
 			case "cluster":
-				redisModel = new LettuceCluster();
+				cacheFactory = new LettuceCluster();
 				break;
 			default:
-				redisModel = new LettuceStandalone();
+				cacheFactory = new LettuceStandalone();
 				break;
 		}
 	}
@@ -57,8 +57,8 @@ public class RedisTemplateLettuce extends BaseClass {
 		private static final RedisTemplateLettuce INSTANCE = new RedisTemplateLettuce();
 	}
 	
-	public static final IRedisModel getInstance() {
-		return LazyHolder.INSTANCE.getRedisModel();
+	public static final ICacheFactory getInstance() {
+		return LazyHolder.INSTANCE.getCacheFactory();
 	}
 
 	
