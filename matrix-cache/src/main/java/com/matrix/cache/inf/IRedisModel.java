@@ -3,10 +3,7 @@ package com.matrix.cache.inf;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import com.matrix.cache.redis.core.mode.K;
-import com.matrix.cache.redis.core.mode.V;
 import com.matrix.pojo.entity.RedisEntity;
 
 /**
@@ -465,6 +462,16 @@ public interface IRedisModel {
      * @version 1.0.0.1
      */
     public Double zincrby(String key, String member, double amount);
+    
+    /**
+     * @description: 关闭连接
+     * 
+     * @author Yangcl
+     * @date 2021-2-18 18:28:22
+     * @home https://github.com/PowerYangcl
+     * @version 1.0.0.1
+     */
+    public Boolean close();
 }
 
 

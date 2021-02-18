@@ -12,7 +12,6 @@ import org.springframework.util.CollectionUtils;
 import com.google.common.collect.Lists;
 import com.matrix.pojo.entity.RedisEntity;
 
-import io.lettuce.core.ClientOptions;
 import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.Range;
 import io.lettuce.core.RedisClient;
