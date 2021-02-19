@@ -137,7 +137,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean set(String key, String value) {
-    	return RedisTemplateLettuce.getInstance().set(key, value);
+    	return RedisTemplateLettuce.getInstance().set(baseKey + key, value);
     }
     
     /**
@@ -148,7 +148,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean set(String key, String value, long expire) {
-    	return RedisTemplateLettuce.getInstance().set(key, value, expire);
+    	return RedisTemplateLettuce.getInstance().set(baseKey + key, value, expire);
     }
 
     /**
@@ -159,7 +159,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean setWithDefExpire(String key, String value) {
-    	return RedisTemplateLettuce.getInstance().setWithDefExpire(key, value);
+    	return RedisTemplateLettuce.getInstance().setWithDefExpire(baseKey + key, value);
     }
 
 	/**
@@ -170,7 +170,7 @@ public class RedisFactory implements ICacheFactory{
 	 * @version 1.0.1
 	 */
     public void setKeyTimeout(String key, Long expire) {
-    	RedisTemplateLettuce.getInstance().setKeyTimeout(key, expire);
+    	RedisTemplateLettuce.getInstance().setKeyTimeout(baseKey + key, expire);
     }
 
     /**
@@ -181,7 +181,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Integer appendStringInEnd(String key, String value) {
-    	return RedisTemplateLettuce.getInstance().appendStringInEnd(key, value);
+    	return RedisTemplateLettuce.getInstance().appendStringInEnd(baseKey + key, value);
     }
     
     /**
@@ -204,7 +204,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public String getAndSet(String key, String value) {
-    	return RedisTemplateLettuce.getInstance().getAndSet(key, value);
+    	return RedisTemplateLettuce.getInstance().getAndSet(baseKey + key, value);
     }
 
     /**
@@ -215,7 +215,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long size(String key) {
-    	return RedisTemplateLettuce.getInstance().size(key);
+    	return RedisTemplateLettuce.getInstance().size(baseKey + key);
     }
 
     /**
@@ -229,7 +229,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long increment(String key, Long amount , long expire) {
-    	return RedisTemplateLettuce.getInstance().increment(key, amount, expire);
+    	return RedisTemplateLettuce.getInstance().increment(baseKey + key, amount, expire);
     }
 
     /**
@@ -243,7 +243,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long incrementTimeout(String key, Long expire) {
-    	return RedisTemplateLettuce.getInstance().incrementTimeout(key, expire);
+    	return RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, expire);
     }
 
     /**
@@ -254,7 +254,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long del(String key) {
-    	return RedisTemplateLettuce.getInstance().del(key);
+    	return RedisTemplateLettuce.getInstance().del(baseKey + key);
     }
     
     /**
@@ -296,7 +296,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public String hget(String key, String field) {
-    	return RedisTemplateLettuce.getInstance().hget(key, field);
+    	return RedisTemplateLettuce.getInstance().hget(baseKey + key, field);
     }
 
     /**
@@ -308,7 +308,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Map<String, String> hgetAll(String key){
-    	return RedisTemplateLettuce.getInstance().hgetAll(key);
+    	return RedisTemplateLettuce.getInstance().hgetAll(baseKey + key);
     }
 
     /**
@@ -329,12 +329,12 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean hset(String key, String field, String value) {
-    	return RedisTemplateLettuce.getInstance().hset(key, field, value);
+    	return RedisTemplateLettuce.getInstance().hset(baseKey + key, field, value);
     }
     
     
     public Boolean hset(String key, String field, String value, long expire) {
-    	return RedisTemplateLettuce.getInstance().hset(key, field, value);
+    	return RedisTemplateLettuce.getInstance().hset(baseKey + key, field, value);
     }
 
     /**
@@ -354,7 +354,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long hsetAll(String key, Map<String, String> map) {
-    	return RedisTemplateLettuce.getInstance().hsetAll(key, map);
+    	return RedisTemplateLettuce.getInstance().hsetAll(baseKey + key, map);
     }
     
     /**
@@ -366,7 +366,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long hsetAll(String key, Map<String, String> map, long expire) {
-    	return RedisTemplateLettuce.getInstance().hsetAll(key, map, expire);
+    	return RedisTemplateLettuce.getInstance().hsetAll(baseKey + key, map, expire);
     }
 
     /**
@@ -382,7 +382,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long hdel(String key, String... fields) {
-    	return RedisTemplateLettuce.getInstance().hdel(key, fields);
+    	return RedisTemplateLettuce.getInstance().hdel(baseKey + key, fields);
     }
 
     /**
@@ -396,7 +396,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean hkeyExist(String key, String hashKey) {
-    	return RedisTemplateLettuce.getInstance().hkeyExist(key, hashKey);
+    	return RedisTemplateLettuce.getInstance().hkeyExist(baseKey + key, hashKey);
     }
 
 
@@ -414,11 +414,11 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long addSet(String key, String... values) {
-    	return RedisTemplateLettuce.getInstance().addSet(key, values);
+    	return RedisTemplateLettuce.getInstance().addSet(baseKey + key, values);
     }
     
     public Long addSet(String key, long expire, String... values) {
-    	return RedisTemplateLettuce.getInstance().addSet(key, expire, values);
+    	return RedisTemplateLettuce.getInstance().addSet(baseKey + key, expire, values);
     }
 
     /**
@@ -474,7 +474,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long setLength(String key) {
-    	return RedisTemplateLettuce.getInstance().setLength(key);
+    	return RedisTemplateLettuce.getInstance().setLength(baseKey + key);
     }
 
     /**
@@ -489,7 +489,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean isInSet(String key, String value) {
-    	return RedisTemplateLettuce.getInstance().isInSet(key, value);
+    	return RedisTemplateLettuce.getInstance().isInSet(baseKey + key, value);
     }
 
     /**
@@ -503,7 +503,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long setElementRemove(String key, String... members) {
-    	return RedisTemplateLettuce.getInstance().setElementRemove(key, members);
+    	return RedisTemplateLettuce.getInstance().setElementRemove(baseKey + key, members);
     }
 
     /////////////////////////////////////////////////////////////////// 有序Set存储|交叉并操作暂未提供 //////////////////////////////////////////////////////////////////////
@@ -524,11 +524,11 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean addZset(String key, String value, double sort) {
-    	return RedisTemplateLettuce.getInstance().addZset(key, value, sort);
+    	return RedisTemplateLettuce.getInstance().addZset(baseKey + key, value, sort);
     }
     
     public Boolean addZset(String key, String value, double sort , long expire) {
-    	return RedisTemplateLettuce.getInstance().addZset(key, value, sort, expire);
+    	return RedisTemplateLettuce.getInstance().addZset(baseKey + key, value, sort, expire);
     }
 
 
@@ -545,7 +545,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Set<String> zsetRangeIndex(String key, long start, long end){
-    	return RedisTemplateLettuce.getInstance().zsetRangeIndex(key, start, end);
+    	return RedisTemplateLettuce.getInstance().zsetRangeIndex(baseKey + key, start, end);
     }
 
     /**
@@ -560,7 +560,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Set<String> zsetRangeByScore(String key, double min, double max){
-    	return RedisTemplateLettuce.getInstance().zsetRangeByScore(key, min, max);
+    	return RedisTemplateLettuce.getInstance().zsetRangeByScore(baseKey + key, min, max);
     }
 
     /**
@@ -575,7 +575,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long zsetCount(String key, double min, double max) {
-    	return RedisTemplateLettuce.getInstance().zsetCount(key, min, max);
+    	return RedisTemplateLettuce.getInstance().zsetCount(baseKey + key, min, max);
     }
 
     /**
@@ -589,7 +589,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Double zsetScore(String key, String value) {
-    	return RedisTemplateLettuce.getInstance().zsetScore(key, value);
+    	return RedisTemplateLettuce.getInstance().zsetScore(baseKey + key, value);
     }
 
     /**
@@ -602,7 +602,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long zsetSize(String key) {
-    	return RedisTemplateLettuce.getInstance().zsetSize(key);
+    	return RedisTemplateLettuce.getInstance().zsetSize(baseKey + key);
     }
 
     /**
@@ -616,7 +616,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long zsetRemove(String key, String... values) {
-    	return RedisTemplateLettuce.getInstance().zsetRemove(key, values);
+    	return RedisTemplateLettuce.getInstance().zsetRemove(baseKey + key, values);
     }
 
     /**
@@ -631,7 +631,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long zsetRemoveRangeByScor(String key, double min, double max) {
-    	return RedisTemplateLettuce.getInstance().zsetRemoveRangeByScor(key, min, max);
+    	return RedisTemplateLettuce.getInstance().zsetRemoveRangeByScor(baseKey + key, min, max);
     }
 
     /**
@@ -646,7 +646,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long zsetRemoveRange(String key, long start, long end) {
-    	return RedisTemplateLettuce.getInstance().zsetRemoveRange(key, start, end);
+    	return RedisTemplateLettuce.getInstance().zsetRemoveRange(baseKey + key, start, end);
     }
 
 
@@ -659,7 +659,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Long getExpire(String key) {
-    	return RedisTemplateLettuce.getInstance().getExpire(key);
+    	return RedisTemplateLettuce.getInstance().getExpire(baseKey + key);
     }
     
     /**
@@ -671,7 +671,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Double zincrby(String key, String member, double amount) {
-    	return RedisTemplateLettuce.getInstance().zincrby(key, member, amount);
+    	return RedisTemplateLettuce.getInstance().zincrby(baseKey + key, member, amount);
     }
     
     /**
