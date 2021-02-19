@@ -181,10 +181,10 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		try {
 			if(type.equals("dict")){
 				DCacheEnum [] arr = DCacheEnum.values();
-				launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).batchDel(key);
+				launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
 			}else{
 				SCacheEnum [] arr = SCacheEnum.values();
-				launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).batchDel(key);
+				launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
 			}
 			result.put("status", "success");
 			result.put("msg", this.getInfo(300010101));  // 300010101=缓存删除成功

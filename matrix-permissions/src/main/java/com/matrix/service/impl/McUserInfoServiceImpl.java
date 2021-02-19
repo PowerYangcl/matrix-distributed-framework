@@ -438,10 +438,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	public JSONObject ajaxBtnUserCacheReload() {
 		JSONObject result = new JSONObject();
 		try {
-			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDel("");
-			launch.loadDictCache(DCacheEnum.McRole , null).batchDel("");
-			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDel("");
-			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDel("");
+			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDeleteByPrefix("");
+			launch.loadDictCache(DCacheEnum.McRole , null).batchDeleteByPrefix("");
+			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDeleteByPrefix("");
+			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDeleteByPrefix("");
 		} catch (Exception e) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(101010008)); // 系统异常
