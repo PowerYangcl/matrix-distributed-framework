@@ -15,11 +15,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.matrix</groupId>
-			<artifactId>matrix-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.matrix</groupId>
 			<artifactId>matrix-cache</artifactId>
 			<version>${project.version}</version>
 		</dependency>
