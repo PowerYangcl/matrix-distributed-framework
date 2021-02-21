@@ -23,5 +23,9 @@ public class ContextLaunch {
 	public MatrixDistributedFrameworkListener initBbean() {
 		return new MatrixDistributedFrameworkListener();
 	}
+	
+	// TODO spring boot  配置事务通知  参考
+	// 配置文件：https://my.oschina.net/u/2331760/blog/3020092 
+	// 注解方式：https://www.cnblogs.com/edi-kai/p/11289701.html  推荐
 
 }
