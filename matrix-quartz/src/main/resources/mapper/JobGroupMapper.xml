@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IJobGroupMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.JobGroup" extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="group_name" property="groupName" jdbcType="VARCHAR" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="LONGVARCHAR" />
+	</resultMap>
+	
+	<sql id="table_column_list">
+		id, 
+		group_name, 
+		ip, 
+		create_time, 
+		create_user_id, 
+		create_user_name,
+		update_time, 
+		update_user_id,
+		update_user_name, 
+		delete_flag,
+		remark
+	</sql>
+	
+	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="table_column_list" /> 
+		from 
+			job_group
+		where 
+			delete_flag = 1
+		and 
+			id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<!-- 【添加/修改】定时任务-任务组下拉框列表数据-不分页 - Yangcl -->
+	<select id="findListByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.JobGroupDto">
+		select
+			<include refid="table_column_list" /> 
+		from 
+			job_group
+		where 
+			delete_flag = 1
+	</select>
+	
+	<!-- 定时任务分组列表页| 这里用的BaseResultMap不是JobGroupView哦！！真der....... 2018-12-27 - Yangcl -->
+	<resultMap id="JobGroupView" type="com.matrix.pojo.view.JobGroupView"></resultMap>
+	<select id="pageListByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.JobGroupDto">
+		select
+			<include refid="table_column_list" /> 
+		from 
+			job_group
+		where 
+			delete_flag = 1
+		<if test="groupName != null and groupName != '' ">
+			and
+				group_name = #{groupName,jdbcType=VARCHAR}
+		</if>
+		<if test="ip != null and ip != '' ">
+			and 
+				ip = #{ip,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="findList" resultMap="BaseResultMap" parameterType="com.matrix.pojo.entity.JobGroup">
+		select
+			<include refid="table_column_list" /> 
+		from 
+			job_group
+		where 
+			delete_flag = 1
+		and 
+			group_name = #{groupName,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from job_group where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.JobGroup">
+		insert into job_group
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="groupName != null">
+				group_name,
+			</if>
+			<if test="ip != null">
+				ip,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="groupName != null">
+				#{groupName,jdbcType=VARCHAR},
+			</if>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.JobGroup">
+		update job_group
+		<set>
+			<if test="groupName != null">
+				group_name = #{groupName,jdbcType=VARCHAR},
+			</if>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

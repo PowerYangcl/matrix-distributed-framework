@@ -14,6 +14,12 @@
         <module>matrix-cache</module>
         <module>matrix-permissions</module>
         <module>matrix-web-adapter</module>
+        <module>matrix-api</module>
+        <module>matrix-manager</module>
+        <module>matrix-manager-api</module>
+        <module>matrix-quartz</module>
+        <module>matrix-route</module>
+        <module>matrix-file</module>
     </modules>
     
    	<parent>	<!-- 使用最高版本的spring-boot覆盖所有引用到的第三方项目中的低版本spring-boot -->
@@ -35,7 +41,7 @@
         <pagehelper.version>5.1.10</pagehelper.version>
         
         <log4j.version>1.2.17</log4j.version>
-       <aspectjweaver.version>1.9.6</aspectjweaver.version>
+        <aspectjweaver.version>1.9.6</aspectjweaver.version>
         <commons-lang3.version>3.2.1</commons-lang3.version>
         <commons-collections.version>3.2.1</commons-collections.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
@@ -43,6 +49,8 @@
         <zookeeper.version>3.4.11</zookeeper.version>		<!-- ZooKeeper 版本 -->
         <curator.version>4.0.0</curator.version>					<!-- Curator(ZooKeeper客户端)版本 -->
         
+        <httpclient.version>4.5.1</httpclient.version>
+        <dubbo.version>2.6.5</dubbo.version>
     </properties>
     
     <dependencies>
@@ -226,7 +234,11 @@
             <optional>true</optional>
         </dependency>
 		
-		
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+            <version>${dubbo.version}</version>
+        </dependency>
 		
 		
 		
