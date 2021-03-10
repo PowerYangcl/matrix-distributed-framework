@@ -13,6 +13,7 @@
         <module>matrix-core</module>
         <module>matrix-cache</module>
         <module>matrix-permissions</module>
+        <module>matrix-web-adapter</module>
     </modules>
     
    	<parent>	<!-- 使用最高版本的spring-boot覆盖所有引用到的第三方项目中的低版本spring-boot -->
