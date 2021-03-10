@@ -2,8 +2,6 @@ package com.matrix.system.listener;
 
 import com.matrix.base.BaseLog;
 import com.matrix.system.SpringCtxUtil;
-import com.matrix.system.init.SystemInit;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -22,17 +20,8 @@ public class MatrixDistributedFrameworkListener implements ApplicationListener<C
 			BaseLog.getInstance().setLogger(null).sysoutInfo("MatrixDistributedFrameworkListener出现二次调用 ! ! ! ! !" , this.getClass()); 
 			return;
 		}
-		
-		BaseLog.getInstance().setLogger(null).sysoutInfo("Initializing Power Matrix ! ! ! ! !" , this.getClass());
-		
 		ApplicationContext context = e.getApplicationContext(); 
 		SpringCtxUtil.setApplicationContext(context);
-		boolean flag = new SystemInit().onInit();
-		if(flag) {
-			BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing Finished! ! ! ! !" , this.getClass());
-		}else {
-			BaseLog.getInstance().setLogger(null).sysoutInfo("Error occurs in initializing Power Matrix " , this.getClass());
-		}
 	}
 }
 

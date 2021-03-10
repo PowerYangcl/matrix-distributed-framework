@@ -74,7 +74,7 @@ public class PropConfig extends BaseEhcache<String, String> {
 			this.addElement("matrix-core.dubbo_application_owner", resource.getString("dubbo.application.owner")); 
 			BaseLog.getInstance().sysoutInfo("-------------------------------------------Zookeepper：" + this.getValue("matrix-core.zookeeper_host")  , this.getClass());
 		} catch (Exception ex) {
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------properties/dubbo.xml文件丢失!无法实例化系统运行环境!", this.getClass());
+			BaseLog.getInstance().sysoutInfo("-------------------------------------------properties/dubbo.xml文件不存在", this.getClass());
 		}
 		
 	}

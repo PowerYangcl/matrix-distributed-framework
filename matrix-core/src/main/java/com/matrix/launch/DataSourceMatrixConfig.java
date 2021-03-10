@@ -1,4 +1,4 @@
-package com.matrix.launch.service;
+package com.matrix.launch;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;

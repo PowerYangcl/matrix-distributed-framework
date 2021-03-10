@@ -47,7 +47,11 @@ public class IoUtil {
 	 */
 	public static void createDir(String dirPath) {
 		try {
-			FileUtils.forceMkdir(new File(dirPath));
+			File file = new File(dirPath);			
+			if(file.exists()) {
+				return;
+			}
+			FileUtils.forceMkdir(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
