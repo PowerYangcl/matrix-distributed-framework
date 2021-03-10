@@ -2,6 +2,9 @@ package com.matrix.launch;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
+import com.matrix.base.BaseClass;
+import com.matrix.base.BaseLog;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -31,7 +34,7 @@ public class DataSourceMatrixConfig {
     @Bean(name = "matrixDatasource")
     @ConfigurationProperties(prefix = "spring.datasource.matrix")
     public DruidDataSource datasource() {
-    	System.err.println("开始初始化matrix-core核心库数据源链接。。。。"); 
+    	BaseLog.getInstance().setLogger(null).sysoutInfo("开始初始化matrix-core核心库数据源链接" , this.getClass());
         return DruidDataSourceBuilder.create().build();
     }
 
