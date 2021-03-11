@@ -10,6 +10,7 @@
     <description>The matrix e-commerce platform</description>
     
     <modules>
+   	    <module>leader</module>
         <module>matrix-core</module>
         <module>matrix-cache</module>
         <module>matrix-permissions</module>

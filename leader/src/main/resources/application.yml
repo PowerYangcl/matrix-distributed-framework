@@ -1,0 +1,9 @@
+server:
+  port: 8080
+  servlet: 
+    context-path: /leader
+spring:
+  profiles:
+    active: dev
+  jackson:
+    time-zone: "GMT+8"

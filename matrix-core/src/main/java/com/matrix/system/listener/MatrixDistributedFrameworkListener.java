@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
- * @description: 基于dubbo分布式的扩展支持，随项目启动而加载；为每一个dubbo服务个性化定制。
+ * @description: 获取上下文环境
  *
  * @author Yangcl
  * @date 2018年9月14日 下午7:28:33 

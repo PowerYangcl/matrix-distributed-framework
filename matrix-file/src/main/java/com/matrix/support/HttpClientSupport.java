@@ -23,6 +23,8 @@ import com.matrix.base.BaseClass;
 /**
  * @description: 基于HttpClient 4.5.1的封装类。用于调用第三方的开放接口使用。
  * 	这是一个抽象类，在项目的单元测试目录下有可以参考的测试类：HttpClientSupportTest.java
+ * 	参考：
+ * 			https://blog.csdn.net/linsenaa/article/details/108593713
  * 
  * @author Yangcl
  * @home https://github.com/PowerYangcl
