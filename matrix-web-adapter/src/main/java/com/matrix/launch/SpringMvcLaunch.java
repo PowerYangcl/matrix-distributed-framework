@@ -101,26 +101,9 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
 		// 继续注册其他的拦截器：registry.addInterceptor(new Interceptor2()).addPathPatterns("/**"); 
 	}
 	
-	
-	
-	
-	
-	// TODO 
-	
-	  /**
-     * -设置url后缀模式匹配规则
-     * -该设置匹配所有的后缀，使用.do或.action都可以
-     */
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.setUseSuffixPatternMatch(true) 																   //设置是否是后缀模式匹配,即:/test.*
-                .setUseTrailingSlashMatch(true)     																			//设置是否自动后缀路径模式匹配,即：/test/
-                .setUseRegisteredSuffixPatternMatch(true);  														//开启路径后缀匹配
-    }
- 
-    
 	/**
 	 * @description: 设置匹配.do后缀的请求
+	 * 		srb.addUrlMappings("*.jsp");会导致bug
 	 * 
 	 * @param dispatcherServlet
 	 * @author Yangcl
@@ -135,7 +118,7 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
         srb.addUrlMappings("*.html");
         srb.addUrlMappings("*.css");
         srb.addUrlMappings("*.js");
-        srb.addUrlMappings("*.jsp");
+        srb.addUrlMappings("*.woff");
         srb.addUrlMappings("*.ico");
         srb.addUrlMappings("*.png");
         srb.addUrlMappings("*.gif");
@@ -145,12 +128,6 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
         return srb;
     }
     
-    
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/leader/**").addResourceLocations("classpath:../webapp/");
-	}
-	
 	/**
 	 * @description: Spring mvc 返回json格式 
 	 * 
