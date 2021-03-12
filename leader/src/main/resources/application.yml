@@ -7,3 +7,13 @@ spring:
     active: dev
   jackson:
     time-zone: "GMT+8"
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+  mvc:
+    contentnegotiation:
+      favor-path-extension: true
+    pathmatch:
+      use-suffix-pattern: true
+      use-registered-suffix-pattern: true

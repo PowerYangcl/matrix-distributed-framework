@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.cache.CacheLaunch;
@@ -27,13 +27,27 @@ import com.matrix.pojo.view.McUserInfoView;
  * 			dialog_：系统页面弹框；基于layer.open打开的jsp页面，通常是弹框分页列表，极少数情况是复杂的添加/编辑页。
  * 			ajax_：系统所有异步ajax请求必须以此开头
  * 	其他请求全部会被拦截，无法访问
+ * 
+ * 	参考：https://www.cnblogs.com/zwqh/p/11719254.html
+ * 
+ * 	preHandle：在业务处理器处理请求之前被调用。预处理，可以进行编码、安全控制、权限校验等处理；
+ * 	postHandle：在业务处理器处理请求执行完成后，生成视图之前执行。
+ * 	afterCompletion：在 DispatcherServlet 完全处理完请求后被调用，可用于清理资源等。
+ *
+ * Interceptor与Filter过滤器的区别
+ * 	1. 拦截器是基于java的反射机制的，而过滤器是基于函数回调。
+ * 	2. 拦截器不依赖于servlet容器，而过滤器依赖于servlet容器。
+ * 	3. 拦截器只能对Controller请求起作用，而过滤器则可以对几乎所有的请求起作用。
+ * 	4. 拦截器可以访问action上下文、值栈里的对象，而过滤器不能访问。
+ * 	5. 在Controller的生命周期中，拦截器可以多次被调用，而过滤器只能在容器初始化时被调用一次。
+ * 	6. 拦截器可以获取IOC容器中的各个bean，而过滤器不行。这点很重要，在拦截器里注入一个service，可以调用业务逻辑。
  *
  * @author Yangcl
  * @home https://github.com/PowerYangcl
  * @date 2019年10月9日 下午5:51:48 
  * @version 1.0.0.1
  */
-public class UrlInterceptor extends HandlerInterceptorAdapter{
+public class UrlInterceptor implements AsyncHandlerInterceptor{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	
@@ -45,7 +59,13 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
  
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url_ [] = request.getRequestURL().toString().split("/");  // 分割路径地址，取出最后一个
+        
+        System.err.println(request.getRequestURL().toString());
+        
         String url = url_[url_.length-1];    // *.do后跟随参数也不会造成影响：request.getRequestURL().toString()不会取得*.do后面的参数
+        if(!url.split("\\.")[1].equals("do")) {		// spring boot 比较der
+        	return true;
+        }
         for (String s : ExcludeUri) {
             if (url.equals(s)) {
             	return true;	
@@ -153,7 +173,7 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
     }
  
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        super.postHandle(request, response, handler, modelAndView);
+//        super.postHandle(request, response, handler, modelAndView);
     }
 }
 
