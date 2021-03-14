@@ -44,18 +44,18 @@
 	</servlet-mapping>
 	
 	<!-- Spring-Session -->
-	<filter>
+<!-- 	<filter>
 	   <filter-name>springSessionRepositoryFilter</filter-name>
 	   <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	<filter-mapping>
 	   <filter-name>springSessionRepositoryFilter</filter-name>
 	   <url-pattern>*.do</url-pattern>
-	</filter-mapping>
+	</filter-mapping> -->
 	
-	<listener>
+<!-- 	<listener>
 		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-	</listener>
+	</listener> -->
 	
 	<filter>
 		<description>字符集过滤器</description>
