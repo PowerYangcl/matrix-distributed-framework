@@ -33,7 +33,6 @@
         <!-- 全局性控制项目编码为UTF-8 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <mysql-connector.version>6.0.2</mysql-connector.version>
         <druid.version>1.1.10</druid.version> <!-- 需要和mysql-connector一起升级 -->
         <!--MyBatis-Spring		MyBatis	Spring 	Spring Framework    参考建议见官网：http://mybatis.org/spring/zh/index.html-->
         <!--2.0	                            3.5+	                    5.0+ -->

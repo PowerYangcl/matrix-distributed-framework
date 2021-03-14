@@ -59,9 +59,6 @@ public class UrlInterceptor implements AsyncHandlerInterceptor{
  
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url_ [] = request.getRequestURL().toString().split("/");  // 分割路径地址，取出最后一个
-        
-        System.err.println(request.getRequestURL().toString());
-        
         String url = url_[url_.length-1];    // *.do后跟随参数也不会造成影响：request.getRequestURL().toString()不会取得*.do后面的参数
         if(!url.split("\\.")[1].equals("do")) {		// spring boot 比较der
         	return true;
