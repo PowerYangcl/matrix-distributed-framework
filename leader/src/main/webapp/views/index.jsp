@@ -10,6 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" href="${layui}/layui/css/layui.css" media="all">
 		<link rel="stylesheet" href="${layui}/style/admin.css" media="all">
+		<link rel="shortcut icon" href="${layui}/favicon.ico">
 	</head>
 
 	<body class="layui-layout-body">

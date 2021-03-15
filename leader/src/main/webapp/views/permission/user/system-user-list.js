@@ -40,7 +40,7 @@ layui.config({
 	  	         {field:'type', title:'用户类型', width:100, sort: true},
 	  	         {field:'mobile', title:'手机号码', width:120, sort: true},
 	  	         {field:'createTime', title:'加入时间', width:160},
-	  	         {fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:240}
+	  	         {fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:260}
     	  	]
       	],
       	page: true	
