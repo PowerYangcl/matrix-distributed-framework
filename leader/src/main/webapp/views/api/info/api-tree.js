@@ -382,7 +382,7 @@ var apiInfo = {
 				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
 					var zTree = apiInfo.zTree;
 	            	var parent = zTree.getNodeByTId(apiInfo.currentNode.parentTId);
-	            	var e = obj;
+	            	var e = obj.info;
 	            	
 	            	zTree.removeNode(apiInfo.currentNode);
 	            	

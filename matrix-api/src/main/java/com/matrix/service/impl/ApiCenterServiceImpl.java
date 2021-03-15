@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -473,6 +474,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月28日 下午3:19:55 
 	 * @version 1.0.0
 	 */
+	@Transactional
 	public JSONObject ajaxApiInfoAdd(AcApiInfoDto dto, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isAnyBlank(dto.getName() , dto.getTarget() , dto.getProcessor() , dto.getModule() , dto.getRemark())) {
@@ -546,6 +548,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 				return result;
 			}
 			
+			result.put("info", e);
 			result.put("status", "success");
 			result.put("msg", this.getInfo(600010061));  // 600010061=数据添加成功!
 			return result;  // 标识成功并返回全部缓存信息
@@ -592,6 +595,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月30日 下午3:26:55 
 	 * @version 1.0.0
 	 */
+	@Transactional
 	public JSONObject ajaxApiInfoEdit(AcApiInfoDto dto, HttpSession session) {
 		JSONObject result = new JSONObject();
 		if(!StringUtils.startsWithAny(dto.getProcessor() , dto.getAtype() , "common") ) { 
@@ -673,13 +677,15 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		}else {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败! 
+			return result;
 		}
 		
 		launch.loadDictCache(DCacheEnum.ApiInfo , null).del(api.getTarget()); 
 		JSONObject cache = JSONObject.parseObject( launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(api.getTarget()) ); 
-		cache.put("status", "success");
-		cache.put("msg", this.getInfo(600010080));  // 600010080=API接口信息修改成功!
-		return cache;
+		result.put("info", cache);
+		result.put("status", "success");
+		result.put("msg", this.getInfo(600010080));  // 600010080=API接口信息修改成功!
+		return result;
 	}
 	
 	/**
