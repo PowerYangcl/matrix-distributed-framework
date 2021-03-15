@@ -267,7 +267,7 @@ var apiInfo = {
             $("#tree-node-edit").append(html_);
             
             if(treeNode.name != "新建结点") {
-            	html_ = '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:remove" onclick="apiInfo.removeApi()" style="margin-left:20px"> 删除 </button>'
+            	html_ = '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:remove" onclick="apiInfo.removeApi(this)" style="margin-left:20px"> 删除 </button>'
             	html_ += '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:test" onclick="apiInfo.openTestDialog(this)" style="margin-left:20px"> 测试 </button>'
         		$("#tree-node-edit").append(html_);
             	var data_ = {target:treeNode.target};
@@ -416,12 +416,13 @@ var apiInfo = {
         },
         
         // 删除一条记录
-        removeApi : function(){
+        removeApi : function(o){
         	var node = apiInfo.currentNode;
         	var data_ = {
-        			id : node.id
+        			id : node.id,
+					eleValue: $(o).attr("key")  // 获取安全key，固定写法
         	};
-        	var url_ = apiInfo.path + "ajax_api_info_remove.do";
+        	var url_ = apiInfo.path + "ajax_btn_api_remove.do";
             var obj = JSON.parse(ajaxs.sendAjax('post' , url_ , data_));
 			if(obj.status == 'success'){
 				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){

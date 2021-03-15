@@ -48,7 +48,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 				.withHost(host)
 				.withPort(port)
 				.withAuthentication(username, password)
-				.withTimeout(Duration.of(2, ChronoUnit.SECONDS))		// 2秒超时
+				.withTimeout(Duration.of(30, ChronoUnit.SECONDS))		// 2秒超时
 				.build();
 		resources = DefaultClientResources.builder()
 	    		.ioThreadPoolSize(2)							// I/O线程数 default : Runtime.getRuntime().availableProcessors()

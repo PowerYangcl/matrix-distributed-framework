@@ -287,10 +287,10 @@ public class ApiCenterController extends BaseController {
 	 * @date 2020年1月10日 下午4:44:37 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_api_info_remove", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_api_remove", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiInfoRemove(AcApiInfoDto d , HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_info_remove", "删除api信息");
+	public JSONObject ajaxBtnApiRemove(AcApiInfoDto d , HttpSession session){ 
+		super.userBehavior(session, logger, "ajax_btn_api_remove", "删除api信息");
 		return service.ajaxApiInfoRemove(d, session);  
 	}
 	

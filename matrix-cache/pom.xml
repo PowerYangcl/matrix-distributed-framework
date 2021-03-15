@@ -15,7 +15,7 @@
 	<properties>
 		<!-- 全局性控制项目编码为UTF-8 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<redisson.version>3.10.7</redisson.version>
+		<redisson.version>3.15.0</redisson.version>
 	</properties>
 	
 	<dependencies>
