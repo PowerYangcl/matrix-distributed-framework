@@ -1,24 +1,14 @@
 package com.matrix.launch;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.util.IntrospectorCleanupListener;
 
@@ -128,33 +118,6 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
         return srb;
     }
     
-	/**
-	 * @description: Spring mvc 返回json格式 
-	 * 
-	 * @author Yangcl
-	 * @date 2021-3-10 15:17:55
-	 * @home https://github.com/PowerYangcl
-	 * @version 1.0.0.1
-	 */
-//	@Bean(name="mappingJacksonHttpMessageConverter")
-//	public MappingJackson2HttpMessageConverter mjhmc() {
-//		MappingJackson2HttpMessageConverter mjhmc = new MappingJackson2HttpMessageConverter();
-//		List<MediaType> list = new ArrayList<MediaType>();
-//		list.add(new MediaType("text/html;charset=UTF-8"));
-//		mjhmc.setSupportedMediaTypes(list);
-//		return mjhmc;
-//	}
-	
-//	@Bean(name="noCachemappingJacksonHttpMessageConverter")
-//	public NoCacheMappingJacksonHttpMessageConverter ncmjhmc() {
-//		return new NoCacheMappingJacksonHttpMessageConverter();
-//	}
-	
-//	@Bean
-//	public RequestMappingHandlerAdapter rmha() {
-//		RequestMappingHandlerAdapter rmha = new RequestMappingHandlerAdapter();
-//		return rmha;
-//	}
 }
 
 

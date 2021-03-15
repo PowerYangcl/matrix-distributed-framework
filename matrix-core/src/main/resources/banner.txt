@@ -1,5 +1,5 @@
-Application Version: ${demo.version}
-Spring Boot Version: ${spring-boot.version}
+Application Version: v1.0.0.1
+Spring Boot Version: ${spring-boot.formatted-version}
 ////////////////////////////////////////////////////////////////////  
 //                          _ooOoo_                               //  
 //                         o8888888o                              //  
@@ -23,9 +23,3 @@ Spring Boot Version: ${spring-boot.version}
 //            佛祖保佑       永不宕机      永无BUG                //
 //////////////////////////////////////////////////////////////////// 
 
-
-
-matrix-distributed-framework
- 
-                                                                                                                                                  
-                                                                                                                                                                     

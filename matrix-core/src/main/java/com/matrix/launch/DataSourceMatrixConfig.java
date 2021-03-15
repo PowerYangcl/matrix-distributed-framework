@@ -2,7 +2,6 @@ package com.matrix.launch;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import com.matrix.base.BaseClass;
 import com.matrix.base.BaseLog;
 
 import org.apache.ibatis.session.SqlSessionFactory;
