@@ -8,11 +8,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.util.CollectionUtils;
-
 import com.google.common.collect.Lists;
 import com.matrix.pojo.entity.RedisEntity;
 
+import io.lettuce.core.KeyScanCursor;
 import io.lettuce.core.LettuceFutures;
 import io.lettuce.core.Range;
 import io.lettuce.core.ReadFrom;
@@ -53,17 +52,19 @@ public class LettuceSentinel extends AbstractLettuceMode {
 				.withSentinel(host, port, sentinelPassword)		// sentinelPassword 可为空
 				.withSentinelMasterId(sentinelMasterId)		// 哨兵Master的ID		文档写的模糊，暂时不知道是个什么，MMP查了好久。
 				.withAuthentication(username, password)
-				.withTimeout(Duration.of(30, ChronoUnit.SECONDS)) // 30秒超时
+				.withTimeout(Duration.of(300, ChronoUnit.SECONDS)) // 30秒超时
 				.build();
 		resources = DefaultClientResources.builder()
 				.ioThreadPoolSize(4) // I/O线程数 default: Runtime.getRuntime().availableProcessors()
 				.computationThreadPoolSize(4) // 任务线程数 default : Runtime.getRuntime().availableProcessors()
 				.build();
+		this.init();
+	}
+	
+	public void init() {
 		client = RedisClient.create(resources);
-
 		connection = MasterReplica.connect(client, StringCodec.UTF8, redisUri);
 		connection.setReadFrom(ReadFrom.REPLICA); // 只从从节点读取数据
-
 		commands = connection.sync(); // 创建同步命令
 		asyncCommands = connection.async();
 	}
@@ -172,7 +173,9 @@ public class LettuceSentinel extends AbstractLettuceMode {
 				futureList.add(asyncCommands.expire(entity.getKey(), expire));
 			}
 			asyncCommands.flushCommands(); // write all commands to the transport layer
-			return LettuceFutures.awaitAll(5, TimeUnit.SECONDS, futureList.toArray(new RedisFuture[futureList.size()]));
+			boolean awaitAll = LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futureList.toArray( new RedisFuture[futureList.size()] ));
+    		this.reset();
+    		return awaitAll;
 		} catch (Exception ex) {
 			ex.printStackTrace(); // TODO 指定log格式
 		}
@@ -267,32 +270,36 @@ public class LettuceSentinel extends AbstractLettuceMode {
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */
-	public Boolean batchDeleteByPrefix(String prefix) {
-		List<String> list = null;
-		try {
-			List<RedisFuture<Long>> futureList = Lists.newArrayList(); // perform a series of independent calls
-			asyncCommands.setAutoFlushCommands(false);
-			do {
-				list = commands.scan(new ScanArgs().limit(1000).match(prefix)).getKeys();
-				if (list == null || list.size() == 0) {
-					break;
-				}
-				for (String key : list) {
-					futureList.add(asyncCommands.del(key));
-				}
-			} while (!CollectionUtils.isEmpty(list));
-
-			if (CollectionUtils.isEmpty(futureList)) {
-				return true;
-			}
-			asyncCommands.flushCommands(); // write all commands to the transport layer
-			return LettuceFutures.awaitAll(10, TimeUnit.SECONDS,
-					futureList.toArray(new RedisFuture[futureList.size()]));
+    public Boolean batchDeleteByPrefix(String prefix){
+    	try {
+    		Set<String> keyList = new HashSet<>();
+    		KeyScanCursor<String> scanCursor = null;
+    		do {
+                if (scanCursor == null) {
+                    scanCursor = commands.scan( ScanArgs.Builder.matches(prefix + "*").limit(1000) );
+                } else {
+                    scanCursor = commands.scan( scanCursor , ScanArgs.Builder.matches(prefix + "*").limit(1000) );
+                }
+                keyList.addAll(scanCursor.getKeys());
+            } while (!scanCursor.isFinished());
+    		if(keyList == null || keyList.size() == 0) {
+	    		return true;
+	    	}
+    		
+    		List<RedisFuture<Long>> futureList = Lists.newArrayList();		// perform a series of independent calls
+    		asyncCommands.setAutoFlushCommands(false);
+    		for(String key : keyList) {
+    			futureList.add( asyncCommands.del(key) );
+    		}
+    		asyncCommands.flushCommands();	// write all commands to the transport layer
+    		boolean awaitAll = LettuceFutures.awaitAll(10, TimeUnit.SECONDS, futureList.toArray( new RedisFuture[futureList.size()] ));
+    		this.reset();
+    		return awaitAll;
 		} catch (Exception ex) {
-			ex.printStackTrace(); // TODO 指定log格式
+			ex.printStackTrace();
 		}
-		return false;
-	}
+    	return false;
+    }
 
 	/////////////////////////////////////////////////////////////////// 哈希存储 //////////////////////////////////////////////////////////////////////
 	/**

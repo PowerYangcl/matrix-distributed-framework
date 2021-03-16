@@ -27,8 +27,22 @@ public abstract class AbstractLettuceMode extends BaseClass implements ICacheFac
 		this.setPassword( this.getConfig("matrix-cache.lettuce_password_" + this.getConfig("matrix-core.model")) ); 
 	}
 
-	public abstract Boolean close();
+	/**
+	 * @description: 如果commands和asyncCommands一起用需要重置资源链接
+	 * 
+	 * @author Yangcl
+	 * @date 2021-3-16 15:57:42
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.0.0.1
+	 */
+	public void reset() {
+		this.close();
+		this.init();
+	}
 	
+	public abstract void init();
+	
+	public abstract Boolean close();
 }
 
 

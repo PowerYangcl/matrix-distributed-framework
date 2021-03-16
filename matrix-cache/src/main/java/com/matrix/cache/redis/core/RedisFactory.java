@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 
+import com.matrix.base.BaseLog;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.inf.ICacheFactory;
@@ -324,7 +325,7 @@ public class RedisFactory implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean batchDeleteByPrefix(String prefix) {
-    	return RedisTemplateLettuce.getInstance().batchDeleteByPrefix(prefix);
+    	return RedisTemplateLettuce.getInstance().batchDeleteByPrefix(baseKey + prefix);
     }
 
 
