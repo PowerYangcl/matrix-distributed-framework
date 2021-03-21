@@ -781,7 +781,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @version 1.0.0
 	 */
 	public String requestInfoList() {
-		return "jsp/api/request/api-request-info-list";
+		return "views/api/request/api-request-info-list";
 	}
 
 	/**
@@ -809,8 +809,10 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		PageHelper.startPage(num, size);
 		List<AcRequestInfoView> list = acRequestInfoMapper.queryPageList(entity); 
 		if (list != null && list.size() > 0) {
+			result.put("code" , RpcResultCode.SUCCESS);
 			result.put("status", "success");
 		} else {
+			result.put("code" , RpcResultCode.RESULT_NULL);
 			result.put("status", "error");
 			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
 		}
