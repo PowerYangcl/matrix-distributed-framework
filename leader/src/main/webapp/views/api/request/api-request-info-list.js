@@ -71,21 +71,25 @@ layui.config({
 		// 查询按钮
 		var search = {		
 			reload : function() {
-				var target = $('#target').val();
+				var organization = $('#organization').val();
+				var key = $('#key').val();
 				table.reload('page-table-reload', {
 					page : {
 						curr : 1  // 重新从第 1 页开始
 					},
 					where : {  // 此参数会合并请求到后台
-						target:target
+						organization:organization,
+						key:key
 					}
 				}, 'data');
 				
-				$('#target').val(target);
+				$('#organization').val(organization);
+				$('#key').val(key);
 			},
 			
 			reset : function(){
-				$('#target').val('');
+				$('#organization').val('');
+				$('#key').val('');
 				search.reload();
 			}
 		};

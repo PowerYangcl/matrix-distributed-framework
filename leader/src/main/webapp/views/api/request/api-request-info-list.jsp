@@ -50,7 +50,7 @@
 						<div class="layui-card-header">
 							<a><cite>系统权限配置 / </cite></a> 
 							<a><cite>系统开放接口 / </cite></a>
-							<a><cite>api所属项目</cite></a>
+							<a><cite>请求者信息</cite></a>
 						</div>
 						<div class="layui-card-body">
 						
@@ -58,16 +58,19 @@
 							
 							<script id="table-search-toolbar" type="text/html">
               					<div class="layui-btn-container">
-									<div class="layui-table-search-div" >项目名称：</div>
-									<input id="target" name="target" class="layui-table-search" autocomplete="off">
-                					<button class="security-btn layui-btn layui-btn-sm" key="api_project_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
-                					<button class="security-btn layui-btn layui-btn-sm" key="api_project_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
-                					<button class="security-btn layui-btn layui-btn-sm" key="api_project_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
+									<div class="layui-table-search-div" >请求者名称：</div>
+									<input id="organization" name="organization" class="layui-table-search" autocomplete="off">
+									<div class="layui-table-search-div" >公钥标识：</div>
+									<input id="key" name="key" class="layui-table-search" autocomplete="off">
+
+                					<button class="security-btn layui-btn layui-btn-sm" key="api_requester_info:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="api_requester_info:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="api_requester_info:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
-              					<a class="security-btn layui-btn layui-btn-xs" key="api_project_list:edit" lay-event="edit">修改</a>
-              					<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="api_project_list:delete" lay-event="del">删除</a>
+              					<a class="security-btn layui-btn layui-btn-xs" key="api_requester_info:edit" lay-event="edit">修改</a>
+              					<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="api_requester_info:delete" lay-event="del">删除</a>
             				</script>
 						</div>
 					</div>
