@@ -10,7 +10,7 @@ layui.config({
   	  	var $ = layui.$;
   	  	var layer = layui.layer;
   	    table.render({
-  	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload
+  	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload 
   	      	elem: '#table-toolbar',				// 表格控制句柄
   	      	title: '请求者信息',
   	      	url : layui.setter.path + 'apicenter/ajax_request_info_list.do',
