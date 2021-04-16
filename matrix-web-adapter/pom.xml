@@ -46,6 +46,13 @@
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-jsp-api</artifactId>
         </dependency>
+        
+        <!-- Spring Boot项目中修改JSP文件，页面动态更新  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 	</dependencies>
 	
 </project>

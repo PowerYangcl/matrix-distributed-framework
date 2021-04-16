@@ -70,7 +70,12 @@
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
               					<a class="security-btn layui-btn layui-btn-xs" key="api_requester_info:edit" lay-event="edit">修改</a>
-              					<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="api_requester_info:delete" lay-event="del">删除</a>
+								{{#  if(d.flag == 1){ }}
+              						<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="api_requester_info:delete" lay-event="del">禁用</a>
+                				{{#  }else{ }}
+              						<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="api_requester_info:delete" lay-event="del">启用</a>
+               	 				{{#  } }}
+
             				</script>
 						</div>
 					</div>

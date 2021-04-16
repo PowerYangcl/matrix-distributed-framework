@@ -100,7 +100,7 @@ layui.config({
 			// 添加按钮需要进行强数据验证
 			addDialog : function(securityKey){
 				layer.open({
-					title : '添加API项目',
+					title : '添加接口请求者',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
 		          	area : ['600px', '250px'],
 		          	fixed : false,
@@ -110,7 +110,7 @@ layui.config({
 	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
-	          			var url_ =  layui.setter.path + 'apicenter/ajax_btn_api_project_add.do';
+	          			var url_ =  layui.setter.path + 'apicenter/ajax_request_info_add.do';
 						var data_ = $("#dialog-api-form").serializeArray();
 						var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 						if(obj.status == 'success'){
@@ -135,7 +135,7 @@ layui.config({
 			// 编辑按钮需要进行强数据验证
 			editDialog : function(o){
 				layer.open({
-					title : '修改API项目',
+					title : '修改请求者信息',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
 		          	area : ['600px', '250px'],
 		          	fixed : false,
@@ -145,8 +145,13 @@ layui.config({
 	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
-	          			var url_ =  layui.setter.path + 'apicenter/ajax_btn_api_project_edit.do';
+	          			var url_ =  layui.setter.path + 'apicenter/ajax_request_info_edit.do';
 						var data_ = $("#dialog-api-form").serializeArray();
+						var isallot = new Object();
+						isallot.name = "isallot"; 
+						isallot.value = 0;
+			        	data_.push(isallot);
+						
 						var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 						if(obj.status == 'success'){
 			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
@@ -168,14 +173,22 @@ layui.config({
 			},
 			
 			deleteMcRole:function(o){
-	        	layer.confirm('您确定要删除这个角色【' + o.data.target + '】吗？' , { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+				var aaaa = o;
+				var msg = '启用';
+				if(o.data.flag == 1){
+					msg = '禁用';
+				}
+	        	layer.confirm('您确定要' + msg + '【' + o.data.organization + '】吗？' , 
+	        			{ title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
 						var type_ = 'post';
-			            var url_ = layui.setter.path + 'apicenter/ajax_btn_api_project_delete.do';
+			            var url_ = layui.setter.path + 'apicenter/ajax_request_info_edit.do';
 			        	var data_ = {
 		        			id : o.data.id ,
+		        			isallot:0,
+		        			flag: o.data.flag === 1 ? 0 : 1,
 		        			eleValue : o.key
-	        			}; 
+	        			};
 			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
 			            if(obj.status == 'success'){
 			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
@@ -196,49 +209,39 @@ layui.config({
 	        // 绘制添加和编辑弹框
 			drawDialogPage : function(type , key , e){
 				var id = "";
-				var target = "";
-				var serviceUrl = "";
-				var private_ = "checked";
+				var organization = "";
+				var private_ = "selected";
 				var public_ = "";
 				
 				if(type == 'edit') {
 					id = e.id;
-					target = e.target;
-					serviceUrl = e.serviceUrl;
+					organization = e.organization;
 					if(e.atype === "public"){
 						private_ = "";
-						public_ = "checked";
+						public_ = "selected";
 					}
 				}
 				
 				var html = '<form id="dialog-api-form"><table class="dialog-form" style="width:100%">';
 					html += '<tr>';
-						html += '<td align="right" style="width:195px">项目名称：</td>';
+						html += '<td align="right" style="width:195px">请求者：</td>';
 						html += '<td align="left">';
-							html += '<input type="text" id="target" name="target" value="' + target + '" placeholder="角色名称 20个字以内 " autocomplete="off" style="margin-bottom: 10px;" maxlength="50">';
+							html += '<input type="text" id="organization" name="organization" value="' 
+								+ organization + '" placeholder="接口调用者的名称，比如：财务部 " autocomplete="off" style="margin-bottom: 10px; width: 300px; " maxlength="50">';
 						html += '</td>';
 					html += '</tr>';
-					
 					html += '<tr>';
-						html += '<td align="right" style="width:195px">开放类型：</td>';
+						html += '<td align="right" style="width:195px">请求类型：</td>';
 						html += '<td align="left">';
-							html += '<input type="radio" name="atype" value="private" style="vertical-align:middle;" ' + private_ + '><span style="vertical-align:middle;">公司内部使用接口</span>';
-							html += '&nbsp&nbsp&nbsp&nbsp&nbsp';
-							html += '<input type="radio" name="atype" value="public" style="vertical-align:middle;" ' + public_ + '><span style="vertical-align:middle;">开放给第三方的接口</span>';
+							html += '<select id="atype" name="atype" style="margin-left:0px; margin-bottom: 10px; width: 312px;">';
+								html += '<option value="private"  ' + private_ + '>公司内部请求</option>';
+								html += '<option value="public"  ' + public_ + '>开放接口请求</option>';
+							html += '</select>';
 						html += '</td>';
 					html += '</tr>';
-					
-					html += '<tr>';
-						html += '<td align="right">Api服务器：</td>';
-						html += '<td align="left">';
-							html += '<input type="text" id="service-url" name="serviceUrl" value="' + serviceUrl + '" placeholder="比如：http://10.23.9.16:80/mip-web-api/api.do" autocomplete="off" style="margin-top: 10px; margin-bottom: 10px;width: 355px;" maxlength="300">';
-						html += '</td>';
-					html += '</tr>';
-					
 					
 					if(type == 'edit'){
 						html += '<input type="hidden" name="id" value="' + id + '">';
-						
 					}
 					html += '<input type="hidden" name="eleValue" value="' + key + '">';
 				html += '</table></form>';

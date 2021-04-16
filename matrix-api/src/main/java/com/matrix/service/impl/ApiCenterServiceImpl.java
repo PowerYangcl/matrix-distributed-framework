@@ -872,42 +872,43 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description:编辑信息(organization & atype)|启用/禁用(flag)|为第三方调用者分配系统开放接口(open-api)
 	 *
-	 * @param dto
+	 * @param dto.isallot 标识执行条件，0: 【编辑信息】和【启用/禁用】| 1: 为这个open-api的请求者分配可以请求的接口 TODO 此功能尚未有界面功能开发。
 	 * @param request
 	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月1日 下午2:21:07 
 	 * @version 1.0.0
 	 */
-	public JSONObject ajaxRequestInfoEdit(AcRequestInfoDto d, HttpServletRequest request, HttpSession session) {
+	@Transactional
+	public JSONObject ajaxRequestInfoEdit(AcRequestInfoDto dto, HttpServletRequest request, HttpSession session) {
 		JSONObject result = new JSONObject();
-		if(d.getId() == null || d.getIsallot() == null) {
+		if(dto.getId() == null || dto.getIsallot() == null) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010083));  // 600010083=主键丢失
 			return result;
 		}
-		if(d.getIsallot() == 1 && StringUtils.isBlank(d.getTargets())) {
+		if(dto.getIsallot() == 1 && StringUtils.isBlank(dto.getTargets())) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010082));  // 600010082=接口请求者关联API信息不得为空!
 			return result;
 		}
-		AcRequestInfo e = acRequestInfoMapper.find(d.getId());
-		if(d.getIsallot() ==1 && e.getAtype().equals("private")) {
+		AcRequestInfo e = acRequestInfoMapper.find(dto.getId());
+		if(dto.getIsallot() ==1 && e.getAtype().equals("private")) {
 			result.put("status", "error");
 			result.put("msg", this.getInfo(600010084));  // 600010084=内部接口请求者不可分配开放接口数据(open-api)!
 			return result;
 		}
 		
 		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		d.setUpdateTime(new Date());
-		d.setUpdateUserId(u.getId()); 
-		d.setUpdateUserName(u.getUserName());  
+		dto.setUpdateTime(new Date());
+		dto.setUpdateUserId(u.getId()); 
+		dto.setUpdateUserName(u.getUserName());  
 		
-		if(d.getIsallot() ==1) { 
-			String [] arr = d.getTargets().split(",");
+		if(dto.getIsallot() ==1) { 			// TODO 为这个请求者分配他能够请求的接口。
+			String [] arr = dto.getTargets().split(",");
 			for(int i = 0 ; i < arr.length ; i ++) {
 				AcRequestOpenApi roa = new AcRequestOpenApi();
-				roa.setAcRequestInfoId(d.getId());
+				roa.setAcRequestInfoId(dto.getId());
 				roa.setAcApiInfoId(Long.valueOf(arr[i]));
 				
 				roa.setCreateTime(new Date());
@@ -920,12 +921,12 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			}
 		}else {  // 编辑信息(organization & atype)|启用/禁用(flag)
 			AcRequestInfo e_ = new AcRequestInfo(); 
-			e_.setId(d.getId()); 
-			e_.setOrganization(d.getOrganization());
-			e_.setKey(d.getKey());
-			e_.setValue(d.getValue());
-			e_.setAtype(d.getAtype());
-			e_.setFlag(d.getFlag());
+			e_.setId(dto.getId()); 
+			e_.setOrganization(dto.getOrganization());
+			e_.setKey(dto.getKey());
+			e_.setValue(dto.getValue());
+			e_.setAtype(dto.getAtype());
+			e_.setFlag(dto.getFlag());
 			e_.setUpdateTime(new Date());
 			e_.setUpdateUserId(u.getId()); 
 			e_.setUpdateUserName(u.getUserName());  
@@ -935,27 +936,9 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 				result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败! 
 				return result;
 			}
+			// TODO 如果从开发接口更新为内部接口，还需要acRequestOpenApiMapper软删除关联的信息
 		}
-		
-		e = acRequestInfoMapper.find(d.getId());
-		// 开始初始化API缓存
-		JSONObject cache = JSONObject.parseObject(JSONObject.toJSONString(e)); 
-		if(e.getAtype().equals("public")) {
-			List<AcRequestOpenApiView> list = acRequestOpenApiMapper.findListById(d.getId());
-			if(list == null || list.size() == 0) {
-				cache.put("list", new ArrayList<String>()); 
-			}else {
-				List<String> list_ = new ArrayList<String>();
-				for(AcRequestOpenApiView v : list) {
-					list_.add(v.getTarget());
-				}
-				cache.put("list", list_); 
-			}
-		}else {
-			cache.put("list", new ArrayList<String>());   
-		}
-		
-		launch.loadDictCache(DCacheEnum.ApiRequester , null).set(e.getKey() , cache.toJSONString()); 
+		launch.loadDictCache(DCacheEnum.ApiRequester , null).del(e.getKey()); // 删除缓存，获取该缓存时会自动加载，少写冗余代码。
 		result.put("status", "success");
 		result.put("msg", this.getInfo(600010063));  // 600010063=数据修改成功!
 		return result;

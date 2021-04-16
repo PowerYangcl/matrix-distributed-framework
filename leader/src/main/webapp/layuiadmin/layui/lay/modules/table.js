@@ -852,7 +852,7 @@ layui.define(['laytpl', 'laypage', 'layer', 'form', 'util'], function(exports) {
                 elem: 'layui-table-page' + options.index,
                 count: count,
                 limit: options.limit,
-                limits: options.limits || [10, 20, 30, 40, 50, 60, 70, 80, 90],
+                limits: options.limits || [10, 20, 30, 40, 50, 100,500,1000,2000],
                 groups: 3,
                 layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
                 prev: '<i class="layui-icon">&#xe603;</i>',
