@@ -24,7 +24,12 @@ public class SpringCtxUtil {
 	}
 
 	public static <T> T getBean(Class<T> clazz) throws BeansException {
-		return (T) ctx.getBean(clazz);
+		try {
+			return (T) ctx.getBean(clazz);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	@SuppressWarnings("unchecked")

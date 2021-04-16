@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseClass;
+import com.matrix.base.RpcResultCode;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -87,6 +88,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 */	
 	public JSONObject ajaxJobInfoList(JobInfoDto dto , HttpServletRequest request) {
     	JSONObject result = new JSONObject();
+    	result.put("entity", dto);
     	int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
     	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
@@ -96,18 +98,27 @@ public class JobServiceImpl extends BaseClass implements IJobService {
     		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
     		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
     	}
- 
-		PageHelper.startPage(pageNum , pageSize);
-		List<JobInfoView> list = jobInfoMapper.pageListByDto(dto);
-		if (list != null && list.size() > 0) {
-			result.put("status", "success");
-		} else {
+    	
+    	try {
+    		PageHelper.startPage(pageNum , pageSize);
+    		List<JobInfoView> list = jobInfoMapper.pageListByDto(dto);
+    		result.put("status", "success");
+    		if (list != null && list.size() > 0) {
+    			result.put("code" , RpcResultCode.SUCCESS);
+    			result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
+    		} else {
+    			result.put("code" , RpcResultCode.RESULT_NULL);
+    			result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+    		}
+    		PageInfo<JobInfoView> pageList = new PageInfo<JobInfoView>(list);
+    		result.put("data", pageList);
+    		return result;
+		} catch (Exception e) {
+			e.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
+			return result;
 		}
-		PageInfo<JobInfoView> pageList = new PageInfo<JobInfoView>(list);
-		result.put("data", pageList);
-		return result;
     }
 
 

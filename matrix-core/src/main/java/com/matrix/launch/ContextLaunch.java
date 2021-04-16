@@ -34,12 +34,14 @@ public class ContextLaunch {
 	
 	private static final String execution = "execution(* com.matrix.service.impl.*.*(..))";
 	
+	private SystemInit systemInit = new SystemInit();
+	
 	@Autowired
 	private TransactionManager transactionManager;
 	
 	@Bean(name = "mdf-listener")
 	public MatrixDistributedFrameworkListener initBbean() {
-		return new MatrixDistributedFrameworkListener();
+		return new MatrixDistributedFrameworkListener(systemInit);
 	}
 	
     @Bean(name = "tx-advice")
@@ -78,12 +80,12 @@ public class ContextLaunch {
     	this.systemInit();
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression(execution);
-        return new DefaultPointcutAdvisor(pointcut, txAdvice());
+        return new DefaultPointcutAdvisor(pointcut, this.txAdvice());
     }
     
     private void systemInit() {
     	BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing starting ! ! ! ! !" , this.getClass());
-    	boolean flag = new SystemInit().onInit();
+    	boolean flag = systemInit.onInit();
 		if(flag) {
 			BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing Finished ! ! ! ! !" , this.getClass());
 		}else {

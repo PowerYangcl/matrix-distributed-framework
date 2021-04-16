@@ -29,9 +29,7 @@ import com.matrix.system.cache.SysWorkDir;
 public class SystemInit extends BaseInit {
 	
 	public boolean onInit() {
-		initDelete();
-		initProps();
-		return initClass();
+		return initProps();
 	}
 
  
@@ -59,9 +57,16 @@ public class SystemInit extends BaseInit {
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	private void initProps() {
-		this.getLogger(null).sysoutInfo("开始实例化配置文件！！！！！！！！！", this.getClass());
-		super.initEcache(PropConfig.getInstance() , PropInfo.getInstance());
+	private boolean initProps() {
+		try {
+			this.initDelete();
+			this.getLogger(null).sysoutInfo("开始实例化配置文件！！！！！！！！！", this.getClass());
+			super.initEcache(PropConfig.getInstance() , PropInfo.getInstance());
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return false;
 	}
 
 	/**
@@ -71,7 +76,7 @@ public class SystemInit extends BaseInit {
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	private boolean initClass() {
+	public boolean initClass() {
 		boolean bFlagInit = true;
 		String configName = "matrix-core.initclass";   
 		Map<String , String> map = PropVisitor.getConfigMap(configName);
@@ -87,7 +92,7 @@ public class SystemInit extends BaseInit {
 					}
 				} catch (Exception e) {
 					bFlagInit = false;
-					this.getLogger(null).logInfo(100090003 , this.getClass() , className);
+					this.getLogger(null).sysoutInfo(100090003 , this.getClass() , className);
 					e.printStackTrace();
 				}
 			}

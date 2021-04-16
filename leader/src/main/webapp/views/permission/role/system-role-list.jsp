@@ -48,7 +48,7 @@
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-header">
-							<a><cite>系统权限配置 / </cite></a> 
+							<a><cite>矩阵系统配置 / </cite></a> 
 							<a><cite>系统用户相关 / </cite></a>
 							<a><cite>系统角色列表</cite></a>
 						</div>

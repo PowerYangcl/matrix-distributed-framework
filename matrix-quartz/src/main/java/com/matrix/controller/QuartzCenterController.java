@@ -45,7 +45,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping("page_quartz_job_info_list")  
 	public String pageQuartzJobInfo(HttpSession session){ 
 		super.userBehavior(session, logger, "page_quartz_job_info_list", "定时任务列表页");
-		return "jsp/quartz/info/job-info";  
+		return "views/quartz/info/job-info-list";  
 	}
 	
 	/**

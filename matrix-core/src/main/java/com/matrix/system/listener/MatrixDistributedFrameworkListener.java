@@ -2,6 +2,8 @@ package com.matrix.system.listener;
 
 import com.matrix.base.BaseLog;
 import com.matrix.system.SpringCtxUtil;
+import com.matrix.system.init.SystemInit;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -15,6 +17,11 @@ import org.springframework.context.event.ContextRefreshedEvent;
  */
 public class MatrixDistributedFrameworkListener implements ApplicationListener<ContextRefreshedEvent>{
 
+	private SystemInit systemInit;
+	public MatrixDistributedFrameworkListener(SystemInit systemInit) {
+		this.systemInit = systemInit;
+	}
+
 	public void onApplicationEvent(ContextRefreshedEvent e) {
 		if(e.getApplicationContext().getParent() != null) {
 			BaseLog.getInstance().setLogger(null).sysoutInfo("MatrixDistributedFrameworkListener出现二次调用 ! ! ! ! !" , this.getClass()); 
@@ -22,6 +29,7 @@ public class MatrixDistributedFrameworkListener implements ApplicationListener<C
 		}
 		ApplicationContext context = e.getApplicationContext(); 
 		SpringCtxUtil.setApplicationContext(context);
+		systemInit.initClass();
 	}
 }
 

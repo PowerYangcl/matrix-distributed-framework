@@ -78,6 +78,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request) {
 		JSONObject result = new JSONObject();
+		result.put("entity", entity);
 		try {
 			String pageNum = request.getParameter("pageNum"); // 当前第几页
 			String pageSize = request.getParameter("pageSize"); // 当前页所显示记录条数
@@ -101,7 +102,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			}
 			PageInfo<AcApiProjectView> pageList = new PageInfo<AcApiProjectView>(list);
 			result.put("data", pageList);
-			result.put("entity", entity);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

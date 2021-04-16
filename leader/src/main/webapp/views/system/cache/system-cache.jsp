@@ -49,7 +49,7 @@
 				<div class="layui-col-md12" >
 					<div class="layui-card" style="height: 850px;">
 						<div class="layui-card-header">
-							<a><cite>系统权限配置 / </cite></a> 
+							<a><cite>矩阵系统配置 / </cite></a> 
 							<a><cite>系统工具 / </cite></a>
 							<a><cite>缓存查看</cite></a>
 						</div>

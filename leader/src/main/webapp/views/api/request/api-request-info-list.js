@@ -62,11 +62,8 @@ layui.config({
 				pageDialog.deleteMcRole(o);
 			} else if (o.event === 'edit') {
 				pageDialog.editDialog(o);
-			}else if (o.event === 'role') {
-				pageDialog.roleFuncDialog(o)
 			}
 		});
-		
 		
 		// 查询按钮
 		var search = {		
@@ -93,7 +90,6 @@ layui.config({
 				search.reload();
 			}
 		};
-		
 		
 		// 页面弹窗对象
 		var pageDialog = {
@@ -249,7 +245,6 @@ layui.config({
 				return html;
 			},
 		}
-
 	});
 
 

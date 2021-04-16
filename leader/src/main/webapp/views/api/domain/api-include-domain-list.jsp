@@ -48,7 +48,7 @@
 				<div class="layui-col-md12">
 					<div class="layui-card">
 						<div class="layui-card-header">
-							<a><cite>系统权限配置 / </cite></a> 
+							<a><cite>矩阵系统配置 / </cite></a> 
 							<a><cite>系统开放接口 / </cite></a>
 							<a><cite>跨域白名单</cite></a>
 						</div>
