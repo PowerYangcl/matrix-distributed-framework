@@ -130,7 +130,7 @@
 
 
 	<!-- 引入dubbo配置文件 -->
-	<import resource="classpath*:/META-INF/matrix/spring-dubbo.xml" />
+	<!-- <import resource="classpath*:/META-INF/matrix/spring-dubbo.xml" /> -->
 	<!-- 引入mq配置文件 -->
 	<!-- <import resource="classpath*:/META-INF/matrix/spring-rabbit-mq.xml" /> -->
 	<!-- 引入mongodb配置文件 -->
