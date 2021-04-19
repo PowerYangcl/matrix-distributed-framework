@@ -180,9 +180,9 @@ layui.config({
 			// 添加按钮需要进行强数据验证
 			addDialog : function(securityKey){
 				layer.open({
-					title : '添加接口请求者',
+					title : '添加定时任务',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
-		          	area : ['600px', '250px'],
+		          	area : ['920px', '550px'],
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
@@ -289,45 +289,126 @@ layui.config({
 	        // 绘制添加和编辑弹框
 			drawDialogPage : function(type , key , e){
 				var id = "";
-				var organization = "";
-				var private_ = "selected";
-				var public_ = "";
-				
-				if(type == 'edit') {
-					id = e.id;
-					organization = e.organization;
-					if(e.atype === "public"){
-						private_ = "";
-						public_ = "selected";
-					}
+				var alert = '';
+				if(type == 'add') {
+					alert = 'Scheduler中轮询选择否，则不会不会被Quartz定时器轮询';
+				}else if(type == 'edit' || type == 'info'){
+					alert = "";
+					id = "";
 				}
 				
-				var html = '<form id="dialog-api-form"><table class="dialog-form" style="width:100%">';
+				var title = '<div class="dialog-form-title">';
+						title += '<h3>' + alert + '</h3>';
+					title += '</div>';
+				
+				var html = '<form id="dialog-api-form">' + title + '<table class="dialog-form-talbe" style="width:95%;margin-left:20px">';
 					html += '<tr>';
-						html += '<td align="right" style="width:195px">请求者：</td>';
-						html += '<td align="left">';
-							html += '<input type="text" id="organization" name="organization" value="' 
-								+ organization + '" placeholder="接口调用者的名称，比如：财务部 " autocomplete="off" style="margin-bottom: 10px; width: 300px; " maxlength="50">';
+						html += '<td style="text-align: left;width:80px;">任务标题：</td>';
+						html += '<td style="text-align: left">';
+							html += '<input type="text" name="jobTitle" class="dialog-form-input" style="width:90%;" placeholder="20个字符以内"  maxlength="20">';
+						html += '</td>';
+						html += '<td style="text-align: left;width:90px;">定时周期：</td>';
+						html += '<td style="text-align: left">';
+							html += '<input type="text" name="jobTriger" class="dialog-form-input" style="width:90%;" placeholder="请输入Cron表达式：http://cron.qqe2.com/"  maxlength="40">';
 						html += '</td>';
 					html += '</tr>';
+					
 					html += '<tr>';
-						html += '<td align="right" style="width:195px">请求类型：</td>';
-						html += '<td align="left">';
-							html += '<select id="atype" name="atype" style="margin-left:0px; margin-bottom: 10px; width: 312px;">';
-								html += '<option value="private"  ' + private_ + '>公司内部请求</option>';
-								html += '<option value="public"  ' + public_ + '>开放接口请求</option>';
+						html += '<td style="text-align: left;width:160px;" colspan="1">定时周期描述：</td>';
+						html += '<td style="text-align: left" colspan="3">';
+							html += '<input type="text" name="remark" class="dialog-form-input" style="width:96%;" placeholder="请输入Cron表达式的含义描述, 如：每天0点执行"  maxlength="512">';
+						html += '</td>';
+					html += '</tr>';
+					
+					html += '<tr>';
+						html += '<td style="text-align: left;width:80px;">任务运行组：</td>';
+						html += '<td style="text-align: left">';
+							html += '<select name="runGroupId" class="job-group" style="width:94%;">';
+								html += pageDialog.jobGroupList();
 							html += '</select>';
 						html += '</td>';
-					html += '</tr>';
+						html += '<td style="text-align: left;width:90px;">并发执行：</td>';
+						html += '<td style="text-align: left">';
+							html += '<span id="" class="field" style="padding-top:5px">';
+								html += '<input type="radio" name="concurrentType" value="0" style="vertical-align:middle;" checked>';
+								html += '<span style="vertical-align:middle;margin-left:5px;">否</span>';
+								html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+								html += '<input type="radio" name="concurrentType" value="1" style="vertical-align:middle;">';
+								html += '<span style="vertical-align:middle;margin-left:5px;">是</span>';
+							html += '</span>';
+						html += '</td>';
+					html += '</tr>';	
+					
+					html += '<tr>';
+						html += '<td style="text-align: left;width:80px;">锁有效时间：</td>';
+						html += '<td style="text-align: left">';
+							html += '<input type="text" name="expireTime" class="dialog-form-input" style="width:90%;" placeholder="单位：秒"  maxlength="2">';
+						html += '</td>';
+						html += '<td style="text-align: left;width:90px;">锁超时时间：</td>';
+						html += '<td style="text-align: left">';
+							html += '<input type="text" name="timeOut" class="dialog-form-input" style="width:90%;"  placeholder="锁超时时间，单位：毫秒" maxlength="4">';
+						html += '</td>';
+					html += '</tr>';					
+					
+					html += '<tr>';
+						html += '<td style="text-align: left;width:80px;">Scheduler中轮询：</td>';
+						html += '<td style="text-align: left">';
+							html += '<span id="" class="field" style="padding-top:5px">';
+								html += '<input type="radio" name="trigerType" value="1" style="vertical-align:middle;" checked>';
+								html += '<span style="vertical-align:middle;margin-left:5px;">是</span>';
+								html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+								html += '<input type="radio" name="trigerType" value="2" style="vertical-align:middle;">';
+								html += '<span style="vertical-align:middle;margin-left:5px;">否</span>';
+							html += '</span>';
+						html += '</td>';
+						html += '<td style="text-align: left;width:90px;">记录日志：</td>';
+						html += '<td style="text-align: left">';
+							html += '<span id="" class="field" style="padding-top:5px">';
+								html += '<input type="radio" name="logType" value="1" style="vertical-align:middle;" checked>';
+								html += '<span style="vertical-align:middle;margin-left:5px;">否</span>';
+								html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+								html += '<input type="radio" name="logType" value="2" style="vertical-align:middle;">';
+								html += '<span style="vertical-align:middle;margin-left:5px;">是</span>';
+							html += '</span>';
+						html += '</td>';
+					html += '</tr>';						
+					
+					html += '<tr>';
+						html += '<td style="text-align: left;width:160px;" colspan="1">定时任务执行类路径：</td>';
+						html += '<td style="text-align: left" colspan="3">';
+							html += '<input type="text" name="jobClass" class="dialog-form-input" style="width:96%;" placeholder="如：com.matrix.quartz.JobForTestOne"  maxlength="256">';
+						html += '</td>';
+					html += '</tr>';					
+					
+					html += '<tr>';
+						html += '<td style="text-align: left;width:160px;" colspan="1">触发定时任务名称：</td>';
+						html += '<td style="text-align: left" colspan="3">';
+							html += '<input type="text" name="jobList" class="dialog-form-input" style="width:96%;" placeholder="UUID：UUID-9829384-0213410-OOKEIPAOA,UUID-9829384-0213410-OOKEIPAOB"  maxlength="2000">';
+						html += '</td>';
+					html += '</tr>';					
+					
 					
 					if(type == 'edit'){
 						html += '<input type="hidden" name="id" value="' + id + '">';
 					}
 					html += '<input type="hidden" name="eleValue" value="' + key + '">';
 				html += '</table></form>';
-				
 				return html;
 			},
+			
+			jobGroupList : function() {
+				var html_ = '<option value="">请选择任务组</option>';
+				var url_ =  layui.setter.path + 'quartz/ajax_job_group_list.do';
+				var data_ = null;
+				var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
+				if(obj.status == 'success') {
+					 for(var i = 0 ; i < obj.list.length ; i ++){
+						 html_ += '<option value="' + obj.list[i].id + '">' + obj.list[i].groupName + '</option>'
+					 }
+				}
+				return html_;
+			},
+			
 		}
 
 	});

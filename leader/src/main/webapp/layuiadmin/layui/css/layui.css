@@ -44,7 +44,24 @@
 	margin-top:20px;
 }
 
+/**
+ * dialog-form-title 和 dialog-form-talbe 通常结合使用参考job-info-list.js
+ */
+ .dialog-form-title{
+	margin-top: 20px;
+	margin-right: 0px;
+	margin-left: 20px;
+	border-bottom: 2px solid #FB9337;
+	padding: 0 20px 5px 0;
+	display: inline-block;
+}
 
+.dialog-form-talbe {
+	width:100%;
+	border-collapse:separate; 
+	border-spacing:0px 12px;
+	padding: 20px;
+}
 
 
 

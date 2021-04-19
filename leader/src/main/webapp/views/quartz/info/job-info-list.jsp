@@ -44,7 +44,7 @@
 			.layui-table-cell {
 	            height: auto !important;
 	            white-space: normal;
-	        }		   	
+	        }
 		</style>
 	</head>
 	<body>

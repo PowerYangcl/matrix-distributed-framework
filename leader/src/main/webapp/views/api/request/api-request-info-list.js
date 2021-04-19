@@ -59,7 +59,7 @@ layui.config({
 		// 监听行工具事件
 		table.on('tool(table-toolbar)', function(o) {
 			if (o.event === 'del') {
-				pageDialog.deleteMcRole(o);
+				pageDialog.deleteRequestInfo(o);
 			} else if (o.event === 'edit') {
 				pageDialog.editDialog(o);
 			}
@@ -168,7 +168,7 @@ layui.config({
 		        });
 			},
 			
-			deleteMcRole:function(o){
+			deleteRequestInfo:function(o){
 				var aaaa = o;
 				var msg = '启用';
 				if(o.data.flag == 1){
