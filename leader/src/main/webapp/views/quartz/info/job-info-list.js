@@ -25,7 +25,7 @@ layui.config({
  	  	         		width:290,
  	  	         		unresize: true,
  	  	         		templet: function(res){
-	 	  	         		var html_ = res.jobTitle + '</br> <a>' + res.jobName +'</a>';
+	 	  	         		var html_ = res.jobName + '</br> <a>' + res.jobTitle +'</a>';
 					  		return html_;
  	  	         		}
  	  	         	}, 
@@ -63,7 +63,7 @@ layui.config({
  	  	         	},
  	  	         	{
  	  	         		field:'timeOut', 
- 	  	         		title:'锁有效时间' ,
+ 	  	         		title:'锁超时时间' ,
  	  	         		width:100, 
  	  	         		unresize: true,
  	  	         		templet: function(res){
@@ -98,18 +98,18 @@ layui.config({
 					 },
  	  	         	 {
 						 field:'pause', 
-						 title:'运行状态', 
-						 width:100, 
+						 title:'状态', 
+						 width:70, 
 	 	  	         	 unresize: true,
 						 templet: function(res){
-							 var pause = '运行中';
+							 var pause = '运行';
 							 if(res.pause == 1){
-								 pause = '<p style="margin:0px;color:red">已暂停</p>';
+								 pause = '<p style="margin:0px;color:red">暂停</p>';
 							 }
 					  		 return pause;
 						 }
 					 },
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:120}
+ 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar',width:160}
  	    	  	]
   	      	],
   	    	page: true
@@ -151,25 +151,25 @@ layui.config({
 		// 查询按钮
 		var search = {		
 			reload : function() {
-				var organization = $('#organization').val();
-				var key = $('#key').val();
+				var jobName = $('#job-name').val();
+				var jobTitle = $('#job-title').val();
 				table.reload('page-table-reload', {
 					page : {
 						curr : 1  // 重新从第 1 页开始
 					},
 					where : {  // 此参数会合并请求到后台
-						organization:organization,
-						key:key
+						jobName:jobName,
+						jobTitle:jobTitle
 					}
 				}, 'data');
 				
-				$('#organization').val(organization);
-				$('#key').val(key);
+				$('#job-name').val(jobName);
+				$('#job-title').val(jobTitle);
 			},
 			
 			reset : function(){
-				$('#organization').val('');
-				$('#key').val('');
+				$('#job-name').val('');
+				$('#job-title').val('');
 				search.reload();
 			}
 		};
