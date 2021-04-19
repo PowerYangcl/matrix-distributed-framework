@@ -89,12 +89,12 @@ public class QuartzCenterController extends BaseController{
 	 * @date 2018年12月22日 下午3:01:51 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_info_add", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_job_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobInfoAdd(JobInfo entity , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_info_add", "添加定时任务");
+	public JSONObject ajaxBtnJobInfoAdd(JobInfo entity , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_job_info_add", "添加定时任务");
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobInfoAdd(entity);
+		return jobService.ajaxBtnJobInfoAdd(entity);
 	}
 	
 	/**
@@ -104,12 +104,12 @@ public class QuartzCenterController extends BaseController{
 	 * @date 2018年12月24日 下午1:58:51 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_info_edit", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_job_info_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobInfoEdit(JobInfo entity , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_info_edit", "编辑定时任务");
+	public JSONObject ajaxBtnJobInfoEdit(JobInfo entity , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_job_info_edit", "编辑定时任务");
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobInfoEdit(entity);
+		return jobService.ajaxBtnJobInfoEdit(entity);
 	}
 	
 	/**

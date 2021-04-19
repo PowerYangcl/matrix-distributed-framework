@@ -132,6 +132,7 @@
 			info.triger_type as trigerType,
 			info.log_type as logType,
 			info.remark as remark, 
+			info.concurrent_type as concurrentType,
 			info.create_time as createTime,
 			info.create_user_id as createUserId,
 			info.create_user_name as createUserName, 

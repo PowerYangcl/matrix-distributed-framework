@@ -152,7 +152,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月22日 下午3:01:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoAdd(JobInfo e) {
+	public JSONObject ajaxBtnJobInfoAdd(JobInfo e) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isAnyBlank(e.getJobTitle(),e.getJobTriger() ,e.getJobClass() , e.getRemark())) {
 			result.put("status", "error");
@@ -215,7 +215,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月24日 下午1:58:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoEdit(JobInfo e) {
+	public JSONObject ajaxBtnJobInfoEdit(JobInfo e) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isAnyBlank(e.getJobTitle(),e.getJobTriger() ,e.getJobClass() , e.getRemark())) {
 			result.put("status", "error");

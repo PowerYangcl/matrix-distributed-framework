@@ -62,7 +62,7 @@ public interface IJobService {
 	 * @date 2018年12月22日 下午3:01:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoAdd(JobInfo entity);
+	public JSONObject ajaxBtnJobInfoAdd(JobInfo entity);
 
 	/**
 	 * @description: 编辑定时任务
@@ -71,7 +71,7 @@ public interface IJobService {
 	 * @date 2018年12月24日 下午1:58:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoEdit(JobInfo entity);
+	public JSONObject ajaxBtnJobInfoEdit(JobInfo entity);
 
 	/**
 	 * @description: 定时任务详情|根据jobName获取
