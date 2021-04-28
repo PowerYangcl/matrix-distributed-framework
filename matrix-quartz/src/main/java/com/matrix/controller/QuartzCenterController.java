@@ -194,7 +194,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping("page_quartz_job_group_list")  
 	public String pageQuartzJobGroup(HttpSession session){ 
 		super.userBehavior(session, logger, "page_quartz_job_group_list", "定时任务分组列表页");
-		return "jsp/quartz/group/job-group";  
+		return "views/quartz/group/job-group-list";  
 	}
 	
 	
@@ -225,12 +225,12 @@ public class QuartzCenterController extends BaseController{
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_group_add", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_job_group_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobGroupAdd(JobGroup entity , HttpSession session){
+	public JSONObject ajaxBtnJobGroupAdd(JobGroup entity , HttpSession session){
 		super.userBehavior(session, logger, "ajax_job_group_add", "添加定时任务分组");
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobGroupAdd(entity);
+		return jobService.ajaxBtnJobGroupAdd(entity);
 	}
 	
 	/**

@@ -127,7 +127,7 @@ public interface IJobService {
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupAdd(JobGroup entity);
+	public JSONObject ajaxBtnJobGroupAdd(JobGroup entity);
 
 	/**
 	 * @description: 修改定时任务分组

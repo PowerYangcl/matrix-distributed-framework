@@ -79,7 +79,7 @@
               					<a class="security-btn layui-btn layui-btn-xs" key="job_info_list:detail" lay-event="info">详情</a>
               					<a class="security-btn layui-btn layui-btn-xs" key="job_info_list:edit" lay-event="edit">修改</a>
               					<a class="security-btn layui-btn layui-btn-xs" key="job_info_list:run" lay-event="edit">手动</a></br>
-              					<a class="security-btn layui-btn layui-btn-xs" key="job_info_list:delete" lay-event="del">删除</a>
+              					<a class="security-btn layui-btn layui-btn-xs layui-btn-danger" key="job_info_list:delete" lay-event="del">删除</a>
               					<a class="security-btn layui-btn layui-btn-xs" key="job_info_list:resume" lay-event="edit">恢复</a>
               					<a class="security-btn layui-btn layui-btn-xs" key="job_info_list:run_log" lay-event="edit">日志</a>
             				</script>
