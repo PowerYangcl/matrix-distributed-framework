@@ -153,12 +153,12 @@ public class QuartzCenterController extends BaseController{
 	 * @date 2018年12月25日 下午4:21:07 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_info_delete", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_job_info_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobInfoDelete(JobInfoDto dto , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_info_delete", "删除定时任务");
+	public JSONObject ajaxBtnJobInfoDelete(JobInfoDto dto , HttpSession session){
+		super.userBehavior(session, logger, "ajax_btn_job_info_delete", "删除定时任务");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobInfoDelete(dto);
+		return jobService.ajaxBtnJobInfoDelete(dto);
 	}
 	
 	/**

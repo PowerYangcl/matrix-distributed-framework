@@ -320,7 +320,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月25日 下午4:21:07 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoDelete(JobInfoDto dto) {
+	public JSONObject ajaxBtnJobInfoDelete(JobInfoDto dto) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isBlank(dto.getJobName())) {
 			result.put("status", "error");

@@ -272,22 +272,16 @@ layui.config({
 		        });
 			},
 			
-			deleteMcRole:function(o){
-				var aaaa = o;
-				var msg = '启用';
-				if(o.data.flag == 1){
-					msg = '禁用';
-				}
-	        	layer.confirm('您确定要' + msg + '【' + o.data.organization + '】吗？' , 
+			deleteJobInfo:function(o){
+	        	layer.confirm('您确定要删除【' + o.data.jobTitle + '】这条定时任务吗？' , 
 	        			{ title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
 						var type_ = 'post';
-			            var url_ = layui.setter.path + 'apicenter/ajax_request_info_edit.do';
+			            var url_ = layui.setter.path + 'quartz/ajax_btn_job_info_delete.do';
 			        	var data_ = {
-		        			id : o.data.id ,
-		        			flag: o.data.flag === 1 ? 0 : 1,
-		        			eleValue : o.key
-	        			};
+								jobName:o.data.jobName,
+								eleValue : o.key
+						};
 			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
 			            if(obj.status == 'success'){
 			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
@@ -475,8 +469,6 @@ layui.config({
 			
 			// 详情信息展示
 			drawJobInfo : function(type , key , e){
-				var alert = '';
-				var runGroupId = '';
 				var ctypeNo = '';   // 并发执行
 				var ctypeYes = '';   // 并发执行
 				var trigerTypeIn = '';
@@ -484,28 +476,26 @@ layui.config({
 				var log = '';
 				var unlog = '';
 				var pause = '运行';
-				 if(e.pause == 1){
+				 if(e.pause == 1) {
 					 pause = '暂停';
 				 }
-				if(type == 'info'){
-					alert = "任务运行状态：" + pause;
-					runGroupId = e.runGroupId;
-					if(e.concurrentType == 1){
-						ctypeYes = 'checked="checked" '; 
-					}else{
-						ctypeNo = 'checked="checked" ';
-					}
-					if(e.trigerType == 1){		// Scheduler中轮询状态的任务|1是 2否| 2这种任务不会加入到scheduler中触发式的执行,只会被默认调用
-						trigerTypeIn = 'checked="checked"';
-					}else{
-						trigerTypeOut = 'checked="checked"';
-					}
-					if(e.logType == 1){		// 定时任务是否记录日志 1否 2是
-						unlog = 'checked="checked"';
-					}else{
-						log = 'checked="checked"';
-					}
-				}
+				 var alert = "任务运行状态：" + pause;
+				 var runGroupId = e.runGroupId;
+				 if(e.concurrentType == 1){
+					 ctypeYes = 'checked="checked" '; 
+				 }else{
+					 ctypeNo = 'checked="checked" ';
+				 }
+				 if(e.trigerType == 1){		// Scheduler中轮询状态的任务|1是 2否| 2这种任务不会加入到scheduler中触发式的执行,只会被默认调用
+					 trigerTypeIn = 'checked="checked"';
+				 }else{
+					 trigerTypeOut = 'checked="checked"';
+				 }
+				 if(e.logType == 1){		// 定时任务是否记录日志 1否 2是
+					 unlog = 'checked="checked"';
+				 }else{
+					 log = 'checked="checked"';
+				 }
 				
 				var title = '<div class="dialog-form-title">';
 						title += '<h3>' + alert + '</h3>';
