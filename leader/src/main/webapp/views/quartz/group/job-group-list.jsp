@@ -69,7 +69,7 @@
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
-              					<a class="security-btn layui-btn layui-btn-xs" key="job_group_list:delete" lay-event="edit">修改</a>
+              					<a class="security-btn layui-btn layui-btn-xs" key="job_group_list:edit" lay-event="edit">修改</a>
 								<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="job_group_list:delete" lay-event="del">删除</a>
             				</script>
 						</div>

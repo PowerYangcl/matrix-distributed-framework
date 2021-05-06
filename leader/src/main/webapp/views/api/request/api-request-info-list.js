@@ -169,7 +169,6 @@ layui.config({
 			},
 			
 			deleteRequestInfo:function(o){
-				var aaaa = o;
 				var msg = '启用';
 				if(o.data.flag == 1){
 					msg = '禁用';

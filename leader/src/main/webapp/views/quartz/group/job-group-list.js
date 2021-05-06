@@ -88,7 +88,7 @@ layui.config({
 				layer.open({
 					title : '添加定时任务分组',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
-		          	area : ['600px', '250px'],
+		          	area : ['920px', '350px'],
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
@@ -121,9 +121,9 @@ layui.config({
 			// 编辑按钮需要进行强数据验证
 			editDialog : function(o){
 				layer.open({
-					title : '修改请求者信息',
+					title : '修改定时任务分组',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
-		          	area : ['600px', '250px'],
+		          	area : ['920px', '350px'],
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
@@ -131,13 +131,8 @@ layui.config({
 	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
-	          			var url_ =  layui.setter.path + 'apicenter/ajax_request_info_edit.do';
+	          			var url_ =  layui.setter.path + 'quartz/ajax_btn_job_group_edit.do';
 						var data_ = $("#dialog-api-form").serializeArray();
-						var isallot = new Object();
-						isallot.name = "isallot"; 
-						isallot.value = 0;
-			        	data_.push(isallot);
-						
 						var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 						if(obj.status == 'success'){
 			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
@@ -159,20 +154,13 @@ layui.config({
 			},
 			
 			deleteRequestInfo:function(o){
-				var aaaa = o;
-				var msg = '启用';
-				if(o.data.flag == 1){
-					msg = '禁用';
-				}
-	        	layer.confirm('您确定要' + msg + '【' + o.data.organization + '】吗？' , 
+	        	layer.confirm('您确定要删除这个定时任务分组【' + o.data.groupName + '】吗？' , 
 	        			{ title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
 					function(index , ele) {  // 确定按钮
 						var type_ = 'post';
-			            var url_ = layui.setter.path + 'apicenter/ajax_request_info_edit.do';
+			            var url_ = layui.setter.path + 'quartz/ajax_btn_job_group_delete.do';
 			        	var data_ = {
 		        			id : o.data.id ,
-		        			isallot:0,
-		        			flag: o.data.flag === 1 ? 0 : 1,
 		        			eleValue : o.key
 	        			};
 			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
@@ -195,43 +183,40 @@ layui.config({
 	        // 绘制添加和编辑弹框
 			drawDialogPage : function(type , key , e){
 				var id = "";
-				var organization = "";
-				var private_ = "selected";
-				var public_ = "";
-				
+				var alert = '已经关联定时任务的分组将无法删除';
+				var groupName = '';
+				var ip = '';
 				if(type == 'edit') {
 					id = e.id;
-					organization = e.organization;
-					if(e.atype === "public"){
-						private_ = "";
-						public_ = "selected";
-					}
+					alert = '修改IP地址可以控制定时任务在服务器集群中的执行强度(个数) 非并发类的定时任务会显著受到影响';
+					groupName = e.groupName;
+					ip = e.ip;
 				}
 				
-				var html = '<form id="dialog-api-form"><table class="dialog-form" style="width:100%">';
+				var title = '<div class="dialog-form-title">';
+						title += '<h3>' + alert + '</h3>';
+					title += '</div>';
+				var html = '<form id="dialog-api-form">' + title + '<table class="dialog-form-talbe" style="width:95%;margin-left:20px">';
 					html += '<tr>';
-						html += '<td align="right" style="width:195px">请求者：</td>';
-						html += '<td align="left">';
-							html += '<input type="text" id="organization" name="organization" value="' 
-								+ organization + '" placeholder="接口调用者的名称，比如：财务部 " autocomplete="off" style="margin-bottom: 10px; width: 300px; " maxlength="50">';
+						html += '<td style="text-align: left;width:160px;" colspan="1">定时任务分组名称：</td>';
+						html += '<td style="text-align: left" colspan="3">';
+							html += '<input type="text" name="groupName" value="' + groupName + '" class="dialog-form-input" style="width:96%;" placeholder="25个字以内"  maxlength="25">';
 						html += '</td>';
 					html += '</tr>';
+					
 					html += '<tr>';
-						html += '<td align="right" style="width:195px">请求类型：</td>';
-						html += '<td align="left">';
-							html += '<select id="atype" name="atype" style="margin-left:0px; margin-bottom: 10px; width: 312px;">';
-								html += '<option value="private"  ' + private_ + '>公司内部请求</option>';
-								html += '<option value="public"  ' + public_ + '>开放接口请求</option>';
-							html += '</select>';
+						html += '<td style="text-align: left;width:160px;" colspan="1">分组包含IP地址段：</td>';
+						html += '<td style="text-align: left" colspan="3">';
+							html += '<input type="text" name="ip" value="' + ip + '" class="dialog-form-input" style="width:96%;" placeholder="IP地址段以逗号分隔。如：172.22.134.33,172.22.134.34"  maxlength="2000">';
 						html += '</td>';
-					html += '</tr>';
+					html += '</tr>';			
+					
 					
 					if(type == 'edit'){
 						html += '<input type="hidden" name="id" value="' + id + '">';
 					}
 					html += '<input type="hidden" name="eleValue" value="' + key + '">';
 				html += '</table></form>';
-				
 				return html;
 			},
 		}

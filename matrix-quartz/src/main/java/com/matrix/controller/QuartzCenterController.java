@@ -256,12 +256,12 @@ public class QuartzCenterController extends BaseController{
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_group_edit", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_job_group_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobGroupEdit(JobGroup entity , HttpSession session){
+	public JSONObject ajaxBtnJobGroupEdit(JobGroup entity , HttpSession session){
 		super.userBehavior(session, logger, "ajax_job_group_edit", "修改定时任务分组");
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobGroupEdit(entity);
+		return jobService.ajaxBtnJobGroupEdit(entity);
 	}
 	
 	/**
@@ -271,12 +271,12 @@ public class QuartzCenterController extends BaseController{
 	 * @date 2018年12月28日 下午3:29:36 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_group_delete", produces = { "application/json;charset=utf-8" })
+	@RequestMapping(value = "ajax_btn_job_group_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobGroupDelete(JobGroupDto dto , HttpSession session){
+	public JSONObject ajaxBtnJobGroupDelete(JobGroupDto dto , HttpSession session){
 		super.userBehavior(session, logger, "ajax_job_group_delete", "删除定时任务分组");
 		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobGroupDelete(dto);
+		return jobService.ajaxBtnJobGroupDelete(dto);
 	}
 	
 	

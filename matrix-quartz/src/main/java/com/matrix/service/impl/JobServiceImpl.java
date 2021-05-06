@@ -549,7 +549,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupEdit(JobGroup e) {
+	public JSONObject ajaxBtnJobGroupEdit(JobGroup e) {
 		JSONObject result = new JSONObject();
 		if(StringUtils.isAnyBlank(e.getGroupName() , e.getIp())) {
 			result.put("status", "error");
@@ -603,7 +603,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月28日 下午3:29:36 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupDelete(JobGroupDto dto) {
+	public JSONObject ajaxBtnJobGroupDelete(JobGroupDto dto) {
 		JSONObject result = new JSONObject();
 		if(dto.getId() == null) {
 			result.put("status", "error");

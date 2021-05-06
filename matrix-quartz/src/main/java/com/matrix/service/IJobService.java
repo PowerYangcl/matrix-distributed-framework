@@ -137,7 +137,7 @@ public interface IJobService {
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupEdit(JobGroup entity);
+	public JSONObject ajaxBtnJobGroupEdit(JobGroup entity);
 
 	/**
 	 * @description: 定时任务分组详情
@@ -156,7 +156,7 @@ public interface IJobService {
 	 * @date 2018年12月28日 下午3:29:36 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupDelete(JobGroupDto dto);
+	public JSONObject ajaxBtnJobGroupDelete(JobGroupDto dto);
 
 	/**
 	 * @description: 定时任务日志列表页信息
