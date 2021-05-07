@@ -12,7 +12,7 @@ layui.config({
   	    table.render({
   	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload 
   	      	elem: '#table-toolbar',				// 表格控制句柄
-  	      	title: '请求者信息',
+  	      	title: '定时任务列表',
   	      	url : layui.setter.path + 'quartz/ajax_job_info_list.do',
   	      	toolbar: '#table-search-toolbar',
   	      	height: 'full-100', 
@@ -138,8 +138,8 @@ layui.config({
 
 		// 监听行工具事件 	详情 修改 手动 删除 恢复 日志
 		table.on('tool(table-toolbar)', function(o) {
-			if (o.event === 'info') {
-				pageDialog.infoDialog(o);
+			if (o.event === 'detail') {
+				pageDialog.detailDialog(o);
 			} else if (o.event === 'edit') {
 				pageDialog.editDialog(o);
 			}else if (o.event === 'exec') {
@@ -249,7 +249,7 @@ layui.config({
 		        });
 			},
 			
-			infoDialog : function(o){
+			detailDialog : function(o){
 				layer.open({
 					title : '定时任务详情',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
@@ -257,7 +257,7 @@ layui.config({
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
-	          		content : pageDialog.drawJobInfo('info' , o.key , o.data),
+	          		content : pageDialog.drawJobInfo('detail' , o.key , o.data),
 	          		anim : 0 ,		// 弹窗从上掉落
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
@@ -322,7 +322,7 @@ layui.config({
 					trigerTypeIn = 'checked="checked"';
 					unlog = 'checked="checked"';
 					alert = 'Scheduler中轮询选择否，则不会不会被Quartz定时器轮询';
-				}else if(type == 'edit' || type == 'info'){
+				}else if(type == 'edit'){
 					alert = "定时任务名称：" + e.jobName;
 					id = e.id;
 					jobTitle = e.jobTitle;

@@ -12,7 +12,7 @@ layui.config({
   	    table.render({
   	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload 
   	      	elem: '#table-toolbar',				// 表格控制句柄
-  	      	title: '请求者信息',
+  	      	title: '定时任务分组列表',
   	      	url : layui.setter.path + 'quartz/ajax_job_group_page_list.do',
   	      	toolbar: '#table-search-toolbar',
   	      	height: 'full-100', 

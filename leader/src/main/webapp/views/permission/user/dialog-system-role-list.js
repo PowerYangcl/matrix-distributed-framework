@@ -26,7 +26,7 @@ layui.config({
   	      		platform : parentTr.platform
       		},
   	      	toolbar: '#table-search-toolbar',
-  	      	title: '系统角色列表',
+  	      	title: '系统用户列表/用户角色列表弹窗',
   	      	height: 'full-100', 
   	      	cols: [
  	    	  	[

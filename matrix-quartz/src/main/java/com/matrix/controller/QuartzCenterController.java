@@ -293,7 +293,7 @@ public class QuartzCenterController extends BaseController{
 	public String pageQuartzJobLog(HttpSession session , ModelMap map , HttpServletRequest request){ 
 		super.userBehavior(session, logger, "page_quartz_job_log_list", "定时任务执行日志记录列表页");
 		map.put("jobName", request.getParameter("jobName"));
-		return "jsp/quartz/log/job-log";  
+		return "views/quartz/log/job-log-list";
 	}
 	
 	/**
@@ -313,6 +313,7 @@ public class QuartzCenterController extends BaseController{
 	}
 	
 	/**
+	 * @deprecated 使用layui后，如果列表信息返回足够全的话，详情接口可能就不需要了。2021-05-07
 	 * @description:根据id获取定时任务日志详情
 	 *
 	 * @param dto.id

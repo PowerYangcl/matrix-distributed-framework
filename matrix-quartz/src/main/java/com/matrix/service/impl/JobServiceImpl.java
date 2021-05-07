@@ -659,17 +659,26 @@ public class JobServiceImpl extends BaseClass implements IJobService {
     		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
     	}
  
-		PageHelper.startPage(pageNum , pageSize);
-		List<JobExecLogView> list = jobExecLogMapper.pageListByDto(dto);
-		if (list != null && list.size() > 0) {
-			result.put("status", "success");
-		} else {
+    	try {
+    		PageHelper.startPage(pageNum , pageSize);
+    		List<JobExecLogView> list = jobExecLogMapper.pageListByDto(dto);
+    		result.put("status", "success");
+    		if (list != null && list.size() > 0) {
+    			result.put("code" , RpcResultCode.SUCCESS);
+    			result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
+    		} else {
+    			result.put("code" , RpcResultCode.RESULT_NULL);
+    			result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+    		}
+    		PageInfo<JobExecLogView> pageList = new PageInfo<JobExecLogView>(list);
+    		result.put("data", pageList);
+    		return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
+			return result;
 		}
-		PageInfo<JobExecLogView> pageList = new PageInfo<JobExecLogView>(list);
-		result.put("data", pageList);
-		return result;
 	}
 
 

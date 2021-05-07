@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>定时任务分组列表</title>
+		<title>定时任务日志列表</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -50,7 +50,7 @@
 						<div class="layui-card-header">
 							<a><cite>矩阵系统配置 / </cite></a> 
 							<a><cite>分布式定时任务 / </cite></a>
-							<a><cite>定时任务分组列表</cite></a>
+							<a><cite>定时任务日志列表</cite></a>
 						</div>
 						<div class="layui-card-body">
 						
@@ -59,18 +59,16 @@
 							<script id="table-search-toolbar" type="text/html">
               					<div class="layui-btn-container">
 									<div class="layui-table-search-div" >分组名称：</div>
-									<input id="group-name" name="groupName" class="layui-table-search" autocomplete="off">
+									<input id="run-group-name" name="runGroupName" class="layui-table-search" autocomplete="off">
 									<div class="layui-table-search-div" >IP地址段：</div>
 									<input id="ip" name="ip" class="layui-table-search" autocomplete="off">
 
-                					<button class="security-btn layui-btn layui-btn-sm" key="job_group_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
-                					<button class="security-btn layui-btn layui-btn-sm" key="job_group_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
-                					<button class="security-btn layui-btn layui-btn-sm" key="job_group_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="job_log_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
+                					<button class="security-btn layui-btn layui-btn-sm" key="job_log_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
               					</div>
             				</script>
 							<script id="table-btn-toolbar" type="text/html">
-              					<a class="security-btn layui-btn layui-btn-xs" key="job_group_list:edit" lay-event="edit">修改</a>
-								<a class="security-btn layui-btn layui-btn-danger layui-btn-xs" key="job_group_list:delete" lay-event="del">删除</a>
+              					<a class="security-btn layui-btn layui-btn-xs" key="job_log_list:detail" lay-event="detail">详情</a>
             				</script>
 						</div>
 					</div>
@@ -81,7 +79,7 @@
 </html>
 
 
-<script type="text/javascript" src="${views}/quartz/group/job-group-list.js"></script>
+<script type="text/javascript" src="${views}/quartz/log/job-log-list.js"></script>
 
 
 
