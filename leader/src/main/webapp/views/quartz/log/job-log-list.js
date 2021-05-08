@@ -103,8 +103,9 @@ layui.config({
 		          	resize : false,        // 是否允许拉伸 默认：true
 	          		content : pageDialog.drawDetailDialog('detail' , o.key , o.data),
 	          		anim : 0 ,		// 弹窗从上掉落
-	          		btn : ['提交' , '取消'],
+	          		btn : ['确定' , '取消'],
 	          		yes : function(index , layero){
+	          			layer.close(index);
 	          		},
           			btn2 : function(index, layero){ // 按钮【取消】的回调
           				//return false 开启该代码可禁止点击该按钮关闭

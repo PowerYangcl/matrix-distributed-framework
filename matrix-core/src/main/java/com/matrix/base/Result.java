@@ -1,6 +1,11 @@
 package com.matrix.base;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import com.matrix.pojo.view.McUserInfoView;
+
+import lombok.Data;
 
 /**
  * @description: 调用响应封装。支持SpringMvc、Spring-boot、Dubbo的返回值封装。
@@ -27,9 +32,8 @@ import java.io.Serializable;
  * @date 2018年9月20日 下午2:40:45 
  * @version 1.0.0.1
  */
+@Data
 public class Result<T> implements Serializable {
-
-	
 	private static final long serialVersionUID = 8212029814402861854L;
 
 	private String status;
@@ -45,7 +49,7 @@ public class Result<T> implements Serializable {
 	}
 	
 	/**
-	 * @description: Rpc消息成功返回提示|无消息文本提示
+	 * @description: 消息成功返回提示|无消息文本提示
 	 *
 	 * @author Yangcl
 	 * @date 2018年9月28日 下午3:14:47 
@@ -56,7 +60,7 @@ public class Result<T> implements Serializable {
 	}
 	
 	/**
-	 * @description: Rpc消息成功返回提示|自定义消息提示文本
+	 * @description: 消息成功返回提示|自定义消息提示文本
 	 *
 	 * @author Yangcl
 	 * @date 2018年9月28日 下午3:14:47 
@@ -67,7 +71,7 @@ public class Result<T> implements Serializable {
 	}
 	
 	/**
-	 * @description: Rpc消息成功返回提示|自定义消息提示文本
+	 * @description: 消息成功返回提示|自定义消息提示文本
 	 *
 	 * @author Yangcl
 	 * @date 2018年9月28日 下午3:14:47 
@@ -78,7 +82,7 @@ public class Result<T> implements Serializable {
 	}
 	
 	/**
-	 * @description: Rpc消息成功返回提示|附加泛型对象所携带的描述信息|如：insertEntityGotId(E e);
+	 * @description: 消息成功返回提示|附加泛型对象所携带的描述信息|如：insertEntityGotId(E e);
 	 *
 	 * @author Yangcl
 	 * @date 2018年9月28日 下午3:14:47 
@@ -89,7 +93,7 @@ public class Result<T> implements Serializable {
 	}
 	
 	/**
-	 * @description: Rpc错误消息提示|不附加泛型类
+	 * @description: 错误消息提示|不附加泛型类
 	 *
 	 * @param msg
 	 * @param code 必须是RpcResultCode中定义的值
@@ -103,7 +107,7 @@ public class Result<T> implements Serializable {
 	}
 	
 	/**
-	 * @description: Rpc错误消息提示|附加泛型对象所携带的描述信息
+	 * @description: 错误消息提示|附加泛型对象所携带的描述信息
 	 *
 	 * @param msg
 	 * @param code 必须是RpcResultCode中定义的值
@@ -115,35 +119,6 @@ public class Result<T> implements Serializable {
 	public static <T> Result<T> ERROR(String msg , Integer code , T t) {
 		return new Result<T>("error" , msg , code , t);
 	}
-	
-	
-	
-	
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	public Integer getCode() {
-		return code;
-	}
-	public void setCode(Integer code) {
-		this.code = code;
-	}
-	public T getData() {
-		return data;
-	}
-	public void setResult(T data) {
-		this.data = data;
-	}
-	
 }
 
 
