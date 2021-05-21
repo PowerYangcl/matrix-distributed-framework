@@ -20,7 +20,7 @@ import com.matrix.pojo.entity.JobInfo;
  * @date 2018年9月1日 下午7:05:08 
  * @version 1.0.0.1
  */
-public class InitSysJob  extends BaseClass implements ILoadCache<String>{
+public class SysJobInit  extends BaseClass implements ILoadCache<String>{
 
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	
@@ -33,7 +33,7 @@ public class InitSysJob  extends BaseClass implements ILoadCache<String>{
 		if(e != null) {
 			result = JSONObject.parseObject(JSONObject.toJSONString(e)); 
 			
-			String group = launch.loadDictCache(DCacheEnum.SysJobGroup, "InitSysJobGroup").get( String.valueOf(e.getRunGroupId()) );
+			String group = launch.loadDictCache(DCacheEnum.SysJobGroup, "SysJobGroupInit").get( String.valueOf(e.getRunGroupId()) );
 			if(StringUtils.isNotBlank(group)) {
 				JSONObject gr = JSONObject.parseObject(group);
 				result.put("runGroupId" , gr.getLong("id"));

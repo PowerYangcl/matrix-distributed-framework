@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.Result;
 
 /**
  * @description: 开放接口顶层抽象|所有开放给第三方的接口以及公司内部的
@@ -28,5 +29,5 @@ public interface IBaseProcessor {
 	 * @date 2017年11月13日 上午11:54:05 
 	 * @version 1.0.0
 	 */
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response , HttpSession session , JSONObject param); 
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response , HttpSession session , JSONObject param); 
 }

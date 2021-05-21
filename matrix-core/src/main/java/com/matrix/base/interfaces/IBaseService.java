@@ -10,8 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseDto;
 import com.matrix.base.BaseEntity;
 import com.matrix.base.BaseView;
-import com.matrix.base.RpcResult;
-
+import com.matrix.base.Result;
 
 /**
  * @descriptions 底层基本的service的接口
@@ -197,17 +196,6 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
     public Integer batchDelete(List<PK> list);
     
     /**
-     * @descriptions 根据条件集合删除对象
-     * 	注意！此方法需要你自己在*****Mapper.xml 文件中写批量删除脚本
-     * 
-     * @param dto 数据传输对象(Data Transfer Object)   mybatis进行对象匹配的属性
-     * @date 2016年5月19日下午3:45:00
-     * @author Yangcl
-     * @version 1.0.0.1
-     */
-//    public <DTO> void deleteByCondition(DTO dto); 
-
-    /**
      * @description: 根据条件，物理删除一条记录|通常来讲，不推荐使用物理删除
      *
      * @param dto
@@ -386,7 +374,7 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
      * @author Yangcl
      * @version 1.0.0.1
      */
-    public JSONObject ajaxPageData(E entity, HttpServletRequest request);
+    public Result<PageInfo<E>> ajaxPageData(E entity, HttpServletRequest request);
     
     
     
@@ -398,7 +386,7 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
      * @date 2018年7月25日 下午4:05:48 
      * @version 1.0.0.1
      */
-    public JSONObject queryPageByDto(D dto , HttpServletRequest request);
+    public Result<PageInfo<E>> queryPageByDto(D dto , HttpServletRequest request);
     
     /**
      * @description: 分页|条件为DTO，返回View视图列表
@@ -408,7 +396,7 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
      * @date 2018年7月25日 下午4:06:14 
      * @version 1.0.0.1
      */
-    public JSONObject pageListByDto(D dto , HttpServletRequest request);
+    public Result<PageInfo<V>> pageListByDto(D dto , HttpServletRequest request);
     
     
     /**
@@ -421,7 +409,7 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
      * @date 2018年7月25日 下午4:05:48 
      * @version 1.0.0.1
      */
-    public RpcResult<PageInfo<E>> rpcEntityPageByDto(D dto);
+    public Result<PageInfo<E>> rpcEntityPageByDto(D dto);
     
     
     /**
@@ -436,7 +424,7 @@ public interface IBaseService<PK extends Serializable , E extends BaseEntity , D
      * @date 2018年7月25日 下午4:06:14 
      * @version 1.0.0.1
      */
-    public RpcResult<PageInfo<V>> rpcViewPageByDto(D dto);
+    public Result<PageInfo<V>> rpcViewPageByDto(D dto);
 }
 
 

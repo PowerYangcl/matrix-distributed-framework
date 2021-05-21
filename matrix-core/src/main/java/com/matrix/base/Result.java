@@ -1,10 +1,6 @@
 package com.matrix.base;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import com.matrix.pojo.view.McUserInfoView;
-
 import lombok.Data;
 
 /**
@@ -90,6 +86,10 @@ public class Result<T> implements Serializable {
 	 */
 	public static <T> Result<T> SUCCESS(String msg , T t) { 
 		return new Result<T>("success" , msg , ResultCode.SUCCESS , t);
+	}
+	
+	public static <T> Result<T> SUCCESS(T t) {
+		return new Result<T>("success" , "" , ResultCode.SUCCESS , t);
 	}
 	
 	/**

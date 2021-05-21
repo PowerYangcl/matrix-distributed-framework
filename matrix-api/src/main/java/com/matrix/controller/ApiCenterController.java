@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
+import com.matrix.base.Result;
 import com.matrix.pojo.dto.AcApiInfoDto;
 import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiInfo;
 import com.matrix.pojo.entity.AcApiProject;
 import com.matrix.pojo.entity.AcIncludeDomain;
 import com.matrix.pojo.entity.AcRequestInfo;
+import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.service.IApiCenterService;
 
 /**
@@ -66,7 +69,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_project_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiProjectList(AcApiProject entity , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(AcApiProject entity , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_project_list", "获取api所属项目列表页数据");
 		return service.ajaxApiProjectList(entity, request);  
 	}
@@ -82,7 +85,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiProjectAdd(AcApiProject entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectAdd(AcApiProject entity , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_add", "向ac_api_project表添加信息");
 		return service.ajaxBtnApiProjectAdd(entity, session);  
 	}
@@ -96,7 +99,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiProjectEdit(AcApiProject entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectEdit(AcApiProject entity , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_edit", "向ac_api_project表修改信息");
 		return service.ajaxBtnApiProjectEdit(entity, session);  
 	}

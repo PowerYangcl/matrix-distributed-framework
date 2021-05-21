@@ -11,6 +11,7 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.BaseClass;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -47,7 +48,7 @@ import com.matrix.pojo.view.McUserInfoView;
  * @date 2019年10月9日 下午5:51:48 
  * @version 1.0.0.1
  */
-public class UrlInterceptor implements AsyncHandlerInterceptor{
+public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	
@@ -70,7 +71,7 @@ public class UrlInterceptor implements AsyncHandlerInterceptor{
         }
         
         if(StringUtils.startsWith(url, "api")){		// 系统开放接口则跳过验证。
-        	return true;
+        	return this.openApi(request, response);
         }
         
         // 如果这个".do"请求不在 ExcludeUri 数组中则验证Session是否有值，如果Session未超时则不拦截这个请求。
@@ -80,7 +81,6 @@ public class UrlInterceptor implements AsyncHandlerInterceptor{
         	if( url.equals("page_permissions_index.do")){
         		return true;	// 如果用户已经登录则可以访问首页        
         	}
-        	
         	
         	if(StringUtils.startsWith(url, "dialog_")) {
         		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
@@ -171,6 +171,12 @@ public class UrlInterceptor implements AsyncHandlerInterceptor{
  
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 //        super.postHandle(request, response, handler, modelAndView);
+    }
+    
+    // TODO 
+    private boolean openApi(HttpServletRequest request, HttpServletResponse response) {
+    	String parameter = request.getParameter("json");
+    	return true;
     }
 }
 

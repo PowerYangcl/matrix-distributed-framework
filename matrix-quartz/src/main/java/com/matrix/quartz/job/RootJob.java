@@ -52,7 +52,7 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 			}
 			jobInfo = (JobInfo) context.getMergedJobDataMap().get("job_status");
 		}
-		String job = launch.loadDictCache(DCacheEnum.SysJob , "InitSysJob").get(jobInfo.getJobName()); 
+		String job = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(jobInfo.getJobName()); 
 		if(StringUtils.isBlank(job)) {		// 定时任务已经被删除 或 数据库连接出现问题
 			return;
 		}
@@ -123,7 +123,7 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 		if(StringUtils.isNotBlank(jobInfo.getJobList())) {		// 触发其他定时任务
 			String [] arr = jobInfo.getJobList().split(",");  // job_name 数组
 			for(String s : arr) {
-				String jobjson = launch.loadDictCache(DCacheEnum.SysJob , "InitSysJob").get(s); 
+				String jobjson = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(s); 
     			if(StringUtils.isNotBlank(jobjson)) {
     				TrigerJob triger = new TrigerJob(jobjson);
     				triger.start();

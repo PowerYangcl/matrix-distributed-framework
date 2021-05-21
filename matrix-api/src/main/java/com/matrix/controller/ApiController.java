@@ -9,8 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseController;
+import com.matrix.base.Result;
 import com.matrix.service.IApiService;
 
 /**
@@ -41,7 +41,7 @@ public class ApiController  extends BaseController{
 	 */
 	@RequestMapping(value = "api", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject apiService(HttpServletRequest request , HttpServletResponse response , HttpSession session , String json){ 
+	public Result<?> apiService(HttpServletRequest request , HttpServletResponse response , HttpSession session , String json){ 
 		return service.apiService(request , response , session , json);
 	}
 }

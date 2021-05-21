@@ -23,7 +23,7 @@ import com.matrix.pojo.entity.JobGroup;
  * @date 2018年9月1日 下午4:35:04 
  * @version 1.0.0.1
  */
-public class InitSysJobGroup extends BaseClass implements ILoadCache<String>{
+public class SysJobGroupInit extends BaseClass implements ILoadCache<String>{
 
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	

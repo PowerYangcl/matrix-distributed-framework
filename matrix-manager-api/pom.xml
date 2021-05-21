@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.matrix</groupId>
-			<artifactId>matrix-manager</artifactId>
+			<artifactId>matrix-permissions</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

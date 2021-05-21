@@ -298,7 +298,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 			return result;
 		}
 		launch.loadDictCache(DCacheEnum.SysJob , "").del(dto.getJobName()); 
-		String value = launch.loadDictCache(DCacheEnum.SysJob , "InitSysJob").get(dto.getJobName()); 
+		String value = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(dto.getJobName()); 
 		if(StringUtils.isNotBlank(value)) {
 			result = JSONObject.parseObject(value);
 			result.put("status", "success");
@@ -529,7 +529,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 		}
 		
 		launch.loadDictCache(DCacheEnum.SysJobGroup , "").del(String.valueOf(dto.getId())); 
-		String value = launch.loadDictCache(DCacheEnum.SysJobGroup , "InitSysJobGroup").get(String.valueOf(dto.getId())); 
+		String value = launch.loadDictCache(DCacheEnum.SysJobGroup , "SysJobGroupInit").get(String.valueOf(dto.getId())); 
 		if(StringUtils.isNotBlank(value)) {
 			result = JSONObject.parseObject(value);
 			result.put("status", "success");

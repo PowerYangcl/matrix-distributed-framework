@@ -97,7 +97,7 @@ public class TaskApiService extends BaseClass implements Callable<JSONObject>{
 		
 		String originHeader = request.getHeader("Origin");
 		
-		String apiInfoStr = launch.loadDictCache(DCacheEnum.ApiInfo , "InitApiInfo").get(head.getTarget()); 
+		String apiInfoStr = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(head.getTarget()); 
 		if(StringUtils.isBlank(apiInfoStr)){
 			return this.errorMsg(response, "10014", 600010014);	// 600010014=系统未检测到您所访问的接口
 		} 
@@ -124,7 +124,7 @@ public class TaskApiService extends BaseClass implements Callable<JSONObject>{
 				launch.loadDictCache(DCacheEnum.AccessToken , null).setKeyTimeout(head.getAccessToken() , 15*24*60*60L); 
 			}
 			
-			String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "InitApiRequester").get(key);  // ac_request_info表的缓存
+			String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(key);  // ac_request_info表的缓存
 			if(StringUtils.isBlank(requestInfo)) {
 				return this.errorMsg(response, "10012", 600010012);	// 非法的请求! 您请求的公钥未包含在我们的系统中.
 			}
@@ -187,7 +187,7 @@ public class TaskApiService extends BaseClass implements Callable<JSONObject>{
 			}else {			// 免登录接口
 				if(data.containsKey("cid")) {    // 部分接口可以不用传递 cid
 					McUserInfoView view = new McUserInfoView();
-					String shopInfo = launch.loadDictCache(DCacheEnum.TcShopInfo , "InitTcShopInfo").get(view.getCid().toString());
+					String shopInfo = launch.loadDictCache(DCacheEnum.TcShopInfo , "TcShopInfoInit").get(view.getCid().toString());
 					if(StringUtils.isNotBlank(shopInfo)) {
 						view.setCid(data.getLong("cid"));
 						JSONObject shop = JSONObject.parseObject(shopInfo);

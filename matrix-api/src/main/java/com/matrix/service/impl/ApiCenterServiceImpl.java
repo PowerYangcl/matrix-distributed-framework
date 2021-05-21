@@ -18,7 +18,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseServiceImpl;
-import com.matrix.base.RpcResultCode;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -76,47 +77,33 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月14日 上午9:38:58 
 	 * @version 1.0.0
 	 */
-	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request) {
-		JSONObject result = new JSONObject();
-		result.put("entity", entity);
+	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(AcApiProject entity, HttpServletRequest request) {
+		int pageNum = 1;	// 当前第几页 | 必须大于0
+    	int pageSize = 10;	// 当前页所显示记录条数
 		try {
-			String pageNum = request.getParameter("pageNum"); // 当前第几页
-			String pageSize = request.getParameter("pageSize"); // 当前页所显示记录条数
-			int num = 1;
-			int size = 10;
-			if (StringUtils.isNotBlank(pageNum)) {
-				num = Integer.parseInt(pageNum);
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = entity.getStartIndex();
+				pageSize = entity.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
 			}
-			if (StringUtils.isNotBlank(pageSize)) {
-				size = Integer.parseInt(pageSize);
-			}
-			PageHelper.startPage(num, size);
+			PageHelper.startPage(pageNum , pageSize);
 			List<AcApiProjectView> list = acApiProjectMapper.queryPageList(entity); 
-			result.put("status", "success");
 			if (list != null && list.size() > 0) {
-				result.put("code" , RpcResultCode.SUCCESS);
-				result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
-			} else {
-				result.put("code" , RpcResultCode.RESULT_NULL);
-				result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<AcApiProjectView>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
 			}
-			PageInfo<AcApiProjectView> pageList = new PageInfo<AcApiProjectView>(list);
-			result.put("data", pageList);
-			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
-			return result;
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
 	}
 
-	public JSONObject ajaxBtnApiProjectAdd(AcApiProject e, HttpSession session) {
-		JSONObject result = new JSONObject();
+	public Result<?> ajaxBtnApiProjectAdd(AcApiProject e, HttpSession session) {
 		if(StringUtils.isBlank(e.getTarget())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(600010060));  // 项目名称不得为空
-			return result;
+			return Result.ERROR(this.getInfo(600010060), ResultCode.MISSING_ARGUMENT);		// 项目名称不得为空
 		}
 		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
 		e.setCreateTime(new Date());
@@ -128,14 +115,10 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		
 		int flag = acApiProjectMapper.insertSelective(e);
 		if(flag == 1) {
-			result.put("status", "success");
-			result.put("msg", this.getInfo(600010061));  // 600010061=数据添加成功!
 			launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(600010062));  // 600010062=服务器异常，数据添加失败!
-		}
-		return result;
+			return Result.SUCCESS(this.getInfo(600010061), ResultCode.SUCCESS);  		// 600010061=数据添加成功!
+		} 
+		return Result.ERROR(this.getInfo(600010062), ResultCode.ERROR_INSERT);	// 600010062=服务器异常，数据添加失败!
 	}
 
 	/**
@@ -145,28 +128,20 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月14日 下午4:07:46 
 	 * @version 1.0.0
 	 */
-	public JSONObject ajaxBtnApiProjectEdit(AcApiProject e, HttpSession session) {
-		JSONObject result = new JSONObject();
+	public Result<?> ajaxBtnApiProjectEdit(AcApiProject e, HttpSession session) {
 		if(StringUtils.isBlank(e.getTarget())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(600010060));  // 项目名称不得为空
-			return result;
+			return Result.ERROR(this.getInfo(600010060), ResultCode.MISSING_ARGUMENT);   // 项目名称不得为空
 		}
 		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
 		e.setUpdateTime(new Date());
 		e.setUpdateUserId(u.getId());
 		e.setUpdateUserName(u.getUserName());
-		
 		int flag = acApiProjectMapper.updateSelective(e); 
 		if(flag == 1) {
-			result.put("status", "success");
-			result.put("msg", this.getInfo(600010063));  // 600010063=数据修改成功!
 			launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(600010064));  // 600010064=服务器异常，数据修改失败! 
-		}
-		return result;
+			return Result.SUCCESS(this.getInfo(600010063), ResultCode.SUCCESS);  // 600010063=数据修改成功!
+		} 
+		return Result.ERROR(this.getInfo(600010064), ResultCode.ERROR_UPDATE);  // 600010064=服务器异常，数据修改失败! 
 	}
 	
 	/**
@@ -1019,7 +994,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxFindRequestValue(String key) {
 		JSONObject result = new JSONObject();
-		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "InitApiRequester").get(key);  // ac_request_info表的缓存
+		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(key);  // ac_request_info表的缓存
 		if(StringUtils.isBlank(requestInfo)) {
 			result.put("status", "error");
 			result.put("code", "10012"); 

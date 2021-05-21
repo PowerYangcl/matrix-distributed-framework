@@ -5,7 +5,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 
 /**

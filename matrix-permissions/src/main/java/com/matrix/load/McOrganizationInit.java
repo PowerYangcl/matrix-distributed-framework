@@ -16,7 +16,7 @@ import com.matrix.pojo.entity.McOrganization;
  * 
  * 	key: 表中的主键ID
  * 	
- * 	launch.loadDictCache(DCacheEnum.McOrganization , "InitMcOrganization").get("");
+ * 	launch.loadDictCache(DCacheEnum.McOrganization , "McOrganizationInit").get("");
  *
  * @author Yangcl
  * @home https://github.com/PowerYangcl

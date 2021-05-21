@@ -34,23 +34,35 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 	 * @description: 多表联查，加载缓存
 	 * key: xd-ApiInfo-ORDER-INFO
 	 * value:
-					 {
-					    "id": 80160001,
-					    "name": "订单信息",
-					    "target": "ORDER-INFO",
-					    "discard": 0,
-					    "login":1,                                           ---------------- 当前接口是否需要登录后访问：1 需要登录后访问 0不需要
-					    "seqnum": 1,
-					    "module": "matrix-api",
-					    "remark": "ORDER-INFO",
-					    "processor": "private.order.OrderInfomation",
-					    "parentId": 1,
-					    "atype": "private",
-					    "domain": 1,
-					    "list": [			------------------------------------------------API入口做跨域判断使用
-					        "http://api.baidu.com",
+					{
+						"id": 80160155,
+						"name": "用户登录接口",
+						"target": "MANAGER-API-100",
+						"dtoInfo": "{\"userName\":\"admin-mdl\",\"password\":\"123456\",\r\n\"platform\":\"134160222D87\"}",
+						"atype": "private",		---------------------接口类型 private:私有 即公司内部使用的接口| public:公开，即开放给第三方的接口
+						"module": "matrix-manager-api",
+						"processor": "privates.ManagerApi100Processor",
+						"domain": 0,							--------------- 接口是否拥有跨域行为 0 不允许  1 允许跨域访问|ac_api_domain表作为关联
+						"parentId": 9,			所属内部项目id,用于树形结构展示|ac_api_project表id
+						"seqnum": 3,				顺序码 同一层次显示顺序
+						"discard": 1,				这个api是否废弃|0:废弃 1:使用中
+						"login": 0,	                                         ---------------- 当前接口是否需要登录后访问：1 需要登录后访问 0不需要
+						"remark": "验证用户登录信息|客户端用户：nodejs/IOS平板等",
+						"list": [		------------------------------------------------API入口做跨域判断使用
+							"http://api.baidu.com",
 					        "http://sub.model.firos.com.cn"
-					    ]
+						],
+						"deleteFlag": 1,					删除标记: 0删除|1未删除
+						
+						
+						"createUserId": 1992,
+						"updateUserId": 20072026234128,
+						"updateUserName": "admin",
+						"createUserName": "Yangcl",
+						"updateTime": 1568786995000,
+						"startIndex": 1,
+						"pageSize": 10,
+						"createTime": 1539244178000,
 					}
 	 * @param key  AcApiInfo.target
 	 * @param field null

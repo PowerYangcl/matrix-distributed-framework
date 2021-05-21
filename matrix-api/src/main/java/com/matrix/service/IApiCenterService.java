@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.dto.AcApiInfoDto;
 import com.matrix.pojo.dto.AcRequestInfoDto;
@@ -12,13 +14,14 @@ import com.matrix.pojo.entity.AcApiProject;
 import com.matrix.pojo.entity.AcIncludeDomain;
 import com.matrix.pojo.entity.AcRequestInfo;
 import com.matrix.pojo.view.AcApiInfoView;
+import com.matrix.pojo.view.AcApiProjectView;
 
 public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView>{
 
 	// ac_api_project 表
-	public JSONObject ajaxApiProjectList(AcApiProject entity, HttpServletRequest request);
-	public JSONObject ajaxBtnApiProjectAdd(AcApiProject entity, HttpSession session);
-	public JSONObject ajaxBtnApiProjectEdit(AcApiProject entity, HttpSession session);
+	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(AcApiProject entity, HttpServletRequest request);
+	public Result<?> ajaxBtnApiProjectAdd(AcApiProject entity, HttpSession session);
+	public Result<?> ajaxBtnApiProjectEdit(AcApiProject entity, HttpSession session);
 	public JSONObject ajaxBtnApiProjectDelete(AcApiProject entity, HttpSession session);
 	
 	// ac_include_domain 表
