@@ -67,7 +67,7 @@ var apiInfo = {
             var data_ = null;   
             var obj = JSON.parse(ajaxs.sendAjax(type_ , url_ , data_));  
             if(obj.status == 'success'){
-                var zNodes = obj.list;
+                var zNodes = obj.data;
                 $.fn.zTree.init($("#api-tree") , setting_ , zNodes);
                 apiInfo.zTree = $.fn.zTree.getZTreeObj("api-tree");
                 $("#callbackTrigger").bind("change", {}, setting_.setTrigger);
@@ -273,7 +273,7 @@ var apiInfo = {
             	var data_ = {target:treeNode.target};
             	var api_ = JSON.parse(ajaxs.sendAjax('post' , apiInfo.path + 'ajax_api_info_find.do' , data_));  
             	if(api_.status == 'success'){
-            		apiInfo.drawApiEdit(api_);  
+            		apiInfo.drawApiEdit(api_.data);  
             	}else{
             		layer.alert(api_.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
             	}
@@ -382,7 +382,7 @@ var apiInfo = {
 				layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
 					var zTree = apiInfo.zTree;
 	            	var parent = zTree.getNodeByTId(apiInfo.currentNode.parentTId);
-	            	var e = obj.info;
+	            	var e = obj.data;
 	            	
 	            	zTree.removeNode(apiInfo.currentNode);
 	            	
@@ -676,7 +676,7 @@ var apiInfo = {
 			data_.target = target_;
 			var obj = JSON.parse(ajaxs.sendAjax(type_, apiInfo.apiServiceUrl, {json : JSON.stringify(data_)} ));
 			if (obj.status == 'success') {
-				$("#dto-json-str").val(JSON.stringify(obj.dto));
+				$("#dto-json-str").val(JSON.stringify(obj.data));
 			}else{
 				if(typeof(obj.msg) != 'undefined' && obj.msg != null){
 					malert(obj.msg, '系统提示');

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.service.IApiCenterService;
 
@@ -25,7 +26,7 @@ public class ApiFindValueByKey extends BaseClass implements IBaseProcessor {
 	
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
+	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
 		return apiCenterService.ajaxFindRequestValue(data.getString("key"));
 	}
 

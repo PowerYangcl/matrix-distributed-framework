@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.service.IApiCenterService;
 
@@ -25,7 +26,7 @@ public class ApiFindDtoProcessor  extends BaseClass implements IBaseProcessor {
 	private IApiCenterService apiCenterService;  
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
+	public Result<Object> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
 		return apiCenterService.ajaxFindRequestDto(data.getString("target"));
 	}
 

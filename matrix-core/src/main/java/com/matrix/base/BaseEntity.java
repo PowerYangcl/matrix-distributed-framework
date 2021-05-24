@@ -48,4 +48,42 @@ public class BaseEntity implements Serializable {
 
 	private String eleValue; // 按钮权限标识
 
+	public void buildAddCommon(McUserInfoView userCache) {
+		this.createTime = new Date();
+		this.createUserId = userCache.getId();
+		this.createUserName = userCache.getUserName();
+		this.updateTime = new Date();
+		this.updateUserId = userCache.getId();
+		this.updateUserName = userCache.getUserName();
+	}
+	
+	public void buildUpdateCommon(McUserInfoView userCache) {
+		this.updateTime = new Date();
+		this.updateUserId = userCache.getId();
+		this.updateUserName = userCache.getUserName();
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

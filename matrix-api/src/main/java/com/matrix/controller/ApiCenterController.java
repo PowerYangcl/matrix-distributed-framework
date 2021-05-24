@@ -2,6 +2,7 @@ package com.matrix.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,10 +14,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
+import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
 import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiInfo;
@@ -24,6 +25,9 @@ import com.matrix.pojo.entity.AcApiProject;
 import com.matrix.pojo.entity.AcIncludeDomain;
 import com.matrix.pojo.entity.AcRequestInfo;
 import com.matrix.pojo.view.AcApiProjectView;
+import com.matrix.pojo.view.AcIncludeDomainView;
+import com.matrix.pojo.view.AcRequestInfoView;
+import com.matrix.pojo.view.ApiTreeView;
 import com.matrix.service.IApiCenterService;
 
 /**
@@ -113,7 +117,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiProjectDelete(AcApiProject entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectDelete(AcApiProject entity , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_delete", "向ac_api_project表删除一条记录");
 		return service.ajaxBtnApiProjectDelete(entity, session);  
 	}
@@ -142,7 +146,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_include_domain_page_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxIncludeDomainPageList(AcIncludeDomain entity , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(AcIncludeDomain entity , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_include_domain_page_list", "ac_include_domain 跨域白名单列表数据请求");
 		return service.ajaxIncludeDomainPageList(entity, request, session);  
 	}
@@ -158,7 +162,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_include_domain_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxIncludeDomainList(AcIncludeDomain entity , HttpServletRequest request, HttpSession session){ 
+	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(AcIncludeDomain entity , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_include_domain_list", "ac_include_domain 全量跨域白名单列表数据，不分页");
 		return service.ajaxIncludeDomainList(entity, request, session);  
 	}
@@ -173,7 +177,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_domain_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiDomainAdd(AcIncludeDomain entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiDomainAdd(AcIncludeDomain entity , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_domain_add", "添加跨域白名单");
 		return service.ajaxBtnApiDomainAdd(entity, session);  
 	}
@@ -188,7 +192,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_domain_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiDomainEdit(AcIncludeDomain entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiDomainEdit(AcIncludeDomain entity , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_domain_edit", "编辑跨域白名单");
 		return service.ajaxBtnApiDomainEdit(entity, session);  
 	}
@@ -202,7 +206,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_domain_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiDomainDelete(AcIncludeDomain entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiDomainDelete(AcIncludeDomain entity , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_domain_delete", "删除一条跨域白名单记录");
 		return service.ajaxBtnApiDomainDelete(entity, session);  
 	}
@@ -232,7 +236,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiInfoList(AcApiInfo e , HttpSession session){ 
+	public Result<List<ApiTreeView>> ajaxApiInfoList(AcApiInfo e , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_list", "获取api树结构列表信息");
 		return service.ajaxApiInfoList(e, session);  
 	}
@@ -248,7 +252,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiInfoAdd(AcApiInfoDto d , HttpSession session){ 
+	public Result<AcApiInfo> ajaxApiInfoAdd(AcApiInfoDto d , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_add", "添加api信息");
 		return service.ajaxApiInfoAdd(d, session);  
 	}
@@ -264,7 +268,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_find", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiInfoFind(AcApiInfoDto dto , HttpSession session){ 
+	public Result<AcApiInfoCache> ajaxApiInfoFind(AcApiInfoDto dto , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_find", "依据target 查找一个api信息");
 		return service.ajaxApiInfoFind(dto);  
 	}
@@ -278,7 +282,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiInfoEdit(AcApiInfoDto d , HttpSession session){ 
+	public Result<AcApiInfoCache> ajaxApiInfoEdit(AcApiInfoDto d , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_edit", "修改api信息");
 		return service.ajaxApiInfoEdit(d, session);  
 	}
@@ -292,7 +296,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_remove", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnApiRemove(AcApiInfoDto d , HttpSession session){ 
+	public Result<?> ajaxBtnApiRemove(AcApiInfoDto d , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_remove", "删除api信息");
 		return service.ajaxApiInfoRemove(d, session);  
 	}
@@ -306,7 +310,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_discard", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxApiInfoDiscard(AcApiInfo e , HttpSession session){ 
+	public Result<?> ajaxApiInfoDiscard(AcApiInfo e , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_discard", "删除api信息");
 		return service.ajaxApiInfoDiscard(e, session);  
 	}
@@ -339,7 +343,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_request_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxRequestInfoList(AcRequestInfo entity , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(AcRequestInfo entity , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_list", "ac_request_info 接口请求者列表分页数据");
 		return service.ajaxRequestInfoList(entity, request, session);  
 	}
@@ -356,9 +360,9 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_request_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxRequestInfoAdd(AcRequestInfo entity , HttpServletRequest request, HttpSession session){ 
+	public Result<?> ajaxRequestInfoAdd(AcRequestInfo entity , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_add", "ac_request_info 接口请求者 添加数据");
-		return service.ajaxRequestInfoAdd(entity, request, session);  
+		return service.ajaxRequestInfoAdd(entity, request, session);
 	}
 	
 	/**
@@ -373,7 +377,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_request_info_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxRequestInfoEdit(AcRequestInfoDto dto , HttpServletRequest request, HttpSession session){ 
+	public Result<?> ajaxRequestInfoEdit(AcRequestInfoDto dto , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_edit", "ac_request_info 接口请求者 编辑数据");
 		return service.ajaxRequestInfoEdit(dto, request, session);  
 	}
@@ -398,23 +402,6 @@ public class ApiCenterController extends BaseController {
 	}
 	
 	/**
-	 * @description: 根据接口target，返回查询消息体
-	 *
-	 * @param target
-	 * @param request
-	 * @param session
-	 * @author Yangcl
-	 * @date 2017年12月11日 下午4:57:09 
-	 * @version 1.0.0
-	 */
-	@RequestMapping(value = "ajax_find_request_dto", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxFindRequestDto(String target , HttpServletRequest request, HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_find_request_dto", "根据接口target，返回查询消息体");
-		return service.ajaxFindRequestDto(target);  
-	}
-	
-	/**
 	 * @description: 根据请求者的key，找到对应的value
 	 *
 	 * @param key
@@ -426,7 +413,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_find_request_value", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxFindRequestValue(String key , HttpServletRequest request, HttpSession session){ 
+	public Result<String> ajaxFindRequestValue(String key , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_find_request_value", "根据请求者的key，找到对应的value");
 		return service.ajaxFindRequestValue(key);  
 	}
