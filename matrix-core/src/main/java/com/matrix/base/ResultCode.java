@@ -26,7 +26,6 @@ public class ResultCode {
 	public static Integer RESULT_NULL = 404;      // 结果集为空		100020108
 	
 	public static Integer ALREADY_EXISTS = 409;      // 对象已存在		100020109
-	
 
 
 	public static Integer SERVER_EXCEPTION = 500;  // 服务器异常
@@ -44,7 +43,6 @@ public class ResultCode {
 	public static Integer ERROR_DELETE = 503;  // 数据删除失败
 
 	public static Integer DUPLICATE = 504;  // 数据重复
-
 
 }
 

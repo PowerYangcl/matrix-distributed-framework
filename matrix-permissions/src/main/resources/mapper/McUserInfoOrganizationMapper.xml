@@ -62,7 +62,7 @@
 		delete from mc_user_info_organization where id = #{id,jdbcType=BIGINT}
 	</delete>
 	
-	<update id="deleteByDto" parameterType="com.matrix.pojo.dto.McUserInfoOrganizationDto">
+	<update id="deleteByEntity" parameterType="com.matrix.pojo.entity.McUserInfoOrganization">
 		update mc_user_info_organization
 		<set>
 			delete_flag = 0,

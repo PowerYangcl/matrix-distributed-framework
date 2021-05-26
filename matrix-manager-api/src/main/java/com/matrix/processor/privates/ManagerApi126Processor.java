@@ -29,7 +29,7 @@ public class ManagerApi126Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
 		McOrganization e = JSONObject.parseObject(param.getString("data"), McOrganization.class);
-		return mcOrganizationService.editOrganizationInfo(e);
+		return mcOrganizationService.updateOrganizationInfo(e);
 	}
 
 }

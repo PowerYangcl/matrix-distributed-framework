@@ -61,7 +61,7 @@
 		where 
 			id = #{id,jdbcType=BIGINT}
 	</select>
-	<!--mashaohua   -->
+	
 	<select id="findEntityByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.McOrganizationDto">
 		select
 			<include refid="base_column_list" />

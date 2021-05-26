@@ -3,10 +3,11 @@ package com.matrix.service;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.Result;
 
 public interface IPowerCacheService {
 
-    public JSONObject ajaxBtnGetCache(String prefix, String key, String type);
+    public Result<?> ajaxBtnGetCache(String prefix, String key, String type);
 
     /**
      * @description: 删除缓存中的数据
@@ -18,22 +19,18 @@ public interface IPowerCacheService {
      * @date 2018年11月14日 上午11:14:52
      * @version 1.0.0.1
      */
-    public JSONObject ajaxBtnDeleteCache(String prefix, String key, String type);
+    public Result<?> ajaxBtnDeleteCache(String prefix, String key, String type);
 
 
     /**
-     *@description:批量删除缓存
+     * @description: 批量删除缓存数据
      *
-     *@param prefix 缓存key 的关键字
-     *@param key 缓存中的key
-     *@param type 缓存类型 ：dict|serv
-     *@author Sjh
-     *@date 2018/11/21 10:55
-     *@return
-     *@version 1.0.1
+     * @author Yangcl
+     * @date 2021-5-22 14:19:02
+     * @home https://github.com/PowerYangcl
+     * @version 1.0.0.1
      */
-
-    public JSONObject ajaxBtnBatchDeleteCache(String prefix, String key, String type);
+    public Result<?> ajaxBtnBatchDeleteCache(String prefix, String key, String type);
 
     /**
      * @description: 重新设置一个缓存值
@@ -46,7 +43,7 @@ public interface IPowerCacheService {
      * @date 2018年11月14日 下午19:42:26
      * @version 1.0.0.1
      */
-    public JSONObject ajaxBtnResetCache(String prefix, String key, String type, String jsonStr);
+    public Result<?> ajaxBtnResetCache(String prefix, String key, String type, String jsonStr);
 
     /**
      * @description: 重新设置一个缓存值|永久生效
@@ -59,7 +56,7 @@ public interface IPowerCacheService {
      * @date 2018年11月14日 下午19:42:26
      * @version 1.0.0.1
      */
-	public JSONObject ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr);
+	public Result<?> ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr);
 
     /**
      * @description: 缓存API实例化
@@ -69,7 +66,7 @@ public interface IPowerCacheService {
      * @date 2018年12月22日 上午9:21:15 
      * @version 1.0.0.1
      */
-	public JSONObject apiCacheInit(JSONObject dto, HttpSession session);
+	public Result<?> apiCacheInit(JSONObject dto, HttpSession session);
 
 }
 

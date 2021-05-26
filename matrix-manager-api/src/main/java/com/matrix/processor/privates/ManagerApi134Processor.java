@@ -30,7 +30,7 @@ public class ManagerApi134Processor extends BaseClass implements IBaseProcessor 
 	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			JSONObject param) {
 		McOrganizationDto dto = JSONObject.parseObject(param.getString("data"), McOrganizationDto.class);
-		return mcOrganizationService.ajaxUserAddOrganization(dto);
+		return mcOrganizationService.ajaxUserAddOrgRequest(dto);
 	}
 
 }

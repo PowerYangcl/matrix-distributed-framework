@@ -44,7 +44,7 @@ public class BaseEntity implements Serializable {
 	private String updateUserName;
 	private Integer deleteFlag;               // 0 删除 | 1 未删除 数据库记录默认未删除
 	
-	private McUserInfoView userCache ;
+	private McUserInfoView userCache;
 
 	private String eleValue; // 按钮权限标识
 

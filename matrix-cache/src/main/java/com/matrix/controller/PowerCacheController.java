@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseController;
+import com.matrix.base.Result;
 import com.matrix.service.IPowerCacheService;
 
 @Controller
@@ -44,7 +45,7 @@ public class PowerCacheController extends BaseController {
      */
     @RequestMapping(value = "ajax_btn_get_cache", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public JSONObject ajaxBtnGetCache(String prefix, String key, String type, HttpSession session) {
+    public Result<?> ajaxBtnGetCache(String prefix, String key, String type, HttpSession session) {
         return powerApiService.ajaxBtnGetCache(prefix, key, type);
     }
 
@@ -60,24 +61,22 @@ public class PowerCacheController extends BaseController {
      */
     @RequestMapping(value = "ajax_btn_delete_cache", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public JSONObject ajaxBtnDeleteCache(String prefix, String key, String type, HttpSession session) {
+    public Result<?> ajaxBtnDeleteCache(String prefix, String key, String type, HttpSession session) {
         return powerApiService.ajaxBtnDeleteCache(prefix, key, type);
     }
 
 
     /**
-     * @description: 通过关键字，批量删除缓存的数据
+     * @description: 批量删除缓存数据
      *
-     * @param prefix 缓存key 的关键字
-     * @param key 缓存中的key
-     * @param type 缓存类型 ：dict|serv
-     * @author Sjh
-     * @date 2018/11/21 10:55
+     * @author Yangcl
+     * @date 2021-5-22 14:19:02
+     * @home https://github.com/PowerYangcl
      * @version 1.0.0.1
      */
     @RequestMapping(value = "ajax_btn_batch_delete", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public JSONObject ajaxBtnBatchDeleteCache(String prefix, String key, String type, HttpSession session) {
+    public Result<?> ajaxBtnBatchDeleteCache(String prefix, String key, String type, HttpSession session) {
         return powerApiService.ajaxBtnBatchDeleteCache(prefix, key, type);
     }
 
@@ -95,7 +94,7 @@ public class PowerCacheController extends BaseController {
      */
     @RequestMapping(value = "ajax_btn_reset_cache", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public JSONObject ajaxBtnResetCache(String prefix, String key, String type, String jsonStr, HttpSession session) {
+    public Result<?> ajaxBtnResetCache(String prefix, String key, String type, String jsonStr, HttpSession session) {
         return powerApiService.ajaxBtnResetCache(prefix, key, type, jsonStr);
     }
     
@@ -112,7 +111,7 @@ public class PowerCacheController extends BaseController {
      */
     @RequestMapping(value = "ajax_btn_reset_cache_forever", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public JSONObject ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr, HttpSession session) {
+    public Result<?> ajaxBtnResetCacheForever(String prefix, String key, String type, String jsonStr, HttpSession session) {
         return powerApiService.ajaxBtnResetCacheForever(prefix, key, type, jsonStr);
     }
     
@@ -126,7 +125,7 @@ public class PowerCacheController extends BaseController {
      */
     @RequestMapping(value = "api_cache_init", produces = {"application/json;charset=utf-8"})
     @ResponseBody
-    public JSONObject apiCacheInit(JSONObject dto, HttpSession session) {
+    public Result<?> apiCacheInit(JSONObject dto, HttpSession session) {
         return powerApiService.apiCacheInit(dto , session);
     }
 }

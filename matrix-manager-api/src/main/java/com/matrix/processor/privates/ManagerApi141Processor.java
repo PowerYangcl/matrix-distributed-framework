@@ -20,20 +20,6 @@ import javax.servlet.http.HttpSession;
  * @date 2018年12月17日 下午7:19:45
  * @version 1.0.0.1
  */
-
-/**
- * request 实体   DictActivityType
- {
- "platform":"133EFB922DF3"
- }
- response返回类型
- "list": [{
- "id": "27",
- "cid": "2",
- "name": "1",
- }],
- "status": "success"
- */
 @MatrixRequest(clazz=com.matrix.pojo.entity.McOrganization.class)
 public class ManagerApi141Processor extends BaseClass implements IBaseProcessor {
     @Inject
