@@ -5,11 +5,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.pojo.dto.McRoleDto;
+import com.matrix.pojo.request.FindMcRoleRequest;
+import com.matrix.pojo.view.McRoleView;
 import com.matrix.service.IMcRoleService;
 
 /**
@@ -57,8 +61,8 @@ public class ManagerApi110Processor extends BaseClass implements IBaseProcessor 
 	
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McRoleDto dto = JSONObject.parseObject(param.getString("data"), McRoleDto.class);
+	public Result<PageInfo<McRoleView>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		FindMcRoleRequest dto = JSONObject.parseObject(param.getString("data"), FindMcRoleRequest.class);
 		return mcRoleService.ajaxSystemRoleList(dto , request);
 	}
 

@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
+import com.matrix.base.Result;
+import com.matrix.pojo.cache.McRoleCache;
 import com.matrix.pojo.dto.McRoleDto;
 import com.matrix.pojo.dto.McSysFunctionDto;
 import com.matrix.pojo.dto.McUserRoleDto;
@@ -18,6 +21,13 @@ import com.matrix.pojo.entity.McRole;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.entity.McUserRole;
+import com.matrix.pojo.request.AddMcRoleRequest;
+import com.matrix.pojo.request.DeleteMcRoleRequest;
+import com.matrix.pojo.request.FindMcRoleRequest;
+import com.matrix.pojo.request.FindUserRoleListRequest;
+import com.matrix.pojo.request.UpdateMcRoleRequest;
+import com.matrix.pojo.request.UpdateMcRoleTreeRequest;
+import com.matrix.pojo.view.McRoleView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcRoleService;
 import com.matrix.service.IMcSysFunctionService;
@@ -135,10 +145,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_system_role_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxSystemRoleList(McRoleDto dto , HttpSession session , HttpServletRequest request) {
+	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(FindMcRoleRequest param , HttpSession session , HttpServletRequest request) {
 		super.userBehavior(session, logger, "ajax_system_role_list", "系统角色列表数据");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.ajaxSystemRoleList(dto , request);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.ajaxSystemRoleList(param , request);
 	}
 	
 	/**
@@ -150,10 +160,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_add_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnAddMcRoleOnly(McRole info , HttpSession session) {
+	public Result<?> ajaxBtnAddMcRoleOnly(AddMcRoleRequest param , HttpSession session) {
 		super.userBehavior(session, logger, "ajax_btn_add_mc_role_only", "添加一个角色，不勾选系统功能");
-		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.addMcRole(info);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.addMcRole(param);
 	}
 	
 	/**
@@ -165,10 +175,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_edit_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnEditMcRoleOnly(McRoleDto info , HttpSession session) {
+	public Result<?> ajaxBtnEditMcRoleOnly(UpdateMcRoleRequest param , HttpSession session) {
 		super.userBehavior(session, logger, "ajax_btn_edit_mc_role_only", "修改角色名称和描述，不勾选系统功能");
-		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.editSysRole(info);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.editSysRole(param);
 	}
 	
 	/**
@@ -181,41 +191,43 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_delete_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnDeleteMcRole(McRoleDto dto , HttpSession session){
+	public Result<?> ajaxBtnDeleteMcRole(DeleteMcRoleRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_btn_delete_mc_role", "删除系统角色|系统权限配置 / 系统用户相关 / 系统角色列表");
-		return mcRoleService.deleteMcRole(dto);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.deleteMcRole(param);	
 	}
 	
 	/**
 	 * @description: 修改角色所关联的系统功能|【角色列表】->【角色功能】->【提交】按钮
 	 * 							 在系统功能树(ztree)中勾选选中的功能点与这个角色进行关联
-	 * @param d
+	 * 
 	 * @author Yangcl 
 	 * @date 2017年4月19日 下午4:22:28 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_btn_edit_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnEditMcRole(McRoleDto dto , HttpSession session){
+	public Result<McRoleCache> ajaxBtnEditMcRole(UpdateMcRoleTreeRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_btn_edit_mc_role", "修改角色所关联的系统功能|【角色列表】->【角色功能】->【提交】按钮");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.editMcRole(dto);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.editMcRole(param);	
 	}
 	
 	/**
-	 * @description: 在系统功能树(ztree)中解绑与这个角色关联的功能点|【角色列表】->【角色功能】->【解绑】按钮|TODO 尚未在matrix-manager-api中添加类
+	 * @description: 在系统功能树(ztree)中解绑与这个角色关联的功能点|【角色列表】->【角色功能】->【解绑】按钮|
+	 * 		TODO 尚未在matrix-manager-api中添加类
 	 *								 
-	 * @param dto
+	 * @param dto.mcRoleId
 	 * @author Yangcl
 	 * @date 2019年11月20日 下午3:41:54 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_btn_relieve_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnRelieveMcRole(McRoleDto dto , HttpSession session){
+	public Result<?> ajaxBtnRelieveMcRole(UpdateMcRoleTreeRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_btn_relieve_mc_role", "在系统功能树(ztree)中解绑与这个角色关联的功能点|【角色列表】->【角色功能】->【解绑】按钮");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.ajaxBtnRelieveMcRole(dto);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.ajaxBtnRelieveMcRole(param);	
 	}
 	
 	/**
@@ -232,10 +244,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_user_role_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxUserRoleList(McRoleDto role , HttpSession session , HttpServletRequest request) {
+	public Result<PageInfo<McRoleView>> ajaxUserRoleList(FindUserRoleListRequest param , HttpSession session , HttpServletRequest request) {
 		super.userBehavior(session, logger, "user_role_list", "系统权限配置 / 系统用户相关 / 系统用户列表-【展示权限列表】");  
-		role.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.userRoleList(role , request);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.userRoleList(param , request);
 	}
 	
 	/**

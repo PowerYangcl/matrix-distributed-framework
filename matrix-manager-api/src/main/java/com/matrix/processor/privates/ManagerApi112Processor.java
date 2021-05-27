@@ -25,7 +25,7 @@ import com.matrix.service.IMcRoleService;
  * request 实体 
  * {
 	 "roleDesc": "观察员77",
-	 "roleName": "3333377"
+	 "roleName": "2222"
    }
    response返回类型
    {"msg":"添加成功","status":"success"}
