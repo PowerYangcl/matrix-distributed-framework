@@ -2,7 +2,6 @@ package com.matrix.service;
 
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.dto.McOrganizationDto;
@@ -22,7 +21,6 @@ public interface IMcOrganizationService extends IBaseService<Long, McOrganizatio
 	/**
 	 * @description: 组织机构树形结构列表|controller层未调用。
 	 * 
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2021-5-25 15:09:08
 	 * @home https://github.com/PowerYangcl
@@ -33,7 +31,6 @@ public interface IMcOrganizationService extends IBaseService<Long, McOrganizatio
 	/**
 	 * @description: 添加一个组织结构节点到数据库|controller层未调用。
 	 *
-	 * @param e
 	 * @author Yangcl
 	 * @date 2018年10月24日 下午4:43:42 
 	 * @version 1.0.0.1
@@ -43,7 +40,6 @@ public interface IMcOrganizationService extends IBaseService<Long, McOrganizatio
 	/**
 	 * @description: 编辑一个组织机构节点
 	 *
-	 * @param e 
 	 * @author Yangcl
 	 * @date 2018年10月25日 下午1:56:19 
 	 * @version 1.0.0.1
@@ -81,7 +77,6 @@ public interface IMcOrganizationService extends IBaseService<Long, McOrganizatio
 	/**
 	 * @description: 获取一级组织机构下所有的门店
 	 * 
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2021-5-26 18:07:27
 	 * @home https://github.com/PowerYangcl

@@ -1,10 +1,6 @@
 package com.matrix.service.impl;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -25,20 +21,19 @@ import com.matrix.dao.IMcRoleFunctionMapper;
 import com.matrix.dao.IMcRoleMapper;
 import com.matrix.dao.IMcUserRoleMapper;
 import com.matrix.pojo.cache.McRoleCache;
-import com.matrix.pojo.cache.McUserRoleCache;
 import com.matrix.pojo.dto.McRoleDto;
 import com.matrix.pojo.dto.McUserRoleDto;
 import com.matrix.pojo.entity.McRole;
 import com.matrix.pojo.entity.McRoleFunction;
-import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserRole;
 import com.matrix.pojo.request.AddMcRoleRequest;
+import com.matrix.pojo.request.AddMcUserRoleRequest;
 import com.matrix.pojo.request.DeleteMcRoleRequest;
+import com.matrix.pojo.request.DeleteMcUserRoleRequest;
 import com.matrix.pojo.request.FindMcRoleRequest;
 import com.matrix.pojo.request.FindUserRoleListRequest;
 import com.matrix.pojo.request.UpdateMcRoleRequest;
 import com.matrix.pojo.request.UpdateMcRoleTreeRequest;
-import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.McRoleView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcRoleService;
@@ -179,11 +174,6 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McRole e = param.buildEditSysRole(); 
 			int count = mcRoleMapper.updateSelective(e);
 			if(count == 1){
-				String mcRole = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(param.getId().toString());
-				String ids = "";
-				if(StringUtils.isNotBlank(mcRole)){
-					ids = JSONObject.parseObject( mcRole ).getString("ids");  
-				}
 				launch.loadDictCache(DCacheEnum.McRole , null).del(param.getId().toString());
 				return Result.SUCCESS(this.getInfo(100010104));	// 100010104=数据更新成功!
 			}
@@ -298,10 +288,10 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<PageInfo<McRoleView>> userRoleList(FindUserRoleListRequest param , HttpServletRequest request) {
-		McRoleDto dto = param.buildUserRoleList();
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
 		try {
+			McRoleDto dto = param.buildUserRoleList();
 			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
 				pageNum = dto.getStartIndex();
 				pageSize = dto.getPageSize();
@@ -348,194 +338,71 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @description: 给指定用户分配一个角色
 	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮
 	 *
-	 * @param entity.mcRoleId
-	 * @param entity.mcUserId
-	 *  
 	 * @author Yangcl
 	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject addUserRole(McUserRole e) {
-		JSONObject result = new JSONObject();
-		Date createTime = new Date();
-		McUserInfoView userInfo = e.getUserCache();
-		e.setRemark("");
-		e.setCreateTime(createTime);
-		e.setCreateUserId(userInfo.getId());
-		e.setCreateUserName(userInfo.getUserName());
-		e.setUpdateTime(createTime);
-		e.setUpdateUserId(userInfo.getId());
-		e.setUpdateUserName(userInfo.getUserName());
-		try {
-			Integer count = mcUserRoleMapper.insertSelective(e);
-			if(count != 0){
-				result.put("status", "success");
-				result.put("msg", this.getInfo(101010056)); // 101010056=系统角色分配成功
-				// 实例化缓存   
-				this.reloadUserFunction(e.getMcUserId());  
-			}else{
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010007)); // 101010007=系统角色分配失败
-			}
-		} catch (Exception e2) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 101010008=系统异常
+	public Result<?> allotUserRole(AddMcUserRoleRequest param) {
+		if(param.getMcUserId() == null || param.getMcRoleId() == null) {
+			// 100010126=请求参数不允许为空
+			return Result.ERROR(this.getInfo(100010126), ResultCode.MISMATCH_ARGUMENT);
 		}
-		return result;
+		try {
+			McUserRole entity = param.buildAllotUserRole();
+			Integer count = mcUserRoleMapper.insertSelective(entity);
+			if(count != 0){
+				launch.loadDictCache(DCacheEnum.McUserRole , null).del(entity.getMcUserId().toString()); 
+				return Result.SUCCESS(this.getInfo(101010056));	// 101010056=系统角色分配成功
+			}
+			return Result.ERROR(this.getInfo(101010007), ResultCode.ERROR_INSERT);	// 101010007=系统角色分配失败
+		} catch (Exception ex) {
+			ex.printStackTrace();	// 100010112=服务器异常!
+			throw new RuntimeException(this.getInfo(100010112));
+		}
 	}
 	
 	/**
 	 * @description: 解除角色绑定，同时删除缓存
 	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【取消】按钮
 	 *
-	 * @param dto.userId
-	 * @param dto.mcRoleId
-	 *  
 	 * @author Yangcl
 	 * @date 2019年12月17日 下午5:39:55 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject deleteUserRole(McUserRoleDto d) {
-		JSONObject result = new JSONObject();
-		try {
-			if(d.getUserId() == null ||d.getMcRoleId() == null){
-				result.put("status", "error");
-				result.put("msg", "页面数据信息不全"); // 页面数据信息不全  
-				return result;
-			}
-			
-			mcUserRoleMapper.deleteByDto(d);   
-			this.reloadUserFunction(d.getUserId()); 
-			
-			result.put("status", "success");
-			result.put("msg", this.getInfo(101010010)); // 系统角色移除成功! 
-		} catch (Exception e) {
-			e.printStackTrace(); 
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 系统异常
+	public Result<?> deleteUserRole(DeleteMcUserRoleRequest param) {
+		if(param.getUserId() == null || param.getMcRoleId() == null) {
+			// 100010126=请求参数不允许为空
+			return Result.ERROR(this.getInfo(100010126), ResultCode.MISMATCH_ARGUMENT);
 		}
-		return result;
+		try {
+			McUserRoleDto dto = param.buildDeleteUserRole();
+			mcUserRoleMapper.deleteByDto(dto);   
+			launch.loadDictCache(DCacheEnum.McUserRole , null).del(dto.getUserId().toString());
+			return Result.SUCCESS(this.getInfo(101010010));	// 101010010=系统角色移除成功! 
+		} catch (Exception ex) {
+			ex.printStackTrace();	// 100010112=服务器异常!
+			throw new RuntimeException(this.getInfo(100010112));
+		}
 	}
-	
-	
-
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**
 	 * @description: 角色详情【仅matrix-manager-api项目使用】
 	 *
-	 * @param info.id mc_role表自增id
-	 * 
 	 * @author Yangcl
 	 * @date 2018年10月13日 下午3:37:05 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxFindRoleInfo(McRole e) {
-		JSONObject result = new JSONObject();
-		if(e.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010033));	// 101010033=角色id不得为空
-			return result;
+	public Result<McRole> ajaxFindRoleInfo(FindMcRoleRequest param) {
+		McRole e = param.buildAjaxFindRoleInfo();
+		if(e.getId() == null) {		// 101010033=角色id不得为空
+			return Result.ERROR(this.getInfo(101010033), ResultCode.MISMATCH_ARGUMENT);
 		}
 		McRole entity = mcRoleMapper.find(e.getId());
-		if(entity == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010034));	// 101010034=后台数据查询失败
-			return result;
+		if(entity == null) {		// 101010034=后台数据查询失败
+			return Result.ERROR(this.getInfo(101010034), ResultCode.NOT_FOUND);
 		}
-		
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010014));	// 101010014=查询成功
-		result.put("entity", entity);
-		return result;
-	}
-	 
-	
-	
-	
-	
-	
-	/**
-	 * @description: 实例化用户功能缓存   
-	 * 
-	 * @param userId
-	 * @author Yangcl 
-	 * @date 2017年5月24日 下午3:05:35 
-	 * @version 1.0.0.1
-	 */
-	private void reloadUserFunction(Long userId){
-		launch.loadDictCache(DCacheEnum.McUserRole , null).del(userId.toString()); 
-		McUserRoleCache cache = new McUserRoleCache();
-		cache.setMcUserId(userId);
-		List<McUserRole> list = mcUserRoleMapper.selectByMcUserId(userId);
-		if(list != null && list.size() != 0){
-			Set<Long> set = new TreeSet<Long>();  
-			for(McUserRole r : list){
-				String roleJson = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(r.getMcRoleId().toString());
-				if(StringUtils.isNotBlank(roleJson)){
-					McRoleCache role = JSONObject.parseObject(roleJson, McRoleCache.class);
-					if(role == null){
-						continue;
-					}
-					if(StringUtils.isNotBlank(role.getIds())){
-						String [] arr = role.getIds().split(",");
-						for(String s : arr){
-							set.add(Long.valueOf(s)); 
-						}
-					}
-				}
-			}
-			if(set != null && set.size() != 0){
-				for(Long id : set){
-					String rfJson = launch.loadDictCache(DCacheEnum.McSysFunc , "McSysFuncInit").get(id.toString());
-					if(StringUtils.isNotBlank(rfJson)){
-						McSysFunction rf = JSONObject.parseObject(rfJson, McSysFunction.class);
-						if(rf == null){
-							continue;
-						}
-						cache.getMsfList().add(rf); 
-					}
-				}
-			}
-			launch.loadDictCache(DCacheEnum.McUserRole , null).set(userId.toString() , JSONObject.toJSONString(cache)  , 30*24*60*60); 
-		}
+		return Result.SUCCESS(this.getInfo(100010100), entity);		// 100010100=数据请求成功!
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

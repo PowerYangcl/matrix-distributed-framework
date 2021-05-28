@@ -1,7 +1,6 @@
 package com.matrix.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -23,7 +22,6 @@ import com.matrix.dao.IMcOrganizationMapper;
 import com.matrix.dao.IMcUserInfoMapper;
 import com.matrix.dao.IMcUserInfoOrganizationMapper;
 import com.matrix.pojo.dto.McOrganizationDto;
-import com.matrix.pojo.dto.McUserInfoOrganizationDto;
 import com.matrix.pojo.entity.McOrganization;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.entity.McUserInfoOrganization;

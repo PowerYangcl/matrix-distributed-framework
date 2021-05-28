@@ -14,15 +14,14 @@ import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
 import com.matrix.pojo.cache.McRoleCache;
-import com.matrix.pojo.dto.McRoleDto;
 import com.matrix.pojo.dto.McSysFunctionDto;
-import com.matrix.pojo.dto.McUserRoleDto;
 import com.matrix.pojo.entity.McRole;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
-import com.matrix.pojo.entity.McUserRole;
 import com.matrix.pojo.request.AddMcRoleRequest;
+import com.matrix.pojo.request.AddMcUserRoleRequest;
 import com.matrix.pojo.request.DeleteMcRoleRequest;
+import com.matrix.pojo.request.DeleteMcUserRoleRequest;
 import com.matrix.pojo.request.FindMcRoleRequest;
 import com.matrix.pojo.request.FindUserRoleListRequest;
 import com.matrix.pojo.request.UpdateMcRoleRequest;
@@ -56,8 +55,6 @@ public class SystemRoleController  extends BaseController{
 	/**
 	 * @description: 添加系统功能到数据库-mc_sys_function表添加记录
 	 * 
-	 * @param e
-	 * @param session 
 	 * @author Yangcl 
 	 * @date 2017年3月1日 上午11:05:51 
 	 * @version 1.0.0.1
@@ -73,7 +70,6 @@ public class SystemRoleController  extends BaseController{
 	/**
 	 * @description: 更新系统功能到数据库-mc_sys_function表添加记录
 	 * 
-	 * @param e
 	 * @author Yangcl 
 	 * @date 2017年3月1日 下午5:33:30 
 	 * @version 1.0.0.1
@@ -254,19 +250,16 @@ public class SystemRoleController  extends BaseController{
 	 * @description: 给指定用户分配一个角色
 	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮
 	 *
-	 * @param entity.mcRoleId
-	 * @param entity.mcUserId
-	 *  
 	 * @author Yangcl
 	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_btn_allot_user_role_submit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnAllotUserRoleSubmit(McUserRole entity , HttpSession session){
+	public Result<?> ajaxBtnAllotUserRoleSubmit(AddMcUserRoleRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_btn_allot_user_role_submit", "给指定用户分配一个角色<系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮>");
-		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.addUserRole(entity);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.allotUserRole(param);
 	}
 	
 	/**
@@ -282,9 +275,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_allot_user_role_remove", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnAllotUserRoleRemove(McUserRoleDto dto , HttpSession session){
+	public Result<?> ajaxBtnAllotUserRoleRemove(DeleteMcUserRoleRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_btn_allot_user_role_remove", "解除角色绑定，同时删除缓存");
-		return mcRoleService.deleteUserRole(dto);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.deleteUserRole(param);
 	}
 	
 	/**
@@ -302,11 +296,7 @@ public class SystemRoleController  extends BaseController{
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.ajaxFuncRole(entity, request);
 	}
-	
-	
-	
-	
-	
+
 	
 	/////////////////////////////////////////////////////////////////////////////////  jsp系统中未使用到的接口  ///////////////////////////////////////////////////////////////////////////////// 
 	
@@ -321,10 +311,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_find_role_info", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxFindRoleInfo(McRole info , HttpSession session) {
+	public Result<McRole> ajaxFindRoleInfo(FindMcRoleRequest param , HttpSession session) {
 		super.userBehavior(session, logger, "ajax_find_role_info", "角色详情");
-		info.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcRoleService.ajaxFindRoleInfo(info);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcRoleService.ajaxFindRoleInfo(param);
 	}
 	
 	
