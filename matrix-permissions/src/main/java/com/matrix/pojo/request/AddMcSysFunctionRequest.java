@@ -1,17 +1,19 @@
-package com.matrix.pojo.entity;
+package com.matrix.pojo.request;
 
-import com.matrix.base.BaseEntity;
+import java.io.Serializable;
+
+import com.matrix.pojo.entity.McSysFunction;
+import com.matrix.pojo.view.McUserInfoView;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
-public class McSysFunction extends BaseEntity{
+public class AddMcSysFunctionRequest implements Serializable{
+
+	private static final long serialVersionUID = -4703428007044146964L;
+
+	private McUserInfoView userCache;
 	
-	private static final long serialVersionUID = 5229443632033099730L;
-	
-	private Long id;
     private Long mcSellerCompanyId;
     private String name;
     private String parentId;
@@ -35,9 +37,36 @@ public class McSysFunction extends BaseEntity{
      * 按钮权限唯一标识
      */
     private String eleValue;
-    
-    
+	
+	public McSysFunction buildAddMcSysFunction() {
+		McSysFunction e = new McSysFunction();
+		e.setMcSellerCompanyId(mcSellerCompanyId);
+		e.setName(name);
+		e.setParentId(parentId);
+		e.setSeqnum(seqnum);
+		e.setNavType(navType);
+		e.setAuthorize(authorize);
+		e.setPlatform(platform);
+		e.setStyleClass(styleClass);
+		e.setStyleKey(styleKey);
+		e.setFuncUrl(funcUrl);
+		e.setAjaxBtnUrl(ajaxBtnUrl);
+		e.setRemark(remark);
+		e.setBtnArea(btnArea);
+		e.setEleValue(eleValue);
+		e.buildAddCommon(userCache);
+		e.setUserCache(userCache);
+		return e;
+	}
 }
+
+
+
+
+
+
+
+
 
 
 

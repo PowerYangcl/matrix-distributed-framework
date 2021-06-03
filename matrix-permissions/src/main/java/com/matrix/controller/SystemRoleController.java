@@ -9,25 +9,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
 import com.matrix.pojo.cache.McRoleCache;
-import com.matrix.pojo.dto.McSysFunctionDto;
 import com.matrix.pojo.entity.McRole;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.request.AddMcRoleRequest;
+import com.matrix.pojo.request.AddMcSysFunctionRequest;
 import com.matrix.pojo.request.AddMcUserRoleRequest;
 import com.matrix.pojo.request.DeleteMcRoleRequest;
+import com.matrix.pojo.request.DeleteMcSysFunctionRequest;
 import com.matrix.pojo.request.DeleteMcUserRoleRequest;
 import com.matrix.pojo.request.FindMcRoleRequest;
+import com.matrix.pojo.request.FindTreeListRequest;
 import com.matrix.pojo.request.FindUserRoleListRequest;
 import com.matrix.pojo.request.UpdateMcRoleRequest;
 import com.matrix.pojo.request.UpdateMcRoleTreeRequest;
+import com.matrix.pojo.request.UpdateMcSysFunctionRequest;
 import com.matrix.pojo.view.McRoleView;
 import com.matrix.pojo.view.McUserInfoView;
+import com.matrix.pojo.view.TreeListView;
 import com.matrix.service.IMcRoleService;
 import com.matrix.service.IMcSysFunctionService;
 
@@ -61,10 +64,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_add_tree_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxAddTreeNode(McSysFunction e , HttpSession session){
+	public Result<McSysFunction> ajaxAddTreeNode(AddMcSysFunctionRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_add_tree_node", "添加系统功能到数据库-mc_sys_function表添加记录");
-		e.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.addInfo(e);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.addMcSysFunction(param);	
 	}
 	
 	/**
@@ -76,30 +79,30 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_edit_tree_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxEditTreeNode(McSysFunction e , HttpSession session){
+	public Result<McSysFunction> ajaxEditTreeNode(UpdateMcSysFunctionRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_edit_tree_node", "更新一个节点到数据库");
-		e.setUserCache((McUserInfoView) session.getAttribute("userInfo")); 
-		return mcSysFunctionService.editInfo(e);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo")); 
+		return mcSysFunctionService.editMcSysFunction(param);	
 	}
 	
 	/**
 	 * @description: 系统功能同层节点拖拽更新
 	 * 
-	 * @param dto.ustring id@seqnum,id@seqnum 
+	 * @param ustring id@seqnum,id@seqnum 
 	 * @author Yangcl 
 	 * @date 2017年3月2日 下午5:33:07 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_update_tree_nodes", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxUpdateTreeNodes(McSysFunctionDto dto, HttpSession session){
+	public Result<?> ajaxUpdateTreeNodes(UpdateMcSysFunctionRequest param, HttpSession session){
 		super.userBehavior(session, logger, "ajax_update_tree_nodes", "更新拖拽后的同层节点");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.updateTreeNodes(dto);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.updateTreeNodes(param);	
 	}
 	
 	/**
-	 * @description: 删除一个系统功能节点及其子节点
+	 * @description: 物理删除一个系统功能节点及其子节点
 	 *
 	 * @param dto.ids 
 	 * @author Yangcl
@@ -108,17 +111,17 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_delete_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxDeleteNode(McSysFunctionDto dto , HttpSession session){
+	public Result<?> ajaxDeleteNode(DeleteMcSysFunctionRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_delete_node", "删除一个系统功能节点及其子节点");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.deleteNode(dto);	
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.deleteNode(param);	
 	}
 	
 	/**
 	 * @description: 获取树列表|sys-user-role-function.js使用2次
 	 * 
-	 * @param dto.platform 如果不为空则获取指定平台下的功能节点|只有Leader平台会固定传入platform字段，用于区分【角色功能】显示哪些树节点下的内容
-	 * @param dto.type type=list or role|如果type=role则同时获得角色列表，同时dto.id = roleId
+	 * @param param.platform 如果不为空则获取指定平台下的功能节点|只有Leader平台会固定传入platform字段，用于区分【角色功能】显示哪些树节点下的内容
+	 * @param param.type type=list or role|如果type=role则同时获得角色列表，同时dto.id = roleId
 	 * 
 	 * @author Yangcl 
 	 * @date 2017年3月1日 上午11:03:16 
@@ -126,10 +129,10 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_tree_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxTreeList(McSysFunctionDto dto , HttpServletRequest request , HttpSession session){
+	public Result<TreeListView> ajaxTreeList(FindTreeListRequest param , HttpServletRequest request , HttpSession session){
 		super.userBehavior(session, logger, "ajax_tree_list", "获取树列表");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcSysFunctionService.treeList(dto);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcSysFunctionService.treeList(param);
 	}
 
 	/**
@@ -292,7 +295,7 @@ public class SystemRoleController  extends BaseController{
 	 */
 	@RequestMapping(value = "api_func_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxFuncRole(McUserInfo entity , HttpServletRequest request , HttpSession session){
+	public Result<?> ajaxFuncRole(McUserInfo entity , HttpServletRequest request , HttpSession session){
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.ajaxFuncRole(entity, request);
 	}

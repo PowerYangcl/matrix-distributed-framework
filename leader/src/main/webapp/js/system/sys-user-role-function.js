@@ -610,7 +610,7 @@ var surfunc = {
         distributeUserRole: function(roleId , platform){
         	$("#user-role-tree li").remove();
         	var type_ = 'post';
-            var url_ = surfunc.path + 'sysrole/ajax_tree_list.do?type=role&id=' + roleId;
+            var url_ = surfunc.path + 'sysrole/ajax_tree_list.do?type=role&roleId=' + roleId;
             var data_ = {  // 只有Leader平台会固定传入platform字段，用于区分【角色功能】显示哪些树节点下的内容
             		platform : platform
             };
