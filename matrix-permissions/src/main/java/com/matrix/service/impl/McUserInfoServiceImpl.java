@@ -10,19 +10,29 @@ import javax.servlet.http.HttpSession;
 
 import com.matrix.dao.*;
 import com.matrix.pojo.entity.*;
+import com.matrix.pojo.request.AddMcUserInfoRequest;
+import com.matrix.pojo.request.FindLoginRequest;
+import com.matrix.pojo.request.FindMcUserInfoRequest;
+import com.matrix.pojo.request.UpdateMcUserInfoRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseServiceImpl;
 import com.matrix.base.BaseView;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.cache.McUserRoleCache;
 import com.matrix.pojo.dto.McUserInfoDto;
+import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
 import com.matrix.support.ValidateCodeSupport;
@@ -58,54 +68,43 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2016年11月25日 下午4:17:47 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject login(McUserInfoDto dto , HttpSession session) {
-		JSONObject result = new JSONObject();
-		result.put("uploadUrl", this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));  // 系统文件上传
-		if (StringUtils.isBlank(dto.getUserName()) || StringUtils.isBlank(dto.getPassword())) {
-			result.put("status", "error");
-			result.put("msg", "用户名或密码不得为空");
-			return result;
+	public Result<LoginView> login(FindLoginRequest param , HttpSession session) {
+		if (StringUtils.isBlank(param.getUserName()) || StringUtils.isBlank(param.getPassword())) {
+			// 101010001=用户名或密码不得为空
+			return Result.ERROR(this.getInfo(101010001), ResultCode.MISSING_ARGUMENT);
 		}
-		if(StringUtils.isBlank(dto.getPlatform())) {
-			result.put("status", "error");
-			result.put("msg", "平台唯一标识码不得为空");
-			return result;
+		if(StringUtils.isBlank(param.getPlatform())) {		// 101010002=平台唯一标识码不得为空
+			return Result.ERROR(this.getInfo(101010002), ResultCode.MISSING_ARGUMENT);
 		}
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
+		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
+		if (StringUtils.isBlank(userInfoNpJson)) {		// 101010017=用户名或密码错误
+			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
+		}
+		
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		if (StringUtils.isNotBlank(userInfoNpJson) && info != null) { 
-			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
-			if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) { 
-				result.put("status", "error");
-				result.put("msg", "未授权用户");
-				return result;
-			}
-			if( !info.getPlatform().equals(dto.getPlatform()) ) {
-				result.put("status", "error");
-				result.put("msg", "未授权用户，平台未对您分配权限，标识码：" + dto.getPlatform());
-				return result;
-			}
-			
-			McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
-			List<McSysFunction> msfList = new ArrayList<McSysFunction>();
-			for(McSysFunction m : cache.getMsfList()) {	// 防止误操作，去掉与标识码无关的功能项
-				if(m.getPlatform() != null && m.getPlatform().equals(dto.getPlatform())) {
-					msfList.add(m);
-				}
-			}
-		    cache.setMsfList(msfList); 
-		    
-		    session.setAttribute("userInfo", info);   // 写入session
-			result.put("data" , JSONObject.toJSONString(cache));    
-			result.put("info", userInfoNpJson); 
-			result.put("status", "success");
-			result.put("msg", "调用成功");
-			return result;
-		} else {
-			result.put("status", "error");
-			result.put("msg", "用户名或密码错误");
-			return result;
+		String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
+		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
+			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
+		if(!info.getPlatform().equals(param.getPlatform())) {		// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
+			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
+		}
+		McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
+		List<McSysFunction> msfList = new ArrayList<McSysFunction>();
+		for(McSysFunction m : cache.getMsfList()) {	// 防止误操作，去掉与标识码无关的功能项
+			if(m.getPlatform() != null && m.getPlatform().equals(param.getPlatform())) {
+				msfList.add(m);
+			}
+		}
+		cache.setMsfList(msfList); 
+		
+		session.setAttribute("userInfo", info);   // 写入session
+		
+		LoginView view = new LoginView();
+		view.setPageJson(JSONObject.toJSONString(cache));
+		view.setInfo(userInfoNpJson);
+		view.setUploadUrl(this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));	// 系统文件上传
+		return Result.SUCCESS(view);
 	}
 	
 	/**
@@ -115,12 +114,8 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年12月19日 下午2:41:27 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject logout(HttpSession session) {
-		JSONObject result = new JSONObject();
-		session.removeAttribute("userInfo"); 
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010015));  		// 101010015=系统已经退出
-		return result;
+	public Result<?> logout(HttpSession session) {// 101010015=系统已经退出
+		return Result.SUCCESS( this.getInfo(101010015));
 	}
 	
 	/**
@@ -140,15 +135,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxSystemUserList(McUserInfoDto dto , HttpServletRequest request) {
-		McUserInfoView userCache = dto.getUserCache();
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoRequest param , HttpServletRequest request) {
+		McUserInfoDto dto = param.buildAjaxSystemUserList();
+		McUserInfoView userCache = param.getUserCache();
 		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString()  , userCache.getType() )) {   
-			JSONObject r = new JSONObject();
-			r.put("status", "error");
-			r.put("msg", this.getInfo(101010013));   // 用户会话异常! platform cod or cid is null
-			return r;
+			// 用户会话异常! platform cod or cid is null
+			return Result.ERROR(this.getInfo(101010013), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
-		
 		if(userCache.getType().equals("leader") ) {     // master.getType() will be: leader or admin or user
 			dto.setType("'leader','admin'");
 			dto.setCid(null); 		// 联合查询字段主动置空 防御攻击
@@ -159,7 +152,27 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			dto.setPlatform(userCache.getPlatform()); 
 		}
 		
-		return super.pageListByDto(dto, request);
+		int pageNum = 1;	// 当前第几页 | 必须大于0
+    	int pageSize = 10;	// 当前页所显示记录条数
+		try {
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = dto.getStartIndex();
+				pageSize = dto.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<McUserInfoView> list = mcUserInfoMapper.findPageList(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<McUserInfoView>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
+		}
 	}
 	
 	/**
@@ -169,91 +182,29 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年12月5日 上午10:28:56 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject addSysUser(McUserInfoDto info) {
-		JSONObject result = new JSONObject();
-		McUserInfoView userCache = info.getUserCache(); //(McUserInfoView) session.getAttribute("userInfo");
-		if (StringUtils.isBlank(info.getUserName()) || StringUtils.isBlank(info.getPassword())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010019));	// 101010019=用户名或密码不得为空
-			return result;
-		}
-		if (StringUtils.isBlank(info.getMobile())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010020)); // 101010020=用户手机号码不得为空
-			return result;
-		}
-		if (StringUtils.isBlank(info.getEmail())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010021));  // 101010021=用户电子邮箱不得为空
-			return result;
-		}
-		if (userCache.getType().equals("leader") && StringUtils.isBlank(info.getPlatform())) {   // 当非Leader后台调用的时候，这里不得为空，可以随意传入一个字符串，但后面代码不会使用
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010018)); // 101010018=平台识别码错误
-			return result;
-		}
-		McUserInfo entity = new McUserInfo();
-		entity.setUserName(info.getUserName());
-		List<McUserInfo> queryPage = mcUserInfoMapper.queryPage(entity);
-		if(queryPage != null && queryPage.size() != 0) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010029)); // 101010029=用户名已存在
-			return result;
+	public Result<?> addSysUser(AddMcUserInfoRequest param) {
+		Result<?> validate = param.validateAddSysUser();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
-		
-		
-		McUserInfo e = new McUserInfo();
-		e.setUserName(info.getUserName());
-		e.setPassword(SignUtil.md5Sign(info.getPassword()));
-		if(StringUtils.contains(info.getPlatform(), "@")) { // leader Leader后台用户|admin 其他平台管理员|user其他平台用户
-			e.setType(info.getPlatform().split("@")[0]);
-			e.setCid(info.getCid()); 		// Leader后台创建的admin类型用户
-		}else {
-			e.setType("user"); // 标识其他平台管理员所创建的用户
-			e.setCid(userCache.getCid()); 		// 继承其创建者的cid
-			e.setUserCode(String.valueOf(System.currentTimeMillis()).substring(5, 13));
-			if(info.getMcOrganizationId() == null) {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010036)); // 101010036=请选择组织机构
-				return result;
-			}
-			e.setMcOrganizationId(info.getMcOrganizationId());
-			e.setQq(info.getQq());
-		}
-		e.setMobile(info.getMobile());
-		e.setEmail(info.getEmail());
-		e.setSex(info.getSex());  
-		e.setRemark(info.getRemark());
-		e.setIdcard(info.getIdcard());
-		
-		if(StringUtils.contains(info.getPlatform(), "@")) { // Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
-			e.setPlatform(info.getPlatform().split("@")[1]);
-		}else {
-			e.setPlatform(userCache.getPlatform()); 		// 非Leader平台(具体某个平台)创建的用户，则继承其创建者的平台标识码			 
-		}
-		
-		e.setCreateTime(new Date());
-		e.setCreateUserId(userCache.getId());
-		e.setCreateUserName(userCache.getUserName()); 
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(userCache.getId());
-		e.setUpdateUserName(userCache.getUserName()); 
 		try {
-			int count = mcUserInfoMapper.insertSelectiveGetZid(e);
-			if(count == 1){
-				result.put("status", "success");
-				result.put("msg", this.getInfo(101010022));	// 101010022=添加成功
-			}else{
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010023));	// 101010023=添加失败
+			McUserInfo e = new McUserInfo();
+			e.setUserName(param.getUserName());
+			List<McUserInfo> list = mcUserInfoMapper.queryPage(e);
+			if(list != null && list.size() != 0) { 		// 101010029=用户名已存在
+				return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
 			}
-		} catch (Exception e_) {
-			e_.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010026));	// 101010026=服务器异常
+			
+			McUserInfo entity = param.buildAddSysUser();
+			int count = mcUserInfoMapper.insertSelectiveGetZid(entity);
+			if(count == 1){	// 100010102=数据添加成功!
+				return Result.SUCCESS(this.getInfo(100010102));
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		return result;
+		return Result.ERROR(this.getInfo(100010103), ResultCode.ERROR_INSERT);
 	}
 	
 	/**
@@ -263,127 +214,68 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年12月5日 下午2:28:38 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject editSysUser(McUserInfoDto info) {
-		JSONObject result = new JSONObject();
-		if (StringUtils.isBlank(info.getUserName())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010019));  // 101010019=用户名或密码不得为空
-			return result;
+	@Transactional
+	public Result<?> editSysUser(UpdateMcUserInfoRequest param) {
+		Result<?> validate = param.validateEditSysUser();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if (StringUtils.isBlank(info.getMobile())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010020));	// 101010020=用户手机号码不得为空
-			return result;
-		}
-		if (StringUtils.isBlank(info.getEmail())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010021));		// 101010021=用户电子邮箱不得为空
-			return result;
-		}
-		if( !info.getUserName().equals(info.getUserNameOld()) ) {	// 开始用户名是否重复
-			McUserInfoDto dto_ = new McUserInfoDto();
-			dto_.setUserName(info.getUserName());
-			McUserInfo ishas = mcUserInfoMapper.findEntityByDto(dto_);
-			if(ishas != null) {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010029));		// 101010029=用户名已存在
-				return result;
-			}
-		}
-		
 		try {
-			McUserInfoView master = info.getUserCache();  // (McUserInfoView) session.getAttribute("userInfo");
-			McUserInfo e = new McUserInfo();
-			e.setId(info.getId()); 
-			e.setUserName(info.getUserName());
-//			if(StringUtils.isNotBlank(info.getPassword())) {						更新密码作为单独的权限进行剥离 - Yangcl
-//				e.setPassword(SignUtil.md5Sign(info.getPassword()));
-//			}
-			e.setMobile(info.getMobile());
-			e.setEmail(info.getEmail());
-			e.setSex(info.getSex());   
-			e.setIdcard(info.getIdcard());
-			e.setUpdateTime(new Date());
-			e.setUpdateUserId(master.getId());
-			e.setUpdateUserName(master.getUserName()); 
-			e.setQq(info.getQq());
-			e.setRemark(info.getRemark());
-			e.setPicUrl(info.getPicUrl());			// 更新用户头像
-//			e.setPlatform(null);   // 平台标识码不允许修改
-			
+			if( !param.getUserName().equals(param.getUserNameOld()) ) {	// 开始用户名是否重复
+				McUserInfoDto dto = new McUserInfoDto();
+				dto.setUserName(param.getUserName());
+				McUserInfo ishas = mcUserInfoMapper.findEntityByDto(dto);
+				if(ishas != null) {		 // 101010029=用户名已存在
+					return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
+				}
+			}
+			McUserInfo e = param.buildEditSysUser();
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1){
-				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(info.getUserName() + "," + info.getPassword());
-				result.put("status", "success");
-				result.put("msg", this.getInfo(101010024));	// 101010024=更新成功
-			}else{
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010025));  // 101010025=更新失败
+				McUserInfo find = mcUserInfoMapper.find(e.getId());		// 此处不判空，抛异常数据回滚。
+				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(find.getUserName() + "," + find.getPassword());
+				return Result.SUCCESS(this.getInfo(100010104));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010026));	// 101010026=服务器异常
+			return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
+		} catch (Exception ex) {
+			ex.printStackTrace();		// 100010105=数据更新失败，服务器异常!
+			throw new RuntimeException(this.getInfo(100010105));
 		}
-		return result;
 	}
 	
 	/**
 	 * @description: 修改用户密码
 	 *
-	 * @param info 
 	 * @author Yangcl
 	 * @date 2018年10月29日 上午11:05:07 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxPasswordReset(McUserInfoDto info) {
-		JSONObject result = new JSONObject();
-		if (StringUtils.isBlank(info.getPassword()) || info.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010037));  // 101010037=用户密码不得为空
-			return result;
+	public Result<?> ajaxPasswordReset(UpdateMcUserInfoRequest param) {
+		Result<?> validate = param.validateAjaxPasswordReset();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(info.getPassword().length() < 6) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010047));  // 101010047=新密码长度不得小于6位
-			return result;
+		McUserInfo user = mcUserInfoMapper.find(param.getId());
+		if(user == null) {			// 101010038=用户密码重置失败，未找到指定用户，请重试
+			return Result.ERROR(this.getInfo(101010038), ResultCode.RESULT_NULL);
+		}
+		if (!user.getPassword().equals(SignUtil.md5Sign(param.getOldPassWord()))){
+			// 101010042=用户密码重置失败，原始密码不正确
+			return Result.ERROR(this.getInfo(101010042), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		
-		
-		McUserInfo user = mcUserInfoMapper.find(info.getId());
-		if(user == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010038));  // 101010038=用户密码重置失败，未找到指定用户，请重试
-			return result;
-		}
-		if(StringUtils.isNotBlank(info.getOldPassWord())){		// 判断原始密码是否相等 
-			if (!user.getPassword().equals(SignUtil.md5Sign(info.getOldPassWord()))){
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010042));  // 101010042=用户密码重置失败，原始密码不正确
-				return result;
+		try {
+			McUserInfo e = param.buildAjaxPasswordReset();
+			int count = mcUserInfoMapper.updateSelective(e);
+			if(count == 1) {
+				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(user.getUserName() + "," + user.getPassword());
+				return Result.SUCCESS(this.getInfo(101010008));		// 101010008=密码更新成功
 			}
+			return Result.ERROR(this.getInfo(101010038), ResultCode.OPERATION_FAILED);		// 101010038=用户密码重置失败
+		} catch (Exception ex) {
+			ex.printStackTrace();		// 101010038=用户密码重置失败   100010112=服务器异常!
+			throw new RuntimeException(this.getInfo(101010038) + "，" + this.getInfo(100010112));
 		}
-		
-		McUserInfoView master = info.getUserCache(); 
-		McUserInfo e = new McUserInfo();
-		e.setId(info.getId()); 
-		e.setPassword(SignUtil.md5Sign(info.getPassword())); 
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(master.getId());
-		e.setUpdateUserName(master.getUserName()); 
-		int count = mcUserInfoMapper.updateSelective(e);
-		if(count != 1) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010038));  // 101010038=用户密码重置失败
-			return result;
-		}
-		launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(user.getUserName() + "," + user.getPassword());
-		String val = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(user.getUserName() + "," + e.getPassword());  // 缓存重置
-		this.getLogger(null).sysoutInfo(val, this.getClass());
-		
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010024));	// 101010024=更新成功
-		return result;
 	}
 	
 	/**
@@ -566,7 +458,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			result.put("data" , JSONObject.toJSONString(cache));    
 			result.put("info", userInfoNpJson); 
 			result.put("status", "success");
-			result.put("msg", this.getInfo(101010016));  // 101010016=调用成功
+			result.put("msg", this.getInfo(101010016));  // 101010016=调用成功   // TODO  改
 			return result;
 		} else {
 			result.put("status", "error");

@@ -133,8 +133,8 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			}
 			return Result.ERROR(this.getInfo(100010103), ResultCode.ERROR_INSERT);	// 100010103=数据添加失败，服务器异常!
 		} catch (Exception ex) {
-			ex.printStackTrace(); // 101010026=服务器异常
-			throw new RuntimeException(this.getInfo(101010026));
+			ex.printStackTrace(); // 100010112=服务器异常!
+			throw new RuntimeException(this.getInfo(100010112));
 		}
 	}
 	

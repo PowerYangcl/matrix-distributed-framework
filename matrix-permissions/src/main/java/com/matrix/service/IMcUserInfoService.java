@@ -4,10 +4,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseView;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.pojo.entity.McUserInfo;
+import com.matrix.pojo.request.AddMcUserInfoRequest;
+import com.matrix.pojo.request.FindLoginRequest;
+import com.matrix.pojo.request.FindMcUserInfoRequest;
+import com.matrix.pojo.request.UpdateMcUserInfoRequest;
+import com.matrix.pojo.view.LoginView;
+import com.matrix.pojo.view.McUserInfoView;
 
 public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McUserInfoDto , BaseView> { 
 	
@@ -18,7 +26,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2016年11月25日 下午4:17:47 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject login(McUserInfoDto userInfo , HttpSession session);
+	public Result<LoginView> login(FindLoginRequest param , HttpSession session);
 
 	/**
 	 * @description: 退出系统|PC端用户|【仅JSP项目使用】
@@ -27,7 +35,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月19日 下午2:41:27 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject logout(HttpSession session);
+	public Result<?> logout(HttpSession session);
 	
 	/**
 	 * @description: 系统用户列表页数据
@@ -46,7 +54,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxSystemUserList(McUserInfoDto dto ,HttpServletRequest request);
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoRequest param , HttpServletRequest request);
 	
 	/**
 	 * @description: 添加用户
@@ -55,7 +63,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月5日 上午10:28:56 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject addSysUser(McUserInfoDto info);
+	public Result<?> addSysUser(AddMcUserInfoRequest param);
 	
 	/**
 	 * @description: 修改用户信息
@@ -64,7 +72,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月5日 下午2:28:38 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject editSysUser(McUserInfoDto info);
+	public Result<?> editSysUser(UpdateMcUserInfoRequest param);
 	
 	/**
 	 * @description: 修改用户密码
@@ -74,7 +82,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月29日 上午11:05:07 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxPasswordReset(McUserInfoDto info);
+	public Result<?> ajaxPasswordReset(UpdateMcUserInfoRequest param);
 	
 	/**
 	 * @description: 删除一个用户 | 不保留数据库中的记录

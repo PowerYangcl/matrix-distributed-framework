@@ -157,7 +157,7 @@
 	</select>
 	
 	<!-- 用户列表页数据展示 - Yangcl -->
-	<select id="pageListByDto" parameterType="com.matrix.pojo.dto.McUserInfoDto" resultMap="McUserInfoViewMap">
+	<select id="findPageList" parameterType="com.matrix.pojo.dto.McUserInfoDto" resultMap="McUserInfoViewMap">
 		select 
 			i.id as id,
 			i.cid as cid,

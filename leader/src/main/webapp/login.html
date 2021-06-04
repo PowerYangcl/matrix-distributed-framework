@@ -111,15 +111,15 @@
 	        data_.push(o);
 	        var object = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 	        if(object.status == 'success'){
-	        	if(object.data == undefined || object.data == ""){
+	        	if(object.data.pageJson == undefined || object.data.pageJson == ""){
 	        		layer.open({
 	        			title: '系统提示"',
 	        			content: '未检查到您有任何权限，请联系系统管理员'
         			});
 	        	}else{
-	        		localStorage.pageJson = object.data;
-	        		localStorage.userInfo = object.info;
-	        		localStorage.uploadUrl = object.uploadUrl;
+	        		localStorage.pageJson = object.data.pageJson;
+	        		localStorage.userInfo = object.data.info;
+	        		localStorage.uploadUrl = object.data.uploadUrl;
 	        		window.location.href = layui.setter.path + 'permissions/page_permissions_index.do';
 	        	}
 	        }else{

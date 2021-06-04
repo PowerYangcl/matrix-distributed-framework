@@ -13,6 +13,8 @@ public class ResultCode {
 	
 	
 	public static Integer OPERATION_FAILED = 301; // 操作失败	100020101
+	
+	public static Integer INTERNAL_VALIDATION_FAILED = 302; // 100020113=内部校验失败
 
 	
 	public static Integer INVALID_ARGUMENT = 400;		// 参数错误		100020102

@@ -29,4 +29,14 @@ public interface IMcUserInfoMapper extends IBaseDao<Long , McUserInfo , McUserIn
 	
 	
 	public Integer insertSelectiveGetZid(McUserInfo entity);  
+	
+	/**
+	 * @description: 分页列表
+	 * 
+	 * @author Yangcl
+	 * @date 2021-6-4 16:05:12
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.0.0.1
+	 */
+	public List<McUserInfoView> findPageList(McUserInfoDto dto);
 }
