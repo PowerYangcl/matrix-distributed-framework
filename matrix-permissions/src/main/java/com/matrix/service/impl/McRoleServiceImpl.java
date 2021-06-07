@@ -94,28 +94,12 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> addMcRole(AddMcRoleRequest param) {
-		McRole role = param.buildAddMcRole();
-		if(StringUtils.isBlank(role.getRoleName())){ // 101010027=角色名称不得为空
-			return Result.ERROR(this.getInfo(101010027), ResultCode.MISSING_ARGUMENT);
+		Result<?> validate = param.validateAddMcRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		McUserInfoView userCache = role.getUserCache();
-		if(!userCache.getType().equals("leader") && StringUtils.isNotBlank(role.getPlatform()) ) {
-			// 101010028=非Leader平台用户创建角色不得携带平台编码
-			return Result.ERROR(this.getInfo(101010028), ResultCode.ILLEGAL_ARGUMENT);
-		}
-		
-		if(userCache.getType().equals("leader") ) {
-			role.setType("leader");
-		}else {
-			// 其他平台系统管理员或拥有分配权限的用户创建的角色，类型固定为admin
-			role.setType("admin");
-			// leader后台创建的角色会传入平台码(如：133C9CB27E18)|其他平台则默认使用用户所在平台的数据
-			role.setPlatform(userCache.getPlatform());	
-		}
-		role.setCid(userCache.getCid());
-		role.buildAddCommon(userCache);
-		
 		try {
+			McRole role = param.buildAddMcRole();
 			// 验证角色名称是否重复
 			McRole role_ = new McRole();
 			role_.setCid(role.getCid());
@@ -146,15 +130,13 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> editSysRole(UpdateMcRoleRequest param) {
-		if(StringUtils.isBlank(param.getRoleName())){  // 101010027=角色名称不得为空
-			return Result.ERROR(this.getInfo(101010027), ResultCode.MISSING_ARGUMENT);
-		}
-		if(param.getId() == null){ 
-			return Result.ERROR(this.getInfo(100020103), ResultCode.MISSING_ARGUMENT);
+		Result<?> validate = param.validateEditMcRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
-		McUserInfoView userCache = param.getUserCache();
 		try {
+			McUserInfoView userCache = param.getUserCache();
 			if(!param.getRoleName().equals(param.getOldRoleName())) {
 				// 验证角色名称是否重复
 				McRole role_ = new McRole();
@@ -194,6 +176,10 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 */
 	@Transactional
 	public Result<?> deleteMcRole(DeleteMcRoleRequest param) {
+		Result<?> validate = param.validateDeleteMcRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
+		}
 		try {
 			if(mcUserRoleMapper.selectByMcRoleId(param.getMcRoleId()).size() != 0){ 
 				// 该角色已经关联了用户，如果想删除则必选先将用户与该角色解除绑定
@@ -226,15 +212,13 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 */
 	@Transactional
 	public Result<McRoleCache> editMcRole(UpdateMcRoleTreeRequest param) {
-		if(StringUtils.isBlank(param.getIds())){ // 101010003=请勾选系统功能
-			return Result.ERROR(this.getInfo(101010003), ResultCode.MISSING_ARGUMENT);
+		Result<McRoleCache> validate = param.validateEditMcRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
-		McUserInfoView userInfo = param.getUserCache(); 
-		McRole role = new McRole();
-		role.setId(param.getMcRoleId()); 
-		role.buildUpdateCommon(userInfo);
 		try {
+			McRole role = param.buildEditMcRole();
 			mcRoleMapper.updateSelective(role);	// 仅修改更新时间
 			mcRoleFunctionMapper.deleteByMcRoleId(param.getMcRoleId()); 
 			launch.loadDictCache(DCacheEnum.McRole , null).del(param.getMcRoleId().toString());  
@@ -243,7 +227,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 				McRoleFunction rf = new McRoleFunction();
 				rf.setMcRoleId(role.getId());
 				rf.setMcSysFunctionId(Long.valueOf(arr[i])); 
-				rf.buildAddCommon(userInfo);
+				rf.buildAddCommon(param.getUserCache());
 				mcRoleFunctionMapper.insertSelective(rf);
 			}
 			McRoleCache c = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(param.getMcRoleId().toString()), McRoleCache.class);
@@ -264,11 +248,13 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 */
 	@Transactional
 	public Result<?> ajaxBtnRelieveMcRole(UpdateMcRoleTreeRequest param) {
-		McUserInfoView userInfo = param.getUserCache(); 
-		McRole role = new McRole();
-		role.setId(param.getMcRoleId()); 
-		role.buildUpdateCommon(userInfo);
+		Result<?> validate = param.validateRelieveMcRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
+		}
+
 		try {
+			McRole role = param.buildEditMcRole();
 			mcRoleMapper.updateSelective(role);
 			mcRoleFunctionMapper.deleteByMcRoleId(param.getMcRoleId()); 
 			launch.loadDictCache(DCacheEnum.McRole , null).del(param.getMcRoleId().toString());  
@@ -343,9 +329,9 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> allotUserRole(AddMcUserRoleRequest param) {
-		if(param.getMcUserId() == null || param.getMcRoleId() == null) {
-			// 100010126=请求参数不允许为空
-			return Result.ERROR(this.getInfo(100010126), ResultCode.MISMATCH_ARGUMENT);
+		Result<?> validate = param.validateAllotUserRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		try {
 			McUserRole entity = param.buildAllotUserRole();
@@ -370,9 +356,9 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> deleteUserRole(DeleteMcUserRoleRequest param) {
-		if(param.getUserId() == null || param.getMcRoleId() == null) {
-			// 100010126=请求参数不允许为空
-			return Result.ERROR(this.getInfo(100010126), ResultCode.MISMATCH_ARGUMENT);
+		Result<?> validate = param.validateDeleteUserRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		try {
 			McUserRoleDto dto = param.buildDeleteUserRole();

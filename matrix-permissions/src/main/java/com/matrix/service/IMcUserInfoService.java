@@ -1,5 +1,7 @@
 package com.matrix.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,8 +11,10 @@ import com.matrix.base.BaseView;
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.dto.McUserInfoDto;
+import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.request.AddMcUserInfoRequest;
+import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
@@ -91,7 +95,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月5日 下午5:21:34 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject deleteUser(McUserInfoDto dto);
+	public Result<?> deleteUser(DeleteMcUserInfoRequest param);
 	
 	/**
 	 * @description: 重新加载系统用户缓存
@@ -100,7 +104,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月10日 下午3:49:25 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnUserCacheReload();
+	public Result<?> ajaxBtnUserCacheReload();
 	
 	/**
 	 * @description: 获取平台信息列表|ManagerCenterController使用
@@ -110,17 +114,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月20日 下午3:31:38 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxPlatformInfoList();
-	
-	
-	
-	
-	
-	
-	
-	
-
-
+	public Result<List<McSysFunction>> ajaxPlatformInfoList();
 	
 
 	
@@ -136,7 +130,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxClientLogin(HttpServletRequest request, McUserInfoDto dto);
+	public Result<LoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request);
 
 	/**
 	 * @description: 【仅matrix-manager-api项目使用】

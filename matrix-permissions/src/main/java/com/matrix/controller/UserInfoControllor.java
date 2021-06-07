@@ -9,12 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
-import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.pojo.request.AddMcUserInfoRequest;
+import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
@@ -146,10 +145,10 @@ public class UserInfoControllor  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_delete_system_user", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnDeleteSystemUser(McUserInfoDto dto , HttpSession session) {
+	public Result<?> ajaxBtnDeleteSystemUser(DeleteMcUserInfoRequest param , HttpSession session) {
 		super.userBehavior(session, logger, "ajax_btn_delete_system_user", "删除一个用户|不保留数据库中的记录");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return mcUserInfoService.deleteUser(dto);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return mcUserInfoService.deleteUser(param);
 	}
 	
 	/**
@@ -161,7 +160,7 @@ public class UserInfoControllor  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_user_cache_reload", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnUserCacheReload(HttpSession session , HttpServletRequest request){
+	public Result<?> ajaxBtnUserCacheReload(HttpSession session , HttpServletRequest request){
 		super.userBehavior(session, logger, "ajax_btn_user_cache_reload", "重新加载系统用户缓存");
 		return mcUserInfoService.ajaxBtnUserCacheReload();
 	}
@@ -175,7 +174,7 @@ public class UserInfoControllor  extends BaseController{
 	 */
 	@RequestMapping(value = "api_reload", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject apiReload(HttpSession session , HttpServletRequest request){
+	public Result<?> apiReload(HttpSession session , HttpServletRequest request){
 		return mcUserInfoService.ajaxBtnUserCacheReload();
 	}
 	
@@ -183,53 +182,4 @@ public class UserInfoControllor  extends BaseController{
 	
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

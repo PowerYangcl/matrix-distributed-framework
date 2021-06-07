@@ -1,16 +1,14 @@
 package com.matrix.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.matrix.dao.*;
-import com.matrix.pojo.entity.*;
 import com.matrix.pojo.request.AddMcUserInfoRequest;
+import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
@@ -30,12 +28,17 @@ import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
+import com.matrix.dao.IMcOrganizationMapper;
+import com.matrix.dao.IMcSysFunctionMapper;
+import com.matrix.dao.IMcUserInfoMapper;
+import com.matrix.dao.IMcUserRoleMapper;
 import com.matrix.pojo.cache.McUserRoleCache;
 import com.matrix.pojo.dto.McUserInfoDto;
+import com.matrix.pojo.entity.McSysFunction;
+import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
-import com.matrix.support.ValidateCodeSupport;
 import com.matrix.util.SignUtil;
 
 
@@ -69,18 +72,15 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<LoginView> login(FindLoginRequest param , HttpSession session) {
-		if (StringUtils.isBlank(param.getUserName()) || StringUtils.isBlank(param.getPassword())) {
-			// 101010001=用户名或密码不得为空
-			return Result.ERROR(this.getInfo(101010001), ResultCode.MISSING_ARGUMENT);
+		Result<LoginView> validate = param.validateLogin();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(StringUtils.isBlank(param.getPlatform())) {		// 101010002=平台唯一标识码不得为空
-			return Result.ERROR(this.getInfo(101010002), ResultCode.MISSING_ARGUMENT);
-		}
+		
 		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
 		if (StringUtils.isBlank(userInfoNpJson)) {		// 101010017=用户名或密码错误
 			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
-		
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
 		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
@@ -255,20 +255,12 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
-		McUserInfo user = mcUserInfoMapper.find(param.getId());
-		if(user == null) {			// 101010038=用户密码重置失败，未找到指定用户，请重试
-			return Result.ERROR(this.getInfo(101010038), ResultCode.RESULT_NULL);
-		}
-		if (!user.getPassword().equals(SignUtil.md5Sign(param.getOldPassWord()))){
-			// 101010042=用户密码重置失败，原始密码不正确
-			return Result.ERROR(this.getInfo(101010042), ResultCode.INTERNAL_VALIDATION_FAILED);
-		}
-		
+
 		try {
 			McUserInfo e = param.buildAjaxPasswordReset();
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1) {
-				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(user.getUserName() + "," + user.getPassword());
+				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(param.getUserName() + "," + param.getOldPassWord());
 				return Result.SUCCESS(this.getInfo(101010008));		// 101010008=密码更新成功
 			}
 			return Result.ERROR(this.getInfo(101010038), ResultCode.OPERATION_FAILED);		// 101010038=用户密码重置失败
@@ -287,37 +279,34 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public JSONObject deleteUser(McUserInfoDto dto) {
-		JSONObject result = new JSONObject();
-		Long id = dto.getId();
-		if(StringUtils.isBlank(id.toString())){
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010031)); // 101010031=页面数据错误,用户id为空
-			return result;
+	public Result<?> deleteUser(DeleteMcUserInfoRequest param) {
+		Result<?> validate = param.validateDeleteUser();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
+		
+		Long id = param.getId();
+		McUserInfoView view = param.getUserCache();
 		try {
-			McUserInfoView view = dto.getUserCache(); // (McUserInfoView) session.getAttribute("userInfo");  // mcUserInfoMapper.loadUserInfo(id);
-			int count = mcUserInfoMapper.deleteById(id);   
+			int count = mcUserInfoMapper.deleteById(id);
+			if(count != 1) {		// 100010124=数据删除失败，数据库连接异常!
+				return Result.ERROR(this.getInfo(100010124), ResultCode.ERROR_DELETE);
+			}
 			int count_ = 1;
 			if(StringUtils.isNotBlank(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(id.toString()))) {
 				count_ = mcUserRoleMapper.deleteByUserId(id); // 确定该用户有角色被分配才去删除
 			}
-			if(count == 1 && count_ == 1){
-				launch.loadDictCache(DCacheEnum.McUserRole , null).del(id.toString());
-				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(view.getUserName() + "," + view.getPassword());
-				result.put("status", "success");
-				result.put("msg", this.getInfo(101010001)); // 101010001=删除成功
-			}else{
-				result.put("status", "error");
-				result.put("msg", this.getInfo(101010002));  // 101010002=删除失败
+			if(count_ != 1) {
+				throw new RuntimeException(this.getInfo(100010105));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010026));	// 101010026=服务器异常
+			
+			launch.loadDictCache(DCacheEnum.McUserRole , null).del(id.toString());
+			launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(view.getUserName() + "," + view.getPassword());
+			return Result.SUCCESS(this.getInfo(100010106));		// 100010106=数据删除成功!
+		} catch (Exception ex) {
+			ex.printStackTrace();		 // 100010105=数据更新失败，服务器异常!
+			throw new RuntimeException(this.getInfo(100010105));
 		}
-		
-		return result;
 	}
 	
 	/**
@@ -327,22 +316,17 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年12月10日 下午3:49:25 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnUserCacheReload() {
-		JSONObject result = new JSONObject();
+	public Result<?> ajaxBtnUserCacheReload() {
 		try {
 			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDeleteByPrefix("");
 			launch.loadDictCache(DCacheEnum.McRole , null).batchDeleteByPrefix("");
 			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDeleteByPrefix("");
 			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDeleteByPrefix("");
-		} catch (Exception e) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010008)); // 系统异常
-			return result;
+			return Result.SUCCESS(this.getInfo(101010011));	// 101010011=系统字典缓存刷新完成!
+		} catch (Exception ex) {
+			ex.printStackTrace();		 // 100020112=系统错误, 请联系开发人员!
+			throw new RuntimeException(this.getInfo(100020112));
 		}
-		
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010011)); // 系统字典缓存刷新完成!
-		return result;
 	}
 	
 	/**
@@ -353,21 +337,17 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年9月22日 下午2:23:23 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxPlatformInfoList() {
-		JSONObject result = new JSONObject();
+	public Result<List<McSysFunction>> ajaxPlatformInfoList() {
 		try {
 			McSysFunction e = new McSysFunction();
 			e.setNavType(0);
 			e.setAuthorize(0); 		// 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
 			List<McSysFunction> sflist = mcSysFunctionMapper.getSysFuncList(e);
-			result.put("status", "success");
-			result.put("sflist", sflist);
+			return Result.SUCCESS(sflist);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010032));	// 101010044=获取平台信息列表失败，状态查询异常
+			ex.printStackTrace(); 		// 101010044=获取平台信息列表失败，状态查询异常
+			return Result.ERROR(this.getInfo(101010044), ResultCode.SERVER_EXCEPTION);
 		}
-		return result;
 	}
 	
 	
@@ -375,96 +355,52 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////【仅项目使用】////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
 	/**
 	 * @description: 【仅matrix-manager-api项目使用】
 	 * 		验证用户登录信息|客户端用户：nodejs/IOS平板等
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxClientLogin(HttpServletRequest request, McUserInfoDto dto) {
-		JSONObject result = new JSONObject();
-		result.put("uploadUrl", this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));  // 系统文件上传
-		if (StringUtils.isBlank(dto.getUserName()) || StringUtils.isBlank(dto.getPassword())) {
-			result.put("status", "error");
-			result.put("msg", "用户名或密码不得为空");
-			return result;
-		}
-		if(StringUtils.isBlank(dto.getPlatform())) {
-			result.put("status", "error");
-			result.put("msg", "平台唯一标识码不得为空");
-			return result;
+	public Result<LoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request) {
+		Result<LoginView> validate = param.validateAjaxClientLogin();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
-		
-		if(this.getConfig("matrix-core.model").equals("master")) {   // 线上环境验证码生效
-			if(StringUtils.isBlank(dto.getValidateCode())) {
-				result.put("status", "error");
-				result.put("msg", "验证码不得为空");
-				return result;
-			}
-			if(StringUtils.isBlank(dto.getValidateCodeKey())) {
-				result.put("status", "error");
-				result.put("msg", "验证码Key不能为空");
-				return result;
-			}
-			String validateCode = ValidateCodeSupport.getCode(dto.getValidateCodeKey());
-			if(StringUtils.isBlank(validateCode)) {
-				result.put("status", "error");
-				result.put("msg", "验证码已过期");
-				return result;
-			}else {
-				if(!validateCode.equalsIgnoreCase(dto.getValidateCode())) {
-					result.put("status", "error");
-					result.put("msg", "验证码错误");
-					return result;
-				}
-			}
+		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
+		if (StringUtils.isBlank(userInfoNpJson)) {		// 101010017=用户名或密码错误
+			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(dto.getUserName() + "," + SignUtil.md5Sign(dto.getPassword()));
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		if (StringUtils.isNotBlank(userInfoNpJson) && info != null) { 
-			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
-			if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) { 
-				result.put("status", "error");
-				result.put("msg", "未授权用户");
-				return result;
-			}
-			if( !info.getPlatform().equals(dto.getPlatform()) ) {
-				result.put("status", "error");
-				result.put("msg", "未授权用户，平台未对您分配权限，标识码：" + dto.getPlatform());
-				return result;
-			}
-			
-			McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
-			List<McSysFunction> msfList = new ArrayList<McSysFunction>();
-			for(McSysFunction m : cache.getMsfList()) {	// 防止误操作，去掉与标识码无关的功能项
-				if(m.getPlatform().equals(dto.getPlatform())) {
-					msfList.add(m);
-				}
-			}
-		    cache.setMsfList(msfList); 
-		    
-		    // launch.loadDictCache(DCacheEnum.AccessToken , null).get(dto.getAccessToken());  token获取为空，则用户登录已经超时，需要重新登录；故不需要Init****相关类
-		    String accessToken = SignUtil.md5Sign(dto.getUserName()) + SignUtil.md5Sign(String.valueOf(System.currentTimeMillis()));
-			launch.loadDictCache(DCacheEnum.AccessToken , null).set(accessToken , userInfoNpJson , 60*60);		// 设置用户令牌，有效时间1小时
-		    
-			result.put("accessToken", accessToken);
-			result.put("data" , JSONObject.toJSONString(cache));    
-			result.put("info", userInfoNpJson); 
-			result.put("status", "success");
-			result.put("msg", this.getInfo(101010016));  // 101010016=调用成功   // TODO  改
-			return result;
-		} else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010017));  // 101010017=用户名或密码错误
-			return result;
+		String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
+		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
+			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
+		if(!info.getPlatform().equals(param.getPlatform())) {		// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
+			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
+		}
+		
+		McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
+		List<McSysFunction> msfList = new ArrayList<McSysFunction>();
+		for(McSysFunction m : cache.getMsfList()) {	// 防止误操作，去掉与标识码无关的功能项
+			if(m.getPlatform().equals(param.getPlatform())) {
+				msfList.add(m);
+			}
+		}
+		cache.setMsfList(msfList); 
+		
+		// launch.loadDictCache(DCacheEnum.AccessToken , null).get(dto.getAccessToken());  token获取为空，则用户登录已经超时，需要重新登录
+		String accessToken = SignUtil.md5Sign(param.getUserName()) + SignUtil.md5Sign(String.valueOf(System.currentTimeMillis()));
+		launch.loadDictCache(DCacheEnum.AccessToken , null).set(accessToken , userInfoNpJson , 60*60);		// 设置用户令牌，有效时间1小时
+		
+		LoginView view = new LoginView();
+		view.setPageJson(JSONObject.toJSONString(cache));
+		view.setInfo(userInfoNpJson);
+		view.setUploadUrl(this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));	// 系统文件上传
+		return Result.SUCCESS(view);
 	}
 	
 	/**

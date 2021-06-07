@@ -335,7 +335,7 @@ layui.config({
 				var data_ = null;
 				var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 				if(obj.status == 'success'){
-					var sflist = obj.sflist;
+					var sflist = obj.data;
 					if(sflist.length != 0){
 						for(var i = 0 ; i < sflist.length; i ++){
 							var isChecked = '';

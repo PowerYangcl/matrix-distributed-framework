@@ -1,7 +1,11 @@
 package com.matrix.pojo.view;
 
 import com.matrix.base.BaseView;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class McSysFunctionView extends BaseView{
 
 	private static final long serialVersionUID = 1932556034701520822L;
@@ -33,102 +37,6 @@ public class McSysFunctionView extends BaseView{
 	private Boolean open = true;
 	
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public Long getMcSellerCompanyId() {
-		return mcSellerCompanyId;
-	}
-	public void setMcSellerCompanyId(Long mcSellerCompanyId) {
-		this.mcSellerCompanyId = mcSellerCompanyId;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getParentId() {
-		return parentId;
-	}
-	public void setParentId(String parentId) {
-		this.parentId = parentId;
-	}
-	public Integer getSeqnum() {
-		return seqnum;
-	}
-	public void setSeqnum(Integer seqnum) {
-		this.seqnum = seqnum;
-	}
-	public Integer getNavType() {
-		return navType;
-	}
-	public void setNavType(Integer navType) {
-		this.navType = navType;
-	}
-	public String getStyleClass() {
-		return styleClass;
-	}
-	public void setStyleClass(String styleClass) {
-		this.styleClass = styleClass;
-	}
-	public String getStyleKey() {
-		return styleKey;
-	}
-	public void setStyleKey(String styleKey) {
-		this.styleKey = styleKey;
-	}
-	public String getFuncUrl() {
-		return funcUrl;
-	}
-	public void setFuncUrl(String funcUrl) {
-		this.funcUrl = funcUrl;
-	}
-	public String getAjaxBtnUrl() {
-		return ajaxBtnUrl;
-	}
-	public void setAjaxBtnUrl(String ajaxBtnUrl) {
-		this.ajaxBtnUrl = ajaxBtnUrl;
-	}
-	public String getRemark() {
-		return remark;
-	}
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
-	public String getBtnArea() {
-		return btnArea;
-	}
-	public void setBtnArea(String btnArea) {
-		this.btnArea = btnArea;
-	}
-	public String getEleValue() {
-		return eleValue;
-	}
-	public void setEleValue(String eleValue) {
-		this.eleValue = eleValue;
-	}
-	public Boolean getOpen() {
-		return open;
-	}
-	public void setOpen(Boolean open) {
-		this.open = open;
-	}
-	public String getPlatform() {
-		return platform;
-	}
-	public void setPlatform(String platform) {
-		this.platform = platform;
-	}
-	public Integer getAuthorize() {
-		return authorize;
-	}
-	public void setAuthorize(Integer authorize) {
-		this.authorize = authorize;
-	}
 }
 
 

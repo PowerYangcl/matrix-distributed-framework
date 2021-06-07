@@ -32,7 +32,6 @@ import com.matrix.pojo.view.McSysFunctionView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.pojo.view.TreeListView;
 import com.matrix.service.IMcSysFunctionService;
-import com.matrix.util.DateUtil;
 import com.matrix.util.NetUtil;
 
 /**
@@ -63,46 +62,13 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	public Result<McSysFunction> addMcSysFunction(AddMcSysFunctionRequest param) {
-		McSysFunction entity = param.buildAddMcSysFunction();
-		if(StringUtils.isAnyBlank(entity.getName(), entity.getParentId())) {		// 101010059=功能名称 | 父节点不能为空 ! 
-			return Result.ERROR(this.getInfo(101010059), ResultCode.MISSING_ARGUMENT);
-		}
-		switch(entity.getNavType()){
-		case 0 :		// 平台默认标识码|nav_type=0，此处为系统生成默认值
-			DateUtil dateUtil = new DateUtil();
-			entity.setPlatform(dateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + dateUtil.getDateLongHex("HHmmss").toUpperCase());     
-			break;  
-		case 1 :			// 1 横向导航栏
-			break; 
-		case 2 :		 	// 1 级菜单栏
-			break; 
-		case 3 :			// 2级菜单栏
-			if(StringUtils.isBlank(entity.getFuncUrl())) {	// 101010049=系统功能添加失败! 【页面跳转地址】不得为空
-				return Result.ERROR(this.getInfo(101010049), ResultCode.MISSING_ARGUMENT);
-			}
-			entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
-			break; 
-		case 4 :			// 页面按钮
-			if(StringUtils.isBlank(entity.getEleValue())) {		// 101010048=系统功能添加失败! 【页面按钮标识】不得为空
-				return Result.ERROR(this.getInfo(101010048), ResultCode.MISSING_ARGUMENT);
-			}
-			if(StringUtils.isBlank(entity.getAjaxBtnUrl())) {		// 101010051=系统功能添加失败! 【按钮请求路径】不得为空
-				return Result.ERROR(this.getInfo(101010051), ResultCode.MISSING_ARGUMENT);
-			}
-			entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
-			break; 
-		case 5 :			//  按钮内包含跳转页面(dialog或新页面)
-			if(StringUtils.isBlank(entity.getEleValue())) {		// 101010048=系统功能添加失败! 【页面按钮标识】不得为空
-				return Result.ERROR(this.getInfo(101010048), ResultCode.MISSING_ARGUMENT);
-			}
-			if(StringUtils.isBlank(entity.getFuncUrl())) {  	// 101010050=系统功能添加失败! 【按钮跳转地址】不得为空
-				return Result.ERROR(this.getInfo(101010050), ResultCode.MISSING_ARGUMENT);
-			}
-			entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
-			break; 
+		Result<McSysFunction> validate = param.validateDeleteMcRole();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
 		try {
+			McSysFunction entity = param.buildAddMcSysFunction();
 			int count = mcSysFunctionMapper.insertSelective(entity);
 			if(count == 1){
 				// 开始创建缓存
@@ -123,47 +89,13 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	public Result<McSysFunction> editMcSysFunction(UpdateMcSysFunctionRequest param) {
-		McSysFunction entity = param.buildEditMcSysFunction();
-		if(entity.getId() == null) {		// 100020111=主键丢失
-			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
-		}
-		if(StringUtils.isBlank(entity.getName())) {	// 100010125=请求参数：{0}不允许为空
-			return Result.ERROR(this.getInfo(100010125 , "name"), ResultCode.MISSING_ARGUMENT);
-		}
-		
-		Integer type = entity.getNavType();  // navTpye = 4 or 5会由前端JS传入，其他则需要查询数据库来判断
-		if(entity.getNavType() == null) {
-			McSysFunction find = mcSysFunctionMapper.find(entity.getId());
-			type = find.getNavType();
-		}
-		switch(type){
-			case 3 :			// 2级菜单栏
-				if(StringUtils.isBlank(entity.getFuncUrl())) { 		// 101010053=系统功能更新失败! 【页面跳转地址】不得为空
-					return Result.ERROR(this.getInfo(101010053), ResultCode.MISSING_ARGUMENT);
-				}
-				entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
-				break; 
-			case 4 :			// 页面按钮
-				if(StringUtils.isBlank(entity.getEleValue())) { 		// 101010052=系统功能更新失败! 【页面按钮标识】不得为空
-					return Result.ERROR(this.getInfo(101010052), ResultCode.MISSING_ARGUMENT);
-				}
-				if(StringUtils.isBlank(entity.getAjaxBtnUrl())) { 		// 101010055=系统功能更新失败! 【按钮请求路径】不得为空
-					return Result.ERROR(this.getInfo(101010055), ResultCode.MISSING_ARGUMENT);
-				}
-				entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
-				break; 
-			case 5 :			//  按钮内包含跳转页面(dialog或新页面)
-				if(StringUtils.isBlank(entity.getEleValue())) { 		// 101010052=系统功能更新失败! 【页面按钮标识】不得为空
-					return Result.ERROR(this.getInfo(101010052), ResultCode.MISSING_ARGUMENT);
-				}
-				if(StringUtils.isBlank(entity.getFuncUrl())) {			// 101010054=系统功能更新失败! 【按钮跳转地址】不得为空
-					return Result.ERROR(this.getInfo(101010054), ResultCode.MISSING_ARGUMENT);
-				}
-				entity.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
-				break;
+		Result<McSysFunction> validate = param.validateEditMcSysFunction();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
 		try {
+			McSysFunction entity = param.buildEditMcSysFunction();
 			int count = mcSysFunctionMapper.updateSelective(entity);
 			if(count == 1){
 				launch.loadDictCache(DCacheEnum.McSysFunc , null).del(entity.getId().toString()); 
@@ -186,8 +118,9 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 */
 	@Transactional
 	public Result<?> updateTreeNodes(UpdateMcSysFunctionRequest param) {
-		if(StringUtils.isBlank(param.getUstring())) {			// 100010125=请求参数：{0}不允许为空
-			return Result.ERROR(this.getInfo(100010125 , "ustring"), ResultCode.MISSING_ARGUMENT);
+		Result<?> validate = param.validateUpdateTreeNodes();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
 		try {
@@ -212,8 +145,9 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	public Result<?> deleteNode(DeleteMcSysFunctionRequest param) {
-		if(StringUtils.isBlank(param.getIds())){ // 节点id不得为空!
-			return Result.ERROR(this.getInfo(101010012), ResultCode.MISSING_ARGUMENT);
+		Result<?> validate = param.validateDeleteNode();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		try {
 			List<Long> list = param.buildDeleteNode();

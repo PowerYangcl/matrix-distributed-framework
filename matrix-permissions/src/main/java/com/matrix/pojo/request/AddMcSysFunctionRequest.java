@@ -2,13 +2,21 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.view.McUserInfoView;
+import com.matrix.util.DateUtil;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class AddMcSysFunctionRequest implements Serializable{
+@EqualsAndHashCode(callSuper=false)
+public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
 
 	private static final long serialVersionUID = -4703428007044146964L;
 
@@ -56,7 +64,60 @@ public class AddMcSysFunctionRequest implements Serializable{
 		e.setEleValue(eleValue);
 		e.buildAddCommon(userCache);
 		e.setUserCache(userCache);
+		
+		switch(navType){
+			case 0 :		// 平台默认标识码|nav_type=0，此处为系统生成默认值
+				DateUtil dateUtil = new DateUtil();
+				e.setPlatform(dateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + dateUtil.getDateLongHex("HHmmss").toUpperCase());     
+				break;  
+			case 1 :			// 1 横向导航栏
+				break; 
+			case 2 :		 	// 1 级菜单栏
+				break; 
+			case 3 :			// 2级菜单栏
+				e.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+				break; 
+			case 4 :			// 页面按钮
+				e.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+				break; 
+			case 5 :			//  按钮内包含跳转页面(dialog或新页面)
+				e.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+				break; 
+		}
 		return e;
+	}
+	
+	public Result<McSysFunction> validateDeleteMcRole() {
+		if(StringUtils.isAnyBlank(name, parentId)) {		// 101010059=功能名称 | 父节点不能为空 ! 
+			return Result.ERROR(this.getInfo(101010059), ResultCode.MISSING_ARGUMENT);
+		}
+		if(navType == null){  // 100020103=参数缺失：{0}
+			return Result.ERROR(this.getInfo(100020103, "navType"), ResultCode.MISSING_ARGUMENT);
+		}
+		switch(navType){
+			case 3 :			// 2级菜单栏
+				if(StringUtils.isBlank(funcUrl)) {	// 101010049=系统功能添加失败! 【页面跳转地址】不得为空
+					return Result.ERROR(this.getInfo(101010049), ResultCode.MISSING_ARGUMENT);
+				}
+				break; 
+			case 4 :			// 页面按钮
+				if(StringUtils.isBlank(eleValue)) {		// 101010048=系统功能添加失败! 【页面按钮标识】不得为空
+					return Result.ERROR(this.getInfo(101010048), ResultCode.MISSING_ARGUMENT);
+				}
+				if(StringUtils.isBlank(ajaxBtnUrl)) {		// 101010051=系统功能添加失败! 【按钮请求路径】不得为空
+					return Result.ERROR(this.getInfo(101010051), ResultCode.MISSING_ARGUMENT);
+				}
+				break; 
+			case 5 :			//  按钮内包含跳转页面(dialog或新页面)
+				if(StringUtils.isBlank(eleValue)) {		// 101010048=系统功能添加失败! 【页面按钮标识】不得为空
+					return Result.ERROR(this.getInfo(101010048), ResultCode.MISSING_ARGUMENT);
+				}
+				if(StringUtils.isBlank(funcUrl)) {  	// 101010050=系统功能添加失败! 【按钮跳转地址】不得为空
+					return Result.ERROR(this.getInfo(101010050), ResultCode.MISSING_ARGUMENT);
+				}
+				break; 
+		}
+		return Result.SUCCESS();
 	}
 }
 

@@ -4,12 +4,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
 import com.matrix.pojo.view.McUserInfoView;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class DeleteMcSysFunctionRequest implements Serializable{
+@EqualsAndHashCode(callSuper=false)
+public class DeleteMcSysFunctionRequest extends BaseClass implements Serializable{
 
 	private static final long serialVersionUID = -6035709960466581742L;
 
@@ -26,6 +33,13 @@ public class DeleteMcSysFunctionRequest implements Serializable{
 		}
     	return list;
     }
+    
+	public Result<?> validateDeleteNode(){
+		if(StringUtils.isBlank(ids)){ // 节点id不得为空!
+			return Result.ERROR(this.getInfo(101010012), ResultCode.MISSING_ARGUMENT);
+		}
+		return Result.SUCCESS();
+	}
 }
 
 

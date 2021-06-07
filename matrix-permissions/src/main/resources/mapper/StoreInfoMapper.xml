@@ -60,7 +60,7 @@
         manager_id
     </sql>
 
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    <select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
         <include refid="Base_Column_List"/>
         from
@@ -101,7 +101,7 @@
     </delete>
 
 
-    <!-- 根据条件查询列表数据 - sjh -->
+    <!-- 根据条件查询列表数据 -->
     <select id="queryPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.StoreInfoDto">
         select
             <include refid="Base_Column_List"/>

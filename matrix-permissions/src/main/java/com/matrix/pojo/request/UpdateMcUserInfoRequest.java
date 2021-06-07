@@ -4,9 +4,11 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
+import com.matrix.dao.IMcUserInfoMapper;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.util.SignUtil;
@@ -20,6 +22,9 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 
 	private static final long serialVersionUID = 4307560107936755283L;
 
+	@Inject
+	private IMcUserInfoMapper mcUserInfoMapper;
+	
 	private McUserInfoView userCache;
 	
 	private Long id;
@@ -92,6 +97,17 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 			// 101010016=密码更新失败，原密码缺失
 			return Result.ERROR(this.getInfo(101010016), ResultCode.MISSING_ARGUMENT);
 		}
+		McUserInfo user = mcUserInfoMapper.find(id);
+		if(user == null) {			// 101010038=用户密码重置失败，未找到指定用户，请重试
+			return Result.ERROR(this.getInfo(101010038), ResultCode.RESULT_NULL);
+		}
+		if (!user.getPassword().equals(SignUtil.md5Sign( oldPassWord ))){
+			// 101010042=用户密码重置失败，原始密码不正确
+			return Result.ERROR(this.getInfo(101010042), ResultCode.INTERNAL_VALIDATION_FAILED);
+		}
+		// 重新赋值，避免使用页面传入的值。
+		this.userName = user.getUserName();
+		this.oldPassWord = user.getPassword();
 		return Result.SUCCESS();
 	}
 }

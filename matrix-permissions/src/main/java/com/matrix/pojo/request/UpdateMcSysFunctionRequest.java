@@ -6,15 +6,25 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.matrix.annotation.Inject;
+import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
+import com.matrix.dao.IMcSysFunctionMapper;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.view.McUserInfoView;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class UpdateMcSysFunctionRequest implements Serializable{
+@EqualsAndHashCode(callSuper=false)
+public class UpdateMcSysFunctionRequest extends BaseClass implements Serializable{
 
 	private static final long serialVersionUID = 8407464708831978095L;
+	
+	@Inject
+	private IMcSysFunctionMapper mcSysFunctionMapper;
 
 	private McUserInfoView userCache;
 	
@@ -44,8 +54,62 @@ public class UpdateMcSysFunctionRequest implements Serializable{
 		e.setAjaxBtnUrl(ajaxBtnUrl);
 		e.buildUpdateCommon(userCache);
 		e.setUserCache(userCache);
+		
+		switch(navType){	// validateEditMcSysFunction()验证后赋值，故此处永不为空。
+			case 3 :			// 2级菜单栏
+				e.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+				break; 
+			case 4 :			// 页面按钮
+				e.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+				break; 
+			case 5 :			//  按钮内包含跳转页面(dialog或新页面)
+				e.setStyleKey(null);	 // 系统只允许横导航和1级菜单栏有自己的特殊样式
+				break;
+		}
 		return e;
 	}
+	
+	public Result<McSysFunction> validateEditMcSysFunction() {
+		if(id == null) {		// 100020111=主键丢失
+			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
+		}
+		if(StringUtils.isBlank(name)) {	// 100010125=请求参数：{0}不允许为空
+			return Result.ERROR(this.getInfo(100010125 , "name"), ResultCode.MISSING_ARGUMENT);
+		}
+		if(navType == null) {		// navTpye = 4 or 5会由前端JS传入，其他则需要查询数据库来判断
+			McSysFunction find = mcSysFunctionMapper.find(id);
+			if(find == null) {		// 100020114=找不到对象，资源信息：{0}
+				return Result.ERROR(this.getInfo(100020114, id.toString()), ResultCode.NOT_FOUND);
+			}
+			navType = find.getNavType();
+		}
+		
+		switch(navType){
+			case 3 :			// 2级菜单栏
+				if(StringUtils.isBlank(funcUrl)) { 		// 101010053=系统功能更新失败! 【页面跳转地址】不得为空
+					return Result.ERROR(this.getInfo(101010053), ResultCode.MISSING_ARGUMENT);
+				}
+				break; 
+			case 4 :			// 页面按钮
+				if(StringUtils.isBlank(eleValue)) { 		// 101010052=系统功能更新失败! 【页面按钮标识】不得为空
+					return Result.ERROR(this.getInfo(101010052), ResultCode.MISSING_ARGUMENT);
+				}
+				if(StringUtils.isBlank(ajaxBtnUrl)) { 		// 101010055=系统功能更新失败! 【按钮请求路径】不得为空
+					return Result.ERROR(this.getInfo(101010055), ResultCode.MISSING_ARGUMENT);
+				}
+				break; 
+			case 5 :			//  按钮内包含跳转页面(dialog或新页面)
+				if(StringUtils.isBlank(eleValue)) { 		// 101010052=系统功能更新失败! 【页面按钮标识】不得为空
+					return Result.ERROR(this.getInfo(101010052), ResultCode.MISSING_ARGUMENT);
+				}
+				if(StringUtils.isBlank(funcUrl)) {			// 101010054=系统功能更新失败! 【按钮跳转地址】不得为空
+					return Result.ERROR(this.getInfo(101010054), ResultCode.MISSING_ARGUMENT);
+				}
+				break; 
+		}
+		return Result.SUCCESS();
+	}
+	
 	
 	private String ustring;     // 系统功能同层节点拖拽更新| id@seqnum,id@seqnum
 	
@@ -63,6 +127,13 @@ public class UpdateMcSysFunctionRequest implements Serializable{
 			list.add(e);
 		}
 		return list;
+	}
+	
+	public Result<?> validateUpdateTreeNodes(){
+		if(StringUtils.isBlank(ustring)) {			// 100010125=请求参数：{0}不允许为空
+			return Result.ERROR(this.getInfo(100010125 , "ustring"), ResultCode.MISSING_ARGUMENT);
+		}
+		return Result.SUCCESS();
 	}
 }
 

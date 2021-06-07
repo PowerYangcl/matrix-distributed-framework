@@ -1,5 +1,7 @@
 package com.matrix.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseController;
+import com.matrix.base.Result;
+import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.service.IMcUserInfoService;
 
 @Controller
@@ -32,7 +36,7 @@ public class ManagerCenterController extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_platform_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxPlatformInfoList(HttpSession session) {
+	public Result<List<McSysFunction>> ajaxPlatformInfoList(HttpSession session) {
 		super.userBehavior(session, logger, "ajax_platform_info_list", "获取平台信息列表");
 		return mcUserInfoService.ajaxPlatformInfoList();
 	}

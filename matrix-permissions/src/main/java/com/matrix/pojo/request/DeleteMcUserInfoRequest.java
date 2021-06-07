@@ -2,7 +2,6 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
-
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
@@ -13,18 +12,19 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class DeleteMcRoleRequest extends BaseClass implements Serializable{
+public class DeleteMcUserInfoRequest extends BaseClass implements Serializable{
 
-	private static final long serialVersionUID = -5903075944968697619L;
+	private static final long serialVersionUID = 9197658565913311629L;
 
 	private McUserInfoView userCache;
 	
-	private Long mcRoleId;
+    private Long id;
 	
-	public Result<?> validateDeleteMcRole() {
-		if(mcRoleId == null){  // 100020103=参数缺失：{0}
-			return Result.ERROR(this.getInfo(100020103, "mcRoleId"), ResultCode.MISSING_ARGUMENT);
-		}
+    
+    public Result<?> validateDeleteUser() {
+    	if(id == null) {		// 101010031=页面数据错误,用户id为空
+    		return Result.ERROR(this.getInfo(101010031), ResultCode.MISSING_ARGUMENT);
+    	}
 		return Result.SUCCESS();
 	}
 }

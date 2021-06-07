@@ -105,12 +105,12 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 			if(flag != 1) {
 				return Result.ERROR(this.getInfo(100010103), ResultCode.ERROR_INSERT);
 			}
-			// 判断type是否为3 添加门店记录
-			if (e.getType() == 3) {
-				StoreInfo storeInfo = new StoreInfo();
-				convertObject(e, storeInfo);
-				storeInfoService.addStoreInfo(storeInfo);
-			}
+			// 判断type是否为3 添加门店记录		TODO 业务逻辑不合理，待讨论，2021-06-07
+//			if (e.getType() == 3) {
+//				StoreInfo storeInfo = new StoreInfo();
+//				convertObject(e, storeInfo);
+//				storeInfoService.addStoreInfo(storeInfo);
+//			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(this.getInfo(100010103));
@@ -118,16 +118,16 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		return Result.SUCCESS(this.getInfo(100010102), e);
 	}
 
-	private void convertObject(McOrganization e, StoreInfo storeInfo) {
+	private void convertObject222222(McOrganization e, StoreInfo storeInfo) {
 		storeInfo.setId(e.getId());
 		storeInfo.setCid(e.getCid());
 		if (e.getType()!=3){
 			storeInfo.setDeleteFlag(0);
 		}
 		storeInfo.setName(e.getName());
-		storeInfo.setMcOrganizationId(e.getId());  // 设置组织机构ID
-		storeInfo.setPhone(e.getMobile());
 		storeInfo.setAddress(e.getAddress());
+		storeInfo.setPhone(e.getMobile());
+		storeInfo.setMcOrganizationId(e.getId());  // 设置组织机构ID
 		storeInfo.setType(e.getStoreType().shortValue());
 		storeInfo.buildAddCommon(e.getUserCache());
 	}
@@ -154,10 +154,10 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 			if(flag != 1) {
 				return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
 			}
-			// 只要更新组织机构信息就操作门店表
-			StoreInfo storeInfo = new StoreInfo();
-			convertObject(entity, storeInfo);
-			storeInfoService.editStoreInfo(storeInfo);
+			// 只要更新组织机构信息就操作门店表		TODO 业务逻辑不合理，待讨论，2021-06-07
+//			StoreInfo storeInfo = new StoreInfo();
+//			convertObject(entity, storeInfo);
+//			storeInfoService.editStoreInfo(storeInfo);
 		} catch (Exception ex) {
 			ex.printStackTrace();	// 100010105=数据更新失败，服务器异常!
 			throw new RuntimeException(this.getInfo(100010105));
@@ -192,11 +192,11 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 				e.setDeleteFlag(0);
 				e.buildUpdateCommon(userCache);
 				mcOrganizationMapper.updateSelective(e);
-				if (e != null && e.getType() == 3) {
-					StoreInfo storeInfo = new StoreInfo();
-					convertObject(e, storeInfo);
-					storeInfoService.deleteStoreInfo(storeInfo);
-				}
+//				if (e != null && e.getType() == 3) {								TODO 业务逻辑不合理，待讨论，2021-06-07
+//					StoreInfo storeInfo = new StoreInfo();
+//					convertObject(e, storeInfo);
+//					storeInfoService.deleteStoreInfo(storeInfo);
+//				}
 			}
 			return Result.SUCCESS(this.getInfo(100010106));		// 100010106=数据删除成功!
 		}catch (Exception ex) {
