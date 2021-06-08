@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
+import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 
@@ -136,12 +137,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoRequest param , HttpServletRequest request) {
+		Result<PageInfo<McUserInfoView>> validate = param.validateAjaxSystemUserList();
+		if(validate.getStatus().equals("error")) {
+			return validate;
+		}
+		
 		McUserInfoDto dto = param.buildAjaxSystemUserList();
 		McUserInfoView userCache = param.getUserCache();
-		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString()  , userCache.getType() )) {   
-			// 用户会话异常! platform cod or cid is null
-			return Result.ERROR(this.getInfo(101010013), ResultCode.INTERNAL_VALIDATION_FAILED);
-		}
 		if(userCache.getType().equals("leader") ) {     // master.getType() will be: leader or admin or user
 			dto.setType("'leader','admin'");
 			dto.setCid(null); 		// 联合查询字段主动置空 防御攻击
@@ -412,18 +414,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月10日 下午7:29:38 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxClientLogout(McUserInfoDto dto) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isBlank(dto.getAccessToken())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010014));  // 101010014=用户令牌(accessToken)为空
-			return result;
+	public Result<?> ajaxClientLogout(FindLogoutRequest param) {
+		if(StringUtils.isBlank(param.getAccessToken())) {  // 101010014=用户令牌(accessToken)为空
+			return Result.ERROR(this.getInfo(101010014), ResultCode.MISSING_ARGUMENT);
 		}
 		
-		launch.loadDictCache(DCacheEnum.AccessToken , null).del(dto.getAccessToken());
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010015));  // 101010015=系统已经退出
-		return result;
+		launch.loadDictCache(DCacheEnum.AccessToken , null).del(param.getAccessToken());
+		return Result.SUCCESS( this.getInfo(101010015));  // 101010015=系统已经退出
 	}
 
 	
@@ -431,32 +428,24 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @description: 【仅matrix-manager-api项目使用】
 	 * 		获取用户详情
 	 *
-	 * @param dto
-	 * @param session 
 	 * @author Yangcl
 	 * @date 2018年10月12日 下午7:42:13 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxFindSysUser(McUserInfoDto dto) {
-		JSONObject result = new JSONObject();
-		if (dto.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010030));	// 101010030=获取用户详情失败，用户id为空
-			return result;
+	public Result<McUserInfoView> ajaxFindSysUser(FindMcUserInfoRequest param) {
+		Result<McUserInfoView> validate = param.validateAjaxFindSysUser();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		McUserInfo entity = mcUserInfoMapper.find(dto.getId());
-		if(entity == null){      
-			result.put("status", "error");
-			result.put("msg", this.getInfo(101010030));	// 101010030=获取用户详情失败，用户id为空
-			return result;
+		
+		McUserInfo entity = mcUserInfoMapper.find(param.getId());
+		if(entity == null){		// 101010032=获取用户详情失败，状态查询异常
+			return Result.ERROR(this.getInfo(101010032), ResultCode.NOT_FOUND);
 		}
 		
 		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(entity.getUserName() + "," + entity.getPassword());
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		result.put("status", "success");
-		result.put("msg", this.getInfo(101010014));		// 101010014=查询成功
-		result.put("entity", info);
-		return result;
+		return Result.SUCCESS(this.getInfo(100010100), info);	// 100010100=数据请求成功!
 	}
 
 

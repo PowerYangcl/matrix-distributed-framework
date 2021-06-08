@@ -175,7 +175,6 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
     
     // TODO 
     private boolean openApi(HttpServletRequest request, HttpServletResponse response) {
-    	String parameter = request.getParameter("json");
     	return true;
     }
 }

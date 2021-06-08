@@ -15,11 +15,5 @@ public class McOrganizationDto extends BaseDto{
     private String name;
     private Long parentId;
     private Integer type;
-    private String platform;
-    private Long managerId;
-    private String managerName;
-    private Integer storeType;
-    private Integer seqnum;
-    private String mobile;
-    private String address;
+    
 }

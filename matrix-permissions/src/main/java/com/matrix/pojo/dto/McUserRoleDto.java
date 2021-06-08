@@ -11,7 +11,6 @@ public class McUserRoleDto extends BaseDto{
 	
 	private static final long serialVersionUID = -5683799321939616614L;
 	
-	private Long id;    // managercenter.`mc_user_role` id
 	private Long userId;
 	private Long mcRoleId;
 	

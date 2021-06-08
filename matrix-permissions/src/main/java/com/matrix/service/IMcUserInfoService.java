@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseView;
 import com.matrix.base.Result;
@@ -16,6 +15,7 @@ import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
+import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 import com.matrix.pojo.view.LoginView;
@@ -141,7 +141,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月10日 下午7:29:38 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxClientLogout(McUserInfoDto dto);
+	public Result<?> ajaxClientLogout(FindLogoutRequest param);
 	
 
 
@@ -150,13 +150,11 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @description: 【仅matrix-manager-api项目使用】
 	 * 	获取用户详情
 	 *
-	 * @param dto
-	 * @param session 
 	 * @author Yangcl
 	 * @date 2018年10月12日 下午7:42:13 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxFindSysUser(McUserInfoDto dto);
+	public Result<McUserInfoView> ajaxFindSysUser(FindMcUserInfoRequest param);
 
 }
 

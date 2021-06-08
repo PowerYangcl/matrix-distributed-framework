@@ -25,7 +25,6 @@ import com.matrix.pojo.dto.McOrganizationDto;
 import com.matrix.pojo.entity.McOrganization;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.entity.McUserInfoOrganization;
-import com.matrix.pojo.entity.StoreInfo;
 import com.matrix.pojo.request.AddMcOrganizationRequest;
 import com.matrix.pojo.request.DeleteMcOrganizationRequest;
 import com.matrix.pojo.request.FindMcOrganizationRequest;
@@ -116,20 +115,6 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 			throw new RuntimeException(this.getInfo(100010103));
 		}
 		return Result.SUCCESS(this.getInfo(100010102), e);
-	}
-
-	private void convertObject222222(McOrganization e, StoreInfo storeInfo) {
-		storeInfo.setId(e.getId());
-		storeInfo.setCid(e.getCid());
-		if (e.getType()!=3){
-			storeInfo.setDeleteFlag(0);
-		}
-		storeInfo.setName(e.getName());
-		storeInfo.setAddress(e.getAddress());
-		storeInfo.setPhone(e.getMobile());
-		storeInfo.setMcOrganizationId(e.getId());  // 设置组织机构ID
-		storeInfo.setType(e.getStoreType().shortValue());
-		storeInfo.buildAddCommon(e.getUserCache());
 	}
 
 	/**
