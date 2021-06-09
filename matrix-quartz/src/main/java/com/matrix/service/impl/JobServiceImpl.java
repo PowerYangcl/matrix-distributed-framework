@@ -13,7 +13,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseClass;
-import com.matrix.base.RpcResultCode;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -28,9 +29,13 @@ import com.matrix.pojo.dto.PowerCacheDto;
 import com.matrix.pojo.entity.JobExecLog;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
+import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
+import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
 import com.matrix.pojo.view.JobExecLogView;
 import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
+import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IJobService;
 import com.matrix.service.IMatrixRouteService;
@@ -53,14 +58,14 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	
 	/**
 	 * @description: 根据定时任务名称更新执行时间等内容
+	 *			TODO 是否会出问题目前暂未发现 - 2021-06-09 - Yangcl
 	 *
-	 * @param entity
 	 * @author Yangcl
 	 * @date 2018年12月18日 下午5:15:38 
 	 * @version 1.0.0.1
 	 */
 	public Integer updateSelectiveByJobName(JobInfo entity) {
-//		launch.loadDictCache(DCacheEnum.SysJob , "").del(entity.getJobName());     // 小于10分钟间隔的任务会出现问题 - 李玟霆
+		launch.loadDictCache(DCacheEnum.SysJob , "").del(entity.getJobName());     // 小于10分钟间隔的任务会出现问题 - 李玟霆
 		return jobInfoMapper.updateSelectiveByJobName(entity); 
 	}
 
@@ -86,125 +91,70 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月20日 下午6:13:40 
 	 * @version 1.0.0.1
 	 */	
-	public JSONObject ajaxJobInfoList(JobInfoDto dto , HttpServletRequest request) {
-    	JSONObject result = new JSONObject();
-    	result.put("entity", dto);
+	public Result<PageInfo<JobInfoView>> ajaxJobInfoList(FindAjaxJobInfoListRequest param , HttpServletRequest request) {
     	int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
-    	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
-    		pageNum = dto.getStartIndex();
-    		pageSize = dto.getPageSize();
-    	}else{
-    		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
-    		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
-    	}
-    	
-    	try {
-    		PageHelper.startPage(pageNum , pageSize);
-    		List<JobInfoView> list = jobInfoMapper.pageListByDto(dto);
-    		result.put("status", "success");
-    		if (list != null && list.size() > 0) {
-    			result.put("code" , RpcResultCode.SUCCESS);
-    			result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
-    		} else {
-    			result.put("code" , RpcResultCode.RESULT_NULL);
-    			result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
-    		}
-    		PageInfo<JobInfoView> pageList = new PageInfo<JobInfoView>(list);
-    		result.put("data", pageList);
-    		return result;
+		try {
+			JobInfoDto dto = param.buildAjaxJobInfoList();
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = dto.getStartIndex();
+				pageSize = dto.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<JobInfoView> list = jobInfoMapper.pageListByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<JobInfoView>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
-			return result;
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
     }
-
 
 	/**
 	 * @description: 【添加/修改】定时任务-任务组下拉框列表数据-不分页
 	 *
-	 * @param dto 
 	 * @author Yangcl
 	 * @date 2018年12月21日 下午11:53:15 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupList(JobGroupDto dto, HttpServletRequest request) {
-		JSONObject result = new JSONObject();
-		List<JobGroup> list = jobGroupMapper.findListByDto(dto);
+	public Result<List<JobGroup>> ajaxJobGroupList(FindAjaxJobGroupListRequest param, HttpServletRequest request) {
+		List<JobGroup> list = jobGroupMapper.findListByDto(param.buildAjaxJobGroupList());
 		if(list != null && list.size() != 0) {
-			result.put("status", "success");
-			result.put("list", list);
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010014));  // 200010014=没有找到可用的定时任务组数据
+			return Result.SUCCESS(list);
 		}
-		return result;
+		// 200010014=没有找到可用的定时任务组数据
+		return Result.ERROR(this.getInfo(200010014), ResultCode.RESULT_NULL);
 	}
 
 
 	/**
 	 * @description: 添加定时任务
 	 *
-	 * @param e 
 	 * @author Yangcl
 	 * @date 2018年12月22日 下午3:01:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobInfoAdd(JobInfo e) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isAnyBlank(e.getJobTitle(),e.getJobTriger() ,e.getJobClass() , e.getRemark())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010015));  // 200010015=定时任务添加弹窗中的字段均为必填项，请核查
-			return result;
+	public Result<?> ajaxBtnAddJobInfo(AddJobInfoRequest param) {
+		Result<?> validate = param.validateAjaxBtnAddJobInfo();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(e.getRunGroupId() == null || e.getExpireTime() == null || e.getTimeOut() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010015));  // 200010015=定时任务添加弹窗中的字段均为必填项，请核查
-			return result;
-		}
-		if(!StringValidate.isNumeric(e.getExpireTime().toString()) || !StringValidate.isNumeric(e.getTimeOut().toString())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010016));  // 200010016=锁有效时间和超时时间为正数
-			return result;
-		}
-		
-		List<JobInfo> ishas = jobInfoMapper.findList(e); // e.getJobTitle() e.getJobClass()
-		if(ishas != null && ishas.size() != 0) {
-			for(JobInfo info : ishas) {
-				result.put("status", "error");
-				if(info.getJobTitle().equals(e.getJobTitle())) {
-					result.put("msg", this.getInfo(200010019));  // 200010019=定时任务添加失败，定时任务标题在系统中已经存在
-				}
-				if(info.getJobClass().equals(e.getJobClass())) {
-					result.put("msg", this.getInfo(200010021));  // 200010021=定时任务添加失败，【定时任务执行类路径】在系统中已经存在
-				}
-				return result;
+		try {
+			JobInfo e = param.buildAjaxBtnAddJobInfo();
+			Integer flag = jobInfoMapper.insertSelective(e);
+			if(flag == 1) {	// 200010017=定时任务添加成功
+				return Result.SUCCESS(this.getInfo(200010017));
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		// 开始添加数据 
-		McUserInfoView userCache = e.getUserCache();
-		e.setJobName(UuidUtil.upperCaseUuid());
-		e.setLockKey(e.getJobName());
-		e.setPause(0);  // 定时任务默认暂停
-		e.setCreateTime(new Date());
-		e.setCreateUserName(userCache.getUserName());
-		e.setCreateUserId(userCache.getId());
-		e.setUpdateTime(new Date());
-		e.setUpdateUserName(userCache.getUserName()); 
-		e.setUpdateUserId(userCache.getId());
-		Integer flag = jobInfoMapper.insertSelective(e);
-		if(flag == 1) {
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010017));  // 200010017=定时任务添加成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010018));  // 200010017=定时任务添加失败
-		}
-		
-		return result;
+		return Result.ERROR(this.getInfo(200010017), ResultCode.ERROR_INSERT);		// 200010017=定时任务添加失败
 	}
 
 

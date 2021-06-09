@@ -5,11 +5,17 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
+import com.matrix.base.Result;
 import com.matrix.pojo.dto.JobExecLogDto;
 import com.matrix.pojo.dto.JobGroupDto;
 import com.matrix.pojo.dto.JobInfoDto;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
+import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
+import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
+import com.matrix.pojo.view.JobInfoView;
 
 public interface IJobService {                              
 	
@@ -36,22 +42,20 @@ public interface IJobService {
 	/**
 	 * @description: 定时任务列表页数据
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2018年12月20日 下午6:13:40 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoList(JobInfoDto dto, HttpServletRequest request);
+	public Result<PageInfo<JobInfoView>> ajaxJobInfoList(FindAjaxJobInfoListRequest param, HttpServletRequest request);
 
 	/**
 	 * @description: 【添加/修改】定时任务-任务组下拉框列表数据-不分页
 	 *
-	 * @param dto 
 	 * @author Yangcl
 	 * @date 2018年12月21日 下午11:53:15 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupList(JobGroupDto dto, HttpServletRequest request);
+	public Result<List<JobGroup>> ajaxJobGroupList(FindAjaxJobGroupListRequest param, HttpServletRequest request);
 
 
 	/**
@@ -62,7 +66,7 @@ public interface IJobService {
 	 * @date 2018年12月22日 下午3:01:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobInfoAdd(JobInfo entity);
+	public Result<?> ajaxBtnAddJobInfo(AddJobInfoRequest param);
 
 	/**
 	 * @description: 编辑定时任务

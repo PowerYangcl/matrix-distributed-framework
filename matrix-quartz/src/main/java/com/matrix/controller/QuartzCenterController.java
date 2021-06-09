@@ -1,5 +1,7 @@
 package com.matrix.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -11,12 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
+import com.matrix.base.Result;
 import com.matrix.pojo.dto.JobExecLogDto;
 import com.matrix.pojo.dto.JobGroupDto;
 import com.matrix.pojo.dto.JobInfoDto;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
+import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
+import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
+import com.matrix.pojo.view.JobInfoView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IJobService;
 
@@ -58,10 +66,10 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_job_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobInfoList(JobInfoDto dto , HttpSession session, HttpServletRequest request){
+	public Result<PageInfo<JobInfoView>> ajaxJobInfoList(FindAjaxJobInfoListRequest param , HttpSession session, HttpServletRequest request){
 		super.userBehavior(session, logger, "ajax_job_info_list", "定时任务列表页数据");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobInfoList(dto , request);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return jobService.ajaxJobInfoList(param , request);
 	}
 	
 	/**
@@ -74,10 +82,10 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_job_group_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobGroupList(JobGroupDto dto , HttpSession session, HttpServletRequest request){
+	public Result<List<JobGroup>> ajaxJobGroupList(FindAjaxJobGroupListRequest param , HttpSession session, HttpServletRequest request){
 		super.userBehavior(session, logger, "ajax_job_group_list", "定时任务列表页数据");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobGroupList(dto , request);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return jobService.ajaxJobGroupList(param , request);
 	}
 	
 	
@@ -91,10 +99,10 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_job_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnJobInfoAdd(JobInfo entity , HttpSession session){
+	public Result<?> ajaxBtnJobInfoAdd(AddJobInfoRequest param , HttpSession session){
 		super.userBehavior(session, logger, "ajax_btn_job_info_add", "添加定时任务");
-		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxBtnJobInfoAdd(entity);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return jobService.ajaxBtnAddJobInfo(param);
 	}
 	
 	/**
