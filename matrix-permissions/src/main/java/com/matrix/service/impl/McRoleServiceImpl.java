@@ -168,8 +168,8 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	
 	/**
 	 * @description: 删除系统角色|系统权限配置 / 系统用户相关 / 系统角色列表
-	 * 							 判断 mc_user_role 表中是否已经关联了用户，如果关联了，则不允许删除
-	 * @param dto
+	 * 		判断 mc_user_role 表中是否已经关联了用户，如果关联了，则不允许删除
+	 * 
 	 * @author Yangcl 
 	 * @date 2017年4月20日 上午11:02:30 
 	 * @version 1.0.0.1

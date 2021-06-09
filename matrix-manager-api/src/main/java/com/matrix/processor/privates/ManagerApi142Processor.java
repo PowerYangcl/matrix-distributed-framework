@@ -3,34 +3,29 @@ package com.matrix.processor.privates;/**
  */
 
 import com.alibaba.fastjson.JSONObject;
-import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McRoleDto;
-import com.matrix.service.IMcRoleService;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * @ClassName:ManagerApi142Processor
- * @Description:获取用户的角色（用户登录以后查自身的角色）
- * @Author:msahohua
- * @Date:2018/12/1918:52
- * @Vesion: 1.0
+ * @description: 获取用户的角色（用户登录以后查自身的角色）|TODO 接口功能已移除，等待另作他用
+ * 
+ * @author Yangcl
+ * @date 2021-6-9 16:01:03
+ * @home https://github.com/PowerYangcl
+ * @path matrix-manager-api / com.matrix.processor.privates.ManagerApi142Processor.java
+ * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.McRoleDto.class)
 public class ManagerApi142Processor extends BaseClass implements IBaseProcessor {
 
-    @Inject
-    private IMcRoleService mcRoleService;
-
-
     @Override
-    public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-        McRoleDto dto = JSONObject.parseObject(param.getString("data"), McRoleDto.class);
-        return mcRoleService.userRoleListByid(dto , request);
+    public Result<?> processor(HttpServletRequest request, 
+    		HttpServletResponse response, HttpSession session, JSONObject param) {
+        return null;
     }
 }

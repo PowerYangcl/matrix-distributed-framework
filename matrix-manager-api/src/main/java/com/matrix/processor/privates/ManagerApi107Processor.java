@@ -8,8 +8,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McUserInfoDto;
+import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.service.IMcUserInfoService;
 
 /**
@@ -20,19 +21,7 @@ import com.matrix.service.IMcUserInfoService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-
-/**
- * 
- * request 实体   McUserInfoDto
- * {
-	 "id": "2001"
-   }
-   response返回类型
-   {"msg":"删除成功","status":"success"}
- * @author mashaohua
- *
- */
-@MatrixRequest(clazz=com.matrix.pojo.dto.McUserInfoDto.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcUserInfoRequest.class)
 public class ManagerApi107Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
@@ -40,8 +29,8 @@ public class ManagerApi107Processor extends BaseClass implements IBaseProcessor 
 	
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McUserInfoDto dto = JSONObject.parseObject(param.getString("data"), McUserInfoDto.class);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		DeleteMcUserInfoRequest dto = JSONObject.parseObject(param.getString("data"), DeleteMcUserInfoRequest.class);
 		return mcUserInfoService.deleteUser(dto);
 	}
 

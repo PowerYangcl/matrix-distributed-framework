@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64;
 
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.Result;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
@@ -110,7 +111,7 @@ public class ValidateCodeSupport{
     * @date 2018年11月27日 下午12:35:58 
     * @version 1.0.0.1
     */
-	public JSONObject createValidateCode() {
+	public Result<JSONObject> createValidateCode() {
 		// 定义随机数类
 		Random r = new Random();
 		// 定义存储验证码的类
@@ -151,16 +152,12 @@ public class ValidateCodeSupport{
 		}
 		byte[] b = out.toByteArray();
 		String base64Str = Base64.encodeBase64String(b);
-		JSONObject result = new JSONObject();
 		String key = UUID.randomUUID().toString();
 		launch.loadDictCache(DCacheEnum.ValidateCode, "").set(key, builderCode.toString(), 10 * 60);//10分钟过期
 		JSONObject data = new JSONObject();
 		data.put("key", key);
 		data.put("img", "data:image/JPEG;base64," + base64Str);
-		result.put("data", data);
-		result.put("status", "success");
-		result.put("msg", "ok"); 
-		return result;
+		return Result.SUCCESS(data);
 	}
 	/**
 	 * @description: 根据生成验证码返回的key查询对应的验证码值，该方法只能查询 生成验证码10分钟之内的码值

@@ -16,7 +16,6 @@
         <module>matrix-permissions</module>
         <module>matrix-web-adapter</module>
         <module>matrix-api</module>
-        <module>matrix-manager</module>
         <module>matrix-manager-api</module>
         <module>matrix-quartz</module>
         <module>matrix-route</module>

@@ -8,9 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.entity.McUserRole;
-import com.matrix.service.IMcSysFunctionService;
+import com.matrix.pojo.request.AddMcUserRoleRequest;
+import com.matrix.service.IMcRoleService;
 
 /**
  * @description: 关联用户与某一个角色
@@ -20,29 +21,16 @@ import com.matrix.service.IMcSysFunctionService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-
-/**
- * 
- * request 实体   McUserRole
- * {
-	 "mcRoleId": "62"
-	 "mcUserId": "1997"
-   }
-   response返回类型
-  {"status":"success"}
- * @author mashaohua
- *
- */
-@MatrixRequest(clazz=com.matrix.pojo.entity.McUserRole.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.AddMcUserRoleRequest.class)
 public class ManagerApi122Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
-	private IMcSysFunctionService mcSysFunctionService;   
+	private IMcRoleService mcRoleService;
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McUserRole entity = JSONObject.parseObject(param.getString("data"), McUserRole.class);
-		return mcSysFunctionService.addUserRole(entity);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		AddMcUserRoleRequest dto = JSONObject.parseObject(param.getString("data"), AddMcUserRoleRequest.class);
+		return mcRoleService.allotUserRole(dto);
 	}
 
 }

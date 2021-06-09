@@ -11,7 +11,6 @@ import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McRoleDto;
 import com.matrix.pojo.request.FindMcRoleRequest;
 import com.matrix.pojo.view.McRoleView;
 import com.matrix.service.IMcRoleService;
@@ -24,36 +23,7 @@ import com.matrix.service.IMcRoleService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-/**
- * request 参数实体 McRoleDto
- * {
-	"roleName": "角色名称"--，模糊查询
-	}
-  respose 返回参数
- 	"list": 
- 		[
-        {
-        "createTime": "2018-10-18 14:57:36",
-        "createUserId": 1993,
-        "createUserName": "admin-lqx",
-        "updateTime": "2018-10-23 19:52:36",
-        "updateUserId": 1993,
-        "updateUserName": "admin-lqx",
-        "deleteFlag": 1,
-        "userCache": null,
-        "id": 62,
-        "cid": 2,
-        "type": "admin",
-        "platform": "133EFB922DF3",
-        "roleName": "会员管理-隆庆祥",
-        "roleDesc": "会员管理-隆庆祥",
-        "remark": "",
-        "userId": -1,
-        "platformName": "会员平台"
-        }
-    ],
- */
-@MatrixRequest(clazz=com.matrix.pojo.dto.McRoleDto.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.FindMcRoleRequest.class)
 public class ManagerApi110Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject

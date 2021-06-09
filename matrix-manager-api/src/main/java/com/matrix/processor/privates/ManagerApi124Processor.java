@@ -8,8 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McOrganizationDto;
+import com.matrix.pojo.request.FindMcOrganizationRequest;
+import com.matrix.pojo.view.UserOrgTreeListView;
 import com.matrix.service.IMcOrganizationService;
 
 /**
@@ -20,14 +22,15 @@ import com.matrix.service.IMcOrganizationService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-@MatrixRequest(clazz=com.matrix.pojo.entity.McOrganization.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.FindMcOrganizationRequest.class)
 public class ManagerApi124Processor extends BaseClass implements IBaseProcessor {
+	
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McOrganizationDto dto = JSONObject.parseObject(param.getString("data"), McOrganizationDto.class);
+	public Result<UserOrgTreeListView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		FindMcOrganizationRequest dto = JSONObject.parseObject(param.getString("data"), FindMcOrganizationRequest.class);
 		return mcOrganizationService.ajaxTreeList(dto);
 	}
 

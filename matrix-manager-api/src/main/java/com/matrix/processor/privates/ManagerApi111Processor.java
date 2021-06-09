@@ -5,11 +5,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McRoleDto;
+import com.matrix.pojo.request.FindUserRoleListRequest;
+import com.matrix.pojo.view.McRoleView;
 import com.matrix.service.IMcRoleService;
 
 /**
@@ -20,16 +23,15 @@ import com.matrix.service.IMcRoleService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-@MatrixRequest(clazz=com.matrix.pojo.dto.McRoleDto.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.FindUserRoleListRequest.class)
 public class ManagerApi111Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
-	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McRoleDto dto = JSONObject.parseObject(param.getString("data"), McRoleDto.class);
+	public Result<PageInfo<McRoleView>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		FindUserRoleListRequest dto = JSONObject.parseObject(param.getString("data"), FindUserRoleListRequest.class);
 		return mcRoleService.userRoleList(dto , request);
 	}
 

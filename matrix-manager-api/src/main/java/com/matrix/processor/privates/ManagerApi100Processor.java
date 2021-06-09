@@ -9,10 +9,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McUserInfoDto;
-import com.matrix.service.IMcRoleService;
-import com.matrix.service.IMcSysFunctionService;
+import com.matrix.pojo.request.FindLoginRequest;
+import com.matrix.pojo.view.LoginView;
 import com.matrix.service.IMcUserInfoService;
 
 /**
@@ -23,22 +23,16 @@ import com.matrix.service.IMcUserInfoService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-@MatrixRequest(clazz=com.matrix.pojo.dto.McUserInfoDto.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.FindLoginRequest.class)
 public class ManagerApi100Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
-	@Inject
-	private IMcSysFunctionService mcSysFunctionService;   
-	
-	@Inject
-	private IMcRoleService mcRoleService;
-	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McUserInfoDto dto = JSONObject.parseObject(param.getString("data"), McUserInfoDto.class);
-		return mcUserInfoService.ajaxClientLogin(request , dto);
+	public Result<LoginView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		FindLoginRequest dto = JSONObject.parseObject(param.getString("data"), FindLoginRequest.class);
+		return mcUserInfoService.ajaxClientLogin(dto, request);
 	}
 
 }
