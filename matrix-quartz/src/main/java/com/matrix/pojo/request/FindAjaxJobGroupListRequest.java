@@ -25,6 +25,13 @@ public class FindAjaxJobGroupListRequest extends BaseClass implements Serializab
 	public JobGroupDto buildAjaxJobGroupList() {
 		return new JobGroupDto();
 	}
+	
+	public JobGroupDto buildAjaxJobGroupPageList() {
+		JobGroupDto dto = new JobGroupDto();
+		dto.setGroupName(groupName);
+		dto.setIp(ip);
+		return dto;
+	}
 }
 
 

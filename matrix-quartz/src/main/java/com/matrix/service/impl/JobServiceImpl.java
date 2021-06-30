@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -29,13 +31,19 @@ import com.matrix.pojo.dto.PowerCacheDto;
 import com.matrix.pojo.entity.JobExecLog;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
+import com.matrix.pojo.request.AddJobGroupRequest;
 import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.DeleteJobInfoRequest;
 import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
+import com.matrix.pojo.request.FindAjaxJobInfoRequest;
+import com.matrix.pojo.request.FindJobGroupRequest;
+import com.matrix.pojo.request.UpdateJobGroupRequest;
+import com.matrix.pojo.request.UpdateJobInfoPauseRequest;
+import com.matrix.pojo.request.UpdateJobInfoRequest;
 import com.matrix.pojo.view.JobExecLogView;
 import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
-import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IJobService;
 import com.matrix.service.IMatrixRouteService;
@@ -132,7 +140,6 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 		return Result.ERROR(this.getInfo(200010014), ResultCode.RESULT_NULL);
 	}
 
-
 	/**
 	 * @description: 添加定时任务
 	 *
@@ -157,7 +164,6 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 		return Result.ERROR(this.getInfo(200010017), ResultCode.ERROR_INSERT);		// 200010017=定时任务添加失败
 	}
 
-
 	/**
 	 * @description: 编辑定时任务
 	 *
@@ -165,384 +171,250 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月24日 下午1:58:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobInfoEdit(JobInfo e) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isAnyBlank(e.getJobTitle(),e.getJobTriger() ,e.getJobClass() , e.getRemark())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010015));  // 200010015=定时任务添加弹窗中的字段均为必填项，请核查
-			return result;
+	public Result<?> ajaxBtnJobInfoEdit(UpdateJobInfoRequest param) {
+		Result<?> validate = param.validateAjaxBtnJobInfoEdit();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(e.getRunGroupId() == null || e.getExpireTime() == null || e.getTimeOut() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010015));  // 200010015=定时任务添加弹窗中的字段均为必填项，请核查
-			return result;
-		}
-		if(!StringValidate.isNumeric(e.getExpireTime().toString()) || !StringValidate.isNumeric(e.getTimeOut().toString())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010016));  // 200010016=锁有效时间和超时时间为正数
-			return result;
-		}
-		if(e.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010024));  // 200010024=信息更新失败，主键丢失
-			return result;
-		}
-		
-		JobInfo find = jobInfoMapper.find(e.getId());
-		if(find == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010022));  // 200010022=字段排重验证出现异常，请重试即可
-			return result;
-		}
-		if(!find.getJobTitle().equals(e.getJobTitle())) {
-			JobInfo e_ = new JobInfo();
-			e_.setJobTitle(e.getJobTitle());
-			List<JobInfo> ishas = jobInfoMapper.findList(e_); // e.getJobTitle()
-			if(ishas != null && ishas.size() != 0) {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(200010025));  // 200010025=定时任务修改失败，【定时任务标题】在系统中已经存在
-				return result;
+		try {
+			JobInfo e = param.buildAjaxBtnJobInfoEdit();
+			Integer flag = jobInfoMapper.updateSelective(e);
+			if(flag == 1) {
+				JobInfo find = jobInfoMapper.find(e.getId());
+				launch.loadDictCache(DCacheEnum.SysJob , "").del(find.getJobName());   // 保证定时任务名称永远不变
+				return Result.SUCCESS(this.getInfo(200010027));		// 200010027=定时任务修改成功
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		if(!find.getJobClass().equals(e.getJobClass())) {
-			JobInfo e_ = new JobInfo();
-			e_.setJobClass(e.getJobClass());
-			List<JobInfo> ishas = jobInfoMapper.findList(e_); // e.getJobClass()
-			if(ishas != null && ishas.size() != 0) {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(200010026));  // 200010026=定时任务修改失败，【定时任务执行类路径】在系统中已经存在
-				return result;
-			}
-		}
-		
-		launch.loadDictCache(DCacheEnum.SysJob , "").del(find.getJobName());   // 保证定时任务名称永远不变
-		e.setJobName(null);
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(e.getUserCache().getId());
-		e.setUpdateUserName(e.getUserCache().getUserName());
-		Integer flag = jobInfoMapper.updateSelective(e);
-		if(flag == 1) {
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010027));  // 200010027=定时任务修改成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010028));  // 200010028=定时任务修改失败
-		}
-		return result;
+		return Result.ERROR(this.getInfo(200010028), ResultCode.ERROR_UPDATE);		// 200010028=定时任务修改失败
 	}
 
 
 	/**
 	 * @description: 定时任务详情|根据jobName获取
 	 *
-	 * @param dto 
 	 * @author Yangcl
 	 * @date 2018年12月24日 下午5:26:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoDetail(JobInfoDto dto) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isBlank(dto.getJobName())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010029));  // 200010029=定时任务详情获取失败, job-name为空, 请重试
-			return result;
+	public Result<JSONObject> ajaxJobInfoDetail(FindAjaxJobInfoRequest param) {
+		Result<JSONObject> validate = param.validateAjaxJobInfoDetail();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		launch.loadDictCache(DCacheEnum.SysJob , "").del(dto.getJobName()); 
-		String value = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(dto.getJobName()); 
-		if(StringUtils.isNotBlank(value)) {
-			result = JSONObject.parseObject(value);
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010030));  // 200010030=定时任务详情获取成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010031));  // 200010031=定时任务详情获取失败
+		try {
+			JobInfoDto dto = param.buildAjaxJobInfoDetail();
+			String value = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(dto.getJobName()); 
+			if(StringUtils.isNotBlank(value)) {		
+				return Result.SUCCESS(this.getInfo(200010030), JSONObject.parseObject(value));	// 200010030=定时任务详情获取成功
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		return result;
+		return Result.ERROR(this.getInfo(200010031), ResultCode.NOT_FOUND);		// 200010031=定时任务详情获取失败
 	}
 
 
 	/**
 	 * @description: 删除定时任务
 	 *
-	 * @param dto 
 	 * @author Yangcl
 	 * @date 2018年12月25日 下午4:21:07 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobInfoDelete(JobInfoDto dto) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isBlank(dto.getJobName())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010033));  // 200010033=定时任务删除失败, job-name为空, 请重试
-			return result;
+	public Result<?> ajaxBtnJobInfoDelete(DeleteJobInfoRequest param) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		
-		JobInfo e = new JobInfo();
-		e.setJobName(dto.getJobName());
-		e.setDeleteFlag(0);
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(dto.getUserCache().getId());
-		e.setUpdateUserName(dto.getUserCache().getUserName());
-		Integer flag = jobInfoMapper.updateSelectiveByJobName(e);
-		if(flag == 1) {
-			launch.loadDictCache(DCacheEnum.SysJob , "").del(dto.getJobName()); 
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010034));  // 200010034=定时任务删除成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010032));  // 200010032=定时任务删除失败
+		try {
+			JobInfo e = param.build();
+			Integer flag = jobInfoMapper.updateSelectiveByJobName(e);
+			if(flag == 1) {
+				launch.loadDictCache(DCacheEnum.SysJob , "").del(param.getJobName()); 
+				return Result.SUCCESS(this.getInfo(200010034));   // 200010034=定时任务删除成功
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		return result;
+		return Result.ERROR(this.getInfo(200010032), ResultCode.ERROR_DELETE);		// 200010032=定时任务删除失败
 	}
 
 
 	/**
 	 * @description: 暂停一个定时任务 或 全部暂停
 	 *
-	 * @param dto.jobName
-	 * @param dto.pause 定时任务是否暂停 0否|1是
-	 * @param dto.pauseType one 暂停一个定时任务  all 暂停所有定时任务
 	 * @author Yangcl
 	 * @date 2018年12月25日 下午5:14:14 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoPause(JobInfoDto dto) {
-		JSONObject result = new JSONObject();
-		if(dto.getPauseType().equals("one") && StringUtils.isBlank(dto.getJobName())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010037));  // 200010037=定时任务暂停失败, job-name为空, 请重试
-			return result;
+	public Result<?> ajaxJobInfoPause(UpdateJobInfoPauseRequest param) {
+		Result<?> validate = param.validateAjaxJobInfoPause();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(dto.getPause() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010036));  // 200010036=定时任务暂停失败
-			return result;
-		}
-		
-		if(dto.getPauseType().equals("one")) {
-			JobInfo e = new JobInfo();
-			e.setPause(dto.getPause());
-			e.setJobName(dto.getJobName());
-			e.setUpdateTime(new Date());
-			e.setUpdateUserId(dto.getUserCache().getId());
-			e.setUpdateUserName(dto.getUserCache().getUserName());
-			Integer flag = jobInfoMapper.updateSelectiveByJobName(e);
-			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.SysJob , "").del(dto.getJobName()); 
-				result.put("status", "success");
-				if(dto.getPause() == 1) {
-					result.put("msg", this.getInfo(200010035));  // 200010035=定时任务暂停成功
-				}else {
-					result.put("msg", this.getInfo(200010038));  // 200010038=定时任务恢复成功
+		String msg = "";
+		try {
+			if(param.getPauseType().equals("one")) {
+				JobInfo e = param.buildAjaxJobInfoPauseOne();
+				Integer flag = jobInfoMapper.updateSelectiveByJobName(e);
+				if(flag == 1) {
+					launch.loadDictCache(DCacheEnum.SysJob , "").del(param.getJobName()); 
+					msg = this.getInfo(200010038);  // 200010038=定时任务恢复成功
+					if(param.getPause() == 1) {
+						msg = this.getInfo(200010035);  // 200010035=定时任务暂停成功
+					}
+					return Result.SUCCESS(msg);
+				} 
+				
+				msg = this.getInfo(200010039);  // 200010039=定时任务恢复失败
+				if(param.getPause() == 1) {
+					msg = this.getInfo(200010036);  // 200010036=定时任务暂停失败
 				}
-			}else {
-				result.put("status", "error");
-				if(dto.getPause() == 1) {
-					result.put("msg", this.getInfo(200010036));  // 200010036=定时任务暂停失败
-				}else {
-					result.put("msg", this.getInfo(200010039));  // 200010039=定时任务恢复失败
-				}
+				return Result.ERROR(msg, ResultCode.ERROR_UPDATE);
 			}
-			return result;
-		}
-		
-		if(dto.getPauseType().equals("all")) {
-			JobInfo e = new JobInfo();
-			e.setPause(dto.getPause());
-			e.setUpdateTime(new Date());
-			e.setUpdateUserId(dto.getUserCache().getId());
-			e.setUpdateUserName(dto.getUserCache().getUserName());
-			Integer flag = jobInfoMapper.pauseAll(e); // 开始批量更新数据库中的所有状态 
-			if(flag != 0) {
-				launch.loadDictCache(DCacheEnum.SysJob , null).batchDeleteByPrefix("");
-				result.put("status", "success");
-				if(dto.getPause() == 1) {
-					result.put("msg", this.getInfo(200010035));  // 200010035=定时任务暂停成功
-				}else {
-					result.put("msg", this.getInfo(200010038));  // 200010038=定时任务恢复成功
+			
+			if(param.getPauseType().equals("all")) {
+				JobInfo e = param.buildAjaxJobInfoPauseAll();
+				Integer flag = jobInfoMapper.pauseAll(e); // 开始批量更新数据库中的所有状态 
+				if(flag != 0) {
+					launch.loadDictCache(DCacheEnum.SysJob , null).batchDeleteByPrefix("");
+					msg = this.getInfo(200010038);  // 200010038=定时任务恢复成功
+					if(param.getPause() == 1) {
+						msg =  this.getInfo(200010035);  // 200010035=定时任务暂停成功
+					}
+					return Result.SUCCESS(msg);
+				} 
+				
+				msg = this.getInfo(200010039);  	// 200010039=定时任务恢复失败
+				if(param.getPause() == 1) {
+					msg = this.getInfo(200010036);  	// 200010036=定时任务暂停失败
 				}
-				return result;
-			}else {
-				result.put("status", "error");
-				if(dto.getPause() == 1) {
-					result.put("msg", this.getInfo(200010036));  // 200010036=定时任务暂停失败
-				}else {
-					result.put("msg", this.getInfo(200010039));  // 200010039=定时任务恢复失败
-				}
-				return result;
+				return Result.ERROR(msg, ResultCode.ERROR_UPDATE);
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		result.put("status", "error");
-		result.put("msg", this.getInfo(200010036));  // 200010036=定时任务暂停失败
-		return null;
+		return Result.ERROR(msg, ResultCode.ERROR_UPDATE);
 	}
 
 
 	/**
 	 * @description: 定时任务分组列表页信息
 	 *
-	 * @param dto.groupName
-	 * @param dto.ip
+	 * @param param.groupName
+	 * @param param.ip
 	 * @author Yangcl
 	 * @date 2018年12月27日 上午11:24:35 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupPageList(JobGroupDto dto, HttpServletRequest request) {
-		JSONObject result = new JSONObject();
+	public Result<PageInfo<JobGroupView>> ajaxJobGroupPageList(FindAjaxJobGroupListRequest param , HttpServletRequest request) {
     	int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
-    	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
-    		pageNum = dto.getStartIndex();
-    		pageSize = dto.getPageSize();
-    	}else{
-    		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
-    		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
-    	}
-    	
-    	try {
-    		PageHelper.startPage(pageNum , pageSize);
-    		List<JobGroupView> list = jobGroupMapper.pageListByDto(dto);
-    		result.put("status", "success");
-    		if (list != null && list.size() > 0) {
-    			result.put("code" , RpcResultCode.SUCCESS);
-    			result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
-    		} else {
-    			result.put("code" , RpcResultCode.RESULT_NULL);
-    			result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
-    		}
-    		PageInfo<JobGroupView> pageList = new PageInfo<JobGroupView>(list);
-    		result.put("data", pageList);
-    		return result;
+		try {
+			JobGroupDto dto = param.buildAjaxJobGroupPageList();
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = dto.getStartIndex();
+				pageSize = dto.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<JobGroupView> list = jobGroupMapper.pageListByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<JobGroupView>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
-			return result;
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
-	}
-
+    }
+	
 
 	/**
 	 * @description: 添加定时任务分组
 	 *
-	 * @param entity 
 	 * @author Yangcl
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobGroupAdd(JobGroup e) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isAnyBlank(e.getGroupName() , e.getIp())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010045));  // 200010045=定时任务分组必填字段验证失败!弹窗中的字段均为必填项，请核查!
-			return result;
+	public Result<?> ajaxBtnJobGroupAdd(AddJobGroupRequest param) {
+		Result<?> validate = param.validateAjaxBtnJobGroupAdd();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		List<JobGroup> ishas = jobGroupMapper.findList(e);
-		if(ishas != null && ishas.size() != 0) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010044));  // 200010044=定时任务分组添加失败，分组名称已经存在
-			return result;
+		try {
+			JobGroup e = param.buildAjaxBtnJobGroupAdd();
+			Integer flag = jobGroupMapper.insertSelective(e);
+			if(flag == 1) {
+				return Result.SUCCESS(this.getInfo(200010040));  //  // 200010040=定时任务分组添加成功
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		e.setCreateTime(new Date());
-		e.setCreateUserName(e.getUserCache().getUserName());
-		e.setCreateUserId(e.getUserCache().getId());
-		e.setUpdateTime(new Date());
-		e.setUpdateUserName(e.getUserCache().getUserName());
-		e.setUpdateUserId(e.getUserCache().getId());
-		Integer flag = jobGroupMapper.insertSelective(e);
-		if(flag == 1) {
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010040));  // 200010040=定时任务分组添加成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010041));  // 200010041=定时任务分组添加失败, 请重试!
-		}
-		return result;
+		return Result.ERROR(this.getInfo(200010041), ResultCode.ERROR_INSERT);		// 200010041=定时任务分组添加失败, 请重试!
 	}
 	
 	/**
-	 * @description: 定时任务分组详情
+	 * @deprecated
+	 * @description: 定时任务分组详情|layui在编辑弹窗时不再需要查询详情，故此接口没有使用
 	 *
 	 * @author Yangcl
 	 * @date 2018年12月28日 下午2:49:19 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupDetail(JobGroupDto dto) {
-		JSONObject result = new JSONObject();
-		if(dto.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010048));  // 200010048=定时任务分组详情获取失败, 主键丢失, 请重试!
-			return result;
+	public Result<JobGroup> ajaxJobGroupDetail(FindJobGroupRequest param) {
+		Result<JobGroup> validate = param.validateAjaxJobGroupDetail();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		
-		launch.loadDictCache(DCacheEnum.SysJobGroup , "").del(String.valueOf(dto.getId())); 
-		String value = launch.loadDictCache(DCacheEnum.SysJobGroup , "SysJobGroupInit").get(String.valueOf(dto.getId())); 
-		if(StringUtils.isNotBlank(value)) {
-			result = JSONObject.parseObject(value);
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010049));  // 200010049=定时任务分组详情获取成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010050));  // 200010050=定时任务分组详情获取失败, 请重试!
+		try {
+			String value = launch.loadDictCache(DCacheEnum.SysJobGroup , "SysJobGroupInit").get(String.valueOf(param.getId())); 
+			if(StringUtils.isNotBlank(value)) {
+				JobGroup entity = JSONObject.parseObject(value, JobGroup.class);
+				if(entity != null) {
+					return Result.SUCCESS(this.getInfo(200010049), entity);		// 200010049=定时任务分组详情获取成功
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		return result;
+		return Result.ERROR(this.getInfo(200010050), ResultCode.NOT_FOUND);	// 200010050=定时任务分组详情获取失败, 请重试!
 	}
 
 	/**
-	 * @description: 修改定时任务分组|修改定时任务分组的IP地址可以控制定时任务在定时任务服务器集群中的执行强度(个数) 非并发类的定时任务会显著受到影响
+	 * @description: 修改定时任务分组|修改定时任务分组的IP地址可以控制定时任务在定时任务
+	 * 		服务器集群中的执行强度(个数) 非并发类的定时任务会显著受到影响
 	 *
-	 * @param entity 
 	 * @author Yangcl
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobGroupEdit(JobGroup e) {
-		JSONObject result = new JSONObject();
-		if(StringUtils.isAnyBlank(e.getGroupName() , e.getIp())) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010045));  // 200010045=定时任务分组必填字段验证失败!弹窗中的字段均为必填项，请核查!
-			return result;
+	@Transactional
+	public Result<?> ajaxBtnJobGroupEdit(UpdateJobGroupRequest param) {
+		Result<?> validate = param.validateAjaxBtnJobGroupEdit();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(e.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010024));  // 200010024=信息更新失败，主键丢失
-			return result;
-		}
-		JobGroup find = jobGroupMapper.find(e.getId());
-		if(find == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010022));  // 200010022=字段排重验证出现异常，请重试即可
-			return result;
-		}
-		if(!find.getGroupName().equals(e.getGroupName())) {
-			List<JobGroup> ishas = jobGroupMapper.findList(e);
-			if(ishas != null && ishas.size() != 0) {
-				result.put("status", "error");
-				result.put("msg", this.getInfo(200010046));  // 200010046=定时任务分组修改失败, 分组名称已经存在
-				return result;
+		try {
+			JobGroup find = jobGroupMapper.find(param.getId());
+			JobGroup entity = param.buildAjaxBtnJobGroupEdit();
+			Integer flag = jobGroupMapper.updateSelective(entity);
+			if(flag == 1) {
+				if(!find.getIp().equals(param.getIp())) {  // 批量删除所有定时任务缓存信息 同时 删除当前定时任务分组缓存信息|广谱删除
+					launch.loadDictCache(DCacheEnum.SysJobGroup , null).batchDeleteByPrefix("");
+					launch.loadDictCache(DCacheEnum.SysJob , null).batchDeleteByPrefix("");
+				}
+				return Result.SUCCESS(this.getInfo(200010042));  // 200010042=定时任务分组修改成功
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		if(!find.getIp().equals(e.getIp())) {  // 批量删除所有定时任务缓存信息 同时 删除当前定时任务分组缓存信息|广谱删除
-			launch.loadDictCache(DCacheEnum.SysJobGroup , null).batchDeleteByPrefix("");
-			launch.loadDictCache(DCacheEnum.SysJob , null).batchDeleteByPrefix("");
-		}
-		
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(e.getUserCache().getId());
-		e.setUpdateUserName(e.getUserCache().getUserName());
-		Integer flag = jobGroupMapper.updateSelective(e);
-		if(flag == 1) {
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010042));  // 200010042=定时任务分组修改成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010043));  // 200010043=定时任务分组修改失败, 请重试!
-		}
-		return result;
+		return Result.ERROR(this.getInfo(200010043), ResultCode.ERROR_UPDATE);		// 200010043=定时任务分组修改失败, 请重试!
 	}
 
 

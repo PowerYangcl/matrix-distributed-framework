@@ -243,24 +243,25 @@ var jobinfo = {
 			var data_ = {
 					jobName:$(e).attr("eleId")
 			}
-			 var o = JSON.parse(ajaxs.sendAjax(type_, url_, data_));
-			 if(o.status == "success"){
+			 var obj = JSON.parse(ajaxs.sendAjax(type_, url_, data_));
+			 if(obj.status == "success"){
+				 var o = obj.data;
 				 $("#id-edit").val(o.id);
-				$("#job-name-edit").text(o.jobName);
-				$("#job-title-edit").val(o.jobTitle);
-				$("#job-triger-edit").val(o.jobTriger);
-				$("#remark-edit").val(o.remark);
-				$(".concurrent-type-edit[value='" + o.concurrentType +"']").attr("checked","checked");
-				$("#expire-time-edit").val(o.expireTime);
-				$("#time-out-edit").val(o.timeOut);
-				$(".triger-type-edit[value='" + o.trigerType +"']").attr("checked","checked");
-				$(".log-type-edit[value='" + o.logType +"']").attr("checked","checked");
-				$("#job-class-edit").val(o.jobClass);
-				$("#job-list-edit").val(o.jobList);
-				$("#run-group-id-edit").find("option[value='" + o.runGroupId + "']").attr("selected",true);
+				 $("#job-name-edit").text(o.jobName);
+				 $("#job-title-edit").val(o.jobTitle);
+				 $("#job-triger-edit").val(o.jobTriger);
+				 $("#remark-edit").val(o.remark);
+				 $(".concurrent-type-edit[value='" + o.concurrentType +"']").attr("checked","checked");
+				 $("#expire-time-edit").val(o.expireTime);
+				 $("#time-out-edit").val(o.timeOut);
+				 $(".triger-type-edit[value='" + o.trigerType +"']").attr("checked","checked");
+				 $(".log-type-edit[value='" + o.logType +"']").attr("checked","checked");
+				 $("#job-class-edit").val(o.jobClass);
+				 $("#job-list-edit").val(o.jobList);
+				 $("#run-group-id-edit").find("option[value='" + o.runGroupId + "']").attr("selected",true);
 				 return true;
 			 }else{
-				 malert(o.msg , '系统提示'); 
+				 malert(obj.msg , '系统提示'); 
 				 return false;
 			 }
 			 return false;
@@ -308,34 +309,35 @@ var jobinfo = {
 			var data_ = {
 					jobName:$(e).attr("eleId")
 			}
-			 var o = JSON.parse(ajaxs.sendAjax(type_, url_, data_));
-			 if(o.status == "success"){
+			 var obj = JSON.parse(ajaxs.sendAjax(type_, url_, data_));
+			 if(obj.status == "success"){
+				 var o = obj.data;
 				 if(o.pause == 0){
 					 $("#pause-detail").text("运行中");
 				 }else{
 					 $("#pause-detail").text("已暂停");
 				 }
-				$("#job-name-detail").val(o.jobName);
-				$("#job-title-detail").text(o.jobTitle);
-				$("#job-triger-detail").text(o.jobTriger);
-				$("#remark-detail").text(o.remark);
-				$(".concurrent-type-detail[value='" + o.concurrentType +"']").attr("checked","checked");
-				$("#expire-time-detail").text(o.expireTime);
-				$("#time-out-detail").text(o.timeOut);
-				$(".triger-type-detail[value='" + o.trigerType +"']").attr("checked","checked");
-				$(".log-type-detail[value='" + o.logType +"']").attr("checked","checked");
-				$("#job-class-detail").text(o.jobClass);
-				$("#job-list-detail").text(o.jobList);
-				$("#run-group-id-detail").find("option[value='" + o.runGroupId + "']").attr("selected",true);
+				 $("#job-name-detail").val(o.jobName);
+				 $("#job-title-detail").text(o.jobTitle);
+				 $("#job-triger-detail").text(o.jobTriger);
+				 $("#remark-detail").text(o.remark);
+				 $(".concurrent-type-detail[value='" + o.concurrentType +"']").attr("checked","checked");
+				 $("#expire-time-detail").text(o.expireTime);
+				 $("#time-out-detail").text(o.timeOut);
+				 $(".triger-type-detail[value='" + o.trigerType +"']").attr("checked","checked");
+				 $(".log-type-detail[value='" + o.logType +"']").attr("checked","checked");
+				 $("#job-class-detail").text(o.jobClass);
+				 $("#job-list-detail").text(o.jobList);
+				 $("#run-group-id-detail").find("option[value='" + o.runGroupId + "']").attr("selected",true);
 				
-				var date = new Date(); 
-				date.setTime(o.createTime); 
-				$("#create-time-detail").text(date.format("yyyy-MM-dd hh:mm:ss"));
-				$("#create-user-name-detail").text(o.createUserName);
-				date.setTime(o.updateTime); 
-				$("#update-time-detail").text(date.format("yyyy-MM-dd hh:mm:ss"));
-				$("#update-user-name-detail").text(o.updateUserName);
-				 return true;
+				 var date = new Date(); 
+				 date.setTime(o.createTime); 
+				 $("#create-time-detail").text(date.format("yyyy-MM-dd hh:mm:ss"));
+				 $("#create-user-name-detail").text(o.createUserName);
+				 date.setTime(o.updateTime); 
+				 $("#update-time-detail").text(date.format("yyyy-MM-dd hh:mm:ss"));
+				 $("#update-user-name-detail").text(o.updateUserName);
+		 		 return true;
 			 }else{
 				 malert(o.msg , '系统提示'); 
 				 return false;

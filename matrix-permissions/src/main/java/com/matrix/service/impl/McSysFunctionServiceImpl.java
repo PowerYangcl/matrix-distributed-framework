@@ -224,7 +224,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 
 	public Result<?> ajaxFuncRole(McUserInfo e, HttpServletRequest request) {
 		if(StringUtils.isAnyBlank(e.getEmail() , e.getPassword())) {
-			return Result.ERROR(this.getInfo(100020103), ResultCode.MISSING_ARGUMENT);
+			return Result.ERROR(this.getInfo(100020103, "email or password"), ResultCode.MISSING_ARGUMENT);
 		}
 		String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 		String msg = e.getUserName() + "@" + e.getPassword() + "|" + path; 

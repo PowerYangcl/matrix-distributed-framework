@@ -12,9 +12,17 @@ import com.matrix.pojo.dto.JobGroupDto;
 import com.matrix.pojo.dto.JobInfoDto;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
+import com.matrix.pojo.request.AddJobGroupRequest;
 import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.DeleteJobInfoRequest;
 import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
+import com.matrix.pojo.request.FindAjaxJobInfoRequest;
+import com.matrix.pojo.request.FindJobGroupRequest;
+import com.matrix.pojo.request.UpdateJobGroupRequest;
+import com.matrix.pojo.request.UpdateJobInfoPauseRequest;
+import com.matrix.pojo.request.UpdateJobInfoRequest;
+import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
 
 public interface IJobService {                              
@@ -75,7 +83,7 @@ public interface IJobService {
 	 * @date 2018年12月24日 下午1:58:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobInfoEdit(JobInfo entity);
+	public Result<?> ajaxBtnJobInfoEdit(UpdateJobInfoRequest param);
 
 	/**
 	 * @description: 定时任务详情|根据jobName获取
@@ -85,72 +93,67 @@ public interface IJobService {
 	 * @date 2018年12月24日 下午5:26:51 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoDetail(JobInfoDto dto);
+	public Result<JSONObject> ajaxJobInfoDetail(FindAjaxJobInfoRequest param);
 
 
 	/**
 	 * @description: 删除定时任务
 	 *
-	 * @param dto 
 	 * @author Yangcl
 	 * @date 2018年12月25日 下午4:21:07 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobInfoDelete(JobInfoDto dto);
+	public Result<?> ajaxBtnJobInfoDelete(DeleteJobInfoRequest param);
 
 
 	/**
 	 * @description: 暂停一个定时任务 或 全部暂停
 	 *
-	 * @param dto.jobName
-	 * @param dto.pause 定时任务是否暂停 0否|1是
-	 * @param dto.pauseType one 暂停一个定时任务  all 暂停所有定时任务
 	 * @author Yangcl
 	 * @date 2018年12月25日 下午5:14:14 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoPause(JobInfoDto dto);
+	public Result<?> ajaxJobInfoPause(UpdateJobInfoPauseRequest param);
 
 
 	/**
 	 * @description: 定时任务分组列表页信息
 	 *
-	 * @param dto.groupName
-	 * @param dto.ip
+	 * @param param.groupName
+	 * @param param.ip
 	 * @author Yangcl
 	 * @date 2018年12月27日 上午11:24:35 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupPageList(JobGroupDto dto, HttpServletRequest request);
+	public Result<PageInfo<JobGroupView>> ajaxJobGroupPageList(FindAjaxJobGroupListRequest param , HttpServletRequest request);
 
 	/**
 	 * @description: 添加定时任务分组
 	 *
-	 * @param entity 
 	 * @author Yangcl
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobGroupAdd(JobGroup entity);
+	public Result<?> ajaxBtnJobGroupAdd(AddJobGroupRequest param);
 
 	/**
 	 * @description: 修改定时任务分组
 	 *
-	 * @param entity 
 	 * @author Yangcl
 	 * @date 2018年12月27日 下午3:20:21 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobGroupEdit(JobGroup entity);
+	public Result<?> ajaxBtnJobGroupEdit(UpdateJobGroupRequest param);
 
 	/**
-	 * @description: 定时任务分组详情
+	 * @deprecated
+	 * @description: 定时任务分组详情|layui在编辑弹窗时不再需要查询详情，故此接口没有使用
 	 *
 	 * @author Yangcl
 	 * @date 2018年12月28日 下午2:49:19 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobGroupDetail(JobGroupDto dto);
+	public Result<JobGroup> ajaxJobGroupDetail(FindJobGroupRequest param);
 
 
 	/**

@@ -42,11 +42,11 @@ public class AddJobInfoRequest extends BaseClass implements Serializable{
 	
     public Result<?> validateAjaxBtnAddJobInfo() {
 		if(StringUtils.isAnyBlank(jobTitle, jobClass ,jobTriger ,  remark)){  
-			// 200010015=定时任务添加弹窗中的字段均为必填项，请核查
+			// 200010015=定时任务弹窗中的字段均为必填项，请核查
 			return Result.ERROR(this.getInfo(200010015), ResultCode.MISSING_ARGUMENT);
 		}
 		if(runGroupId == null || expireTime == null || timeOut == null) {
-			// 200010015=定时任务添加弹窗中的字段均为必填项，请核查
+			// 200010015=定时任务弹窗中的字段均为必填项，请核查
 			return Result.ERROR(this.getInfo(200010015), ResultCode.MISSING_ARGUMENT);
 		}
 		if(!StringValidate.isNumeric(expireTime.toString()) || !StringValidate.isNumeric(timeOut.toString())) {

@@ -38,7 +38,7 @@ public class UpdateMcRoleRequest extends BaseClass implements Serializable{
 	
 	public Result<?> validateEditMcRole() {
 		if(id == null){ 
-			return Result.ERROR(this.getInfo(100020103), ResultCode.MISSING_ARGUMENT);
+			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
 		}
 		if(StringUtils.isBlank(roleName)){  // 101010027=角色名称不得为空
 			return Result.ERROR(this.getInfo(101010027), ResultCode.MISSING_ARGUMENT);
