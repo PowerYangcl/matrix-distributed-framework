@@ -34,23 +34,30 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 	 * @description: 多表联查，加载缓存
 	 * key: xd-ApiInfo-ORDER-INFO
 	 * value:
-					 {
-					    "id": 80160001,
-					    "name": "订单信息",
-					    "target": "ORDER-INFO",
-					    "discard": 0,
-					    "login":1,                                           ---------------- 当前接口是否需要登录后访问：1 需要登录后访问 0不需要
-					    "seqnum": 1,
-					    "module": "matrix-api",
-					    "remark": "ORDER-INFO",
-					    "processor": "private.order.OrderInfomation",
-					    "parentId": 1,
-					    "atype": "private",
-					    "domain": 1,
-					    "list": [			------------------------------------------------API入口做跨域判断使用
-					        "http://api.baidu.com",
-					        "http://sub.model.firos.com.cn"
-					    ]
+					{
+						"discard": 1,
+						"createUserId": 1992,
+						"updateUserId": 20072026234128,
+						"seqnum": 3,
+						"module": "matrix-manager-api",
+						"updateUserName": "XuTao",
+						"pageSize": 10,
+						"createUserName": "Yangcl",
+						"remark": "验证用户登录信息|客户端用户：nodejs/IOS平板等",
+						"updateTime": 1568786995000,
+						"login": 0,
+						"list": [],
+						"dtoInfo": "{\"userName\":\"admin-mdl\",\"password\":\"123456\",\r\n\"platform\":\"134160222D87\"}",
+						"processor": "privates.ManagerApi100Processor",
+						"parentId": 9,
+						"target": "MANAGER-API-100",
+						"deleteFlag": 1,
+						"startIndex": 1,
+						"createTime": 1539244178000,
+						"atype": "private",
+						"domain": 0,
+						"name": "用户登录接口",
+						"id": 80160155
 					}
 	 * @param key  AcApiInfo.target
 	 * @param field null

@@ -1028,7 +1028,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	public JSONObject ajaxFindRequestValue(String key) {
 		JSONObject result = new JSONObject();
-		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "InitApiRequester").get(key);  // ac_request_info表的缓存
+		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(key);  // ac_request_info表的缓存
 		if(StringUtils.isBlank(requestInfo)) {
 			result.put("status", "error");
 			result.put("code", "10012"); 

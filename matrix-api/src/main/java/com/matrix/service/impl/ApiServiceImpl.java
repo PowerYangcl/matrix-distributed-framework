@@ -185,6 +185,10 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 			
 			// 重置请求对象，加入用户Session信息|此种情况一般为业务API调入，以“common”开始的Api通常不会进入到此代码块中。
 			apiInfo.put("status", "success");
+			
+			JSONObject jsonObject1 = requester_.getJSONObject("head"); 
+			JSONObject jsonObject2 = requester_.getJSONObject("data"); 
+			
 			JSONObject data = JSONObject.parseObject(requester_.getString("data"));
 //			if(StringUtils.isNotBlank(userInfo)) { // ajax_client_login接口会导致此处为空
 //				McUserInfoView view = JSONObject.parseObject(userInfo, McUserInfoView.class);

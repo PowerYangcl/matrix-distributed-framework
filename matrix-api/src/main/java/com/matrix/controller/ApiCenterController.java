@@ -52,7 +52,7 @@ public class ApiCenterController extends BaseController {
 	@RequestMapping("page_apicenter_api_project_list")  
 	public String apiProjectList(HttpSession session){ 
 		super.userBehavior(session, logger, "page_apicenter_api_project_list", "前往api所属项目列表");
-		return "views/api/project/api-project-list";
+		return "jsp/api/project/api-project-list";
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class ApiCenterController extends BaseController {
 	@RequestMapping("page_apicenter_include_domain_list")  
 	public String apiIncludeDomainList(HttpSession session){ 
 		super.userBehavior(session, logger, "page_apicenter_include_domain_list", "前往跨域白名单列表页面");
-		return "views/api/domain/api-include-domain-list";
+		return "jsp/api/domain/api-include-domain-list";
 	}
 	/**
 	 * @description: 跨域白名单列表数据请求
@@ -215,7 +215,7 @@ public class ApiCenterController extends BaseController {
 	@RequestMapping("page_apicenter_api_tree")  
 	public String pageApicenterApiTree(HttpSession session){ 
 		super.userBehavior(session, logger, "page_apicenter_api_tree", "前往api信息树页面");
-		return "views/api/info/api-tree"; 
+		return "jsp/api/info/api-info-list"; 
 	}
 	
 	/**

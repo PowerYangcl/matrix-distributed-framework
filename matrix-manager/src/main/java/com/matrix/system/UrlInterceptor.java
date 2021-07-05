@@ -48,6 +48,8 @@ public class UrlInterceptor extends HandlerInterceptorAdapter{
             }
         }
         if(StringUtils.startsWith(url, "api")){		// 公共调用接口则跳过验证。
+        	String parameter = request.getParameter("json");
+        	System.out.println(parameter);
         	return true;
         }
         
