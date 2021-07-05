@@ -16,20 +16,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
-import com.matrix.pojo.dto.JobExecLogDto;
-import com.matrix.pojo.dto.JobGroupDto;
-import com.matrix.pojo.dto.JobInfoDto;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.request.AddJobGroupRequest;
 import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.DeleteJobGroupRequest;
 import com.matrix.pojo.request.DeleteJobInfoRequest;
 import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoRequest;
+import com.matrix.pojo.request.FindAjaxJobLogListRequest;
 import com.matrix.pojo.request.FindJobGroupRequest;
 import com.matrix.pojo.request.UpdateJobGroupRequest;
 import com.matrix.pojo.request.UpdateJobInfoPauseRequest;
 import com.matrix.pojo.request.UpdateJobInfoRequest;
+import com.matrix.pojo.view.JobExecLogView;
 import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
 import com.matrix.pojo.view.McUserInfoView;
@@ -125,23 +125,6 @@ public class QuartzCenterController extends BaseController{
 		super.userBehavior(session, logger, "ajax_btn_job_info_edit", "编辑定时任务");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnJobInfoEdit(param);
-	}
-	
-	/**
-	 * @description: 主动触发定时任务
-	 *
-	 * @param entity
-	 * @param session
-	 * @author Yangcl
-	 * @date 2019年9月26日 下午10:22:54 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "ajax_job_info_exec", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxJobInfoExec(JobInfoDto dto , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_info_exec", "主动触发定时任务");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobInfoExec(dto);
 	}
 	
 	/**
@@ -283,10 +266,10 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_job_group_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxBtnJobGroupDelete(JobGroupDto dto , HttpSession session){
+	public Result<?> ajaxBtnJobGroupDelete(DeleteJobGroupRequest param, HttpSession session){
 		super.userBehavior(session, logger, "ajax_job_group_delete", "删除定时任务分组");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxBtnJobGroupDelete(dto);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return jobService.ajaxBtnJobGroupDelete(param);
 	}
 	
 	
@@ -309,111 +292,35 @@ public class QuartzCenterController extends BaseController{
 	/**
 	 * @description: 定时任务日志列表页信息
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2018年12月29日 下午5:30:48 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_job_log_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject ajaxJobLogList(JobExecLogDto dto , HttpSession session, HttpServletRequest request){
+	public Result<PageInfo<JobExecLogView>> ajaxJobLogList(FindAjaxJobLogListRequest param , HttpSession session, HttpServletRequest request){
 		super.userBehavior(session, logger, "ajax_job_log_list", "定时任务日志列表页信息");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobLogList(dto , request);
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return jobService.ajaxJobLogList(param , request);
 	}
 	
 	/**
-	 * @deprecated 使用layui后，如果列表信息返回足够全的话，详情接口可能就不需要了。2021-05-07
-	 * @description:根据id获取定时任务日志详情
+	 * @description: 主动触发定时任务
 	 *
-	 * @param dto.id
+	 * @param entity
+	 * @param session
 	 * @author Yangcl
-	 * @date 2019年1月2日 下午3:42:19 
+	 * @date 2019年9月26日 下午10:22:54 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_job_log_detail", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject ajaxJobLogDetail(JobExecLogDto dto , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_log_detail", "根据id获取定时任务日志详情");
-		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
-		return jobService.ajaxJobLogDetail(dto);
-	}
+//	@RequestMapping(value = "ajax_job_info_exec", produces = { "application/json;charset=utf-8" })
+//	@ResponseBody
+//	public JSONObject ajaxJobInfoExec(JobInfoDto dto , HttpSession session){
+//		super.userBehavior(session, logger, "ajax_job_info_exec", "主动触发定时任务");
+//		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+//		return jobService.ajaxJobInfoExec(dto);
+//	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

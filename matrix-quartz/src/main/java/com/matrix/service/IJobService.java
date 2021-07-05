@@ -7,21 +7,22 @@ import javax.servlet.http.HttpServletRequest;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.Result;
-import com.matrix.pojo.dto.JobExecLogDto;
-import com.matrix.pojo.dto.JobGroupDto;
 import com.matrix.pojo.dto.JobInfoDto;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
 import com.matrix.pojo.request.AddJobGroupRequest;
 import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.DeleteJobGroupRequest;
 import com.matrix.pojo.request.DeleteJobInfoRequest;
 import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoRequest;
+import com.matrix.pojo.request.FindAjaxJobLogListRequest;
 import com.matrix.pojo.request.FindJobGroupRequest;
 import com.matrix.pojo.request.UpdateJobGroupRequest;
 import com.matrix.pojo.request.UpdateJobInfoPauseRequest;
 import com.matrix.pojo.request.UpdateJobInfoRequest;
+import com.matrix.pojo.view.JobExecLogView;
 import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
 
@@ -163,27 +164,16 @@ public interface IJobService {
 	 * @date 2018年12月28日 下午3:29:36 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobGroupDelete(JobGroupDto dto);
+	public Result<?> ajaxBtnJobGroupDelete(DeleteJobGroupRequest param);
 
 	/**
 	 * @description: 定时任务日志列表页信息
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2018年12月29日 下午5:30:48 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobLogList(JobExecLogDto dto, HttpServletRequest request);
-
-	/**
-	 * @description:根据id获取定时任务日志详情
-	 *
-	 * @param dto.id
-	 * @author Yangcl
-	 * @date 2019年1月2日 下午3:42:19 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject ajaxJobLogDetail(JobExecLogDto dto);
+	public Result<PageInfo<JobExecLogView>> ajaxJobLogList(FindAjaxJobLogListRequest param , HttpServletRequest request);
 
 	/**
 	 * @description: 主动触发定时任务
@@ -194,7 +184,7 @@ public interface IJobService {
 	 * @date 2019年9月26日 下午10:22:54 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoExec(JobInfoDto dto);
+//	public JSONObject ajaxJobInfoExec(JobInfoDto dto);
 	
 	
 }

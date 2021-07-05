@@ -17,6 +17,6 @@ public class JobInfoDto extends BaseDto{
     private Integer trigerType;
     private Long runGroupId;
     
-    
+    private String guardType; // JobExecGuard所触发的操作类型|triger：手动触发；add：添加一个定时任务到轮询器
     
 }

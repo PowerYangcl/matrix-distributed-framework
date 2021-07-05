@@ -1,7 +1,5 @@
 package com.matrix.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -27,16 +25,16 @@ import com.matrix.dao.IJobInfoMapper;
 import com.matrix.pojo.dto.JobExecLogDto;
 import com.matrix.pojo.dto.JobGroupDto;
 import com.matrix.pojo.dto.JobInfoDto;
-import com.matrix.pojo.dto.PowerCacheDto;
-import com.matrix.pojo.entity.JobExecLog;
 import com.matrix.pojo.entity.JobGroup;
 import com.matrix.pojo.entity.JobInfo;
 import com.matrix.pojo.request.AddJobGroupRequest;
 import com.matrix.pojo.request.AddJobInfoRequest;
+import com.matrix.pojo.request.DeleteJobGroupRequest;
 import com.matrix.pojo.request.DeleteJobInfoRequest;
 import com.matrix.pojo.request.FindAjaxJobGroupListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoListRequest;
 import com.matrix.pojo.request.FindAjaxJobInfoRequest;
+import com.matrix.pojo.request.FindAjaxJobLogListRequest;
 import com.matrix.pojo.request.FindJobGroupRequest;
 import com.matrix.pojo.request.UpdateJobGroupRequest;
 import com.matrix.pojo.request.UpdateJobInfoPauseRequest;
@@ -44,11 +42,8 @@ import com.matrix.pojo.request.UpdateJobInfoRequest;
 import com.matrix.pojo.view.JobExecLogView;
 import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
-import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IJobService;
 import com.matrix.service.IMatrixRouteService;
-import com.matrix.util.UuidUtil;
-import com.matrix.validate.StringValidate;
 
 
 @Service("jobService")
@@ -425,157 +420,101 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @date 2018年12月28日 下午3:29:36 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxBtnJobGroupDelete(JobGroupDto dto) {
-		JSONObject result = new JSONObject();
-		if(dto.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010051));  // 200010051=定时任务分组删除失败, 请重试!
-			return result;
+	@Transactional
+	public Result<?> ajaxBtnJobGroupDelete(DeleteJobGroupRequest param) {
+		Result<?> validate = param.validateAjaxBtnJobGroupDelete();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		
-		JobInfoDto jobInfoDto = new JobInfoDto();
-		jobInfoDto.setRunGroupId(dto.getId());
-		List<JobInfo> correlation = jobInfoMapper.findListByDto(jobInfoDto);
-		if(correlation != null && correlation.size() != 0) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010047 , correlation.size()));  // 200010047=定时任务分组删除失败, 已有{0}个定时任务与该分组关联，请解除
-			return result;
+		try {
+			JobGroup entity = param.buildAjaxBtnJobGroupDelete();
+			Integer flag = jobGroupMapper.updateSelective(entity);
+			if(flag == 1) {
+				launch.loadDictCache(DCacheEnum.SysJobGroup , null).del(entity.getId().toString());
+				return Result.SUCCESS(this.getInfo(200010052));		// 200010052=定时任务分组删除成功
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-		
-		JobGroup e = new JobGroup();
-		e.setId(dto.getId());
-		e.setDeleteFlag(0);
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(dto.getUserCache().getId());
-		e.setUpdateUserName(dto.getUserCache().getUserName());
-		Integer flag = jobGroupMapper.updateSelective(e);
-		if(flag == 1) {
-			launch.loadDictCache(DCacheEnum.SysJobGroup , null).del(e.getId().toString());
-			result.put("status", "success");
-			result.put("msg", this.getInfo(200010052));  // 200010052=定时任务分组删除成功
-		}else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010051));  // 200010051=定时任务分组删除失败, 请重试!
-		}
-		return result;
+		return Result.ERROR(this.getInfo(200010051), ResultCode.ERROR_DELETE);	// 200010051=定时任务分组删除失败, 请重试!
 	}
 
 
 	/**
 	 * @description: 定时任务日志列表页信息
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2018年12月29日 下午5:30:48 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobLogList(JobExecLogDto dto, HttpServletRequest request) {
-		JSONObject result = new JSONObject();
+	public Result<PageInfo<JobExecLogView>> ajaxJobLogList(FindAjaxJobLogListRequest param , HttpServletRequest request) {
     	int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
-    	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
-    		pageNum = dto.getStartIndex();
-    		pageSize = dto.getPageSize();
-    	}else{
-    		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
-    		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
-    	}
- 
-    	try {
-    		PageHelper.startPage(pageNum , pageSize);
-    		List<JobExecLogView> list = jobExecLogMapper.pageListByDto(dto);
-    		result.put("status", "success");
-    		if (list != null && list.size() > 0) {
-    			result.put("code" , RpcResultCode.SUCCESS);
-    			result.put("msg", this.getInfo(100010114));  // 100010114=分页数据返回成功!
-    		} else {
-    			result.put("code" , RpcResultCode.RESULT_NULL);
-    			result.put("msg", this.getInfo(100010115));  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
-    		}
-    		PageInfo<JobExecLogView> pageList = new PageInfo<JobExecLogView>(list);
-    		result.put("data", pageList);
-    		return result;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100010116));  // 100010116=分页数据返回失败，服务器异常!
-			return result;
+		try {
+			JobExecLogDto dto = param.buildAjaxJobLogPageList();
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = dto.getStartIndex();
+				pageSize = dto.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<JobExecLogView> list = jobExecLogMapper.pageListByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<JobExecLogView>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
-	}
+    }
 
 
 	/**
-	 * @description:根据id获取定时任务日志详情
+	 * @description: 主动触发定时任务|TODO 后续根据路由规则重新开发
 	 *
-	 * @param dto.id
-	 * @author Yangcl
-	 * @date 2019年1月2日 下午3:42:19 
-	 * @version 1.0.0.1
-	 */
-	public JSONObject ajaxJobLogDetail(JobExecLogDto dto) {
-		JSONObject result = new JSONObject();
-		if(dto.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010055));  // 200010055=定时任务日志获取失败!日志主键id为空, 无法查询
-			return result;
-		}	
-		JobExecLog find = jobExecLogMapper.find(dto.getId());
-		if(find == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010054));  // 200010054=定时任务日志获取失败!请重试即可
-			return result;
-		}
-		result.put("status", "success");
-		result.put("msg", this.getInfo(200010053));  // 200010053=定时任务日志获取成功!
-		result.put("e", find);
-		return result;
-	}
-
-
-	/**
-	 * @description: 主动触发定时任务
-	 *
-	 * @param dto
-	 * @param session
 	 * @author Yangcl
 	 * @date 2019年9月26日 下午10:22:54 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxJobInfoExec(JobInfoDto dto) {
-		JSONObject result = new JSONObject();
-		if(dto.getId() == null) {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010056));  // 200010056=定时任务主动触发失败!主键id为空
-			return result;
-		}
-		try {
-			String[] arr  = dto.getIps().split(",");  
-			String port = "28110";  // 28110端口为Job项目默认dubbo端口号
-			if(StringUtils.isNotBlank(this.getConfig("matrix-quartz.job_port"))) {
-				port = this.getConfig("matrix-quartz.job_port");
-			}
-			List<String> list = new ArrayList<String>(arr.length);
-			for(String ip : arr) {
-				list.add(ip + ":" +port);
-			}
-			String dubboAddr = "";
-			for(String addr : list) {
-				dubboAddr = dubboAddr + addr + ",";
-			}
-			dubboAddr = dubboAddr.substring(0, dubboAddr.length() - 1);
-			
-			PowerCacheDto pcd = new PowerCacheDto();
-			pcd.setDubboAddr(dubboAddr);
-			pcd.setKey("guard_job_exec");
-			pcd.setValue(JSONObject.toJSONString(dto));
-			return matrixRouteService.ajaxRouteExecute(pcd);
-		} catch (Exception e) {
-			e.printStackTrace(); 
-			result.put("status", "error");
-			result.put("msg", this.getInfo(200010058));  // 200010058=定时任务主动触发失败
-			return result;
-		}
-	}
+//	public JSONObject ajaxJobInfoExec(JobInfoDto dto) {
+//		JSONObject result = new JSONObject();
+//		if(dto.getId() == null) {
+//			result.put("status", "error");
+//			result.put("msg", this.getInfo(200010056));  // 200010056=定时任务主动触发失败!主键id为空
+//			return result;
+//		}
+//		try {
+//			String[] arr  = dto.getIps().split(",");  
+//			String port = "28110";  // 28110端口为Job项目默认dubbo端口号
+//			if(StringUtils.isNotBlank(this.getConfig("matrix-quartz.job_port"))) {
+//				port = this.getConfig("matrix-quartz.job_port");
+//			}
+//			List<String> list = new ArrayList<String>(arr.length);
+//			for(String ip : arr) {
+//				list.add(ip + ":" +port);
+//			}
+//			String dubboAddr = "";
+//			for(String addr : list) {
+//				dubboAddr = dubboAddr + addr + ",";
+//			}
+//			dubboAddr = dubboAddr.substring(0, dubboAddr.length() - 1);
+//			
+//			PowerCacheDto pcd = new PowerCacheDto();
+//			pcd.setDubboAddr(dubboAddr);
+//			pcd.setKey("guard_job_exec");
+//			pcd.setValue(JSONObject.toJSONString(dto));
+//			return matrixRouteService.ajaxRouteExecute(pcd);
+//		} catch (Exception e) {
+//			e.printStackTrace(); 
+//			result.put("status", "error");
+//			result.put("msg", this.getInfo(200010058));  // 200010058=定时任务主动触发失败
+//			return result;
+//		}
+//	}
 
 
 	

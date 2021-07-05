@@ -27,7 +27,6 @@ public class JobExecGuard extends BaseClass implements IBaseExecute {
 	private IJobInfoMapper jobInfoMapper;
 	
 	public String execute(String json) {
-		
 		try {
 			JobInfo info = null;
 			JobInfoDto dto = JSONObject.parseObject(json , JobInfoDto.class);
@@ -50,8 +49,6 @@ public class JobExecGuard extends BaseClass implements IBaseExecute {
 			ex.printStackTrace();
 			return "JobExecGuard exception !";
 		}
-		
-		
 		return "执行成功!";
 	}
 
