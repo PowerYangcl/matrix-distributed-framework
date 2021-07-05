@@ -21,13 +21,25 @@ import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
 import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiInfo;
-import com.matrix.pojo.entity.AcApiProject;
-import com.matrix.pojo.entity.AcIncludeDomain;
 import com.matrix.pojo.entity.AcRequestInfo;
+import com.matrix.pojo.request.AddAcIncludeDomainRequest;
+import com.matrix.pojo.request.AddApiInfoRequest;
+import com.matrix.pojo.request.AddApiProjectListRequest;
+import com.matrix.pojo.request.DeleteAcIncludeDomainRequest;
+import com.matrix.pojo.request.DeleteApiInfoRequest;
+import com.matrix.pojo.request.DeleteApiProjectListRequest;
+import com.matrix.pojo.request.FindAcIncludeDomainListRequest;
+import com.matrix.pojo.request.FindApiInfoListRequest;
+import com.matrix.pojo.request.FindApiInfoRequest;
+import com.matrix.pojo.request.FindApiProjectListRequest;
+import com.matrix.pojo.request.UpdateAcIncludeDomainRequest;
+import com.matrix.pojo.request.UpdateApiInfoRequest;
+import com.matrix.pojo.request.UpdateApiProjectListRequest;
 import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
 import com.matrix.pojo.view.ApiTreeView;
+import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IApiCenterService;
 
 /**
@@ -73,9 +85,10 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_project_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(AcApiProject entity , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(FindApiProjectListRequest param , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_project_list", "获取api所属项目列表页数据");
-		return service.ajaxApiProjectList(entity, request);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxApiProjectList(param, request);  
 	}
 	
 	/**
@@ -89,9 +102,10 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiProjectAdd(AcApiProject entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectAdd(AddApiProjectListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_add", "向ac_api_project表添加信息");
-		return service.ajaxBtnApiProjectAdd(entity, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxBtnApiProjectAdd(param, session);  
 	}
 	
 	/**
@@ -103,9 +117,10 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiProjectEdit(AcApiProject entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectEdit(UpdateApiProjectListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_edit", "向ac_api_project表修改信息");
-		return service.ajaxBtnApiProjectEdit(entity, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxBtnApiProjectEdit(param, session);  
 	}
 	
 	/**
@@ -117,9 +132,10 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiProjectDelete(AcApiProject entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectDelete(DeleteApiProjectListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_delete", "向ac_api_project表删除一条记录");
-		return service.ajaxBtnApiProjectDelete(entity, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxBtnApiProjectDelete(param, session);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////【跨域白名单】/////////////////////////////////////////////////////////////////////////////////////////
@@ -138,63 +154,57 @@ public class ApiCenterController extends BaseController {
 	/**
 	 * @description: 跨域白名单列表数据请求
 	 *
-	 * @param entity
-	 * @param request
 	 * @author Yangcl
 	 * @date 2017年11月15日 上午11:19:57 
 	 * @version 1.0.0
 	 */
 	@RequestMapping(value = "ajax_include_domain_page_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(AcIncludeDomain entity , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(FindAcIncludeDomainListRequest param , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_include_domain_page_list", "ac_include_domain 跨域白名单列表数据请求");
-		return service.ajaxIncludeDomainPageList(entity, request, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxIncludeDomainPageList(param, request, session);  
 	}
 	/**
 	 * @description: 全量跨域白名单列表数据，不分页
 	 *
-	 * @param entity
-	 * @param request
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月27日 下午11:22:33 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_include_domain_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(AcIncludeDomain entity , HttpServletRequest request, HttpSession session){ 
+	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_include_domain_list", "ac_include_domain 全量跨域白名单列表数据，不分页");
-		return service.ajaxIncludeDomainList(entity, request, session);  
+		return service.ajaxIncludeDomainList(request, session);  
 	}
 	/**
 	 * @description: 添加跨域白名单
 	 *
-	 * @param entity
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月17日 下午11:11:25 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_btn_api_domain_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiDomainAdd(AcIncludeDomain entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiDomainAdd(AddAcIncludeDomainRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_domain_add", "添加跨域白名单");
-		return service.ajaxBtnApiDomainAdd(entity, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxBtnApiDomainAdd(param, session);  
 	}
 	/**
 	 * @description: 编辑跨域白名单
 	 *
-	 * @param entity
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月18日 下午9:56:10 
 	 * @version 1.0.0.1
 	 */
 	@RequestMapping(value = "ajax_btn_api_domain_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiDomainEdit(AcIncludeDomain entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiDomainEdit(UpdateAcIncludeDomainRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_domain_edit", "编辑跨域白名单");
-		return service.ajaxBtnApiDomainEdit(entity, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxBtnApiDomainEdit(param, session);  
 	}
 	
 	/**
@@ -206,10 +216,12 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_domain_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiDomainDelete(AcIncludeDomain entity , HttpSession session){ 
+	public Result<?> ajaxBtnApiDomainDelete(DeleteAcIncludeDomainRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_domain_delete", "删除一条跨域白名单记录");
-		return service.ajaxBtnApiDomainDelete(entity, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxBtnApiDomainDelete(param, session);  
 	}
+	
 	//////////////////////////////////////////////////////////////////////////////【系统api信息】/////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * @description: api信息树 
@@ -236,9 +248,9 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<List<ApiTreeView>> ajaxApiInfoList(AcApiInfo e , HttpSession session){ 
+	public Result<List<ApiTreeView>> ajaxApiInfoList(FindApiInfoListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_list", "获取api树结构列表信息");
-		return service.ajaxApiInfoList(e, session);  
+		return service.ajaxApiInfoList(param, session);  
 	}
 	
 	/**
@@ -252,25 +264,25 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<AcApiInfo> ajaxApiInfoAdd(AcApiInfoDto d , HttpSession session){ 
+	public Result<AcApiInfo> ajaxApiInfoAdd(AddApiInfoRequest param, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_add", "添加api信息");
-		return service.ajaxApiInfoAdd(d, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxApiInfoAdd(param, session);  
 	}
 	
 	/**
 	 * @description: 依据target 查找一个api信息
 	 *
-	 * @param dto
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月29日 下午4:26:33 
 	 * @version 1.0.0
 	 */
 	@RequestMapping(value = "ajax_api_info_find", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<AcApiInfoCache> ajaxApiInfoFind(AcApiInfoDto dto , HttpSession session){ 
+	public Result<AcApiInfoCache> ajaxApiInfoFind(FindApiInfoRequest param, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_find", "依据target 查找一个api信息");
-		return service.ajaxApiInfoFind(dto);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxApiInfoFind(param);  
 	}
 	
 	/**
@@ -282,9 +294,10 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<AcApiInfoCache> ajaxApiInfoEdit(AcApiInfoDto d , HttpSession session){ 
+	public Result<AcApiInfoCache> ajaxApiInfoEdit(UpdateApiInfoRequest param, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_edit", "修改api信息");
-		return service.ajaxApiInfoEdit(d, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxApiInfoEdit(param, session);  
 	}
 	
 	/**
@@ -296,9 +309,10 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_remove", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiRemove(AcApiInfoDto d , HttpSession session){ 
+	public Result<?> ajaxBtnApiRemove(DeleteApiInfoRequest param, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_remove", "删除api信息");
-		return service.ajaxApiInfoRemove(d, session);  
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return service.ajaxApiInfoRemove(param, session);  
 	}
 	
 	/**

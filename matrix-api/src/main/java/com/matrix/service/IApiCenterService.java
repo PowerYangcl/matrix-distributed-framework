@@ -12,9 +12,20 @@ import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
 import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiInfo;
-import com.matrix.pojo.entity.AcApiProject;
-import com.matrix.pojo.entity.AcIncludeDomain;
 import com.matrix.pojo.entity.AcRequestInfo;
+import com.matrix.pojo.request.AddAcIncludeDomainRequest;
+import com.matrix.pojo.request.AddApiInfoRequest;
+import com.matrix.pojo.request.AddApiProjectListRequest;
+import com.matrix.pojo.request.DeleteAcIncludeDomainRequest;
+import com.matrix.pojo.request.DeleteApiInfoRequest;
+import com.matrix.pojo.request.DeleteApiProjectListRequest;
+import com.matrix.pojo.request.FindAcIncludeDomainListRequest;
+import com.matrix.pojo.request.FindApiInfoListRequest;
+import com.matrix.pojo.request.FindApiInfoRequest;
+import com.matrix.pojo.request.FindApiProjectListRequest;
+import com.matrix.pojo.request.UpdateAcIncludeDomainRequest;
+import com.matrix.pojo.request.UpdateApiInfoRequest;
+import com.matrix.pojo.request.UpdateApiProjectListRequest;
 import com.matrix.pojo.view.AcApiInfoView;
 import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
@@ -24,24 +35,24 @@ import com.matrix.pojo.view.ApiTreeView;
 public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView>{
 
 	// ac_api_project 表
-	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(AcApiProject entity, HttpServletRequest request);
-	public Result<?> ajaxBtnApiProjectAdd(AcApiProject entity, HttpSession session);
-	public Result<?> ajaxBtnApiProjectEdit(AcApiProject entity, HttpSession session);
-	public Result<?> ajaxBtnApiProjectDelete(AcApiProject entity, HttpSession session);
+	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(FindApiProjectListRequest param, HttpServletRequest request);
+	public Result<?> ajaxBtnApiProjectAdd(AddApiProjectListRequest param, HttpSession session);
+	public Result<?> ajaxBtnApiProjectEdit(UpdateApiProjectListRequest param, HttpSession session);
+	public Result<?> ajaxBtnApiProjectDelete(DeleteApiProjectListRequest param, HttpSession session);
 	
 	// ac_include_domain 表
-	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session);
-	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session);         
-	public Result<?> ajaxBtnApiDomainAdd(AcIncludeDomain entity, HttpSession session);
-	public Result<?> ajaxBtnApiDomainEdit(AcIncludeDomain entity, HttpSession session);
-	public Result<?> ajaxBtnApiDomainDelete(AcIncludeDomain entity, HttpSession session);
+	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(FindAcIncludeDomainListRequest param, HttpServletRequest request, HttpSession session);
+	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(HttpServletRequest request, HttpSession session);         
+	public Result<?> ajaxBtnApiDomainAdd(AddAcIncludeDomainRequest param, HttpSession session);
+	public Result<?> ajaxBtnApiDomainEdit(UpdateAcIncludeDomainRequest param, HttpSession session);
+	public Result<?> ajaxBtnApiDomainDelete(DeleteAcIncludeDomainRequest param, HttpSession session);
 	
 	// ac_api_info 表
-	public Result<List<ApiTreeView>> ajaxApiInfoList(AcApiInfo e, HttpSession session);
-	public Result<AcApiInfo> ajaxApiInfoAdd(AcApiInfoDto d, HttpSession session);
-	public Result<AcApiInfoCache> ajaxApiInfoFind(AcApiInfoDto dto);
-	public Result<AcApiInfoCache> ajaxApiInfoEdit(AcApiInfoDto d, HttpSession session);
-	public Result<?> ajaxApiInfoRemove(AcApiInfoDto d, HttpSession session);
+	public Result<List<ApiTreeView>> ajaxApiInfoList(FindApiInfoListRequest param, HttpSession session);
+	public Result<AcApiInfo> ajaxApiInfoAdd(AddApiInfoRequest param, HttpSession session);
+	public Result<AcApiInfoCache> ajaxApiInfoFind(FindApiInfoRequest param);
+	public Result<AcApiInfoCache> ajaxApiInfoEdit(UpdateApiInfoRequest param, HttpSession session);
+	public Result<?> ajaxApiInfoRemove(DeleteApiInfoRequest param, HttpSession session);
 	public Result<?> ajaxApiInfoDiscard(AcApiInfo e, HttpSession session);     
 	
 	// ac_request_info 表 

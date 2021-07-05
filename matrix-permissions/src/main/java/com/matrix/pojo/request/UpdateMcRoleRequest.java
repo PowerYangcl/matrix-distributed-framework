@@ -37,7 +37,7 @@ public class UpdateMcRoleRequest extends BaseClass implements Serializable{
 	}
 	
 	public Result<?> validateEditMcRole() {
-		if(id == null){ 
+		if(id == null){ 	// 100020111=主键丢失
 			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
 		}
 		if(StringUtils.isBlank(roleName)){  // 101010027=角色名称不得为空

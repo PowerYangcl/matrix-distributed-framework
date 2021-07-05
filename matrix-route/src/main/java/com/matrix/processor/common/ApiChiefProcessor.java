@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.pojo.dto.ApiChiefDto;
 
@@ -21,7 +22,7 @@ import com.matrix.pojo.dto.ApiChiefDto;
 @MatrixRequest(clazz=com.matrix.pojo.dto.ApiChiefDto.class) 
 public class ApiChiefProcessor  extends BaseClass implements IBaseProcessor {
 
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
 		ApiChiefDto dto = JSONObject.parseObject(param.getString("data"), ApiChiefDto.class); 
 		// TODO invoke chiefCommand()
 		return null;

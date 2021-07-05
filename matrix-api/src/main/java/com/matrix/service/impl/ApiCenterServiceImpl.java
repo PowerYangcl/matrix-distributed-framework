@@ -1,7 +1,6 @@
 package com.matrix.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -39,6 +38,19 @@ import com.matrix.pojo.entity.AcApiProject;
 import com.matrix.pojo.entity.AcIncludeDomain;
 import com.matrix.pojo.entity.AcRequestInfo;
 import com.matrix.pojo.entity.AcRequestOpenApi;
+import com.matrix.pojo.request.AddAcIncludeDomainRequest;
+import com.matrix.pojo.request.AddApiInfoRequest;
+import com.matrix.pojo.request.AddApiProjectListRequest;
+import com.matrix.pojo.request.DeleteAcIncludeDomainRequest;
+import com.matrix.pojo.request.DeleteApiInfoRequest;
+import com.matrix.pojo.request.DeleteApiProjectListRequest;
+import com.matrix.pojo.request.FindAcIncludeDomainListRequest;
+import com.matrix.pojo.request.FindApiInfoListRequest;
+import com.matrix.pojo.request.FindApiInfoRequest;
+import com.matrix.pojo.request.FindApiProjectListRequest;
+import com.matrix.pojo.request.UpdateAcIncludeDomainRequest;
+import com.matrix.pojo.request.UpdateApiInfoRequest;
+import com.matrix.pojo.request.UpdateApiProjectListRequest;
 import com.matrix.pojo.view.AcApiInfoView;
 import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
@@ -71,13 +83,12 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: ac_api_project 列表数据信息
 	 *
-	 * @param entity
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月14日 上午9:38:58 
 	 * @version 1.0.0
 	 */
-	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(AcApiProject entity, HttpServletRequest request) {
+	public Result<PageInfo<AcApiProjectView>> ajaxApiProjectList(FindApiProjectListRequest param, HttpServletRequest request) {
+		AcApiProject entity = param.buildAjaxApiProjectList();
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
 		try {
@@ -101,17 +112,23 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		}
 	}
 
-	public Result<?> ajaxBtnApiProjectAdd(AcApiProject e, HttpSession session) {
-		if(StringUtils.isBlank(e.getTarget())) {
-			return Result.ERROR(this.getInfo(600010060), ResultCode.MISSING_ARGUMENT);		// 项目名称不得为空
+	@Transactional
+	public Result<?> ajaxBtnApiProjectAdd(AddApiProjectListRequest param, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildAddCommon(u);
-		int flag = acApiProjectMapper.insertSelective(e);
-		if(flag == 1) {
-			launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
-			return Result.SUCCESS(this.getInfo(100010102));  		// 100010102=数据添加成功!
-		} 
+		try {
+			AcApiProject e = param.buildAjaxBtnApiProjectAdd();
+			int flag = acApiProjectMapper.insertSelective(e);
+			if(flag == 1) {
+				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
+				return Result.SUCCESS(this.getInfo(100010102));  		// 100010102=数据添加成功!
+			} 
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010103));		// 100010103=数据添加失败，服务器异常!
+		}
 		return Result.ERROR(this.getInfo(100010103), ResultCode.ERROR_INSERT);	// 100010103=数据添加失败，服务器异常!
 	}
 
@@ -122,17 +139,23 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月14日 下午4:07:46 
 	 * @version 1.0.0
 	 */
-	public Result<?> ajaxBtnApiProjectEdit(AcApiProject e, HttpSession session) {
-		if(StringUtils.isBlank(e.getTarget())) {
-			return Result.ERROR(this.getInfo(600010060), ResultCode.MISSING_ARGUMENT);   // 项目名称不得为空
+	@Transactional
+	public Result<?> ajaxBtnApiProjectEdit(UpdateApiProjectListRequest param, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildUpdateCommon(u);
-		int flag = acApiProjectMapper.updateSelective(e); 
-		if(flag == 1) {
-			launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
-			return Result.SUCCESS(this.getInfo(100010104));  // 100010104=数据更新成功!
-		} 
+		AcApiProject e = param.buildAjaxBtnApiProjectEdit();
+		try {
+			int flag = acApiProjectMapper.updateSelective(e); 
+			if(flag == 1) {
+				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
+				return Result.SUCCESS(this.getInfo(100010104));  // 100010104=数据更新成功!
+			} 
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010105));		// 100010105=数据更新失败，服务器异常!
+		}
 		return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);  // 100010105=数据更新失败，服务器异常!
 	}
 	
@@ -143,23 +166,22 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2019年12月27日 下午3:17:41 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxBtnApiProjectDelete(AcApiProject e, HttpSession session) {
-		if(e.getId() == null) {
-			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);		// 100020111=主键丢失
+	public Result<?> ajaxBtnApiProjectDelete(DeleteApiProjectListRequest param, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		McUserInfoView user = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildUpdateCommon(user);
 		try {
-			int flag = acApiProjectMapper.deleteById(e.getId());
+			int flag = acApiProjectMapper.deleteById(param.getId());
 			if(flag == 1) {
 				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
 				return Result.SUCCESS(this.getInfo(100010106));   	// 100010106=数据删除成功!
 			}
-			return Result.ERROR(this.getInfo(100010107), ResultCode.ERROR_DELETE); 		// 100010107=数据删除失败，服务器异常!
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return Result.ERROR(this.getInfo(100010112), ResultCode.SERVER_EXCEPTION);  // 100010112=服务器异常! 
+			throw new RuntimeException(this.getInfo(100010107));		// 100010107=数据删除失败，服务器异常!
 		}
+		return Result.ERROR(this.getInfo(100010107), ResultCode.ERROR_DELETE); 		// 100010107=数据删除失败，服务器异常!
 	}
 
 	
@@ -173,7 +195,8 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月15日 上午11:19:57 
 	 * @version 1.0.0
 	 */
-	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session) {
+	public Result<PageInfo<AcIncludeDomainView>> ajaxIncludeDomainPageList(FindAcIncludeDomainListRequest param, HttpServletRequest request, HttpSession session) {
+		AcIncludeDomain entity = param.buildAjaxIncludeDomainPageList();
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
 		try {
@@ -204,7 +227,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月27日 下午11:22:33 
 	 * @version 1.0.0.1
 	 */
-	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(AcIncludeDomain entity, HttpServletRequest request, HttpSession session) {
+	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(HttpServletRequest request, HttpSession session) {
 		String value = launch.loadDictCache(DCacheEnum.ApiDomain , "ApiDomainInit").get("all");  
 		if (StringUtils.isNotBlank(value)) {
 			String jsonArrStr = JSONObject.parseObject(value).getJSONArray("data").toJSONString();
@@ -217,26 +240,26 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: 添加跨域白名单
 	 *
-	 * @param entity
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月17日 下午11:11:25 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxBtnApiDomainAdd(AcIncludeDomain e, HttpSession session) {
-		if(StringUtils.isBlank(e.getDomain())) {
-			return Result.ERROR(this.getInfo(600010066), ResultCode.MISSING_ARGUMENT);  // 600010066=域名不得为空!
+	@Transactional
+	public Result<?> ajaxBtnApiDomainAdd(AddAcIncludeDomainRequest param, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(StringUtils.isBlank(e.getCompanyName())) {
-			return Result.ERROR(this.getInfo(600010067), ResultCode.MISSING_ARGUMENT);  // 600010067=所属公司不得为空!
-		}
-		
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildAddCommon(u);
-		int flag = acIncludeDomainMapper.insertSelective(e);
-		if(flag == 1) {
-			launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
-			return Result.SUCCESS(this.getInfo(100010102));  		// 100010102=数据添加成功!
+		try {
+			AcIncludeDomain e = param.buildAjaxBtnAcIncludeDomainAdd();
+			int flag = acIncludeDomainMapper.insertSelective(e);
+			if(flag == 1) {
+				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
+				return Result.SUCCESS(this.getInfo(100010102));  		// 100010102=数据添加成功!
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010103));		// 100010103=数据添加失败，服务器异常!
 		}
 		return Result.ERROR(this.getInfo(100010103), ResultCode.ERROR_INSERT);	// 100010103=数据添加失败，服务器异常!
 	}
@@ -248,28 +271,24 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2017年11月18日 下午9:56:10 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxBtnApiDomainEdit(AcIncludeDomain e, HttpSession session) {
-		if(StringUtils.isBlank(e.getDomain())) {
-			return Result.ERROR(this.getInfo(600010066), ResultCode.MISSING_ARGUMENT);  // 600010066=域名不得为空!
+	public Result<?> ajaxBtnApiDomainEdit(UpdateAcIncludeDomainRequest param, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(StringUtils.isBlank(e.getCompanyName())) {
-			return Result.ERROR(this.getInfo(600010067), ResultCode.MISSING_ARGUMENT);  // 600010067=所属公司不得为空!
-		}
-		
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildUpdateCommon(u);
 		try {
+			AcIncludeDomain e = param.buildAjaxBtnAcIncludeDomainEdit();
 			int flag = acIncludeDomainMapper.updateSelective(e);
 			if(flag == 1){
 				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
 				launch.loadDictCache(DCacheEnum.ApiInfo , null).batchDeleteByPrefix("");
 				return Result.SUCCESS(this.getInfo(100010104));  // 100010104=数据更新成功!
 			}
-			return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);  // 100010105=数据更新失败，服务器异常!
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return Result.ERROR(this.getInfo(100010112), ResultCode.SERVER_EXCEPTION);  // 100010112=服务器异常!
+			throw new RuntimeException(this.getInfo(100010105));		// 100010105=数据更新失败，服务器异常!
 		}
+		return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);  // 100010105=数据更新失败，服务器异常!
 	}
 	
 	/**
@@ -279,51 +298,41 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2020年1月7日 上午10:20:16 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxBtnApiDomainDelete(AcIncludeDomain e, HttpSession session) {
-		if(e.getId() == null) {
-			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);		// 100020111=主键丢失
+	public Result<?> ajaxBtnApiDomainDelete(DeleteAcIncludeDomainRequest param, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildUpdateCommon(u);
-		e.setDeleteFlag(0);
 		try {
+			AcIncludeDomain e = param.buildAjaxBtnAcIncludeDomainDelete();
 			int flag = acIncludeDomainMapper.updateSelective(e);
 			if(flag == 1){
 				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
 				launch.loadDictCache(DCacheEnum.ApiInfo , null).batchDeleteByPrefix("");
 				return Result.SUCCESS(this.getInfo(100010106));   	// 100010106=数据删除成功!
 			}
-			return Result.ERROR(this.getInfo(100010107), ResultCode.ERROR_DELETE); 		// 100010107=数据删除失败，服务器异常!
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return Result.ERROR(this.getInfo(100010112), ResultCode.SERVER_EXCEPTION);  // 100010112=服务器异常! 
+			throw new RuntimeException(this.getInfo(100010107));		// 100010107=数据删除失败，服务器异常!
 		}
+		return Result.ERROR(this.getInfo(100010107), ResultCode.ERROR_DELETE); 		// 100010107=数据删除失败，服务器异常!
 	}
 
 	/**
 	 * @description: 获取api树结构列表信息
 	 *
-	 * @param entity
-	 * @param session															
 	 * @author Yangcl
 	 * @date 2017年11月20日 下午3:40:07 
 	 * @version 1.0.0.1
 	 */
-	public Result<List<ApiTreeView>> ajaxApiInfoList(AcApiInfo e, HttpSession session) {
-		String project = launch.loadDictCache(DCacheEnum.ApiProject , "ApiProjectInit").get("all");
-		if(StringUtils.isBlank(project)) { // 600010068=API树形结构加载失败!api所属项目未能正常初始化，请重试.
-			return Result.ERROR(this.getInfo(600010068), ResultCode.OPERATION_FAILED);
-		}
-		JSONObject pobj = JSONObject.parseObject(project);
-		if(!pobj.getString("status").equals("success")) { // 600010069=API树形结构加载失败!api所属项目缓存异常.
-			return Result.ERROR(this.getInfo(600010069), ResultCode.OPERATION_FAILED);
-		}
-		JSONArray arr = pobj.getJSONArray("data");
-		if(arr.size() == 0) { // 600010070=API树形结构加载失败!api所属项目未定义.
-			return Result.ERROR(this.getInfo(600010070), ResultCode.OPERATION_FAILED);
+	public Result<List<ApiTreeView>> ajaxApiInfoList(FindApiInfoListRequest param, HttpSession session) {
+		Result<List<ApiTreeView>> validate = param.validate(launch);
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		
+		AcApiInfo e = param.buildAjaxApiInfoList();
+		JSONArray arr = param.getArr();
 		List<ApiTreeView> tlist = new ArrayList<ApiTreeView>();
 		ApiTreeView root = new ApiTreeView();
 		root.setId(0L);
@@ -352,60 +361,27 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: 添加api信息
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2017年11月28日 下午3:19:55 
 	 * @version 1.0.0
 	 */
 	@Transactional
-	public Result<AcApiInfo> ajaxApiInfoAdd(AcApiInfoDto dto, HttpSession session) {
-		if(StringUtils.isAnyBlank(dto.getName() , dto.getTarget() , dto.getProcessor() , dto.getModule() , dto.getRemark())) {
-			return Result.ERROR(this.getInfo(600010071), ResultCode.MISSING_ARGUMENT);  // 600010071=API关键信息不得为空!请全部填写.
+	public Result<AcApiInfo> ajaxApiInfoAdd(AddApiInfoRequest param, HttpSession session) {
+		Result<AcApiInfo> validate = param.validate(launch);
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(dto.getDomain() == 1 && StringUtils.isBlank(dto.getDomainList())) {
-			return Result.ERROR(this.getInfo(600010072), ResultCode.MISSING_ARGUMENT);  // 600010072=请勾选API可用跨域列表
-		}
-		if(!StringUtils.startsWithAny(dto.getProcessor() , dto.getAtype() , "common")) { 
-			// 600010074=【业务处理实现】路径输入错误!应该以{0}起始
-			return Result.ERROR(this.getInfo(600010074 , dto.getAtype()), ResultCode.INVALID_ARGUMENT);
-		}
-		String isRecord = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(dto.getTarget());
-		if(StringUtils.isNotBlank(isRecord)) { // 600010075=系统接口名称：{0} 已经在数据库中存在,请修改.
-			return Result.ERROR(this.getInfo(600010075 , dto.getTarget() ), ResultCode.ALREADY_EXISTS);
-		}
-		
-		AcApiInfo e = new AcApiInfo();
-		e.setName(dto.getName());
-		e.setTarget(dto.getTarget());
-		e.setDtoInfo(dto.getDtoInfo());
-		e.setAtype(dto.getAtype());
-		e.setModule(dto.getModule());
-		e.setProcessor(dto.getProcessor());
-		e.setDomain(dto.getDomain());
-		e.setParentId(dto.getParentId());
-		e.setSeqnum(dto.getSeqnum());
-		e.setDiscard(1);
-		e.setLogin(dto.getLogin()); 
-		e.setRemark(dto.getRemark());
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildAddCommon(u);
-		
 		try {
+			AcApiInfo e = param.buildAjaxApiInfoAdd();
 			int flag = acApiInfoMapper.insertSelective(e);
 			if(flag == 1) {
-				if(dto.getDomain() == 1) {							 
-					String [] arr = dto.getDomainList().split(",");
+				if(param.getDomain() == 1) {							 
+					String [] arr = param.getDomainList().split(",");
 					for(int i = 0 ; i < arr.length ; i ++) {
 						AcApiDomain ad = new AcApiDomain();
 						ad.setAcApiInfoId(e.getId());
 						ad.setAcIncludeDomainId(Long.valueOf(arr[i]));
-						
-						ad.setCreateTime(new Date());
-						ad.setCreateUserId(u.getId());
-						ad.setCreateUserName(u.getUserName());
-						ad.setUpdateTime(new Date());
-						ad.setUpdateUserId(u.getId());
-						ad.setUpdateUserName(u.getUserName());
+						ad.buildAddCommon(param.getUserCache());
 						acApiDomainMapper.insertSelective(ad);
 					}
 				}
@@ -421,22 +397,16 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: 依据target 查找一个api信息
 	 *
-	 * @param dto
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年11月29日 下午4:26:33 
 	 * @version 1.0.0
 	 */
-	public Result<AcApiInfoCache> ajaxApiInfoFind(AcApiInfoDto dto) {
-		if(StringUtils.isBlank(dto.getTarget())) {	// 600010076=系统接口标识"target"参数不得为空!
-			return Result.ERROR(this.getInfo(600010076), ResultCode.INVALID_ARGUMENT); 
+	public Result<AcApiInfoCache> ajaxApiInfoFind(FindApiInfoRequest param) {
+		Result<AcApiInfoCache> validate = param.validate(launch);
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(dto.getTarget());
-		if(StringUtils.isBlank(record)) { // 600010077=目标接口: {0} 不存在!
-			return Result.ERROR(this.getInfo(600010077 , dto.getTarget()), ResultCode.OPERATION_FAILED);
-		}
-		
-		AcApiInfoCache acApiInfo = this.initAcApiInfoCache(JSONObject.parseObject(record));
+		AcApiInfoCache acApiInfo = this.initAcApiInfoCache(JSONObject.parseObject(param.getRecord()));
 		return Result.SUCCESS(this.getInfo(100020100) , acApiInfo);
 	}
 	
@@ -469,80 +439,41 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: 修改api信息 
 	 *
-	 * @param dto
 	 * @author Yangcl
 	 * @date 2017年11月30日 下午3:26:55 
 	 * @version 1.0.0
 	 */
 	@Transactional
-	public Result<AcApiInfoCache> ajaxApiInfoEdit(AcApiInfoDto dto, HttpSession session) {
-		if(!StringUtils.startsWithAny(dto.getProcessor() , dto.getAtype() , "common") ) {  
-			// 600010074=【业务处理实现】路径输入错误!应该以{0}起始
-			return Result.ERROR(this.getInfo(600010074 , dto.getAtype()), ResultCode.INVALID_ARGUMENT);
-		}
-		if(dto.getDomain() == 1 && StringUtils.isBlank(dto.getDomainList())) {
-			return Result.ERROR(this.getInfo(600010072), ResultCode.MISSING_ARGUMENT);  // 600010072=请勾选API可用跨域列表
-		}
-		if(StringUtils.isBlank(dto.getDtoInfo())) {// 600010085=请求数据Json结构体不得为空!
-			return Result.ERROR(this.getInfo(600010085), ResultCode.MISSING_ARGUMENT);
+	public Result<AcApiInfoCache> ajaxApiInfoEdit(UpdateApiInfoRequest param, HttpSession session) {
+		Result<AcApiInfoCache> validate = param.validate(acApiInfoMapper);
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		try {
-			JSONObject.parse(dto.getDtoInfo());
-		} catch (Exception e) {		// 600010086=非法的请求数据Json结构体!请输入一个Json字符串
-			return Result.ERROR(this.getInfo(600010086), ResultCode.INVALID_ARGUMENT);
-		}
-		AcApiInfo api = acApiInfoMapper.find(dto.getId());
-		if(api == null) { 		// 600010078=目标接口: {0} 不存在!数据库无此记录,修改失败!
-			return Result.ERROR(this.getInfo(600010078 , dto.getTarget()), ResultCode.NOT_FOUND);
-		}
-		if(!api.getTarget().equals(dto.getTarget())) {		// 600010079=目标接口: {0} 与数据库记录不符, 请勿修改【系统接口名称】
-			return Result.ERROR(this.getInfo(600010079 , dto.getTarget()), ResultCode.MISMATCH_ARGUMENT);
-		}
-		
-		AcApiInfo e = new AcApiInfo();
-		e.setId(dto.getId());  
-		e.setDtoInfo(dto.getDtoInfo());
-		e.setProcessor(dto.getProcessor());
-		e.setModule(dto.getModule());
-		e.setDomain(dto.getDomain());
-		e.setSeqnum(dto.getSeqnum());
-//		e.setDiscard(dto.getDiscard());      // 系统接口熔断标识进行单独更新
-		e.setLogin(dto.getLogin());
-		e.setRemark(dto.getRemark());
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.setUpdateTime(new Date());
-		e.setUpdateUserId(u.getId());
-		e.setUpdateUserName(u.getUserName());
-		
-		try {
+			AcApiInfo e = param.buildAjaxApiInfoEdit();
 			int flag = acApiInfoMapper.updateSelective(e);
 			if(flag != 1) {
 				return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
 			}
-			if(dto.getDomain() == 1) {		
+			if(param.getDomain() == 1) {	
 				// 删除旧关联关系
 				acApiDomainMapper.deleteByApiInfoId(e.getId());
-				String [] arr = dto.getDomainList().split(",");
+				String [] arr = param.getDomainList().split(",");
 				for(int i = 0 ; i < arr.length ; i ++) {
 					AcApiDomain ad = new AcApiDomain();
 					ad.setAcApiInfoId(e.getId());
 					ad.setAcIncludeDomainId(Long.valueOf(arr[i]));
-					
-					ad.setCreateTime(new Date());
-					ad.setCreateUserId(u.getId());
-					ad.setCreateUserName(u.getUserName());
-					ad.setUpdateTime(new Date());
-					ad.setUpdateUserId(u.getId());
-					ad.setUpdateUserName(u.getUserName());
+					ad.buildAddCommon(param.getUserCache());
 					acApiDomainMapper.insertSelective(ad);
 				}
 			}
+			launch.loadDictCache(DCacheEnum.ApiInfo , null).del(param.getTarget());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(this.getInfo(600010093));   // 600010093=API接口信息修改失败，数据已回滚
 		}
 		
-		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(api.getTarget());
+		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(param.getTarget());
 		AcApiInfoCache acApiInfo = this.initAcApiInfoCache(JSONObject.parseObject(record));
 		return Result.SUCCESS(this.getInfo(600010080) , acApiInfo);
 	}
@@ -554,21 +485,16 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2020年1月10日 下午4:44:37 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxApiInfoRemove(AcApiInfoDto dto, HttpSession session) {
+	public Result<?> ajaxApiInfoRemove(DeleteApiInfoRequest param, HttpSession session) {
+		Result<AcApiInfoCache> validate = param.validate(acApiInfoMapper);
+		if(validate.getStatus().equals("error")) {
+			return validate;
+		}
 		try {
-			AcApiInfo api = acApiInfoMapper.find(dto.getId());
-			if(api == null) { // 600010078=目标接口: {0} 不存在!数据库无此记录,修改失败!
-				Result.ERROR(this.getInfo(600010078), ResultCode.NOT_FOUND);
-			}
-			
-			AcApiInfo e = new AcApiInfo();
-			e.setId(dto.getId());  
-			e.setDeleteFlag(0);
-			McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-			e.buildUpdateCommon(u);
+			AcApiInfo e = param.buildAjaxApiInfoRemove();
 			int flag = acApiInfoMapper.updateSelective(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(api.getTarget());
+				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(param.getTarget());
 				return Result.SUCCESS(this.getInfo(100010106));   	// 100010106=数据删除成功!
 			}
 			return Result.ERROR(this.getInfo(100010107), ResultCode.ERROR_DELETE); // 100010107=数据删除失败，服务器异常!

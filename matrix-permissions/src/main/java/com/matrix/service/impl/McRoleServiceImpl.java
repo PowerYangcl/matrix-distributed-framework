@@ -66,12 +66,11 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(FindMcRoleRequest param, HttpServletRequest request){
-		McUserInfoView userCache = param.getUserCache();
-		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString() , userCache.getType())) {   
-			// 用户会话异常! platform cod or cid is null
-			return Result.ERROR(this.getInfo(101010013), ResultCode.INVALID_ARGUMENT);
+		Result<PageInfo<McRoleView>> validate = param.validateAjaxSystemRoleList();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		
+		McUserInfoView userCache = param.getUserCache();
 		McRoleDto dto = param.buildAjaxSystemRoleList();
 		// 此种情况为Leader后台进行数据请求 且对别当前登录用户的缓存信息是否正确
 		if(userCache.getType().equals("leader") ) {     // master.getType() will be: leader or admin or user

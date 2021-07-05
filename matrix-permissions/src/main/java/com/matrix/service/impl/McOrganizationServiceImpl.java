@@ -126,15 +126,15 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<McOrganization> updateOrganizationInfo(UpdateMcOrganizationRequest param) {
+		Result<McOrganization> validate = param.validateUpdateOrganizationInfo();
+		if(validate.getStatus().equals("error")) {
+			return validate;
+		}
 		McOrganization entity = param.buildUpdateOrganizationInfo();
-		if (entity.getId() == null) {  // 101010025=更新失败 + 101010012=节点id不得为空!
-			return Result.ERROR(this.getInfo(101010025) + "," + this.getInfo(101010012), ResultCode.ERROR_UPDATE);
-		}
-		if (entity.getType() != 3) {
-			entity.setStoreType(0);
-		}
-
 		try {
+			if (entity.getType() != 3) {
+				entity.setStoreType(0);
+			}
 			int flag = mcOrganizationMapper.updateSelective(entity);
 			if(flag != 1) {
 				return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
@@ -159,10 +159,10 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<?> deleteOrganizationInfo(DeleteMcOrganizationRequest param) {
-		if(StringUtils.isBlank(param.getIds())) {  // 101010002=删除失败 + 101010012=节点id不得为空!
-			return Result.ERROR(this.getInfo(101010002) + "," + this.getInfo(101010012), ResultCode.ERROR_DELETE);
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-
 		try {
 			McUserInfoView userCache = param.getUserCache();
 			String arr[] = param.getIds().split(",");
@@ -200,10 +200,10 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<?> updateTreeNodes(UpdateTreeNodesRequest param) {
-		if(StringUtils.isBlank(param.getUstring())) {  // 100020103=参数缺失：{0}
-			return Result.ERROR(this.getInfo(100020103,  "ustring") , ResultCode.OPERATION_FAILED);
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		
 		try {
 			String[] arr = param.getUstring().split(",");
 			for (int i = 0; i < arr.length; i++) {
@@ -230,8 +230,9 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<?> ajaxUserAddOrgRequest(UpdateUserAddOrgRequest param) {
-		if (StringUtils.isBlank(param.getIds())) { // 101010039=用户数据权限已经解除
-			return Result.ERROR(this.getInfo(101010039), ResultCode.OPERATION_FAILED);
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
 		try {
 			McUserInfoView userInfo = param.getUserCache();
