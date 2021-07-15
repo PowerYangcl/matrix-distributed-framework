@@ -10,12 +10,11 @@ import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
-import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiInfo;
-import com.matrix.pojo.entity.AcRequestInfo;
 import com.matrix.pojo.request.AddAcIncludeDomainRequest;
 import com.matrix.pojo.request.AddApiInfoRequest;
 import com.matrix.pojo.request.AddApiProjectListRequest;
+import com.matrix.pojo.request.AddRequestInfoRequest;
 import com.matrix.pojo.request.DeleteAcIncludeDomainRequest;
 import com.matrix.pojo.request.DeleteApiInfoRequest;
 import com.matrix.pojo.request.DeleteApiProjectListRequest;
@@ -23,9 +22,12 @@ import com.matrix.pojo.request.FindAcIncludeDomainListRequest;
 import com.matrix.pojo.request.FindApiInfoListRequest;
 import com.matrix.pojo.request.FindApiInfoRequest;
 import com.matrix.pojo.request.FindApiProjectListRequest;
+import com.matrix.pojo.request.FindRequestInfoListRequest;
 import com.matrix.pojo.request.UpdateAcIncludeDomainRequest;
+import com.matrix.pojo.request.UpdateApiInfoDiscardRequest;
 import com.matrix.pojo.request.UpdateApiInfoRequest;
 import com.matrix.pojo.request.UpdateApiProjectListRequest;
+import com.matrix.pojo.request.UpdateRequestInfoRequest;
 import com.matrix.pojo.view.AcApiInfoView;
 import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
@@ -53,13 +55,13 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	public Result<AcApiInfoCache> ajaxApiInfoFind(FindApiInfoRequest param);
 	public Result<AcApiInfoCache> ajaxApiInfoEdit(UpdateApiInfoRequest param, HttpSession session);
 	public Result<?> ajaxApiInfoRemove(DeleteApiInfoRequest param, HttpSession session);
-	public Result<?> ajaxApiInfoDiscard(AcApiInfo e, HttpSession session);     
+	public Result<?> ajaxApiInfoDiscard(UpdateApiInfoDiscardRequest param, HttpSession session);     
 	
 	// ac_request_info 表 
 	public String requestInfoList();
-	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(AcRequestInfo entity, HttpServletRequest request, HttpSession session);
-	public Result<?> ajaxRequestInfoAdd(AcRequestInfo entity, HttpServletRequest request, HttpSession session);
-	public Result<?> ajaxRequestInfoEdit(AcRequestInfoDto dto, HttpServletRequest request, HttpSession session);
+	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(FindRequestInfoListRequest param, HttpServletRequest request, HttpSession session);
+	public Result<?> ajaxRequestInfoAdd(AddRequestInfoRequest param, HttpServletRequest request, HttpSession session);
+	public Result<?> ajaxRequestInfoEdit(UpdateRequestInfoRequest param, HttpServletRequest request, HttpSession session);
 	
 	
 	// 页面接口测试

@@ -31,7 +31,6 @@ import com.matrix.dao.IAcRequestInfoMapper;
 import com.matrix.dao.IAcRequestOpenApiMapper;
 import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
-import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiDomain;
 import com.matrix.pojo.entity.AcApiInfo;
 import com.matrix.pojo.entity.AcApiProject;
@@ -41,6 +40,7 @@ import com.matrix.pojo.entity.AcRequestOpenApi;
 import com.matrix.pojo.request.AddAcIncludeDomainRequest;
 import com.matrix.pojo.request.AddApiInfoRequest;
 import com.matrix.pojo.request.AddApiProjectListRequest;
+import com.matrix.pojo.request.AddRequestInfoRequest;
 import com.matrix.pojo.request.DeleteAcIncludeDomainRequest;
 import com.matrix.pojo.request.DeleteApiInfoRequest;
 import com.matrix.pojo.request.DeleteApiProjectListRequest;
@@ -48,18 +48,18 @@ import com.matrix.pojo.request.FindAcIncludeDomainListRequest;
 import com.matrix.pojo.request.FindApiInfoListRequest;
 import com.matrix.pojo.request.FindApiInfoRequest;
 import com.matrix.pojo.request.FindApiProjectListRequest;
+import com.matrix.pojo.request.FindRequestInfoListRequest;
 import com.matrix.pojo.request.UpdateAcIncludeDomainRequest;
+import com.matrix.pojo.request.UpdateApiInfoDiscardRequest;
 import com.matrix.pojo.request.UpdateApiInfoRequest;
 import com.matrix.pojo.request.UpdateApiProjectListRequest;
+import com.matrix.pojo.request.UpdateRequestInfoRequest;
 import com.matrix.pojo.view.AcApiInfoView;
 import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
 import com.matrix.pojo.view.ApiTreeView;
-import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IApiCenterService;
-import com.matrix.util.DateUtil;
-import com.matrix.util.UuidUtil;
 
 @Service("apiCenterService")
 public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView> implements IApiCenterService {
@@ -511,34 +511,29 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @date 2020年1月13日 下午2:48:18 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxApiInfoDiscard(AcApiInfo entity, HttpSession session) {
+	@Transactional
+	public Result<?> ajaxApiInfoDiscard(UpdateApiInfoDiscardRequest param, HttpSession session) {
 		try {
-			AcApiInfo api = acApiInfoMapper.find(entity.getId());
-			if(api == null) { // 600010078=目标接口: {0} 不存在!数据库无此记录,修改失败!
-				Result.ERROR(this.getInfo(600010078), ResultCode.NOT_FOUND);
+			Result<?> validate = param.validate(acApiInfoMapper);
+			if(validate.getStatus().equals("error")) {
+				return validate;
 			}
-			
-			AcApiInfo e = new AcApiInfo();
-			e.setId(entity.getId());  
-			e.setDiscard(entity.getDiscard());
-			McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-			e.buildUpdateCommon(u);
+			AcApiInfo e = param.buildAjaxApiInfoDiscard();
 			int flag = acApiInfoMapper.updateSelective(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(api.getTarget());
+				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(param.getApi().getTarget());
 				return Result.SUCCESS(this.getInfo(100010104));		// 100010104=数据更新成功!
 			}
-			return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);		// 100010105=数据更新失败，服务器异常!
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return Result.ERROR(this.getInfo(100010112), ResultCode.SERVER_EXCEPTION);  // 100010112=服务器异常! 
+			throw new RuntimeException(this.getInfo(100010105));		// 100010105=数据更新失败，服务器异常!
 		}
+		return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);		// 100010105=数据更新失败，服务器异常!
 	}
 
 	/**
 	 * @description: 请求者信息维护页面
 	 *
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月1日 上午10:42:52 
 	 * @version 1.0.0
@@ -550,14 +545,12 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: 接口请求者列表分页数据
 	 *
-	 * @param entity
-	 * @param request
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月1日 上午11:32:43 
 	 * @version 1.0.0
 	 */
-	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(AcRequestInfo entity, HttpServletRequest request, HttpSession session) {
+	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(FindRequestInfoListRequest param, HttpServletRequest request, HttpSession session) {
+		AcRequestInfo entity = param.build();
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
 		try {
@@ -584,23 +577,16 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	/**
 	 * @description: ac_request_info添加数据
 	 *
-	 * @param entity
 	 * @author Yangcl
 	 * @date 2017年12月1日 下午1:42:20 
 	 * @version 1.0.0
 	 */
-	public Result<?> ajaxRequestInfoAdd(AcRequestInfo e, HttpServletRequest request, HttpSession session) {
-		if(StringUtils.isAnyBlank(e.getOrganization() , e.getAtype())) {
-			// 600010081=接口请求者关键信息不得为空! 
-			Result.ERROR(this.getInfo(600010081), ResultCode.MISSING_ARGUMENT);
+	public Result<?> ajaxRequestInfoAdd(AddRequestInfoRequest param, HttpServletRequest request, HttpSession session) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		DateUtil dateUtil = new DateUtil();
-		e.setKey(dateUtil.getDateLongHex("yyyyMMdd").toUpperCase() + dateUtil.getDateLongHex("HHmmss").toUpperCase());  
-		e.setValue(UuidUtil.uid().toUpperCase());  
-		e.setFlag(1); 
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		e.buildAddCommon(u);
-		
+		AcRequestInfo e = param.buildAjaxRequestInfoAdd();
 		int flag = acRequestInfoMapper.insertSelective(e);
 		if(flag == 1) {
 			// 开始初始化API缓存
@@ -619,56 +605,41 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @version 1.0.0
 	 */
 	@Transactional
-	public Result<?> ajaxRequestInfoEdit(AcRequestInfoDto dto, HttpServletRequest request, HttpSession session) {
-		if(dto.getId() == null) {	// 100020111=主键丢失
-			Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
+	public Result<?> ajaxRequestInfoEdit(UpdateRequestInfoRequest param, HttpServletRequest request, HttpSession session) {
+		Result<?> validate = param.validate(acRequestInfoMapper);
+		if(validate.getStatus().equals("error")) {
+			return validate;
 		}
-		if(dto.getIsallot() == null) {		// 100020103=参数缺失：{0}
-			Result.ERROR(this.getInfo(100020103, "isallot"), ResultCode.MISSING_ARGUMENT);
-		}
-		if(dto.getIsallot() == 1 && StringUtils.isBlank(dto.getTargets())) {	// 100020103=参数缺失：{0}
-			Result.ERROR(this.getInfo(100020103, "targets"), ResultCode.MISSING_ARGUMENT);
-		}
-		AcRequestInfo e = acRequestInfoMapper.find(dto.getId());
-		if(dto.getIsallot() ==1 && e.getAtype().equals("private")) {
-			// 600010084=内部接口请求者不可分配开放接口数据(open-api)!
-			Result.ERROR(this.getInfo(600010084), ResultCode.OPERATION_FAILED);
-		}
-		
-		McUserInfoView u = (McUserInfoView) session.getAttribute("userInfo");
-		if(dto.getIsallot() ==1) { 			// TODO 为这个请求者分配他能够请求的接口。
-			String [] arr = dto.getTargets().split(",");
-			for(int i = 0 ; i < arr.length ; i ++) {
-				AcRequestOpenApi roa = new AcRequestOpenApi();
-				roa.setAcRequestInfoId(dto.getId());
-				roa.setAcApiInfoId(Long.valueOf(arr[i]));
-				roa.buildAddCommon(u);
-				acRequestOpenApiMapper.insertSelective(roa); 
+		try {
+			if(param.getIsallot() ==1) { 			// TODO 为这个请求者分配他能够请求的接口。
+				String [] arr = param.getTargets().split(",");
+				for(int i = 0 ; i < arr.length ; i ++) {
+					AcRequestOpenApi roa = new AcRequestOpenApi();
+					roa.setAcRequestInfoId(param.getId());
+					roa.setAcApiInfoId(Long.valueOf(arr[i]));
+					roa.buildAddCommon(param.getUserCache());
+					acRequestOpenApiMapper.insertSelective(roa); 
+				}
+			}else {  // 编辑信息(organization & atype)|启用/禁用(flag)
+				AcRequestInfo e = param.buildAjaxRequestInfoEdit();
+				int flag = acRequestInfoMapper.updateSelective(e); 
+				if(flag != 1) {
+					return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
+				}
+				// TODO 如果从开发接口更新为内部接口，还需要acRequestOpenApiMapper软删除关联的信息
 			}
-		}else {  // 编辑信息(organization & atype)|启用/禁用(flag)
-			AcRequestInfo e_ = new AcRequestInfo(); 
-			e_.setId(dto.getId()); 
-			e_.setOrganization(dto.getOrganization());
-			e_.setKey(dto.getKey());
-			e_.setValue(dto.getValue());
-			e_.setAtype(dto.getAtype());
-			e_.setFlag(dto.getFlag());
-			e_.buildUpdateCommon(u);
-			int flag = acRequestInfoMapper.updateSelective(e_); 
-			if(flag != 1) {
-				return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
-			}
-			// TODO 如果从开发接口更新为内部接口，还需要acRequestOpenApiMapper软删除关联的信息
+			launch.loadDictCache(DCacheEnum.ApiRequester , null).del(param.getOld().getKey()); // 删除缓存，获取该缓存时会自动加载，少写冗余代码。
+			return Result.SUCCESS(this.getInfo(100010104));		// 100010104=数据更新成功!
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010105));		// 100010105=数据更新失败，服务器异常!
 		}
-		launch.loadDictCache(DCacheEnum.ApiRequester , null).del(e.getKey()); // 删除缓存，获取该缓存时会自动加载，少写冗余代码。
-		return Result.SUCCESS(this.getInfo(100010104));		// 100010104=数据更新成功!
 	}
 
 	
 	/**
 	 * @description: 前往接口测试页面
 	 *
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月11日 上午11:46:32 
 	 * @version 1.0.0.1

@@ -18,13 +18,11 @@ import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
 import com.matrix.pojo.cache.AcApiInfoCache;
-import com.matrix.pojo.dto.AcApiInfoDto;
-import com.matrix.pojo.dto.AcRequestInfoDto;
 import com.matrix.pojo.entity.AcApiInfo;
-import com.matrix.pojo.entity.AcRequestInfo;
 import com.matrix.pojo.request.AddAcIncludeDomainRequest;
 import com.matrix.pojo.request.AddApiInfoRequest;
 import com.matrix.pojo.request.AddApiProjectListRequest;
+import com.matrix.pojo.request.AddRequestInfoRequest;
 import com.matrix.pojo.request.DeleteAcIncludeDomainRequest;
 import com.matrix.pojo.request.DeleteApiInfoRequest;
 import com.matrix.pojo.request.DeleteApiProjectListRequest;
@@ -32,9 +30,12 @@ import com.matrix.pojo.request.FindAcIncludeDomainListRequest;
 import com.matrix.pojo.request.FindApiInfoListRequest;
 import com.matrix.pojo.request.FindApiInfoRequest;
 import com.matrix.pojo.request.FindApiProjectListRequest;
+import com.matrix.pojo.request.FindRequestInfoListRequest;
 import com.matrix.pojo.request.UpdateAcIncludeDomainRequest;
+import com.matrix.pojo.request.UpdateApiInfoDiscardRequest;
 import com.matrix.pojo.request.UpdateApiInfoRequest;
 import com.matrix.pojo.request.UpdateApiProjectListRequest;
+import com.matrix.pojo.request.UpdateRequestInfoRequest;
 import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
@@ -324,9 +325,9 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_api_info_discard", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxApiInfoDiscard(AcApiInfo e , HttpSession session){ 
+	public Result<?> ajaxApiInfoDiscard(UpdateApiInfoDiscardRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_discard", "删除api信息");
-		return service.ajaxApiInfoDiscard(e, session);  
+		return service.ajaxApiInfoDiscard(param, session);  
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////【请求者信息维护】/////////////////////////////////////////////////////////////////////////////////////////
@@ -357,26 +358,23 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_request_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(AcRequestInfo entity , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(FindRequestInfoListRequest param, HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_list", "ac_request_info 接口请求者列表分页数据");
-		return service.ajaxRequestInfoList(entity, request, session);  
+		return service.ajaxRequestInfoList(param, request, session);  
 	}
 	
 	/**
 	 * @description: ac_request_info添加数据
 	 *
-	 * @param entity
-	 * @param request
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月1日 下午1:42:20 
 	 * @version 1.0.0
 	 */
 	@RequestMapping(value = "ajax_request_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxRequestInfoAdd(AcRequestInfo entity , HttpServletRequest request, HttpSession session){ 
+	public Result<?> ajaxRequestInfoAdd(AddRequestInfoRequest param, HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_add", "ac_request_info 接口请求者 添加数据");
-		return service.ajaxRequestInfoAdd(entity, request, session);
+		return service.ajaxRequestInfoAdd(param, request, session);
 	}
 	
 	/**
@@ -391,9 +389,9 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_request_info_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxRequestInfoEdit(AcRequestInfoDto dto , HttpServletRequest request, HttpSession session){ 
+	public Result<?> ajaxRequestInfoEdit(UpdateRequestInfoRequest param, HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_edit", "ac_request_info 接口请求者 编辑数据");
-		return service.ajaxRequestInfoEdit(dto, request, session);  
+		return service.ajaxRequestInfoEdit(param, request, session);  
 	}
 	
 	
@@ -401,7 +399,6 @@ public class ApiCenterController extends BaseController {
 	/**
 	 * @description: 前往接口测试页面
 	 *
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月11日 上午11:46:32 
 	 * @version 1.0.0
@@ -419,8 +416,6 @@ public class ApiCenterController extends BaseController {
 	 * @description: 根据请求者的key，找到对应的value
 	 *
 	 * @param key
-	 * @param request
-	 * @param session
 	 * @author Yangcl
 	 * @date 2017年12月25日 下午10:11:23 
 	 * @version 1.0.0.1
