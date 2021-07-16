@@ -187,6 +187,7 @@ layui.config({
 					var url_ =  layui.setter.path + 'userInfo/ajax_btn_password_reset.do';
 					var data_ ={
 							id:o.data.id,
+							// oldPassWord: $("old-pass-word").val(),  暂时不验证原密码
 							password:value,
 		        			eleValue:o.key
 					};

@@ -75,7 +75,7 @@ layui.config({
 			},
 			
 			reset : function(){
-				$('#groupName').val('');
+				$('#group-name').val('');
 				$('#ip').val('');
 				search.reload();
 			}

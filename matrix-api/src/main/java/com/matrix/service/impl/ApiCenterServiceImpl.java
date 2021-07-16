@@ -149,7 +149,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		try {
 			int flag = acApiProjectMapper.updateSelective(e); 
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
+				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");
 				return Result.SUCCESS(this.getInfo(100010104));  // 100010104=数据更新成功!
 			} 
 		} catch (Exception ex) {
@@ -415,6 +415,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		info.setId(apiInfo.getLong("id"));
 		info.setName(apiInfo.getString("name"));
 		info.setTarget(apiInfo.getString("target"));
+		info.setDtoInfo(apiInfo.getString("dtoInfo"));
 		info.setAtype(apiInfo.getString("atype"));
 		info.setModule(apiInfo.getString("module"));
 		info.setProcessor(apiInfo.getString("processor"));

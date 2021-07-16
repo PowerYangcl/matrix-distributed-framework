@@ -144,6 +144,7 @@ layui.config({
 				pageDialog.editDialog(o);
 			}else if (o.event === 'exec') {
 			}else if (o.event === 'del') {
+				pageDialog.deleteJobInfo(o);
 			}else if (o.event === 'resume') {
 			}else if (o.event === 'log') {
 			}
@@ -455,11 +456,12 @@ layui.config({
 				var data_ = null;
 				var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 				if(obj.status == 'success') {
-					 for(var i = 0 ; i < obj.list.length ; i ++){
-						 if(obj.list[i].id == runGroupId){
-							 html_ += '<option value="' + obj.list[i].id + '" selected="selected">' + obj.list[i].groupName + '</option>'
+					var arr = obj.data;
+					 for(var i = 0 ; i < arr.length ; i ++){
+						 if(arr[i].id == runGroupId){
+							 html_ += '<option value="' + arr[i].id + '" selected="selected">' + arr[i].groupName + '</option>'
 						 }else{
-							 html_ += '<option value="' + obj.list[i].id + '">' + obj.list[i].groupName + '</option>'
+							 html_ += '<option value="' + arr[i].id + '">' + arr[i].groupName + '</option>'
 						 }
 						 
 					 }

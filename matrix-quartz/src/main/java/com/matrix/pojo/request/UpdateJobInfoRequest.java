@@ -39,6 +39,7 @@ public class UpdateJobInfoRequest extends BaseClass implements Serializable{
     private Integer trigerType;
     private Integer logType;
     private String remark;
+    private Integer concurrentType;
 	
     public Result<?> validateAjaxBtnJobInfoEdit() {
     	if(id == null){ 
@@ -95,6 +96,7 @@ public class UpdateJobInfoRequest extends BaseClass implements Serializable{
 		e.setTrigerType(trigerType);
 		e.setLogType(logType);
 		e.setRemark(remark);
+		e.setConcurrentType(concurrentType);
 		e.buildUpdateCommon(userCache);
 		return e;
 	}

@@ -251,6 +251,7 @@ public class ApiCenterController extends BaseController {
 	@ResponseBody
 	public Result<List<ApiTreeView>> ajaxApiInfoList(FindApiInfoListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_api_info_list", "获取api树结构列表信息");
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxApiInfoList(param, session);  
 	}
 	
@@ -326,7 +327,8 @@ public class ApiCenterController extends BaseController {
 	@RequestMapping(value = "ajax_api_info_discard", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxApiInfoDiscard(UpdateApiInfoDiscardRequest param , HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_api_info_discard", "删除api信息");
+		super.userBehavior(session, logger, "ajax_api_info_discard", "恢复启用|立刻熔断api信息");
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxApiInfoDiscard(param, session);  
 	}
 	
@@ -360,6 +362,7 @@ public class ApiCenterController extends BaseController {
 	@ResponseBody
 	public Result<PageInfo<AcRequestInfoView>> ajaxRequestInfoList(FindRequestInfoListRequest param, HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_list", "ac_request_info 接口请求者列表分页数据");
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxRequestInfoList(param, request, session);  
 	}
 	
@@ -374,6 +377,7 @@ public class ApiCenterController extends BaseController {
 	@ResponseBody
 	public Result<?> ajaxRequestInfoAdd(AddRequestInfoRequest param, HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_add", "ac_request_info 接口请求者 添加数据");
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxRequestInfoAdd(param, request, session);
 	}
 	
@@ -391,6 +395,7 @@ public class ApiCenterController extends BaseController {
 	@ResponseBody
 	public Result<?> ajaxRequestInfoEdit(UpdateRequestInfoRequest param, HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_request_info_edit", "ac_request_info 接口请求者 编辑数据");
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxRequestInfoEdit(param, request, session);  
 	}
 	

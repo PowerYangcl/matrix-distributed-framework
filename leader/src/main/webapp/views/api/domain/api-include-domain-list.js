@@ -60,21 +60,25 @@ layui.config({
 		// 查询按钮
 		var search = {		
 			reload : function() {
-				var target = $('#target').val();
+				var domain = $('#domain').val();
+				var companyName = $('#company-name').val();
 				table.reload('page-table-reload', {
 					page : {
 						curr : 1  // 重新从第 1 页开始
 					},
 					where : {  // 此参数会合并请求到后台
-						target:target
+						domain:domain,
+						companyName:companyName
 					}
 				}, 'data');
 				
-				$('#target').val(target);
+				$('#domain').val(domain);
+				$('#company-name').val(companyName);
 			},
 			
 			reset : function(){
-				$('#target').val('');
+				$('#domain').val('');
+				$('#company-name').val('');
 				search.reload();
 			}
 		};

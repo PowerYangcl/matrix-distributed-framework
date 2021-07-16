@@ -1,14 +1,17 @@
 package com.matrix.pojo.request;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
+import com.matrix.dao.IMcUserInfoMapper;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.view.McUserInfoView;
+import com.matrix.util.SignUtil;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,7 +51,7 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 	public McUserInfo buildAddSysUser() {
 		McUserInfo e = new McUserInfo();
 		e.setUserName(userName);
-		e.setPassword(password);
+		e.setPassword(SignUtil.md5Sign(password));
 		if(StringUtils.contains(platform, "@")) {
 			e.setType(platform.split("@")[0]);
 			// Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
@@ -71,7 +74,7 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 		return e;
 	}
 	
-	public Result<?> validateAddSysUser() {
+	public Result<?> validateAddSysUser(IMcUserInfoMapper mcUserInfoMapper) {
 		if (StringUtils.isBlank(userName) || StringUtils.isBlank(password)) {
 			// 101010001=用户名或密码不得为空
 			return Result.ERROR(this.getInfo(101010001), ResultCode.MISSING_ARGUMENT);
@@ -87,6 +90,13 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 		if (userCache.getType().equals("leader") && StringUtils.isBlank(platform)) {   
 			// 101010018=平台识别码错误
 			return Result.ERROR(this.getInfo(101010018), ResultCode.MISSING_ARGUMENT);
+		}
+		
+		McUserInfo e = new McUserInfo();
+		e.setUserName(userName);
+		List<McUserInfo> list = mcUserInfoMapper.queryPage(e);
+		if(list != null && list.size() != 0) { 		// 101010029=用户名已存在
+			return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		return Result.SUCCESS();
 	}

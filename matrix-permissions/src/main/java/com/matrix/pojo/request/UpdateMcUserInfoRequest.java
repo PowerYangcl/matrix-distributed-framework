@@ -9,6 +9,7 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.dao.IMcUserInfoMapper;
+import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.util.SignUtil;
@@ -70,6 +71,15 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 			// 101010021=用户电子邮箱不得为空
 			return Result.ERROR(this.getInfo(101010020), ResultCode.MISSING_ARGUMENT);
 		}
+		
+		if( !userName.equals(userNameOld) ) {	// 开始用户名是否重复
+			McUserInfoDto dto = new McUserInfoDto();
+			dto.setUserName(userName);
+			McUserInfo ishas = mcUserInfoMapper.findEntityByDto(dto);
+			if(ishas != null) {		 // 101010029=用户名已存在
+				return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
+			}
+		}
 		return Result.SUCCESS();
 	}
 	
@@ -93,18 +103,18 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 		if(password.length() < 6) {			// 101010047=新密码长度不得小于6位
 			return Result.ERROR(this.getInfo(101010047), ResultCode.INVALID_ARGUMENT);
 		}
-		if (StringUtils.isBlank(oldPassWord)) {
-			// 101010016=密码更新失败，原密码缺失
-			return Result.ERROR(this.getInfo(101010016), ResultCode.MISSING_ARGUMENT);
-		}
+//		if (StringUtils.isBlank(oldPassWord)) {
+//			// 101010016=密码更新失败，原密码缺失
+//			return Result.ERROR(this.getInfo(101010016), ResultCode.MISSING_ARGUMENT);
+//		}
 		McUserInfo user = mcUserInfoMapper.find(id);
 		if(user == null) {			// 101010038=用户密码重置失败，未找到指定用户，请重试
 			return Result.ERROR(this.getInfo(101010038), ResultCode.RESULT_NULL);
 		}
-		if (!user.getPassword().equals(SignUtil.md5Sign( oldPassWord ))){
-			// 101010042=用户密码重置失败，原始密码不正确
-			return Result.ERROR(this.getInfo(101010042), ResultCode.INTERNAL_VALIDATION_FAILED);
-		}
+//		if (!user.getPassword().equals(SignUtil.md5Sign( oldPassWord ))){
+//			// 101010042=用户密码重置失败，原始密码不正确
+//			return Result.ERROR(this.getInfo(101010042), ResultCode.INTERNAL_VALIDATION_FAILED);
+//		}
 		// 重新赋值，避免使用页面传入的值。
 		this.userName = user.getUserName();
 		this.oldPassWord = user.getPassword();

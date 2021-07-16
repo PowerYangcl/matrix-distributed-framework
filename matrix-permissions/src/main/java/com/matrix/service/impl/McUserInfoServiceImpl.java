@@ -14,6 +14,7 @@ import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import com.matrix.pojo.cache.McUserRoleCache;
 import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
+import com.matrix.pojo.entity.McUserRole;
 import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
@@ -185,19 +187,11 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<?> addSysUser(AddMcUserInfoRequest param) {
-		Result<?> validate = param.validateAddSysUser();
+		Result<?> validate = param.validateAddSysUser(mcUserInfoMapper);
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
-		
 		try {
-			McUserInfo e = new McUserInfo();
-			e.setUserName(param.getUserName());
-			List<McUserInfo> list = mcUserInfoMapper.queryPage(e);
-			if(list != null && list.size() != 0) { 		// 101010029=用户名已存在
-				return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
-			}
-			
 			McUserInfo entity = param.buildAddSysUser();
 			int count = mcUserInfoMapper.insertSelectiveGetZid(entity);
 			if(count == 1){	// 100010102=数据添加成功!
@@ -223,18 +217,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return validate;
 		}
 		try {
-			if( !param.getUserName().equals(param.getUserNameOld()) ) {	// 开始用户名是否重复
-				McUserInfoDto dto = new McUserInfoDto();
-				dto.setUserName(param.getUserName());
-				McUserInfo ishas = mcUserInfoMapper.findEntityByDto(dto);
-				if(ishas != null) {		 // 101010029=用户名已存在
-					return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
-				}
-			}
+			McUserInfo find = mcUserInfoMapper.find(param.getId());		// 此处不判空，抛异常数据回滚。
 			McUserInfo e = param.buildEditSysUser();
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1){
-				McUserInfo find = mcUserInfoMapper.find(e.getId());		// 此处不判空，抛异常数据回滚。
 				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(find.getUserName() + "," + find.getPassword());
 				return Result.SUCCESS(this.getInfo(100010104));
 			}
@@ -294,12 +280,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			if(count != 1) {		// 100010124=数据删除失败，数据库连接异常!
 				return Result.ERROR(this.getInfo(100010124), ResultCode.ERROR_DELETE);
 			}
-			int count_ = 1;
-			if(StringUtils.isNotBlank(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(id.toString()))) {
-				count_ = mcUserRoleMapper.deleteByUserId(id); // 确定该用户有角色被分配才去删除
-			}
-			if(count_ != 1) {
-				throw new RuntimeException(this.getInfo(100010105));
+			
+			List<McUserRole> list = mcUserRoleMapper.selectByMcUserId(id);
+			if(CollectionUtils.isNotEmpty(list)) {
+				int count_ = mcUserRoleMapper.deleteByUserId(id); // 确定该用户有角色被分配才去删除
+				if(count_ != 1) {
+					throw new RuntimeException(this.getInfo(100010105));
+				}
 			}
 			
 			launch.loadDictCache(DCacheEnum.McUserRole , null).del(id.toString());

@@ -27,9 +27,9 @@ public class JobInfo extends BaseEntity{
     private Integer trigerType;
     private Integer logType;
     private String remark;
+    private Integer concurrentType;
     
     // 目前不用的字段，但保留扩展功能
-    private Integer concurrentType;
     private Integer maxExecTime;
     
     

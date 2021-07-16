@@ -30,7 +30,7 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 */
 	public Result<?> addPowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey() , dto.getValue())) {
-			return Result.ERROR(this.getInfo(108010002), ResultCode.ERROR_PARAM, dto);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT, dto);		// 108010002=重要参数异常
 		}
 		
 		PowerCache.getInstance().compelPut(dto.getCacheName(), dto.getKey(), dto.getValue());
@@ -47,7 +47,7 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 */
 	public Result<?> updatePowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey() , dto.getValue())) {
-			return Result.ERROR(this.getInfo(108010002), ResultCode.ERROR_PARAM, dto);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT, dto);		// 108010002=重要参数异常
 		}
 		PowerCache.getInstance().reset(dto.getCacheName(), dto.getKey(), dto.getValue());
 		return Result.SUCCESS(this.getInfo(108010000));
@@ -63,7 +63,7 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 */
 	public Result<?> removePowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey())) {
-			return Result.ERROR(this.getInfo(108010002), ResultCode.ERROR_PARAM, dto);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT, dto);		// 108010002=重要参数异常
 		}
 		if(PowerCache.getInstance().remove(dto.getCacheName(), dto.getKey())) {
 			return Result.SUCCESS(this.getInfo(108010000));
@@ -82,7 +82,7 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 */
 	public Result<String> findPowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey())) {
-			return Result.ERROR(this.getInfo(108010002), ResultCode.ERROR_PARAM);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT);		// 108010002=重要参数异常
 		}
 		String value = (String) PowerCache.getInstance().find(dto.getCacheName() , dto.getKey());
 		if(StringUtils.isBlank(value)) {
@@ -103,7 +103,7 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 */
 	public Result<String> routeExecute(PowerCacheDto dto) {
 		if(StringUtils.isBlank(dto.getKey())) {
-			return Result.ERROR(this.getInfo(108010002), ResultCode.ERROR_PARAM);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT);		// 108010002=重要参数异常
 		}
 		String key = this.getConfig("matrix-core." + dto.getKey());
 		if(StringUtils.isBlank(key)) {  // 108010006=系统尚未内置您所指定的命令，请与系统设计者联系

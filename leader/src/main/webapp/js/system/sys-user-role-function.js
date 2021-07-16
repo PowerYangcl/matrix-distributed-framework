@@ -271,11 +271,7 @@ var surfunc = {
             	html_ += '<textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " placeholder="请输入这个新创建的系统相关信息描述" style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
-            	var preNode = treeNode.getPreNode();   // seqnum  需要计算同层所有节点，然后得出顺序码
-            	var seqnum_ = 1;
-            	if(preNode != null){
-            		seqnum_ = preNode.seqnum + 1;
-            	} 
+            	var seqnum_ = treeNode.getParentNode().children.length;		 // seqnum  需要计算同层所有节点，然后得出顺序码
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >';
             	html_ += '<input type="hidden" name="navType"  value="0" >';				// pcode由后台自动生成
             	html_ += '<input type="hidden" name="styleClass" value="" >';
@@ -314,11 +310,7 @@ var surfunc = {
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput "  style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
-            	var preNode = treeNode.getPreNode();   // seqnum  需要计算同层所有节点，然后得出顺序码
-            	var seqnum_ = 1;
-            	if(preNode != null){
-            		seqnum_ = preNode.seqnum + 1;
-            	} 
+            	var seqnum_ = treeNode.getParentNode().children.length;		 // seqnum  需要计算同层所有节点，然后得出顺序码
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >';
             	html_ += '<input type="hidden" name="navType"  value="1" >';
             	html_ += '<input type="hidden" name="platform"  value="' + treeNode.platform +'" >';
@@ -352,11 +344,7 @@ var surfunc = {
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
-            	var preNode = treeNode.getPreNode();   // seqnum  需要计算同层所有节点，然后得出顺序码
-            	var seqnum_ = 1;
-            	if(preNode != null){
-            		seqnum_ = preNode.seqnum + 1;
-            	} 
+            	var seqnum_ = treeNode.getParentNode().children.length;		 // seqnum  需要计算同层所有节点，然后得出顺序码
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >';
             	html_ += '<input type="hidden" name="navType"  value="2" >'; 
             	html_ += '<input type="hidden" name="platform"  value="' + treeNode.platform +'" >';
@@ -391,11 +379,7 @@ var surfunc = {
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
-            	var preNode = treeNode.getPreNode();   // seqnum  需要计算同层所有节点，然后得出顺序码
-            	var seqnum_ = 1;
-            	if(preNode != null){
-            		seqnum_ = preNode.seqnum + 1;
-            	} 
+            	var seqnum_ = treeNode.getParentNode().children.length;		 // seqnum  需要计算同层所有节点，然后得出顺序码
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >';
             	html_ += '<input type="hidden" name="navType"  value="3" >'; 
             	html_ += '<input type="hidden" name="platform"  value="' + treeNode.platform +'" >';
@@ -439,11 +423,8 @@ var surfunc = {
             	
             	html_ += '<textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput "  placeholder="备注信息描述" style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
-            	var preNode = treeNode.getPreNode();   // seqnum  需要计算同层所有节点，然后得出顺序码
-            	var seqnum_ = 1;
-            	if(preNode != null){
-            		seqnum_ = preNode.seqnum + 1;
-            	} 
+            	
+            	var seqnum_ = treeNode.getParentNode().children.length;		 // seqnum  需要计算同层所有节点，然后得出顺序码
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >';
             	html_ += '<input type="hidden" name="platform"  value="' + treeNode.platform +'" >';
             	html_ += '<input type="hidden" name="styleClass" value="" >';
@@ -522,7 +503,7 @@ var surfunc = {
 				layer.alert( obj.msg , {title:'操作成功!' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4},function(index){	 // layer.close(index);进行主动关闭确定按钮
 					var zTree = $.fn.zTree.getZTreeObj("sys-tree");
 	            	var parent = zTree.getNodeByTId(surfunc.currentNode.parentTId);
-	            	var e = obj.entity;
+	            	var e = obj.data;
 	            	var node = null;
 	            	
 	            	if($("input[name='id']").length == 0){		// 新增节点
@@ -590,7 +571,7 @@ var surfunc = {
             var data_ = null;   
             var jsonObj = JSON.parse(ajaxs.sendAjax(type_ , url_ , data_));  
             if(jsonObj.status == 'success'){
-                var zNodes = jsonObj.list;
+                var zNodes = jsonObj.data.list;
                 $.fn.zTree.init($("#sys-tree") , setting_nav , zNodes);
                 $("#callbackTrigger").bind("change", {}, setting_nav.setTrigger);
             }
@@ -616,13 +597,13 @@ var surfunc = {
             };
             var obj = JSON.parse(ajaxs.sendAjax(type_ , url_ , data_));
             if(obj.status == 'success'){
-                var zNodes = obj.list;  
+                var zNodes = obj.data.list;  
                 $.fn.zTree.init($("#user-role-tree") , setting_distribution , zNodes);  
                 $("#callbackTrigger").bind("change", {}, setting_distribution.setTrigger); 
                 $("#user-role-tree_1_check").remove(); // 隐藏root节点的复选框
-                if(obj.roles.length == 1){
+                if(obj.data.roles.length == 1){
                 	// hidden input value= ids |<input id="func-ids"  type="hidden" value="" >
-                	$("#func-ids").val(obj.roles[0].ids);
+                	$("#func-ids").val(obj.data.roles[0].ids);
                 	surfunc.showFuncInTree($("#func-ids")[0]);  // 复用showFuncInTree方法    
                 }
             }

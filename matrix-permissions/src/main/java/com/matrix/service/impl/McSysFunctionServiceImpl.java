@@ -176,7 +176,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 */
 	public Result<TreeListView> treeList(FindTreeListRequest param) {
 		McSysFunctionDto dto = param.buildTreeList();
-		McUserInfoView userCache = dto.getUserCache();
+		McUserInfoView userCache = param.getUserCache();
 		if(!userCache.getType().equals("leader")) {
 			dto.setPlatform(userCache.getPlatform()); // 不再使用页面传入的平台编码，防止造假
 			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(userCache.getId().toString());
