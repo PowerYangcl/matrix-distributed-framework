@@ -16,6 +16,8 @@ import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IAcApiDomainMapper;
 import com.matrix.dao.IAcApiInfoMapper;
 import com.matrix.dao.IAcIncludeDomainMapper;
+import com.matrix.pojo.cache.AcApiDomainCache;
+import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.entity.AcApiInfo;
 import com.matrix.pojo.view.AcApiDomainView;
 
@@ -83,29 +85,42 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 			return "";
 		}
 		AcApiInfo e = apiInfoList.get(0);
-		// 开始初始化API缓存
-		JSONObject cache = JSONObject.parseObject(JSONObject.toJSONString(e)); 
-		cache.put("list", new ArrayList<String>()); 
-		if(e.getDomain() == 1) {		// 针对可跨域情况
+		AcApiInfoCache caches = this.initCache(e);
+		if(e.getDomain() == 1) {
 			List<AcApiDomainView> adList = acApiDomainMapper.selectByApiInfoId(e.getId());
 			if(adList != null && adList.size() != 0) {
-				List<JSONObject> domains = new ArrayList<JSONObject>();
+				List<AcApiDomainCache> domains = new ArrayList<AcApiDomainCache>(adList.size());
 				List<String> list = new ArrayList<String>();
 				for(AcApiDomainView v : adList) {
-					JSONObject include = new JSONObject();
-					include.put("id", v.getId());
-					include.put("domain", v.getDomain());
-					include.put("companyName", v.getCompanyName());
-					domains.add(include);
+					domains.add(new AcApiDomainCache(v.getId(), v.getDomain(), v.getCompanyName()));
 					list.add(v.getDomain());
 				}
-				cache.put("domains", domains); 
-				cache.put("list", list); 
+				caches.setDomains(domains);
+				caches.setList(list);
 			}
 		}
-		String value = cache.toJSONString();
+		
+		String value = JSONObject.toJSONString(caches);
 		launch.loadDictCache(DCacheEnum.ApiInfo , null).set(key , value , 24*60*60); 
 		return value;
+	}
+	
+	private AcApiInfoCache initCache(AcApiInfo e) {
+		AcApiInfoCache c = new AcApiInfoCache();
+		c.setId(e.getId());
+		c.setName(e.getName());
+		c.setTarget(e.getTarget());
+		c.setDtoInfo(e.getDtoInfo());
+		c.setAtype(e.getAtype());
+		c.setModule(e.getModule());
+		c.setProcessor(e.getProcessor());
+		c.setDomain(e.getDomain());
+		c.setParentId(e.getParentId());
+		c.setSeqnum(e.getSeqnum());
+		c.setDiscard(e.getDiscard());
+		c.setLogin(e.getLogin());
+		c.setRemark(e.getRemark());
+		return c; 
 	}
 
 }

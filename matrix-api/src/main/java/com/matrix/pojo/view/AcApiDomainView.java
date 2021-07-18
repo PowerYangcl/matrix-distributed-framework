@@ -2,32 +2,17 @@ package com.matrix.pojo.view;
 
 import com.matrix.base.BaseView;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class AcApiDomainView extends BaseView{
-	private static final long serialVersionUID = -4082158175040561474L;
 	
+	private static final long serialVersionUID = 6232049431896373817L;
 	private Long id;
     private String domain;
     private String companyName;
-    
-    
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getDomain() {
-		return domain;
-	}
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
-	public String getCompanyName() {
-		return companyName;
-	}
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
 }
 
 

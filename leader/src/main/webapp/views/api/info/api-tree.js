@@ -256,11 +256,7 @@ var apiInfo = {
             html_ += '<textarea cols="80" rows="5" maxlength="260"  id="remark" name="remark"  class="longinput "  placeholder="备注信息描述" style="margin-bottom: 10px;"></textarea><br/>';
             html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             if(flag) {
-            	var preNode = treeNode.getPreNode();   // seqnum  需要计算同层所有节点，然后得出顺序码
-            	var seqnum_ = 1;
-            	if(preNode != null){        // && typeof(preNode.seqnum) != "undefined"
-            		seqnum_ = preNode.seqnum + 1;
-            	} 
+            	var seqnum_ = treeNode.getParentNode().children.length;		 // seqnum  需要计算同层所有节点，然后得出顺序码
             	html_ += '<input type="hidden" name="seqnum" value="' + seqnum_ +'" >'; 
             }
             html_ += '<button class="security-btn layui-btn layui-btn-radius" key="api_tree:submit" onclick="apiInfo.addOrUpdate(\'' + url_ +'\')"> 提 交 </button>'
@@ -530,8 +526,9 @@ var apiInfo = {
         	
         	$("input[name='domain'][value='" + o.domain + "']").attr("checked","checked");
         	$("input[name='login'][value='" + o.login + "']").attr("checked","checked");
-        	$("input[name='discard']").removeAttr("checked");
-        	$("input[name='discard'][value='" + o.discard + "']").prop("checked","checked");
+        	// <input type="radio" name="discard" value="1" onclick="apiInfo.openDiscardWarning(this)         checked">	元素标识为checked
+        	// $("input[name='discard']").removeAttr("checked");    如果此处打开，if($(o).attr("checked"))则为undefined导致无法判断。
+        	$("input[name='discard'][value='" + o.discard + "']").attr("checked","checked");
         	$("#dto-info").val(o.dtoInfo ); 
         	$("#remark").val(o.remark ); 
         },

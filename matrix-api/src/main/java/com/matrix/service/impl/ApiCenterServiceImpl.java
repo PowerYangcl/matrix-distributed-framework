@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -406,37 +407,10 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
-		AcApiInfoCache acApiInfo = this.initAcApiInfoCache(JSONObject.parseObject(param.getRecord()));
+		AcApiInfoCache acApiInfo = JSON.parseObject(param.getRecord(), AcApiInfoCache.class);
 		return Result.SUCCESS(this.getInfo(100020100) , acApiInfo);
 	}
 	
-	private AcApiInfoCache initAcApiInfoCache(JSONObject apiInfo) {
-		AcApiInfoCache info = new AcApiInfoCache();
-		info.setId(apiInfo.getLong("id"));
-		info.setName(apiInfo.getString("name"));
-		info.setTarget(apiInfo.getString("target"));
-		info.setDtoInfo(apiInfo.getString("dtoInfo"));
-		info.setAtype(apiInfo.getString("atype"));
-		info.setModule(apiInfo.getString("module"));
-		info.setProcessor(apiInfo.getString("processor"));
-		info.setDomain(apiInfo.getInteger("domain"));
-		info.setParentId(apiInfo.getLong("parentId"));
-		info.setSeqnum(apiInfo.getInteger("seqnum"));
-		info.setDiscard(apiInfo.getInteger("discard"));
-		info.setLogin(apiInfo.getInteger("login"));
-		info.setRemark(apiInfo.getString("remark"));
-		if(apiInfo.getJSONArray("list") != null && apiInfo.getJSONArray("list").size() != 0) {
-			JSONArray arr = apiInfo.getJSONArray("list");
-			for(int i = 0; i < arr.size(); i ++) {
-				if(StringUtils.isBlank(arr.getString(i))) {
-					continue;
-				}
-				info.getList().add(arr.getString(i));
-			}
-		}
-		return info;
-	}
-
 	/**
 	 * @description: 修改api信息 
 	 *
@@ -475,7 +449,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		}
 		
 		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(param.getTarget());
-		AcApiInfoCache acApiInfo = this.initAcApiInfoCache(JSONObject.parseObject(record));
+		AcApiInfoCache acApiInfo = JSON.parseObject(record, AcApiInfoCache.class);
 		return Result.SUCCESS(this.getInfo(600010080) , acApiInfo);
 	}
 	

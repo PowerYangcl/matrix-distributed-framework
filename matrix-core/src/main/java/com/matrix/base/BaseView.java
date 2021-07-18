@@ -18,8 +18,8 @@ import lombok.Data;
 @Data
 public class BaseView  implements Serializable {
 
-	private static final long serialVersionUID = -7383391233275138625L;
-
+	private static final long serialVersionUID = 2698724150737191453L;
+	
 	private Date createTime;
 	private Long createUserId;
 	private String createUserName;

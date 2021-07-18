@@ -26,5 +26,7 @@ public class AcApiInfoCache implements Serializable{
     
     private List<String> list = new ArrayList<String>();
     
+    private List<AcApiDomainCache> domains = new ArrayList<AcApiDomainCache>();
+    
     private JSONObject param = new JSONObject();	// 保存请求体信息
 }
