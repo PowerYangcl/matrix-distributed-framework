@@ -15,7 +15,7 @@
 	<properties>
 		<!-- 全局性控制项目编码为UTF-8 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<httpclient.version>4.5.1</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 	</properties>
 	
 	<dependencies>
