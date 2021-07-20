@@ -26,6 +26,11 @@
 		</dependency>
 		<dependency>
 			<groupId>com.matrix</groupId>
+			<artifactId>matrix-manager-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.matrix</groupId>
 			<artifactId>matrix-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>

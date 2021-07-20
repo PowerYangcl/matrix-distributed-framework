@@ -39,6 +39,7 @@ import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.entity.McUserRole;
+import com.matrix.pojo.view.ClientLoginView;
 import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
@@ -352,8 +353,8 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
 	 */
-	public Result<LoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request) {
-		Result<LoginView> validate = param.validateAjaxClientLogin();
+	public Result<ClientLoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request) {
+		Result<ClientLoginView> validate = param.validateAjaxClientLogin();
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
@@ -385,7 +386,8 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		String accessToken = SignUtil.md5Sign(param.getUserName()) + SignUtil.md5Sign(String.valueOf(System.currentTimeMillis()));
 		launch.loadDictCache(DCacheEnum.AccessToken , null).set(accessToken , userInfoNpJson , 60*60);		// 设置用户令牌，有效时间1小时
 		
-		LoginView view = new LoginView();
+		ClientLoginView view = new ClientLoginView();
+		view.setAccessToken(accessToken);
 		view.setPageJson(JSONObject.toJSONString(cache));
 		view.setInfo(userInfoNpJson);
 		view.setUploadUrl(this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));	// 系统文件上传

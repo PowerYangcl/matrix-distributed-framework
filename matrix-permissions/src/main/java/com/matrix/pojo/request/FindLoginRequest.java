@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
+import com.matrix.pojo.view.ClientLoginView;
 import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.support.ValidateCodeSupport;
@@ -44,7 +45,7 @@ public class FindLoginRequest extends BaseClass implements Serializable{
 	
 	
     
-	public Result<LoginView> validateAjaxClientLogin() {
+	public Result<ClientLoginView> validateAjaxClientLogin() {
 		if (StringUtils.isBlank(userName) || StringUtils.isBlank(password)) {
 			// 101010001=用户名或密码不得为空
 			return Result.ERROR(this.getInfo(101010001), ResultCode.MISSING_ARGUMENT);

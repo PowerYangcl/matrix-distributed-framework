@@ -12,7 +12,7 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.pojo.request.FindLoginRequest;
-import com.matrix.pojo.view.LoginView;
+import com.matrix.pojo.view.ClientLoginView;
 import com.matrix.service.IMcUserInfoService;
 
 /**
@@ -30,7 +30,7 @@ public class ManagerApi100Processor extends BaseClass implements IBaseProcessor 
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public Result<LoginView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+	public Result<ClientLoginView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
 		FindLoginRequest dto = JSONObject.parseObject(param.getString("data"), FindLoginRequest.class);
 		return mcUserInfoService.ajaxClientLogin(dto, request);
 	}

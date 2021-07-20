@@ -670,6 +670,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 				if(dto != null) {
 					return Result.SUCCESS(dto.clazz().newInstance());
 				}
+				return Result.ERROR(this.getInfo(600010021, clazz.getName()), ResultCode.OPERATION_FAILED);		// 600010021=目标类{0}未发现MatrixRequest标签
 			}
 			return Result.ERROR(this.getInfo(100020101), ResultCode.OPERATION_FAILED);
 		} catch (Exception e) {

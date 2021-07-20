@@ -133,6 +133,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 		String originHeader = request.getHeader("Origin");
 		if(StringUtils.startsWith(apiInfo.getProcessor() , "common")) {		// 如果是工具类型的api则移除跨域访问限制
 			response.setHeader("Access-Control-Allow-Origin", originHeader); 	// 移除跨域访问限制
+			apiInfo.setLogin(0);
 		}
 		
 		/////// 免登陆接口验证 ///////

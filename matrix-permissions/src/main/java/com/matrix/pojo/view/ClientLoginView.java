@@ -4,14 +4,16 @@ import java.io.Serializable;
 import lombok.Data;
 
 @Data
-public class LoginView implements Serializable{
+public class ClientLoginView implements Serializable{
 
-	private static final long serialVersionUID = 1635992313735978268L;
+	private static final long serialVersionUID = 6561263865853109059L;
 
 	private String pageJson;
 	
 	private String info;
 	
 	private String uploadUrl;
+	
+	private String accessToken;
 
 }

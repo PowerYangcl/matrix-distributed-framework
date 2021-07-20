@@ -580,7 +580,8 @@ var apiInfo = {
                 	apiInfo.findRequestDto(n.target);
           		},
           		yes : function(index , layero , btn){
-                	layer.close(index);
+                	// layer.close(index);
+                	apiInfo.getResponseMsg();
           		},
       			cancel : function(){  // 右上角关闭回调。return false; // 开启该代码可禁止点击该按钮关闭
       			}
@@ -639,13 +640,12 @@ var apiInfo = {
         	return html;
         },
         
-        
         // 请求数据头部封装
         requestHeadInit : function(target_){
         	var requester = new Object();
 			var head_ = new Object();
 			head_.target = target_; 
-//			head_.accessToken = $("#access-token").val();
+			head_.accessToken = $("#access-token").val();
 			head_.client = $("input[name='client']:checked").val();
 			head_.version = $("#version").val();
 			head_.requestTime = $("#request-time").val();
@@ -676,7 +676,7 @@ var apiInfo = {
 				$("#dto-json-str").val(JSON.stringify(obj.data));
 			}else{
 				if(typeof(obj.msg) != 'undefined' && obj.msg != null){
-					malert(obj.msg, '系统提示');
+					layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
 				}
 				$("#dto-json-str").val("");  
 			}
@@ -692,44 +692,28 @@ var apiInfo = {
 			if (obj.status == 'success') {
 				value = obj.data;
 			}else{
-				malert(obj.msg, '系统提示');
+				layer.alert(obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
 				$("#dto-json-str").val("");  
 			}
 			return value;
 		},
 		
-		// 由于请求的页面试浮层，故这里需要再次封装
-		requestHeadDialog : function(target_){
-        	var requester = new Object();
-			var head_ = new Object();
-			head_.target = target_; 
-			head_.accessToken = $("#access-token" , parent.document).val();
-			head_.client = $("input[name='client']:checked" , parent.document).val();
-			head_.version = $("#version" , parent.document).val();
-			head_.requestTime = $("#request-time" , parent.document).val();
-			head_.channel = $("#channel" , parent.document).val();
-			head_.key = $("input[name='requester']:checked" , parent.document).val(); 
-			head_.value = md5(apiInfo.findRequestValue(head_.key) + head_.target + head_.requestTime);   // 模拟md5请求加密
-			requester.head = head_; 
-			return requester;
-        },
-        
 		// 获取请求结果
 		getResponseMsg : function(){
-			var jsonStr = $("#dto-json-str" , parent.document).val();
-			if(apiInfo.trim($("#api-target" , parent.document).val()) == '' || apiInfo.trim(jsonStr) == ''){
-				malert('缺少关键请求值!', '系统提示');
+			var jsonStr = $("#dto-json-str").val();
+			if(apiInfo.trim($("#api-target").val()) == '' || apiInfo.trim(jsonStr) == ''){
+				layer.alert('缺少关键请求值：target' , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
 			}else{
 				var dto = JSON.parse(jsonStr); 
 				var type_ = 'post';
-				var data_ = apiInfo.requestHeadDialog($("#api-target" , parent.document).val());
-				data_.data = dto;
-				var obj = JSON.parse(ajaxs.sendAjax(type_, apiInfo.apiServiceUrl, {json : JSON.stringify(data_)} ));
+				var param = apiInfo.requestHeadInit($("#api-target").val());
+				param.data = dto;
+				var obj = JSON.parse(ajaxs.sendAjax(type_, apiInfo.apiServiceUrl, {json : JSON.stringify(param)} ));
 				if (obj.status == 'success') {
-					$("#json-response" , parent.document).val(JSON.stringify(obj));
+					$("#json-response").val(JSON.stringify(obj));
 				}else{
-					malert(obj.msg, '系统提示');
-					$("#json-response" , parent.document).val("");  
+					layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+					$("#json-response").val("");  
 				}
 			}
 		}

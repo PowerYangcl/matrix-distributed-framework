@@ -18,6 +18,7 @@ import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
+import com.matrix.pojo.view.ClientLoginView;
 import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 
@@ -130,7 +131,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
 	 */
-	public Result<LoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request);
+	public Result<ClientLoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request);
 
 	/**
 	 * @description: 【仅matrix-manager-api项目使用】
