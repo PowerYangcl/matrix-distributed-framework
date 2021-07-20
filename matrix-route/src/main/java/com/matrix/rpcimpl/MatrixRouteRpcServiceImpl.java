@@ -3,8 +3,8 @@ package com.matrix.rpcimpl;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import com.matrix.base.BaseClass;
-import com.matrix.base.RpcResult;
-import com.matrix.base.RpcResultCode;
+import com.matrix.base.Result;
+import com.matrix.base.ResultCode;
 import com.matrix.base.interfaces.IBaseExecute;
 import com.matrix.pojo.dto.PowerCacheDto;
 import com.matrix.rpc.IMatrixRouteRpcService;
@@ -28,13 +28,13 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 * @date 2018年11月20日 下午5:45:35 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<?> addPowerCache(PowerCacheDto dto) {
+	public Result<?> addPowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey() , dto.getValue())) {
-			return RpcResult.ERROR(this.getInfo(108010002), RpcResultCode.ERROR_PARAM, dto);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT, dto);		// 108010002=重要参数异常
 		}
 		
 		PowerCache.getInstance().compelPut(dto.getCacheName(), dto.getKey(), dto.getValue());
-		return RpcResult.SUCCESS(this.getInfo(108010000), dto);
+		return Result.SUCCESS(this.getInfo(108010000), dto);
 	}
 
 	/**
@@ -45,12 +45,12 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 * @date 2018年11月20日 下午5:46:01 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<?> updatePowerCache(PowerCacheDto dto) {
+	public Result<?> updatePowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey() , dto.getValue())) {
-			return RpcResult.ERROR(this.getInfo(108010002), RpcResultCode.ERROR_PARAM, dto);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT, dto);		// 108010002=重要参数异常
 		}
 		PowerCache.getInstance().reset(dto.getCacheName(), dto.getKey(), dto.getValue());
-		return RpcResult.SUCCESS(this.getInfo(108010000));
+		return Result.SUCCESS(this.getInfo(108010000));
 	}
 
 	/**
@@ -61,15 +61,15 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 * @date 2018年11月20日 下午5:46:30 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<?> removePowerCache(PowerCacheDto dto) {
+	public Result<?> removePowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey())) {
-			return RpcResult.ERROR(this.getInfo(108010002), RpcResultCode.ERROR_PARAM, dto);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT, dto);		// 108010002=重要参数异常
 		}
 		if(PowerCache.getInstance().remove(dto.getCacheName(), dto.getKey())) {
-			return RpcResult.SUCCESS(this.getInfo(108010000));
+			return Result.SUCCESS(this.getInfo(108010000));
 		}
 		
-		return RpcResult.ERROR(this.getInfo(108010001), RpcResultCode.ERROR_DELETE);
+		return Result.ERROR(this.getInfo(108010001), ResultCode.ERROR_DELETE);
 	}
 
 	/**
@@ -80,16 +80,16 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 * @date 2018年11月20日 下午5:46:45 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<String> findPowerCache(PowerCacheDto dto) {
+	public Result<String> findPowerCache(PowerCacheDto dto) {
 		if(StringUtils.isAnyBlank(dto.getCacheName() ,dto.getKey())) {
-			return RpcResult.ERROR(this.getInfo(108010002), RpcResultCode.ERROR_PARAM);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT);		// 108010002=重要参数异常
 		}
 		String value = (String) PowerCache.getInstance().find(dto.getCacheName() , dto.getKey());
 		if(StringUtils.isBlank(value)) {
-			return RpcResult.ERROR(this.getInfo(108010003), RpcResultCode.RESULT_NULL); // 108010003=未找到对应的缓存
+			return Result.ERROR(this.getInfo(108010003), ResultCode.RESULT_NULL); // 108010003=未找到对应的缓存
 		}
 		
-		return RpcResult.SUCCESS(this.getInfo(108010000) , value);
+		return Result.SUCCESS(this.getInfo(108010000) , value);
 	}
 
 	/**
@@ -101,27 +101,27 @@ public class MatrixRouteRpcServiceImpl extends BaseClass implements IMatrixRoute
 	 * @date 2019年1月5日 上午9:31:12 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<String> routeExecute(PowerCacheDto dto) {
+	public Result<String> routeExecute(PowerCacheDto dto) {
 		if(StringUtils.isBlank(dto.getKey())) {
-			return RpcResult.ERROR(this.getInfo(108010002), RpcResultCode.ERROR_PARAM);		// 108010002=重要参数异常
+			return Result.ERROR(this.getInfo(108010002), ResultCode.INVALID_ARGUMENT);		// 108010002=重要参数异常
 		}
 		String key = this.getConfig("matrix-core." + dto.getKey());
 		if(StringUtils.isBlank(key)) {  // 108010006=系统尚未内置您所指定的命令，请与系统设计者联系
-			return RpcResult.ERROR(this.getInfo(108010006 , "routeExecute"), RpcResultCode.OPERATION_FAILED); 
+			return Result.ERROR(this.getInfo(108010006 , "routeExecute"), ResultCode.OPERATION_FAILED); 
 		}
 		
 		try {
 			Class<?> clazz = ClassUtils.getClass(key);
 			if (clazz != null && clazz.getDeclaredMethods() != null){
 				IBaseExecute exe = (IBaseExecute) clazz.newInstance();
-				return RpcResult.SUCCESS("执行完成" , exe.execute(dto.getValue()));
+				return Result.SUCCESS("执行完成" , exe.execute(dto.getValue()));
 			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
-			return RpcResult.ERROR("操作失败，服务器异常! " + ExceptionUtils.getExceptionInfo(e) , RpcResultCode.SERVER_EXCEPTION);
+			return Result.ERROR("操作失败，服务器异常! " + ExceptionUtils.getExceptionInfo(e) , ResultCode.SERVER_EXCEPTION);
 		}
 		
-		return RpcResult.ERROR("操作失败", RpcResultCode.OPERATION_FAILED);
+		return Result.ERROR("操作失败", ResultCode.OPERATION_FAILED);
 	}
 	
 }

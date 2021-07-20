@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IMcUserInfoOrganizationMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McUserInfoOrganization" extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="cid" property="cid" jdbcType="BIGINT" />
+		<result column="mc_user_info_id" property="mcUserInfoId" jdbcType="BIGINT" />
+		<result column="mc_organization_id" property="mcOrganizationId" jdbcType="BIGINT" />
+		<result column="platform" property="platform" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="base_column_list">
+		id, 
+		cid, 
+		create_time, 
+		create_user_id, 
+		create_user_name, 
+		update_time,
+		update_user_id,
+		update_user_name, 
+		delete_flag, 
+		mc_user_info_id, 
+		mc_organization_id, 
+		platform
+	</sql>
+	
+	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="base_column_list" />
+		from 
+			mc_user_info_organization
+		where 
+			id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findList" resultMap="BaseResultMap" parameterType="com.matrix.pojo.entity.McUserInfoOrganization">
+		select
+			<include refid="base_column_list" />
+		from 
+			mc_user_info_organization
+		where 
+			delete_flag = 1
+			<if test="mcUserInfoId != null">
+				and
+					mc_user_info_id = #{mcUserInfoId,jdbcType=BIGINT}
+			</if>
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from mc_user_info_organization where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<update id="deleteByEntity" parameterType="com.matrix.pojo.entity.McUserInfoOrganization">
+		update mc_user_info_organization
+		<set>
+			delete_flag = 0,
+			<if test="cid != null">
+				cid = #{cid,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if> 
+		</set>
+		where 
+			mc_user_info_id = #{mcUserInfoId , jdbcType=BIGINT} and delete_flag = 1
+	</update>
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.McUserInfoOrganization">
+		insert into mc_user_info_organization
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="cid != null">
+				cid,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+			<if test="mcUserInfoId != null">
+				mc_user_info_id,
+			</if>
+			<if test="mcOrganizationId != null">
+				mc_organization_id,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="cid != null">
+				#{cid,jdbcType=BIGINT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+			<if test="mcUserInfoId != null">
+				#{mcUserInfoId,jdbcType=BIGINT},
+			</if>
+			<if test="mcOrganizationId != null">
+				#{mcOrganizationId,jdbcType=BIGINT},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McUserInfoOrganization">
+		update mc_user_info_organization
+		<set>
+			<if test="cid != null">
+				cid = #{cid,jdbcType=BIGINT},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+			<if test="mcUserInfoId != null">
+				mc_user_info_id = #{mcUserInfoId,jdbcType=BIGINT},
+			</if>
+			<if test="mcOrganizationId != null">
+				mc_organization_id = #{mcOrganizationId,jdbcType=BIGINT},
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where 
+			id = #{id,jdbcType=BIGINT}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

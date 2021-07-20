@@ -8,29 +8,32 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McOrganizationDto;
+import com.matrix.pojo.request.UpdateUserAddOrgRequest;
 import com.matrix.service.IMcOrganizationService;
 
 /**
  * @description: 用户列表书库权限
  * @tag MANAGER-API-134
  *
- * @author mashaohua
+ * @author Yangcl
  * @date 2018年11月28日 下午7:19:45 
  * @version 1.0.0.1
  */
-@MatrixRequest(clazz=com.matrix.pojo.entity.McOrganization.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.UpdateUserAddOrgRequest.class)
 public class ManagerApi134Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session,
+	public Result<?> processor(HttpServletRequest request, 
+			HttpServletResponse response, 
+			HttpSession session,
 			JSONObject param) {
-		McOrganizationDto dto = JSONObject.parseObject(param.getString("data"), McOrganizationDto.class);
-		return mcOrganizationService.ajaxUserAddOrganization(dto);
+		UpdateUserAddOrgRequest dto = JSONObject.parseObject(param.getString("data"), UpdateUserAddOrgRequest.class);
+		return mcOrganizationService.ajaxUserAddOrgRequest(dto);
 	}
 
 }

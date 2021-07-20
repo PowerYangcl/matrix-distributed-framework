@@ -1,6 +1,6 @@
 package com.matrix.rpc;
 
-import com.matrix.base.RpcResult;
+import com.matrix.base.Result;
 import com.matrix.pojo.dto.PowerCacheDto;
 
 public interface IMatrixRouteRpcService {
@@ -13,7 +13,7 @@ public interface IMatrixRouteRpcService {
 	 * @date 2018年11月20日 下午5:45:35 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<?> addPowerCache(PowerCacheDto dto);
+	public Result<?> addPowerCache(PowerCacheDto dto);
 	
 	/**
 	 * @description: 更新一级缓存
@@ -23,7 +23,7 @@ public interface IMatrixRouteRpcService {
 	 * @date 2018年11月20日 下午5:46:01 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<?> updatePowerCache(PowerCacheDto dto);
+	public Result<?> updatePowerCache(PowerCacheDto dto);
 	
 	/**
 	 * @description: 删除一级缓存
@@ -33,7 +33,7 @@ public interface IMatrixRouteRpcService {
 	 * @date 2018年11月20日 下午5:46:30 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<?> removePowerCache(PowerCacheDto dto);
+	public Result<?> removePowerCache(PowerCacheDto dto);
 	
 	/**
 	 * @description: 查找一级缓存|如果没有找到对应的值则返回Null
@@ -43,7 +43,7 @@ public interface IMatrixRouteRpcService {
 	 * @date 2018年11月20日 下午5:46:45 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<String> findPowerCache(PowerCacheDto dto);
+	public Result<String> findPowerCache(PowerCacheDto dto);
 	
 	/**
 	 * @description: 并行触发要执行的节点调用类
@@ -54,7 +54,7 @@ public interface IMatrixRouteRpcService {
 	 * @date 2019年1月5日 上午9:31:12 
 	 * @version 1.0.0.1
 	 */
-	public RpcResult<String> routeExecute(PowerCacheDto dto);
+	public Result<String> routeExecute(PowerCacheDto dto);
 	
 }
 

@@ -5,14 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
-import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.service.IMcUserInfoService;
 
 /**
- * @description: 添加用户界面-绘制所属公司和平台分配
+ * @description: 添加用户界面-绘制所属公司和平台分配|TODO 接口功能已移除，等待另作他用
  * @tag MANAGER-API-103
  *
  * @author Yangcl
@@ -21,15 +20,10 @@ import com.matrix.service.IMcUserInfoService;
  */
 @MatrixRequest(clazz=String.class)
 public class ManagerApi103Processor extends BaseClass implements IBaseProcessor {
-
-	@Inject
-	private IMcUserInfoService mcUserInfoService;
-	
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
-		
-		return mcUserInfoService.ajaxDrawAddUserPage();
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
+		return null;
 	}
 
 }

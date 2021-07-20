@@ -58,7 +58,7 @@ public class FileUploadController  extends BaseController{
 	 */
 	@RequestMapping(value = "api_file_remote_upload", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public JSONObject apiFileRemoteUpload(HttpServletRequest request , HttpServletResponse response , String key , String value) throws IOException{
+	public JSONObject apiFileRemoteUpload(HttpServletRequest request , HttpServletResponse response) throws IOException{
 		JSONObject result = new JSONObject();
 		
 		String originHeader = request.getHeader("Origin");
@@ -94,46 +94,10 @@ public class FileUploadController  extends BaseController{
 			return result;
 		}
 		
-		
-		if(result.getString("status").equals("success")) {		// 文件上传成功后，保存到数据库一份做记录							
-			UploadRecord  ur = new UploadRecord(service , result);
-			ur.start();
-		}
-		
 		return result;
 	}
-	
-	/**
-	 * @description: TODO 一个需要完善的方法
-	 *
-	 * @param request 
-	 * @author Yangcl
-	 * @date 2018年2月6日 下午12:28:07 
-	 * @version 1.0.0.1
-	 */
-	@RequestMapping(value = "api_file_remote_inject", produces = { "application/json;charset=utf-8" })
-	@ResponseBody
-	public JSONObject apiFileRemoteInject(HttpServletRequest request){
-		return service.apiFileRemoteInject(request);
-	}
 }
 
-
-
-// 文件上传成功后，保存到数据库一份做记录
-class UploadRecord extends Thread {
-	private IFileUploadService service;
-	private JSONObject uploadFile;
-	public UploadRecord(IFileUploadService service_ , JSONObject upload_) { 
-		service = service_;
-		uploadFile = upload_;
-	}
-
-	@Override
-	public void run() {
-		service.insertUploadFileInfo(uploadFile);
-	}
-}
 
 
 

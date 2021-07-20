@@ -35,7 +35,7 @@ public class MatrixCoreInit extends BaseInit {
 	 */
 	private boolean deployEnvValidate(){
 		if(StringUtils.isNotBlank(this.getConfig("matrix-web.model"))) {
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------Tomcat Web Project Properties File Init Finished ! ! ! ! ! ! ! " , this.getClass());
+			BaseLog.getInstance().sysoutInfo("-------------------------------------------Web Project Properties File Init Finished ! ! ! ! ! ! ! " , this.getClass());
 			return true;
 		}
 		

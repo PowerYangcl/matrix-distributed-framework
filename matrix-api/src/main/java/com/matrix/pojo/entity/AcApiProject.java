@@ -17,7 +17,6 @@ public class AcApiProject extends BaseEntity{
     private String target;
     private String atype;  // 接口类型 private:私有 即公司内部使用的接口| public:公开，即开放给第三方的接口
     private String serviceUrl; // 对应一个Tomcat web项目的服务器部署浏览器路径|也可以是一个Nginx前端负载路径
-    private Integer aflag;
     
 	public Long getId() {
 		return id;
@@ -42,11 +41,5 @@ public class AcApiProject extends BaseEntity{
 	}
 	public void setServiceUrl(String serviceUrl) {
 		this.serviceUrl = serviceUrl;
-	}
-	public Integer getAflag() {
-		return aflag;
-	}
-	public void setAflag(Integer aflag) {
-		this.aflag = aflag;
 	}
 }

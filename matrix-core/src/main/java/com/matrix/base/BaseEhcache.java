@@ -15,7 +15,7 @@ import net.sf.ehcache.Element;
  * @date 2018年11月3日 下午4:02:59 
  * @version 1.0.0.1
  */
-public abstract class BaseEhcache<K , V> implements IBaseCache{
+public abstract class BaseEhcache<K , V> implements IBaseCache<K>{
 
 	private Cache cache;
 	
@@ -44,7 +44,7 @@ public abstract class BaseEhcache<K , V> implements IBaseCache{
 	@SuppressWarnings("unchecked")
 	public V getValue(K key) {
 		if(!this.containsKey(key)) {
-			this.refresh();
+			this.refresh(key);
 		}
 		if(this.containsKey(key)) {
 			return (V) cache.get(key).getObjectValue();

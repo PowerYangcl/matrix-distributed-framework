@@ -1,13 +1,9 @@
 package com.matrix.quartz;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseInit;
 import com.matrix.cache.CacheLaunch;
@@ -17,6 +13,7 @@ import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.entity.JobInfo;
 import com.matrix.quartz.support.JobSupport;
 import com.matrix.service.IJobService;
+import com.matrix.system.cache.PowerCache;
 
 /**
  * @description: 分布式定时任务实例化。定时任务区分运行组，运行组包含服务器列表信息。
@@ -44,19 +41,24 @@ public class DistributeJobLaunch extends BaseInit{
 	 */
 	public boolean onInit() {
 		boolean flag = true;
+		if(!this.getConfig("matrix-web.model").equals("job-system")) {  // job-system|web-system|mq-system
+			this.getLogger(null).sysoutInfo(200010010, this.getClass());  // 200010010=系统定时任务已关闭
+			return true;
+		}
 		if(!this.getConfig("matrix-quartz.job_init").equals("true")) {
 			this.getLogger(null).sysoutInfo(200010010, this.getClass());  // 200010010=系统定时任务已关闭
 			return true;
 		}
 		
         try {
+        	PowerCache.getInstance().compelPut("PropConfig", "matrix-core.guard_job_exec", "com.matrix.security.JobExecGuard");
         	List<JobInfo> list = new ArrayList<JobInfo>();  
         	List<JobInfo> list_ = jobService.findJobInfoList(null);
         	if(list_ == null || list_.size() == 0) {
         		return true;
         	}
         	for(JobInfo s : list_ ){ 
-        		String jobjson = launch.loadDictCache(DCacheEnum.SysJob , "InitSysJob").get(s.getJobName()); 
+        		String jobjson = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(s.getJobName()); 
     			if(StringUtils.isNotBlank(jobjson) && s.getTrigerType() == 1){	// Scheduler中轮询状态的任务
     				list.add(s);
     			}

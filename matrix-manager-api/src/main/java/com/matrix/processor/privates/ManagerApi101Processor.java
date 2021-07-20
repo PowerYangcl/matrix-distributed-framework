@@ -8,8 +8,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McUserInfoDto;
+import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.service.IMcUserInfoService;
 
 /**
@@ -20,16 +21,16 @@ import com.matrix.service.IMcUserInfoService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-@MatrixRequest(clazz=com.matrix.pojo.dto.McUserInfoDto.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.FindLogoutRequest.class)
 public class ManagerApi101Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
 		JSONObject head = JSONObject.parseObject(param.getString("head"));
-		McUserInfoDto dto = JSONObject.parseObject(param.getString("data"), McUserInfoDto.class);
+		FindLogoutRequest dto = JSONObject.parseObject(param.getString("data"), FindLogoutRequest.class);
 		dto.setAccessToken(head.getString("accessToken"));
 		return mcUserInfoService.ajaxClientLogout(dto);
 	}

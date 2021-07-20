@@ -5,13 +5,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.Head;
 import com.matrix.pojo.dto.ProcessorTestDto;
-import com.matrix.pojo.entity.AcApiProject;
+import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.service.IApiCenterService;
 
 
@@ -31,12 +32,9 @@ public class TestPublicProcessor extends BaseClass implements IBaseProcessor {
 	private IApiCenterService service;  
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response , HttpSession session, JSONObject data) {
+	public Result<PageInfo<AcApiProjectView>> processor(HttpServletRequest request, HttpServletResponse response , HttpSession session, JSONObject data) {
 		ProcessorTestDto dto = JSONObject.parseObject(data.getString("data"), ProcessorTestDto.class); 
-		
-		
-		
-		return service.ajaxApiProjectList(null, request, null); 
+		return service.ajaxApiProjectList(null, request); 
 	}
 
 }

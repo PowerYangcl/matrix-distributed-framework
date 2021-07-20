@@ -153,14 +153,14 @@ public class Express100Util extends BaseClass {
      */
     public Boolean subscribe() {
         String result = NetUtil.post(SUBSCRIBE_URL, this.param);
-        this.getLogger(logger).logInfo("express return: " + result);
+        this.getLogger(logger).logInfo("express return: " + result , this.getClass());
         Map<String, Object> map = (Map) JSONObject.parse(result);
         return (Boolean) map.get("result");
     }
 
 
-    public static void main(String[] args) {
-        Express100Util express100Util = new Express100Util("fJtsBpfL5820", "zhongtongkuaiyun", "542952733398", "http://xshell.51vip.biz/api-member-web/express/callback.do?cid=2&id=1129633424575959040");
-        System.out.print(express100Util.subscribe());
-    }
+//    public static void main(String[] args) {
+//        Express100Util express100Util = new Express100Util("fJtsBpfL5820", "zhongtongkuaiyun", "542952733398", "http://xshell.51vip.biz/api-member-web/express/callback.do?cid=2&id=1129633424575959040");
+//        System.out.print(express100Util.subscribe());
+//    }
 }

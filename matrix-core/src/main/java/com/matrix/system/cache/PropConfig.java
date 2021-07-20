@@ -30,9 +30,10 @@ public class PropConfig extends BaseEhcache<String, String> {
 		return LazyHolder.INSTANCE; 
 	}
 
-	public synchronized void refresh() {
+	public synchronized void refresh(String key_) {
 		if(this.getRefreshFlag("prop-config").equals("true")) {
 			// 未发现的Key：系统配置信息同步已经完成 
+			BaseLog.getInstance().sysoutInfo("系统配置信息同步已经完成，未发现的key = " + key_ , this.getClass()); 
 			return;
 		}
 		this.addElement("prop-config", "true"); // 添加刷新标记
@@ -73,7 +74,7 @@ public class PropConfig extends BaseEhcache<String, String> {
 			this.addElement("matrix-core.dubbo_application_owner", resource.getString("dubbo.application.owner")); 
 			BaseLog.getInstance().sysoutInfo("-------------------------------------------Zookeepper：" + this.getValue("matrix-core.zookeeper_host")  , this.getClass());
 		} catch (Exception ex) {
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------properties/dubbo.xml文件丢失!无法实例化系统运行环境!", this.getClass());
+			BaseLog.getInstance().sysoutInfo("-------------------------------------------properties/dubbo.xml文件不存在", this.getClass());
 		}
 		
 	}

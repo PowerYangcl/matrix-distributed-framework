@@ -5,17 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
-import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McRoleDto;
-import com.matrix.service.IMcRoleService;
-import com.matrix.service.IMcSysFunctionService;
-import com.matrix.service.IMcUserInfoService;
 
 /**
- * @description: 创建系统角色
+ * @description: 创建系统角色|TODO 接口功能已移除，等待另作他用
  * @tag MANAGER-API-119
  *
  * @author Yangcl
@@ -25,17 +21,9 @@ import com.matrix.service.IMcUserInfoService;
 @MatrixRequest(clazz=com.matrix.pojo.dto.McRoleDto.class)
 public class ManagerApi119Processor extends BaseClass implements IBaseProcessor {
 
-	@Inject
-	private IMcUserInfoService mcUserInfoService;
-	@Inject
-	private IMcSysFunctionService mcSysFunctionService;  
-	@Inject
-	private IMcRoleService mcRoleService;
-	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McRoleDto dto = JSONObject.parseObject(param.getString("data"), McRoleDto.class);
-		return mcSysFunctionService.addMcRole(dto);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		return null;
 	}
 
 }

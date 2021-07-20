@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.matrix</groupId>
 		<artifactId>matrix-distributed-framework</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>1.0.0-SNAPSHOT</version>
 	</parent> 
 	<artifactId>matrix-api</artifactId>
 	<packaging>jar</packaging>
@@ -15,11 +15,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.matrix</groupId>
-			<artifactId>matrix-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.matrix</groupId>
 			<artifactId>matrix-cache</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -27,7 +22,13 @@
 			<groupId>com.matrix</groupId>
 			<artifactId>matrix-file</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
+		</dependency>
+        <!-- 轻量级密码术包，对称加密和非对称加密。使用类：RSAUtil.java and RsaUtils.java -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>1.58</version>
+        </dependency>
 	</dependencies>
 	
 </project>

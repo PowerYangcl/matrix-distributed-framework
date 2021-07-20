@@ -18,7 +18,6 @@
 		<result column="target" property="target" jdbcType="VARCHAR" />
 		<result column="atype" property="atype" jdbcType="VARCHAR" />
 		<result column="service_url" property="serviceUrl" jdbcType="VARCHAR" />
-		<result column="aflag" property="aflag" jdbcType="INTEGER" />
 	</resultMap>
 	
 	
@@ -45,7 +44,7 @@
 		from 
 			ac_api_project a  
 		<where>
-			a.aflag = 1  and a.delete_flag = 1 
+			a.delete_flag = 1 
 			<if test="target != null and target != ''  ">
 				and a.target = #{target , jdbcType=VARCHAR}
 			</if> 
@@ -67,11 +66,16 @@
 		from 
 			ac_api_project a 
 		where
-			a.aflag = 1 and a.delete_flag = 1 order by a.id asc
+			a.delete_flag = 1 order by a.id asc
 	</select>
 	
 	<delete id="deleteById" parameterType="java.lang.Long">
-		delete from ac_api_project where id = #{id,jdbcType=BIGINT}
+		update 
+			ac_api_project
+		set
+			delete_flag = 0
+		where 
+			id = #{id,jdbcType=BIGINT}
 	</delete>
 	
 	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.AcApiProject">
@@ -89,10 +93,6 @@
 			<if test="serviceUrl != null">
 				service_url,
 			</if>
-			<if test="aflag != null">
-				aflag,
-			</if>
-			
 			<if test="createTime != null">
 				create_time,
 			</if>
@@ -128,10 +128,6 @@
 			<if test="serviceUrl != null">
 				#{serviceUrl , jdbcType=VARCHAR},
 			</if>
-			<if test="aflag != null">
-				#{aflag,jdbcType=INTEGER},
-			</if>
-			
 			<if test="createTime != null">
 				#{createTime , jdbcType=TIMESTAMP},
 			</if>
@@ -169,10 +165,6 @@
 			<if test="serviceUrl != null">
 				service_url = #{serviceUrl , jdbcType=VARCHAR},
 			</if>
-			<if test="aflag != null">
-				aflag = #{aflag,jdbcType=INTEGER},
-			</if>
-			
 			<if test="updateTime != null">
 				update_time = #{updateTime , jdbcType=TIMESTAMP},
 			</if>

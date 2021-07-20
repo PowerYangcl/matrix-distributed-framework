@@ -2,6 +2,11 @@ package com.matrix.pojo.entity;
 
 import com.matrix.base.BaseEntity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class AcApiInfo extends BaseEntity{
 	
 	private static final long serialVersionUID = 7388908004393425485L;
@@ -21,84 +26,6 @@ public class AcApiInfo extends BaseEntity{
     private String remark;
     
     
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getTarget() {
-		return target;
-	}
-	public void setTarget(String target) {
-		this.target = target;
-	}
-	public String getDtoInfo() {
-		return dtoInfo;
-	}
-	public void setDtoInfo(String dtoInfo) {
-		this.dtoInfo = dtoInfo;
-	}
-	public String getAtype() {
-		return atype;
-	}
-	public void setAtype(String atype) {
-		this.atype = atype;
-	}
-	public String getModule() {
-		return module;
-	}
-	public void setModule(String module) {
-		this.module = module;
-	}
-	public String getProcessor() {
-		return processor;
-	}
-	public void setProcessor(String processor) {
-		this.processor = processor;
-	}
-	public Integer getDomain() {
-		return domain;
-	}
-	public void setDomain(Integer domain) {
-		this.domain = domain;
-	}
-	public Long getParentId() {
-		return parentId;
-	}
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-	public Integer getSeqnum() {
-		return seqnum;
-	}
-	public void setSeqnum(Integer seqnum) {
-		this.seqnum = seqnum;
-	}
-	public Integer getDiscard() {
-		return discard;
-	}
-	public void setDiscard(Integer discard) {
-		this.discard = discard;
-	}
-	public Integer getLogin() {
-		return login;
-	}
-	public void setLogin(Integer login) {
-		this.login = login;
-	}
-	public String getRemark() {
-		return remark;
-	}
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
 }
 
 

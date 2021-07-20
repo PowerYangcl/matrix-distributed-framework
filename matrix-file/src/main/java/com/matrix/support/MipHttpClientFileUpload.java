@@ -42,6 +42,8 @@ public class MipHttpClientFileUpload extends HttpClientSupport{
 		this.fileName = fileName;
 		this.inputStream = inputStream;
 	}
+	
+	
 	@Override
 	public HttpPost postInit(String url , InputStream inputStream) {
 		HttpPost post = new HttpPost(url);
@@ -63,6 +65,8 @@ public class MipHttpClientFileUpload extends HttpClientSupport{
 		
 		return post;
 	}
+	
+	
 	/**
 	 * @description: 执行上传
 	 *

@@ -13,10 +13,13 @@
 
 
 
+
 【info-国际化文件顺序】
-		info.matrix-core.1000.properties
+		info.matrix-core.1000.properties							【加入】
+		info.matrix-permissions.1010.properties			【加入】
+		info.matrix-web-adapter.1020.properties
 		info.matrix-quartz.2000.properties
-		info.matrix-cache.3000.properties
+		info.matrix-cache.3000.properties						【加入】
 		info.matrix-manager.4000.properties
 		info.matrix-file.5000.properties
 		info.matrix-api.6000.properties
@@ -95,6 +98,7 @@
 		
 		
 alter table `mc_user_info` auto_increment= 2;
+		
 		
 		
 		

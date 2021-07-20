@@ -38,7 +38,7 @@ public class JobLog extends BaseClass implements Runnable {
 			return;
 		}
 		JobExecLog e = new JobExecLog();
-		String value = launch.loadDictCache(DCacheEnum.SysJob , "InitSysJob").get(result.getJSONObject("jobInfo").getString("jobName")); 
+		String value = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(result.getJSONObject("jobInfo").getString("jobName")); 
 		JSONObject o = JSONObject.parseObject(value);
 		e.setJobName(o.getString("jobName"));
 		e.setJobTitle(o.getString("jobTitle"));

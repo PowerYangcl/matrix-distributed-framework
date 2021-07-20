@@ -47,6 +47,10 @@ public class LoggerGuard extends BaseClass implements IBaseExecute {
 			path = "/data/tomcat/logs/" + fileName;
 		}
 		
+		if(StringUtils.isNotBlank(this.getConfig("matrix-core.log_path"))) {
+			path = this.getConfig("matrix-core.log_path");
+		}
+		
 		result.put("status", "success");
 		File file = new File(path);
 		List<String> lines = new ArrayList<>();

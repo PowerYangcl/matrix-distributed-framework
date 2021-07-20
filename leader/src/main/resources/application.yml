@@ -1,0 +1,21 @@
+server:
+  port: 8080
+  servlet: 
+    context-path: /leader
+spring:
+  profiles:
+    active: dev
+  jackson:
+    time-zone: "GMT+8"
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  http:
+    encoding:
+      charset: UTF-8
+      force: true
+  mvc:
+    pathmatch:
+      # springboot2.0x中，默认不支持带后缀.do
+      use-suffix-pattern: true
+# server.jsp-servlet.init-parameters.development=true # 修改JSP文件，页面动态更新，但不起作用。

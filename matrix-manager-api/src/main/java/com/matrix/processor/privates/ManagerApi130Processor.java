@@ -5,15 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
-import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
-import com.matrix.pojo.dto.McOrganizationDto;
-import com.matrix.service.IMcOrganizationService;
 
 /**
- * @description: 用户列表书库权限
+ * @description: 暂时空闲，未使用
  * @tag MANAGER-API-130
  *
  * @author Yangcl
@@ -23,13 +21,10 @@ import com.matrix.service.IMcOrganizationService;
 @MatrixRequest(clazz=com.matrix.pojo.entity.McOrganization.class)
 public class ManagerApi130Processor extends BaseClass implements IBaseProcessor {
 
-	@Inject
-	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McOrganizationDto dto = JSONObject.parseObject(param.getString("data"), McOrganizationDto.class);
-		return mcOrganizationService.ajaxTreeList(dto);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		return null;
 	}
 
 }

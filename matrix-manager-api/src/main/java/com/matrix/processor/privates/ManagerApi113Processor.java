@@ -8,8 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.pojo.entity.McRole;
+import com.matrix.pojo.request.FindMcRoleRequest;
 import com.matrix.service.IMcRoleService;
 
 /**
@@ -20,27 +22,15 @@ import com.matrix.service.IMcRoleService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-/**
- * 
- * request 实体   McSysFunctionDto
- * {
-	 "type": "role",
-	 "id": "62"
-   }
-   response返回类型
-   {McSysFunction}
- * @author mashaohua
- *
- */
-@MatrixRequest(clazz=com.matrix.pojo.entity.McRole.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.FindMcRoleRequest.class)
 public class ManagerApi113Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McRole info = JSONObject.parseObject(param.getString("data"), McRole.class);
+	public Result<McRole> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		FindMcRoleRequest info = JSONObject.parseObject(param.getString("data"), FindMcRoleRequest.class);
 		return mcRoleService.ajaxFindRoleInfo(info);
 	}
 

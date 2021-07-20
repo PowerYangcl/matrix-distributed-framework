@@ -2,12 +2,9 @@ package com.matrix.base;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.pojo.view.McUserInfoView;
-import com.matrix.util.SignUtil;
 
 public class BaseController extends BaseClass{
 
@@ -29,7 +26,7 @@ public class BaseController extends BaseClass{
 		if(e != null){
 			name = "用户:  " + e.getUserName();
 		}
-		this.getLogger(logger).logInfo(name + " - 尝试请求 - " + action + "() - 方法 - " + remark); 
+		this.getLogger(logger).logInfo(name + " - 尝试请求 - " + action + "() - 方法 - " + remark , this.getClass()); 
 		return true;
 	}
 	

@@ -10,8 +10,4 @@ public interface IFileUploadService {
 
 	public JSONObject saveFileToLinux(String fileName , byte[] file); 
 
-	public JSONObject apiFileRemoteInject(HttpServletRequest request);
-
-	public void insertUploadFileInfo(JSONObject uploadFile);
-
 }

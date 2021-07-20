@@ -1,7 +1,6 @@
 package com.matrix.base;
 
 import java.lang.reflect.Field;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -17,7 +16,7 @@ import com.matrix.system.cache.PropVisitor;
  * 
  * @author 张海涛
  * @date 2016年9月29日 下午2:40:02 
- * @version 1.0.0
+ * @version 1.0.0.1
  */
 public class BaseClass {
 	private static Logger logger = Logger.getLogger(BaseClass.class);
@@ -103,39 +102,7 @@ public class BaseClass {
 	public String getInfo(long infoCode, Object... parms) {
 		return FormatHelper.formatString(PropVisitor.getInfo(infoCode), parms);
 	}
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -470,35 +470,28 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
 	 * @date 2018年7月25日 下午8:30:50 
 	 * @version 1.0.0.1
 	 */
-	public JSONObject ajaxPageData(E entity, HttpServletRequest request) {
-		JSONObject result = new JSONObject();
+	public Result<PageInfo<E>> ajaxPageData(E entity, HttpServletRequest request) {
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
-    	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
-    		pageNum = entity.getStartIndex();
-    		pageSize = entity.getPageSize();
-    	}else{
-    		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
-    		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
-    	}
-
-		/*
-		 * 如果分页参数当前页为空，默认为0，页面最大显示数为空，默认为10
-		 */
-//		String sortString = "create_time.desc";
-//		Order.formString(sortString); 
-		PageHelper.startPage(pageNum , pageSize);
-		List<E> list = baseDao.queryPage(entity);
-		if (list != null && list.size() > 0) {
-			result.put("status", "success");
-		} else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+		try {
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = entity.getStartIndex();
+				pageSize = entity.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<E> list = baseDao.queryPage(entity);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<E>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
-		PageInfo<E> pageList = new PageInfo<E>(list);
-		result.put("data", pageList);
-		result.put("entity", entity);
-		return result;
 	}
 	
 	
@@ -512,30 +505,28 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
      * @date 2018年7月25日 下午4:05:48 
      * @version 1.0.0.1
      */
-    public JSONObject queryPageByDto(D dto , HttpServletRequest request) {
-    	JSONObject result = new JSONObject();
+    public Result<PageInfo<E>> queryPageByDto(D dto , HttpServletRequest request) {
     	int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
-    	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
-    		pageNum = dto.getStartIndex();
-    		pageSize = dto.getPageSize();
-    	}else{
-    		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
-    		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
-    	}
- 
-		PageHelper.startPage(pageNum , pageSize);
-		List<E> list = baseDao.queryPageByDto(dto);
-		if (list != null && list.size() > 0) {
-			result.put("status", "success");
-		} else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+		try {
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = dto.getStartIndex();
+				pageSize = dto.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<E> list = baseDao.queryPageByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<E>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
-		PageInfo<E> pageList = new PageInfo<E>(list);
-		result.put("data", pageList);
-		result.put("entity", dto);
-		return result;
     }
     
     
@@ -551,45 +542,43 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
      * @date 2018年7月25日 下午4:06:14 
      * @version 1.0.0.1
      */
-    public JSONObject pageListByDto(D dto , HttpServletRequest request) {
-    	JSONObject result = new JSONObject();
+    public Result<PageInfo<V>> pageListByDto(D dto , HttpServletRequest request) {
     	int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
-    	if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
-    		pageNum = dto.getStartIndex();
-    		pageSize = dto.getPageSize();
-    	}else{
-    		pageNum = Integer.parseInt(request.getParameter("pageNum")); 
-    		pageSize = Integer.parseInt(request.getParameter("pageSize")); 
-    	}
- 
-		PageHelper.startPage(pageNum , pageSize);
-		List<V> list = baseDao.pageListByDto(dto);
-		if (list != null && list.size() > 0) {
-			result.put("status", "success");
-		} else {
-			result.put("status", "error");
-			result.put("msg", this.getInfo(100090002));  // 没有查询到可以显示的数据 
+		try {
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+				pageNum = dto.getStartIndex();
+				pageSize = dto.getPageSize();
+			}else{
+				pageNum = Integer.parseInt(request.getParameter("pageNum")); 
+				pageSize = Integer.parseInt(request.getParameter("pageSize")); 
+			}
+			PageHelper.startPage(pageNum , pageSize);
+			List<V> list = baseDao.pageListByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<V>(list));  // 100010114=分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
-		PageInfo<V> pageList = new PageInfo<V>(list);
-		result.put("data", pageList);
-		result.put("entity", dto);
-		return result;
     }
     
     
     
     /**
      * @description: DubboRpc分页|DTO作为查询条件，返回Entity泛型列表
- 	 * 	Mapper.xml标识为：queryPageByDto
-	 * 	<select id="queryPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.***Dto">
+ 	 * 	Mapper.xml标识为：rpcEntityPageByDto
+	 * 	<select id="rpcEntityPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.***Dto">
 	 * 
      * @param dto
      * @author Yangcl
      * @date 2018年7月25日 下午4:05:48 
      * @version 1.0.0.1
      */
-    public RpcResult<PageInfo<E>> rpcEntityPageByDto(D dto) {
+    public Result<PageInfo<E>> rpcEntityPageByDto(D dto) {
 		Integer startIndex = dto.getStartIndex(); 	// 当前第几页 | 必须大于0
     	Integer pageSize = dto.getPageSize(); 		// 当前页所显示记录条数
 		int num = 1;
@@ -600,23 +589,27 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
 		if (pageSize != null) {
 			size = pageSize;
 		}
- 
-		PageHelper.startPage(num , size);
-		List<E> list = baseDao.queryPageByDto(dto);
-		if (list != null && list.size() > 0) {
-			return RpcResult.SUCCESS(this.getInfo(100000000), new PageInfo<E>(list));  // Dubbo分页数据返回成功
-		}
 		
-		// 没有查询到可以显示的数据
-		return RpcResult.ERROR(this.getInfo(100090002), RpcResultCode.RESULT_NULL);
+		try {
+			PageHelper.startPage(num , size);
+			List<E> list = baseDao.queryPageByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010117), new PageInfo<E>(list));  // 100010117=Dubbo分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010118), ResultCode.RESULT_NULL);  // 100010118=Dubbo分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010119), ResultCode.SERVER_EXCEPTION);   // 100010119=Dubbo分页数据返回失败，服务器异常!
+		}
     }
     
     
     /**
      * @description: DubboRpc分页|DTO作为查询条件，返回View泛型列表
-     * 	Mapper.xml标识为：pageListByDto
-     * 	<resultMap id="findListMsfView" type="com.matrix.pojo.view.McSysFunctionView">< / resultMap>
-	 * 	<select id="pageListByDto" resultMap="findListMsfView" parameterType="com.matrix.pojo.dto.***Dto">
+     * 	Mapper.xml标识为：rpcViewPageByDto
+     * 	<resultMap id="rpcViewPageByDto" type="com.matrix.pojo.view.McSysFunctionView">< / resultMap>
+	 * 	<select id="rpcViewPageByDto" resultMap="findListMsfView" parameterType="com.matrix.pojo.dto.***Dto">
 	 * 
 	 * 
      * @param dto
@@ -624,7 +617,7 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
      * @date 2018年7月25日 下午4:06:14 
      * @version 1.0.0.1
      */
-    public RpcResult<PageInfo<V>> rpcViewPageByDto(D dto) {
+    public Result<PageInfo<V>> rpcViewPageByDto(D dto) {
     	Integer startIndex = dto.getStartIndex(); 	// 当前第几页 | 必须大于0
     	Integer pageSize = dto.getPageSize(); 		// 当前页所显示记录条数
 		int num = 1;
@@ -635,15 +628,19 @@ public class BaseServiceImpl<PK extends Serializable , E extends BaseEntity , D 
 		if (pageSize != null) {
 			size = pageSize;
 		}
- 
-		PageHelper.startPage(num , size);
-		List<V> list = baseDao.pageListByDto(dto);
-		if (list != null && list.size() > 0) {
-			return RpcResult.SUCCESS(this.getInfo(100000000), new PageInfo<V>(list));  // Dubbo分页数据返回成功
-		}
 		
-		// 没有查询到可以显示的数据
-		return RpcResult.ERROR(this.getInfo(100090002), RpcResultCode.RESULT_NULL); 
+		try {
+			PageHelper.startPage(num , size);
+			List<V> list = baseDao.pageListByDto(dto);
+			if (list != null && list.size() > 0) {
+				return Result.SUCCESS(this.getInfo(100010117), new PageInfo<V>(list));  // 100010117=Dubbo分页数据返回成功!
+			}else {
+				return Result.SUCCESS(this.getInfo(100010118), ResultCode.RESULT_NULL);  // 100010118=Dubbo分页数据返回成功, 但没有查询到可以显示的数据!
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Result.ERROR(this.getInfo(100010119), ResultCode.SERVER_EXCEPTION);   // 100010119=Dubbo分页数据返回失败，服务器异常!
+		}
     }
 
 }

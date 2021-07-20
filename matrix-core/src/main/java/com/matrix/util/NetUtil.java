@@ -23,7 +23,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.matrix.base.BaseClass;
@@ -31,6 +31,8 @@ import com.matrix.base.BaseClass;
 
 /**
  * @description: 与网路相关的工具集合
+ * 
+ * 		尚未根据这篇文章做修改：https://www.cnblogs.com/gynbk/p/9449924.html
  * 
  * @author Yangcl
  * @home https://github.com/PowerYangcl
@@ -151,7 +153,11 @@ public class NetUtil extends BaseClass {
 	}
 	 
     //将map型转为请求参数型
-    public static String urlencode(Map<String,Object>data) {
+    public static String urlencode(Map<String,Object> data) {
+    	if(data == null) {
+    		return "";
+    	}
+    	
         StringBuilder sb = new StringBuilder();
         for (Map.Entry i : data.entrySet()) {
             try {
@@ -205,7 +211,7 @@ public class NetUtil extends BaseClass {
         try {
 			message.setFrom(new InternetAddress(send, "Power-matrix", "UTF-8"));
 			message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiver, "Master", "UTF-8"));
-	        message.setSubject(title, "UTF-8");
+	        message.setSubject(msg, "UTF-8");
 	        message.setContent(msg , "text/html;charset=UTF-8");
 	        message.setSentDate(new Date());
 	        message.saveChanges();

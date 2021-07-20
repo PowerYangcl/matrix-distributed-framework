@@ -8,8 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.pojo.entity.McSysFunction;
+import com.matrix.pojo.request.AddMcSysFunctionRequest;
 import com.matrix.service.IMcSysFunctionService;
 
 /**
@@ -20,16 +22,16 @@ import com.matrix.service.IMcSysFunctionService;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-@MatrixRequest(clazz=com.matrix.pojo.entity.McSysFunction.class)
+@MatrixRequest(clazz=com.matrix.pojo.request.AddMcSysFunctionRequest.class)
 public class ManagerApi115Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;  
 	
 	@Override
-	public JSONObject processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		McSysFunction info = JSONObject.parseObject(param.getString("data"), McSysFunction.class);
-		return mcSysFunctionService.addInfo(info);
+	public Result<McSysFunction> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+		AddMcSysFunctionRequest info = JSONObject.parseObject(param.getString("data"), AddMcSysFunctionRequest.class);
+		return mcSysFunctionService.addMcSysFunction(info);
 	}
 
 }

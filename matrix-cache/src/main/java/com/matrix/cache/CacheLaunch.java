@@ -6,7 +6,6 @@ import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.power.PowerLaunch;
 import com.matrix.cache.redis.RedisLaunch;
-import com.matrix.cache.servletContext.ContextLaunch;
 
 /**
  * @description: 缓存对外服务入口|单例|隔离Redis或其他缓存
@@ -25,9 +24,7 @@ public class CacheLaunch extends BaseClass{
 		String cacheType = this.getConfig("matrix-cache.cache_launch_type");
 		if(cacheType.equals("redis")){ 
 			launch = new RedisLaunch();
-		}else if(cacheType.equals("context")){ 
-			launch = new ContextLaunch();
-		}else if(cacheType.equals("power")){ 
+		} else if(cacheType.equals("power")){ 
 			launch = new PowerLaunch();
 		}
 	} 

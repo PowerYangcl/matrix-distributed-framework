@@ -25,6 +25,8 @@ public enum DCacheEnum {
 	
 	UserInfoNp ,        // 用户登陆信息  暂时没有使用 name + password 为key
 	
+	UserInfoId ,        // 保存UserInfoNp对应key后缀，方便查找和删除；例如：kye:xd-UserInfoId-999|value:userName+","+password
+	
 	ApiRequester , // api模块的请求公钥信息标识。
 	
 	AccessToken   ,         // 客户端令牌 对应手机端的用户缓存信息的key，且client类型为0:IOS   1:Android   2:微信
@@ -56,6 +58,10 @@ public enum DCacheEnum {
 	DictActivityType, //活动类型信息表缓存
 	
 	MsgId, // RocketMq消息队列
+	
+	McOrganization, // 组织结构
+	
+	TcShopInfo , // 店铺信息
 }
 
 
