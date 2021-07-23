@@ -1,76 +1,159 @@
 package com.matrix.support;
 
+import java.util.concurrent.TimeUnit;
+
 import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
+import org.redisson.api.RLock;
 import org.redisson.config.Config;
 
 import com.matrix.base.BaseClass;
+import com.matrix.cache.redisson.RedisTemplateRedisson;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * @description: 基于Redisson提供更加可靠的分布式锁。相对于DistributeLockRedis.java提供的锁，这种方式更加安全和详细
+ * @description: 基于Redisson提供更加可靠的分布式锁。相对于DistributeLockRedis.java提供的
+ * 		锁，这种方式更加安全和详细。不提倡使用tryLock锁。
  * 
- * 	参考链接如下：
- * 		https://www.jianshu.com/p/ae43ed4cf4ae
- * 		https://blog.csdn.net/j3t9z7h/article/details/88000009
- * 		http://www.php.cn/java-article-380297.html
- * 		https://blog.csdn.net/a15835774652/article/details/81775044  【分布式锁（基于redis和zookeeper）详解】
- * 
- * 		具体使用方式如下：
- * 
-				public void test() {
-					 // RLock类还有很多种锁的实现，请参考API文档。
-					RLock disLock = RedissonLock.getInstance().getRedissonClient().getLock("lock-key");
-					try {
-					    // 尝试获取分布式锁|第一个参数是等待时间，5秒内获取不到锁，则直接返回。 第二个参数 60是60秒后强制释放
-						boolean isLock = disLock.tryLock(5L, 60L, TimeUnit.SECONDS);
-					    if (isLock) {
-					        // TODO if get lock success, do something;
-					        
-					    }
-					} catch (Exception e) {
-						e.printStackTrace(); 
-					} finally {   // 无论如何, 最后都要解锁
-					    disLock.unlock();
-					}
-				}
  * @author Yangcl
  * @date 2019年6月15日 下午5:49:27 
  * @version 1.0.0.1
  */
+@Slf4j
 public class RedissonLock extends BaseClass{
 	
-	private Config config = null;
-	private RedissonClient redissonClient = null; // // 构造RedissonClient|对外暴露
+	private Redisson redisson;
 	
-	private RedissonLock() {
+	public RedissonLock() {
 		try {
-			config = new Config();
-			String[] arr = this.getConfig("matrix-cache.cache_url_" + this.getConfig("matrix-core.model")).split(",");
-			String [] nodeAddr = new String[arr.length];
-			for(int i = 0 ; i < arr.length ; i ++) {
-				nodeAddr[i] = "redis://" + arr[i];
-			}
-			
-			config.useClusterServers().addNodeAddress(nodeAddr)
-			.setPassword(this.getConfig("matrix-cache.redis_password_" + this.getConfig("matrix-core.model")))
-			.setScanInterval(10*60*1000);	// Redis集群扫描间隔(毫秒)
-			
-			redissonClient = Redisson.create(config);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			Config config = RedisTemplateRedisson.getInstance().createConfig();
+			redisson = (Redisson) Redisson.create(config);
+        } catch (Exception e) {
+            log.error("Redisson init error", e);
+            throw new IllegalArgumentException("please input correct configurations," +
+                    "connectionType must in standalone/sentinel/cluster/master-replica");
+        }
 	} 
-	private static class LazyHolder {
-		private static final RedissonLock INSTANCE = new RedissonLock();
+	
+	/**
+	 * @description: 提供更加灵活的操作出口
+	 * 
+	 * @author Yangcl
+	 * @date 2021-7-23 16:19:00
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.4-redisson
+	 */
+    public Redisson getRedisson() {
+        return redisson;
+    }
+	
+    
+	// ===================================================lock锁==================================================    
+    /**
+     * @description: 加锁操作，设置锁的有效时间，单位秒
+     * 
+     * @param lockName		 锁名称
+     * @param leaseTime 	 锁有效时间
+     * @author Yangcl
+     * @date 2021-7-23 11:46:52
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.0.4-redisson
+     */
+	public void lock(String lockName, long leaseTime) {
+		RLock rLock = redisson.getLock(lockName);
+		rLock.lock(leaseTime, TimeUnit.SECONDS);		// rLock.lock(); 无参方法默认30秒
 	}
-	public static final RedissonLock getInstance() {
-		return LazyHolder.INSTANCE; 
+
+	/**
+	 * @description: 判断该线程是否持有当前锁
+	 * 
+	 * @param lockName		锁名称
+	 * @author Yangcl
+	 * @date 2021-7-23 11:48:56
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.4-redisson
+	 */
+	public boolean isHeldByCurrentThread(String lockName) {
+		RLock rLock = redisson.getLock(lockName);
+		return rLock.isHeldByCurrentThread();
 	}
 	
-	public RedissonClient getRedissonClient() {
-		return redissonClient;
-	}
 	
+	// ===================================================tryLock锁==================================================
+	/**
+	 * @description: 加锁操作，tryLock锁，没有等待时间
+	 * 
+	 * @param lockName		锁名称
+	 * @param leaseTime	锁有效时间
+	 * @author Yangcl
+	 * @date 2021-7-23 11:48:36
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.4-redisson
+	 */
+	public boolean tryLock(String lockName, long leaseTime) {
+		RLock rLock = redisson.getLock(lockName);
+		boolean getLock = false;
+		try {
+			getLock = rLock.tryLock(leaseTime, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			log.error("获取Redisson分布式锁[异常]，lockName=" + lockName, e);
+			e.printStackTrace();
+			return false;
+		}
+		return getLock;
+	}
+
+	/**
+	 * @description: 加锁操作，tryLock锁，有等待时间
+	 * 
+	 * @param lockName  锁名称
+	 * @param leaseTime 锁有效时间
+	 * @param waitTime  等待时间
+	 * @author Yangcl
+	 * @date 2021-7-23 11:48:41
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.4-redisson
+	 */
+	public boolean tryLock(String lockName, long leaseTime, long waitTime) {
+		RLock rLock = redisson.getLock(lockName);
+		boolean getLock = false;
+		try {
+			getLock = rLock.tryLock(waitTime, leaseTime, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			log.error("获取Redisson分布式锁[异常]，lockName=" + lockName, e);
+			e.printStackTrace();
+			return false;
+		}
+		return getLock;
+	}
+
+	/**
+	 * @description: 解锁
+	 * 
+	 * @param lockName 锁名称
+	 * @author Yangcl
+	 * @date 2021-7-23 11:48:47
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.4-redisson
+	 */
+	public void unlock(String lockName) {
+		redisson.getLock(lockName).unlock();
+	}
+
+	/**
+	 * @description: 判断该锁是否已经被线程持有
+	 * 
+	 * @param lockName  锁名称
+	 * @return boolean
+	 * @author Yangcl
+	 * @date 2021-7-23 11:48:52
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.4-redisson
+	 */
+	public boolean isLock(String lockName) {
+		RLock rLock = redisson.getLock(lockName);
+		return rLock.isLocked();
+	}
+
 }
 
 

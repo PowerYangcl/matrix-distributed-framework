@@ -14,7 +14,7 @@ import com.matrix.pojo.properties.RedissonProperties;
  * @date 2021-7-22 16:54:46
  * @home https://github.com/PowerYangcl
  * @path matrix-cache / com.matrix.cache.redisson.mode.StandaloneConfigImpl.java
- * @version 1.0.0.1
+ * @version 1.6.0.4-redisson
  */
 @Slf4j
 public class StandaloneConfigImpl implements IRedissonConfigService {

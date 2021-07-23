@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2021-7-22 16:05:27
  * @home https://github.com/PowerYangcl
  * @path matrix-cache / com.matrix.cache.redisson.mode.MasterslaveConfigImpl.java
- * @version 1.0.0.1
+ * @version 1.6.0.4-redisson
  */
 @Slf4j
 public class MasterslaveConfigImpl implements IRedissonConfigService {

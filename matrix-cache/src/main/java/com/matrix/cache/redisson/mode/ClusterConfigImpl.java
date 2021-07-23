@@ -16,7 +16,7 @@ import com.matrix.pojo.properties.RedissonProperties;
  * @date 2021-7-22 15:57:57
  * @home https://github.com/PowerYangcl
  * @path matrix-cache / com.matrix.cache.redisson.mode.ClusterConfigImpl.java
- * @version 1.0.0.1
+ * @version 1.6.0.4-redisson
  */
 @Slf4j
 public class ClusterConfigImpl implements IRedissonConfigService {

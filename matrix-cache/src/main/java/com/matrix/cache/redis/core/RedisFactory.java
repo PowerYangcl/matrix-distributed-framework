@@ -1,17 +1,13 @@
 package com.matrix.cache.redis.core;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.api.RLock;
-
+import com.matrix.annotation.Inject;
+import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
-import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.entity.RedisEntity;
 import com.matrix.support.RedissonLock;
-import com.matrix.system.cache.PowerCache;
 
 /**
  * @descriptions 针对缓存提供基本的增删改查操作 
@@ -19,9 +15,12 @@ import com.matrix.system.cache.PowerCache;
  * @author Yangcl 
  * @home https://github.com/PowerYangcl
  * @date 2016年12月12日 下午10:50:56
- * @version 1.0.1
+ * @version 1.6.0.4-redisson
  */
-public class RedisFactory implements ICacheFactory{  
+public class RedisFactory extends BaseClass implements ICacheFactory{  
+	
+	@Inject
+	private RedissonLock redissonLock;
 
 	private String baseKey = "";
 	private String load = "";  // ILoadCache		
@@ -45,34 +44,6 @@ public class RedisFactory implements ICacheFactory{
 		return baseKey;
 	}
 	
-	/**
-	 * @description: 判断ehcache中是否包含这个Key
-	 *
-	 * @param key
-	 * @author Yangcl
-	 * @date 2018年11月19日 下午19:03:37 
-	 * @version 1.0.0.1
-	 */
-	private boolean containsKey(String key) {
-		return PowerCache.getInstance().getCache("power").isKeyInCache(key);
-	}
-	
-	/**
-	 * @description: 从ehcache中直接获取缓存对应的值
-	 *
-	 * @param key
-	 * @author Yangcl
-	 * @date 2018年11月19日 下午19:04:09 
-	 * @version 1.0.0.1
-	 */
-	private String findInEhcache(String key) {
-		if(!this.containsKey(key)) {
-			return "KEY-404";
-		}
-		return (String) PowerCache.getInstance().getCache("power").get(key).getObjectValue();
-	}
-	
-	
 	/////////////////////////////////////////////////////////////////// 基础json //////////////////////////////////////////////////////////////////////
 	/**
      * @description: 返回 key 所关联的字符串值。
@@ -82,95 +53,39 @@ public class RedisFactory implements ICacheFactory{
      * @date 2018年9月18日 下午5:24:33
      * @version 1.0.0.1
      */
-	public String get2(String key) {
-		String value = RedisTemplateLettuce.getInstance().get(baseKey + key);
-		if(StringUtils.isBlank(value)) {
-			RLock disLock = RedissonLock.getInstance().getRedissonClient().getLock("lock-" + baseKey + key);  // 添加分布式锁
-			try {
-			    // 尝试获取分布式锁|20秒内获取不到锁则直接返回； 第二个参数是60秒后强制释放
-				boolean isLock = disLock.tryLock(20L, 60L, TimeUnit.SECONDS);
-			    if (isLock) {
-			    	value = RedisTemplateLettuce.getInstance().get(baseKey + key);
-					if(StringUtils.isBlank(value)) {
-						if(this.load.length() == 16) {
-							return "";
-						}
-						try {
-							Class<?> clazz = Class.forName(load);   
-							if (clazz != null && clazz.getDeclaredMethods() != null){
-								// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
-								Long count = RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, 10*60L);
-								if(count >= 20) {
-									return "";
-								}
-								@SuppressWarnings("unchecked")
-								ILoadCache<String> cache = (ILoadCache<String>) clazz.newInstance();
-								return cache.load(key , "");
-							}else {
-								return "";
-							}
-						}catch (Exception e) {
-							e.printStackTrace();
-							return "";
-						}    
-					}else {
-						return value;
-					}
-			    }
-			} catch (Exception e) {
-				e.printStackTrace(); 
-			} finally {   // 无论如何, 最后都要解锁
-			    disLock.unlock();
-			}
-			
-			return value;
-		}else {
-			return value;
-		}
-	}
-	
 	public String get(String key) {
 		String value = RedisTemplateLettuce.getInstance().get(baseKey + key);
 		if(StringUtils.isBlank(value)) {
+			String lockey = "lock-" + baseKey + key;  // 最小化分布式锁的粒度
 			try {
-			    // 尝试获取分布式锁|20秒内获取不到锁则直接返回； 第二个参数是60秒后强制释放
-			    synchronized (Object.class) {
-			    	value = RedisTemplateLettuce.getInstance().get(baseKey + key);
-					if(StringUtils.isBlank(value)) {
-						if(this.load.length() == 16) {
+				redissonLock.lock(lockey, 20);				 // 尝试获取分布式锁|20秒内获取不到锁则直接返回； 第二个参数是60秒后强制释放
+				value = RedisTemplateLettuce.getInstance().get(baseKey + key);
+				if(StringUtils.isBlank(value)) {
+					if(this.load.length() == 16) {
+						return "";
+					}
+					Class<?> clazz = Class.forName(load);   
+					if (clazz != null && clazz.getDeclaredMethods() != null){
+						// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
+						Long count = RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, 10*60L);
+						if(count >= 20) {
 							return "";
 						}
-						try {
-							Class<?> clazz = Class.forName(load);   
-							if (clazz != null && clazz.getDeclaredMethods() != null){
-								// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
-								Long count = RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, 10*60L);
-								if(count >= 20) {
-									return "";
-								}
-								@SuppressWarnings("unchecked")
-								ILoadCache<String> cache = (ILoadCache<String>) clazz.newInstance();
-								return cache.load(key , "");
-							}else {
-								return "";
-							}
-						}catch (Exception e) {
-							e.printStackTrace();
-							return "";
-						}    
-					}else {
-						return value;
+						@SuppressWarnings("unchecked")
+						ILoadCache<String> cache = (ILoadCache<String>) clazz.newInstance();
+						return cache.load(key , "");
 					}
-			    }
+				}
 			} catch (Exception e) {
 				e.printStackTrace(); 
-			} finally {   // 无论如何, 最后都要解锁
+			} finally {   
+				// 如果该线程还持有该锁，那么释放该锁。如果该线程不持有该锁，说明该线程的锁已到过期时间，自动释放锁
+				if (redissonLock.isHeldByCurrentThread(lockey)) {
+		            redissonLock.unlock(lockey);
+		        }
 			}
-			
-			return value;
-		}else {
-			return value;
 		}
+		return StringUtils.isBlank(value) ? "" : value;
 	}
 	
     /**
@@ -467,7 +382,7 @@ public class RedisFactory implements ICacheFactory{
 
     /**
      * @description: 获取Set集合变量中的值。如果Set == null or Set.size() == 0，依然返回空
-     *			TODO 没加分布式锁，后期改进
+     *			
      * @param key
      * @author Yangcl
      * @date 2018年9月19日 上午10:27:10
@@ -476,37 +391,35 @@ public class RedisFactory implements ICacheFactory{
     public Set<String> sget(String key){
     	Set<String> value = RedisTemplateLettuce.getInstance().sget(baseKey + key);
         if (value == null || value.size() == 0) {
-            synchronized (CacheLaunch.class) {
-                value =  RedisTemplateLettuce.getInstance().sget(baseKey + key);
-                if (value == null || value.size() == 0) {
-                    if (this.load.length() == 16) {
-                        return null;
-                    }
-                    try {
-                        Class<?> clazz = Class.forName(load);
-                        if (clazz != null && clazz.getDeclaredMethods() != null) {
-                            // Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
-                            Long count = RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, 10 * 60L);
-                            if (count >= 20) {
-                                return null;
-                            }
-                            @SuppressWarnings("unchecked")
-                            ILoadCache<Set<String>> cache = (ILoadCache<Set<String>>) clazz.newInstance();
-                            return cache.load(key, "");
-                        } else {
-                            return null;
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                } else {
-                    return value;
-                }
-            }
-        } else {
-            return value;
+        	String lockey = "lock-" + baseKey + key;  // 最小化分布式锁的粒度
+        	try {
+        		redissonLock.lock(lockey, 20);
+        		value =  RedisTemplateLettuce.getInstance().sget(baseKey + key);
+        		if (value == null || value.size() == 0) {
+        			if (this.load.length() == 16) {
+        				return null;
+        			}
+        			Class<?> clazz = Class.forName(load);
+        			if (clazz != null && clazz.getDeclaredMethods() != null) {
+        				// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
+        				Long count = RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, 10 * 60L);
+        				if (count >= 20) {
+        					return null;
+        				}
+        				@SuppressWarnings("unchecked")
+        				ILoadCache<Set<String>> cache = (ILoadCache<Set<String>>) clazz.newInstance();
+        				return cache.load(key, "");
+        			}
+        		}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}finally {
+				if (redissonLock.isHeldByCurrentThread(lockey)) {
+		            redissonLock.unlock(lockey);
+		        }
+			}
         }
+        return value;
     }
 
     /**

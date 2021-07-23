@@ -10,8 +10,16 @@ import com.matrix.cache.redisson.mode.SentineConfigImpl;
 import com.matrix.cache.redisson.mode.StandaloneConfigImpl;
 import com.matrix.pojo.properties.RedissonProperties;
 
+/**
+ * @description: Redisson核心配置，用于提供初始化的redisson实例
+ * 
+ * @author Yangcl
+ * @date 2021-7-21 16:06:28
+ * @home https://github.com/PowerYangcl
+ * @path matrix-cache / com.matrix.cache.redisson.RedissonManager.java
+ * @version 1.6.0.4-redisson
+ */
 public class RedisTemplateRedisson extends BaseClass {
-	
 	private RedisTemplateRedisson() {
     }
 	private static class LazyHolder {
@@ -21,11 +29,11 @@ public class RedisTemplateRedisson extends BaseClass {
 		return LazyHolder.INSTANCE; 
 	}
 	
-	
+	// // 连接类型，支持standalone-单机节点，sentinel-哨兵，cluster-集群，master-replica-主从
 	public Config createConfig() {
 		String type = this.getConfig("matrix-cache.redis_model_" + this.getConfig("matrix-core.model"));		// sentinel or cluster and so on.
 		RedissonProperties properties = new RedissonProperties();
-		properties.setType(type);	// 连接类型，支持standalone-单机节点，sentinel-哨兵，cluster-集群，master-replica-主从
+		properties.setType(type);	
 		properties.setAddress(this.getConfig("matrix-cache.redis_url_" + this.getConfig("matrix-core.model")));
 		properties.setUsername(this.getConfig("matrix-cache.redis_username_" + this.getConfig("matrix-core.model")));
 		properties.setPassword(this.getConfig("matrix-cache.redis_password_" + this.getConfig("matrix-core.model")));
@@ -48,10 +56,6 @@ public class RedisTemplateRedisson extends BaseClass {
 		}
 		return redissonConfigService.createRedissonConfig(properties);
 	}
-	
-	
-	
-	
 }
 
 

@@ -36,6 +36,9 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
 	@Inject
 	public IJobService jobService;
+	@Inject
+	private RedissonLock redissonLock;
+	
 	private JobInfo jobInfo = null;  
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -74,7 +77,7 @@ public abstract class RootJob extends BaseClass implements Job, IBaseJob {
 		JSONObject result = new JSONObject();
 		result.put("status", "success"); 
 		if(jobInfo.getConcurrentType()  == 0) {		// 是否允许并行启动|0不允许 1允许
-			RLock disLock = RedissonLock.getInstance().getRedissonClient().getLock(jobInfo.getLockKey());
+			RLock disLock = redissonLock.getRedisson().getLock(jobInfo.getLockKey());		// 
 			try {
 			    // 尝试获取分布式锁|第一个参数是请求锁的超时时间。 第二个参数 锁的过期时间
 				boolean isLock = disLock.tryLock(jobInfo.getTimeOut() , jobInfo.getExpireTime()*1000 , TimeUnit.MILLISECONDS);
