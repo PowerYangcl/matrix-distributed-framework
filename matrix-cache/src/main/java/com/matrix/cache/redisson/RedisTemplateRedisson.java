@@ -12,6 +12,7 @@ import com.matrix.pojo.properties.RedissonProperties;
 
 /**
  * @description: Redisson核心配置，用于提供初始化的redisson实例
+ * 		参考：https://www.cnblogs.com/qdhxhz/p/11059200.html
  * 
  * @author Yangcl
  * @date 2021-7-21 16:06:28

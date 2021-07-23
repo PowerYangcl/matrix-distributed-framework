@@ -5,8 +5,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-//import org.springframework.core.annotation.Order;
+import org.springframework.core.annotation.Order;
 
+import com.matrix.cache.redisson.DistributedLockHandler;
 import com.matrix.support.RedissonLock;
 
 /**
@@ -22,10 +23,17 @@ import com.matrix.support.RedissonLock;
 @ConditionalOnClass(Redisson.class)
 public class RedissonAutoConfig {
 
-	@Bean(name = "redissonLock")
-    @ConditionalOnMissingBean		// @Order(value = 1)
+	@Bean
+	@Order(value = 1)
+    @ConditionalOnMissingBean
     public RedissonLock redissonLock() {
         RedissonLock redissonLock = new RedissonLock();
         return redissonLock;
     }
+	
+	@Bean
+	@Order(value = 2)
+	public DistributedLockHandler lockHandler() {
+		return new DistributedLockHandler();
+	}
 }
