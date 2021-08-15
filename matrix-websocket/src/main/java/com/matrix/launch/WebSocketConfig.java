@@ -18,6 +18,7 @@ import com.matrix.system.SocketChannelIntecepter;
  * 		@EnableWebSocketMessageBroker：在 WebSocket 上启用STOMP
  * 
  * 		参考：https://www.jianshu.com/p/9103c9c7e128
+ * 					https://blog.csdn.net/pacosonswjtu/article/details/51914567
  * 
  * @author Yangcl
  * @date 2021-7-30 18:41:26
