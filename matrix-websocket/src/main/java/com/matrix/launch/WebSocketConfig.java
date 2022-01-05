@@ -19,6 +19,8 @@ import com.matrix.system.SocketChannelIntecepter;
  * 
  * 		参考：https://www.jianshu.com/p/9103c9c7e128
  * 					https://blog.csdn.net/pacosonswjtu/article/details/51914567
+ * 					https://blog.csdn.net/qq_42809896/article/details/103896537  【两个springboot+websocket之间的通信 WebSocketClient 】
+ * 					https://stackoverflow.com/questions/51873661/
  * 
  * @author Yangcl
  * @date 2021-7-30 18:41:26
@@ -27,12 +29,15 @@ import com.matrix.system.SocketChannelIntecepter;
  * @version 1.6.0.6-websocket
  */
 @Configuration
-@EnableWebSocketMessageBroker
+@EnableWebSocketMessageBroker		// 在 WebSocket 上启用 STOMP
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	
 	/**
 	 * @description: 配置基站。添加Endpoint，在网页中就可以通过websocket连接上服务，
 	 * 		也就是我们配置websocket的服务地址，并且可以指定是否使用socketjs
+	 * 		
+	 * 		setAllowedOrigins ("*")非必须，"*" 表示允许其他域进行连接。最好取配置文件中的内容
+	 * 		withSockJS  表示开始sockejs支持
 	 *
 	 * @author Yangcl
 	 * @date 2021-7-30 18:17:50
@@ -41,7 +46,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/endpoint-websocket").addInterceptors(new HttpHandShakeIntecepter()).setAllowedOrigins("*").withSockJS();
+    	String [] arr = {"/endpoint-websocket","/endpoint-websocket2"};
+    	registry.addEndpoint(arr);
+        registry.addEndpoint(arr).addInterceptors(new HttpHandShakeIntecepter()).setAllowedOrigins("*").withSockJS();
     }
 
     /**
