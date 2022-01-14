@@ -5,6 +5,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 
+import com.matrix.base.BaseClass;
+
 /**
  * @description: 频道拦截器 ，类似管道，可以获取消息的一些meta数据
  * 
@@ -14,7 +16,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
  * @path matrix-websocket / com.matrix.system.SocketChannelIntecepter.java
  * @version 1.6.0.6-websocket
  */
-public class SocketChannelIntecepter implements ChannelInterceptor{
+public class SocketChannelIntecepter extends BaseClass implements ChannelInterceptor{
 	
 	/**
 	 * @description: 在完成发送之后进行调用，不管是否有异常发生，一般用于资源清理
@@ -26,7 +28,7 @@ public class SocketChannelIntecepter implements ChannelInterceptor{
 	 */
     @Override
     public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent, Exception ex) {
-        System.out.println("SocketChannelIntecepter->afterSendCompletion");
+        this.getLogger(null).sysoutInfo("SocketChannelIntecepter afterSendCompletion 完成发送之后进行调用 " + message, this.getClass()); 
     }
     
     /**
@@ -39,7 +41,7 @@ public class SocketChannelIntecepter implements ChannelInterceptor{
      */
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        System.out.println("SocketChannelIntecepter->preSend");
+        this.getLogger(null).sysoutInfo("SocketChannelIntecepter preSend 消息被实际发送到频道之前调用 " + message, this.getClass()); 
         return preSend(message, channel);
     }
     
@@ -53,13 +55,14 @@ public class SocketChannelIntecepter implements ChannelInterceptor{
      */
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
-        System.out.println("SocketChannelIntecepter->postSend");
+        this.getLogger(null).sysoutInfo("SocketChannelIntecepter postSend 发送消息调用后立即调用 " + message, this.getClass()); 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);//消息头访问器
         if (headerAccessor.getCommand() == null) {
-        	return;// 避免非stomp消息类型，例如心跳检测
+        	return;	// 避免非stomp消息类型，例如心跳检测
         }
         String sessionId = headerAccessor.getSessionAttributes().get("sessionId").toString();
-        System.out.println("SocketChannelIntecepter -> sessionId = " + sessionId);
+        this.getLogger(null).sysoutInfo("SocketChannelIntecepter postSend 发送消息调用后立即调用 sessionId" + sessionId, this.getClass()); 
+        
         switch (headerAccessor.getCommand()) {
             case CONNECT:
                 connect(sessionId);
@@ -86,7 +89,6 @@ public class SocketChannelIntecepter implements ChannelInterceptor{
      * @version 1.6.0.6-websocket
      */
     private void connect(String sessionId) {
-        System.out.println("connect sessionId=" + sessionId);
     }
 
     /**
@@ -98,7 +100,6 @@ public class SocketChannelIntecepter implements ChannelInterceptor{
      * @version 1.6.0.6-websocket
      */
     private void disconnect(String sessionId) {
-        System.out.println("disconnect sessionId=" + sessionId);
         //用户下线操作
 //        UserChatController.onlineUser.remove(sessionId);
     }

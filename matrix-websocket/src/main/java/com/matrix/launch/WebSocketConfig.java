@@ -3,7 +3,6 @@ package com.matrix.launch;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.GsonMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

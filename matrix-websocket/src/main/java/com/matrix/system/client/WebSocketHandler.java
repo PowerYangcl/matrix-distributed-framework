@@ -9,6 +9,15 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * @description: TODO websocket.client使用
+ * 
+ * @author Yangcl
+ * @date 2022-1-14 18:27:53
+ * @home https://github.com/PowerYangcl
+ * @path matrix-websocket / com.matrix.system.client.WebSocketHandler.java
+ * @version 1.6.0.6-websocket
+ */
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class WebSocketHandler extends TextWebSocketHandler {
