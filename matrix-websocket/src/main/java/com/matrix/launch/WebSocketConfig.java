@@ -3,18 +3,26 @@ package com.matrix.launch;
 import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.converter.GsonMessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import com.matrix.base.BaseClass;
 import com.matrix.system.HttpHandShakeIntecepter;
 import com.matrix.system.SocketChannelIntecepter;
 
 /**
  * @description: 
+ * 		经典使用场景
+ * 								1对1：点对点聊天；
+ * 								1对多：游戏公告；
+ * 								多对多：多人聊天系统
+ * 
  * 		@EnableWebSocketMessageBroker：在 WebSocket 上启用STOMP
  * 
  * 		参考：https://www.jianshu.com/p/9103c9c7e128
@@ -30,11 +38,12 @@ import com.matrix.system.SocketChannelIntecepter;
  */
 @Configuration
 @EnableWebSocketMessageBroker		// 在 WebSocket 上启用 STOMP
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig extends BaseClass implements WebSocketMessageBrokerConfigurer {
 	
 	/**
 	 * @description: 配置基站。添加Endpoint，在网页中就可以通过websocket连接上服务，
 	 * 		也就是我们配置websocket的服务地址，并且可以指定是否使用socketjs
+	 * 		页面通过：var socket = new SockJS('/endpoint-websocket');
 	 * 		
 	 * 		setAllowedOrigins ("*")非必须，"*" 表示允许其他域进行连接。最好取配置文件中的内容
 	 * 		withSockJS  表示开始sockejs支持
@@ -46,8 +55,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	 */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-    	String [] arr = {"/endpoint-websocket","/endpoint-websocket2"};
-    	registry.addEndpoint(arr);
+    	String[] arr = this.getConfig("matrix-websocket.endpoint").split(",");
         registry.addEndpoint(arr).addInterceptors(new HttpHandShakeIntecepter()).setAllowedOrigins("*").withSockJS();
     }
 
@@ -61,13 +69,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic", "/chat");				// 服务端推送给客户端的路径前缀
-        registry.setApplicationDestinationPrefixes("/app");		// 客户端发送数据给服务器端的一个前缀
+        registry.enableSimpleBroker(this.getConfig("matrix-websocket.broker").split(","));
+        registry.setApplicationDestinationPrefixes(this.getConfig("matrix-websocket.application_destination_prefixes").split(","));
     }
 
 
     /**
-     * @description: 设置输入消息通道的线程数。默认线程为1，可以自己自定义线程数，最大线程数和线程存活时间。
+     * @description: 设置【输入】消息通道的线程数。默认线程为1，可以自己自定义线程数，最大线程数和线程存活时间。
      *
      * @author Yangcl
      * @date 2021-7-30 18:48:02
@@ -77,10 +85,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new SocketChannelIntecepter());
+        ThreadPoolTaskExecutor task = new ThreadPoolTaskExecutor();
+        task.setCorePoolSize(2);
+        task.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
+        task.setThreadNamePrefix("matrix-websocket-message-chnanel");
+        registration.taskExecutor(new ThreadPoolTaskExecutor());
     }
 
     /**
-     * @description: 设置输出消息通道的线程数。默认线程为1，可以自己自定义线程数，最大线程数和线程存活时间。
+     * @description: 设置【输出】消息通道的线程数。默认线程为1，可以自己自定义线程数，最大线程数和线程存活时间。
      *
      * @author Yangcl
      * @date 2021-7-30 18:48:39
@@ -90,6 +103,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientOutboundChannel(ChannelRegistration registration) {
         registration.interceptors(new SocketChannelIntecepter());
+        ThreadPoolTaskExecutor task = new ThreadPoolTaskExecutor();
+        task.setCorePoolSize(2);
+        task.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
+        task.setThreadNamePrefix("matrix-websocket-message-chnanel");
+        registration.taskExecutor(new ThreadPoolTaskExecutor());
     }
     
     /**
@@ -105,6 +123,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
+//    	messageConverters.add(new GsonMessageConverter());
 		return true;
 	}
 }

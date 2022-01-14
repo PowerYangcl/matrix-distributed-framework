@@ -13,6 +13,7 @@ import com.matrix.system.cache.PropVisitor;
 
 /**
  * @description: 顶层基类，提供多样化的注解功能、配置文件访问等等 
+ * 		可以由@Configuration标注过的类继承。
  * 
  * @author 张海涛
  * @date 2016年9月29日 下午2:40:02 

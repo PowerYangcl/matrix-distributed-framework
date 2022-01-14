@@ -14,7 +14,7 @@ import com.matrix.service.IWebsocketService;
  * @path matrix-websocket / com.matrix.service.impl.WebsocketServiceImpl.java
  * @version 1.6.0.6-websocket
  */
-@Service("matrixRouteService")
+@Service("websocketService")
 public class WebsocketServiceImpl extends BaseClass implements IWebsocketService{
 	
 

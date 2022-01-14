@@ -20,7 +20,7 @@ import com.matrix.system.client.WebSocketHandler;
  * @path matrix-websocket / com.matrix.launch.WebSocketClientConfig.java
  * @version 1.6.0.6-websocket
  */
-@Configuration
+//@Configuration
 public class WebSocketClientConfig extends BaseClass {
 
 	// TODO 需要一个bean的顺序加载来解决此类中reconnect()的问题

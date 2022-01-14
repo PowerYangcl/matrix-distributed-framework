@@ -44,6 +44,11 @@
 			<artifactId>matrix-web-adapter</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.matrix</groupId>
+			<artifactId>matrix-websocket</artifactId>
+			<version>${project.version}</version>
+		</dependency>		
 	</dependencies>
 	
     <build>

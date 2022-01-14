@@ -3,8 +3,11 @@ package com.matrix.system.cache;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.base.BaseEhcache;
 import com.matrix.base.BaseLog;
@@ -46,8 +49,18 @@ public class PropConfig extends BaseEhcache<String, String> {
 		LoadProperties loadProperties = new LoadProperties();
 		// 开始读取配置放入到ecache中
 		Map<String,String> map = loadProperties.loadMap(tempPath);
-		for (String s : map.keySet()) {	
+		Map<String,String> reloadMap = new HashMap<String, String>();		// 保存项目中需要差异化特殊配置的信息
+		for (String s : map.keySet()) {
+			if(StringUtils.contains(s, ".reload_")) {
+				reloadMap.put(s, map.get(s));
+				continue;
+			}
 			this.addElement(s, map.get(s));
+		}
+		if(!reloadMap.isEmpty()) {
+			for (String s : reloadMap.keySet()) {
+				this.resetElement(s.split(".reload_")[1], reloadMap.get(s));
+			}
 		}
 		
 		try {		// 获取本机	ip 同时添加到一级缓存
