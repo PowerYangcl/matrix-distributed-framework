@@ -4,15 +4,19 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>矩阵系统配置-系统工具-缓存查看</title>
+		<title>矩阵系统配置-系统工具-发送系统公告</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" href="${layui}/layui/css/layui.css" media="all">
 		<link rel="stylesheet" href="${layui}/style/admin.css" media="all">
-		<script src="${layui}/layui/layui.js"></script>  
+		<script src="${layui}/layui/layui.js"></script>
+		
+		<script src="https://cdn.bootcdn.net/ajax/libs/sockjs-client/1.5.2/sockjs.js"></script>	<!--  -->
+		<script src="https://cdn.bootcdn.net/ajax/libs/stomp.js/2.3.2/stomp.js"></script> <!-- -->
+		<!-- <script src="https://cdn.bootcdn.net/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script> -->
+		<!-- <script src="https://cdn.bootcdn.net/ajax/libs/stomp.js/2.3.2/stomp.min.js"></script> -->
 		<style type="text/css">
-			
 			form input[type=text],select,textarea{
 			    border: 1px solid #ccc;
 			    padding: 8px 5px;
@@ -51,7 +55,7 @@
 						<div class="layui-card-header">
 							<a><cite>矩阵系统配置 / </cite></a> 
 							<a><cite>系统工具 / </cite></a>
-							<a><cite>缓存查看</cite></a>
+							<a><cite>发送系统公告</cite></a>
 						</div>
 						<div class="layui-card-header">
 							<h3>
@@ -59,38 +63,46 @@
 							</h3>
 						</div>
 						<div class="layui-card-body" style="width: 1200px;height: auto;">
-							<!-- 表单体系所在的父元素加上class="layui-form"，一切的工作都会在你加载完form模块后，自动完成 -->
-							<!-- 表单体系所在的父元素加上class="layui-form"，一切的工作都会在你加载完form模块后，自动完成 -->
-							<!-- 表单体系所在的父元素加上class="layui-form"，一切的工作都会在你加载完form模块后，自动完成 -->
-							<form id="cache-form" class="layui-form" action="javascript:void(0)" autocomplete="off">
+							<form id="cache-form"  action="javascript:void(0)" autocomplete="off">
 								<table class="" style="width:70%">
 									<tr>
 										<td style="border-right:1px solid #ece7e7;width:40%;">
-											缓存类型：<select id="type" name="type" style="margin-left:0px; margin-bottom: 10px;">
-												<option value="dict" dict="xd">字典缓存</option>
-												<option value="serv" dict="xs">服务缓存</option>
+											选择通道：<select id="channle" name="channle" style="margin-left:0px; margin-bottom: 10px;">
+												<option value="endpoint-page-user-normal">普通用户公告通道</option>
+												<option value="endpoint-page-user-vip">会员用户公告通道</option>
 											</select>
 										</td>
 									</tr>
 									<tr>
 										<td style="border-right:1px solid #ece7e7;width:40%;">
-											缓存前缀：<input id="prefix" name="prefix" type="text"  style="margin-bottom: 10px;" value="" placeholder="McUserRole" lay-verify="required"><br> 
-											缓存后缀：<input id="cache-key" name="key" type="text" style="margin-bottom: 10px;" value="" placeholder="80160001"><br>
-											<textarea id="json-str" style="margin-bottom: 10px;height: 400px; width: 790px" placeholder="这里将显示缓存信息"></textarea>
+											<div style="margin-bottom: 10px;">
+												<span style="vertical-align:middle;">是否入库：</span>
+												<input type="radio" name="save" value="0" checked="checked" style="vertical-align:middle;"> 
+												<span style="vertical-align:middle;">通告入库</span> &nbsp;&nbsp;&nbsp;&nbsp;
+												<input type="radio" name="save" value="1" style="vertical-align:middle;"> 
+												<span style="vertical-align:middle;">通告不入库</span>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td style="border-right:1px solid #ece7e7;width:40%;">
+											通告标题：<input id="title" name="title" type="text"  style="margin-bottom: 10px;" value="" placeholder="通告标题" lay-verify="required"><br> 
+										</td>
+									</tr>
+									<tr>
+										<td style="border-right:1px solid #ece7e7;width:40%;">
+											<textarea id="content" style="margin-bottom: 10px;height: 200px; width: 790px" placeholder="请输入通告信息"></textarea>
 											<br>
 										</td>
 									</tr>
-									
 									<tr>
 										<td style="border-right:1px solid #ece7e7;width:40%;" align="right">
 											<!-- 
 												lay-submit lay-filter="add-cache" layui在js文件中提交表单使用，如：form.on('submit(add-cache)', function(o){}
 											 -->
-											<button class="security-btn layui-btn layui-btn-sm layui-btn-danger"  key="system_cache:batch_delete"  lay-submit lay-filter="batch-delete-cache">批量删除缓存</button>
-											<button class="security-btn layui-btn layui-btn-sm"  key="system_cache:reset"  lay-submit lay-filter="add-cache">设置缓存</button>
-											<button class="security-btn layui-btn layui-btn-sm"  key="system_cache:reset_forever"  lay-submit lay-filter="add-cache-forever">设置缓存(永久)</button>
-											<button class="security-btn layui-btn layui-btn-sm layui-btn-danger"  key="system_cache:delete_cache"  lay-submit lay-filter="delete-cache">删除缓存</button>
-											<button class="security-btn layui-btn layui-btn-sm"  key="system_cache:get_cache"  lay-submit lay-filter="get-cache" style="margin-right: 30px;">获取缓存</button>
+											<button id="disconnect" class="security-btn layui-btn layui-btn-sm"  key="affiche:disconnect"  lay-submit lay-filter="disconnect">断开链接</button>
+											<button id="connect" class="security-btn layui-btn layui-btn-sm"  key="affiche:connect"  lay-submit lay-filter="connect">建立链接</button>
+											<button id="send" class="security-btn layui-btn layui-btn-sm"  key="affiche:send"  lay-submit lay-filter="send">发送通告</button>
 										</td>
 									</tr>
 								</table>
@@ -108,7 +120,7 @@
 
 
 
-<script type="text/javascript" src="${views}/system/cache/system-cache.js"></script>
+<script type="text/javascript" src="${views}/websocket/affiche/admin.js"></script>
 
 
 

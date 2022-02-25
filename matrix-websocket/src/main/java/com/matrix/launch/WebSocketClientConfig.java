@@ -21,25 +21,25 @@ import com.matrix.system.client.WebSocketHandler;
  * @version 1.6.0.6-websocket
  */
 //@Configuration
-public class WebSocketClientConfig extends BaseClass {
+public class WebSocketClientConfig{	// extends BaseClass {
 
 	// TODO 需要一个bean的顺序加载来解决此类中reconnect()的问题
-	@Autowired
-	private WebSocketHandler handler = new WebSocketHandler();
-	
-	private WebSocketConnectionManager manager;
-	
-    @Bean
-    public WebSocketConnectionManager wsConnectionManager() {
-        manager = new WebSocketConnectionManager(client(), handler, Constants.server_websocket_url);
-        manager.setAutoStartup(true);			// 重要
-        return manager;
-    }
-    
-    @Bean
-    public StandardWebSocketClient client() {
-        return new StandardWebSocketClient();
-    }
+//	@Autowired
+//	private WebSocketHandler handler = new WebSocketHandler();
+//	
+//	private WebSocketConnectionManager manager;
+//	
+//    @Bean
+//    public WebSocketConnectionManager wsConnectionManager() {
+//        manager = new WebSocketConnectionManager(client(), handler, Constants.server_websocket_url);
+//        manager.setAutoStartup(true);			// 重要
+//        return manager;
+//    }
+//    
+//    @Bean
+//    public StandardWebSocketClient client() {
+//        return new StandardWebSocketClient();
+//    }
 }
 
 

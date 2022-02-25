@@ -5,6 +5,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
 
 /**
@@ -28,7 +29,7 @@ public class SocketChannelIntecepter extends BaseClass implements ChannelInterce
 	 */
     @Override
     public void afterSendCompletion(Message<?> message, MessageChannel channel, boolean sent, Exception ex) {
-        this.getLogger(null).sysoutInfo("SocketChannelIntecepter afterSendCompletion 完成发送之后进行调用 " + message, this.getClass()); 
+        this.getLogger(null).sysoutInfo("afterSendCompletion 完成发送之后进行调用 " + message, this.getClass()); 
     }
     
     /**
@@ -41,8 +42,8 @@ public class SocketChannelIntecepter extends BaseClass implements ChannelInterce
      */
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        this.getLogger(null).sysoutInfo("SocketChannelIntecepter preSend 消息被实际发送到频道之前调用 " + message, this.getClass()); 
-        return preSend(message, channel);
+        this.getLogger(null).sysoutInfo("preSend 消息被实际发送到频道之前调用 " + JSONObject.toJSONString(message), this.getClass());
+        return message;
     }
     
     /**
@@ -55,13 +56,12 @@ public class SocketChannelIntecepter extends BaseClass implements ChannelInterce
      */
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
-        this.getLogger(null).sysoutInfo("SocketChannelIntecepter postSend 发送消息调用后立即调用 " + message, this.getClass()); 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);//消息头访问器
         if (headerAccessor.getCommand() == null) {
         	return;	// 避免非stomp消息类型，例如心跳检测
         }
         String sessionId = headerAccessor.getSessionAttributes().get("sessionId").toString();
-        this.getLogger(null).sysoutInfo("SocketChannelIntecepter postSend 发送消息调用后立即调用 sessionId" + sessionId, this.getClass()); 
+        this.getLogger(null).sysoutInfo("postSend 发送消息调用后立即调用 sessionId" + sessionId, this.getClass()); 
         
         switch (headerAccessor.getCommand()) {
             case CONNECT:

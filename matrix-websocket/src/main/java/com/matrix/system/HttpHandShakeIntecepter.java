@@ -66,7 +66,6 @@ public class HttpHandShakeIntecepter extends BaseClass implements HandshakeInter
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest)request;
 			HttpSession session =  servletRequest.getServletRequest().getSession();
 			String sessionId = session.getId();
-			System.out.println("【握手拦截器】afterHandshake sessionId="+sessionId);
 			this.getLogger(null).sysoutInfo("HttpHandShakeIntecepter afterHandshake 握手之后 Session = " + sessionId, this.getClass()); 
 			// TODO 指明状态码？
 		}

@@ -78,7 +78,7 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
     
     /**
      * @description: 注册拦截器，添加拦截路径和排除拦截路径
-     *		 excludePathPatterns("login.do" , "logout.do" , "validate_code.do").order(0);//// 添加排除拦截路径 执行顺序
+     *		 excludePathPatterns("login.do" , "logout.do" , "validate_code.do").order(0);	//  添加排除拦截路径 执行顺序
      *
      * @author Yangcl
      * @date 2021-3-12 15:11:41
@@ -87,12 +87,14 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
      */
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(new UrlInterceptor()).addPathPatterns("/**");  //  /** 的意思是所有文件夹及里面的子文件夹；/* 是所有文件夹，不含子文件夹|/是web项目的根目录
-		// 继续注册其他的拦截器：registry.addInterceptor(new Interceptor2()).addPathPatterns("/**"); 
+		//  /** 的意思是所有文件夹及里面的子文件夹；/* 是所有文件夹，不含子文件夹|/是web项目的根目录
+		registry.addInterceptor(new UrlInterceptor()).addPathPatterns("/**"); 
+		// TODO 继续注册其他的拦截器：registry.addInterceptor(new Interceptor2()).addPathPatterns("/**"); 
 	}
 	
+    
 	/**
-	 * @description: 设置匹配.do后缀的请求
+	 * @description: 设置匹配.do后缀的请求，此处开启则会仅过滤*.do请求。
 	 * 		srb.addUrlMappings("*.jsp");会导致bug
 	 * 
 	 * @param dispatcherServlet
@@ -101,7 +103,7 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */
-    @Bean
+//    @Bean		
     public ServletRegistrationBean<DispatcherServlet> servletRegistrationBean(DispatcherServlet dispatcherServlet) {
         ServletRegistrationBean<DispatcherServlet> srb = new ServletRegistrationBean<>(dispatcherServlet);
         srb.addUrlMappings("*.do");

@@ -54,7 +54,7 @@ import com.matrix.service.IApiCenterService;
 @Controller
 @RequestMapping("apicenter")
 public class ApiCenterController extends BaseController {
-	private static Logger logger=Logger.getLogger(ApiCenterController.class);
+	private static Logger logger = Logger.getLogger(ApiCenterController.class);
 	
 	@Autowired
 	private IApiCenterService service;  

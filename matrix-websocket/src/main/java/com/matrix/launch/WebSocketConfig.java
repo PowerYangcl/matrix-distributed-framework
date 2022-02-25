@@ -2,8 +2,8 @@ package com.matrix.launch;
 
 import java.util.List;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -12,6 +12,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import com.matrix.base.BaseClass;
+import com.matrix.controller.WebsocketController;
 import com.matrix.system.HttpHandShakeIntecepter;
 import com.matrix.system.SocketChannelIntecepter;
 
@@ -37,6 +38,7 @@ import com.matrix.system.SocketChannelIntecepter;
  */
 @Configuration
 @EnableWebSocketMessageBroker		// 在 WebSocket 上启用 STOMP
+@ComponentScan(basePackageClasses = {WebsocketController.class}) 	// 后启动尚未为扫描到 https://blog.csdn.net/ilovemvc/article/details/120813727
 public class WebSocketConfig extends BaseClass implements WebSocketMessageBrokerConfigurer {
 	
 	/**
@@ -44,7 +46,7 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
 	 * 		也就是我们配置websocket的服务地址，并且可以指定是否使用socketjs
 	 * 		页面通过：var socket = new SockJS('/endpoint-websocket');
 	 * 		
-	 * 		setAllowedOrigins ("*")非必须，"*" 表示允许其他域进行连接。最好取配置文件中的内容
+	 * 		setAllowedOriginPatterns ("*")非必须，"*" 表示允许其他域进行连接。最好取配置文件中的内容
 	 * 		withSockJS  表示开始sockejs支持
 	 *
 	 * @author Yangcl
@@ -54,8 +56,12 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
 	 */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-    	String[] arr = this.getConfig("matrix-websocket.endpoint").split(",");
-        registry.addEndpoint(arr).addInterceptors(new HttpHandShakeIntecepter()).setAllowedOrigins("*").withSockJS();
+    	registry.addEndpoint("/matrix-endpoint")
+    		.addInterceptors(new HttpHandShakeIntecepter())
+    		.setAllowedOriginPatterns("*")
+    		.withSockJS();
+//    	  String[] arr = this.getConfig("matrix-websocket.endpoint").split(",");
+//        registry.addEndpoint(arr).addInterceptors(new HttpHandShakeIntecepter()).setAllowedOrigins("*").withSockJS();
     }
 
     /**
@@ -84,6 +90,7 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(new SocketChannelIntecepter());
+        
         ThreadPoolTaskExecutor task = new ThreadPoolTaskExecutor();
         task.setCorePoolSize(2);
         task.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
@@ -102,6 +109,7 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
     @Override
     public void configureClientOutboundChannel(ChannelRegistration registration) {
         registration.interceptors(new SocketChannelIntecepter());
+        
         ThreadPoolTaskExecutor task = new ThreadPoolTaskExecutor();
         task.setCorePoolSize(2);
         task.setMaxPoolSize(Runtime.getRuntime().availableProcessors());
@@ -120,11 +128,11 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
      * @home https://github.com/PowerYangcl
      * @version 1.6.0.6-websocket
      */
-    @Override
-    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
-//    	messageConverters.add(new GsonMessageConverter());
-		return true;
-	}
+//    @Override
+//    public boolean configureMessageConverters(List<MessageConverter> messageConverters) {
+////    	messageConverters.add(new GsonMessageConverter());
+//		return true;
+//	}
 }
 
 
