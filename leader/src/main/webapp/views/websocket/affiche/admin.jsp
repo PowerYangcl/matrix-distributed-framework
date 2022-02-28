@@ -59,11 +59,11 @@
 						</div>
 						<div class="layui-card-header">
 							<h3>
-								<a herf="javascript:void(0)"style="cursor: pointer; color:#FB9337; ">完整缓存key：</a><span id="redis-key"></span>
+								<a herf="javascript:void(0)"style="cursor: pointer; color:#FB9337; ">首先建立链接，然后发送通告</a><span id=""></span>
 							</h3>
 						</div>
 						<div class="layui-card-body" style="width: 1200px;height: auto;">
-							<form id="cache-form"  action="javascript:void(0)" autocomplete="off">
+							<form id="websocket-admin-form"  action="javascript:void(0)" autocomplete="off">
 								<table class="" style="width:70%">
 									<tr>
 										<td style="border-right:1px solid #ece7e7;width:40%;">
@@ -117,9 +117,6 @@
 		</div>
 	</body>
 </html>
-
-
-
 <script type="text/javascript" src="${views}/websocket/affiche/admin.js"></script>
 
 

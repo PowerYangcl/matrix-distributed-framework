@@ -19,22 +19,11 @@ layui.config({
   	  		
   	  		// 2、用stom进行包装，规范协议
   	  		stompClient = Stomp.over(socket);
+  	  		// 3、建立通讯
   	  		stompClient.connect({}, function(frame) {
-  	  			
-  	  			// 3、建立通讯
-  	  			console.log('@@@@@@@@ Connected: ' + frame);
-  	  			
-  	  			// 4、通过stompClient.subscribe()订阅服务器的多目标
-	  	  		stompClient.subscribe('/topic/game_chat', function(result) {
-					console.log('接收到消息 1 = ' + result)
-				});
-	  	  		
+  	  			// 4、通过stompClient.subscribe()订阅服务器的多目标，可以同时订阅多个
 		  	  	stompClient.subscribe('/subscribe-page/affiche', function(result) {
 					console.log('接收到消息 2 = ' + result)
-				});
-		  	  	
-		  	  	stompClient.subscribe('/app/topic/game_chat', function(result) {
-					console.log('接收到消息 3 = ' + result)
 				});
   	  		});
   	  		
