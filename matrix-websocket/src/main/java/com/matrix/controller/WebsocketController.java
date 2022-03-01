@@ -41,7 +41,14 @@ public class WebsocketController{
 		template.convertAndSend("/subscribe-page/affiche",new WsMessageView(msg.getContent(), msg.getChannel()));
     }
     
-    
+    /**
+     * @description: 一对一聊天，页面：订阅自己发送给别人
+     * 
+     * @author Yangcl
+     * @date 2022-3-1 20:38:43
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.0.6-websocket
+     */
     @MessageMapping("/p2p/chat")
     public void p2pChat(WsMessageDto msg) {
 		System.out.println("SimpMessagingTemplate p2p msg = " + msg.getContent() + " from = " + msg.getFrom() + " to = " + msg.getTo());
