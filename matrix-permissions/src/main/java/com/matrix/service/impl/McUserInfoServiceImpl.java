@@ -118,8 +118,9 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年12月19日 下午2:41:27 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> logout(HttpSession session) {// 101010015=系统已经退出
-		return Result.SUCCESS( this.getInfo(101010015));
+	public Result<?> logout(HttpSession session) {		// 101010015=系统已经退出
+		session.invalidate();
+		return Result.SUCCESS(this.getInfo(101010015));
 	}
 	
 	/**

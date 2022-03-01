@@ -40,7 +40,13 @@ public class WebsocketController{
 		System.out.println("SimpMessagingTemplate msg = " + msg.getContent() + " channel = " + msg.getChannel());
 		template.convertAndSend("/subscribe-page/affiche",new WsMessageView(msg.getContent(), msg.getChannel()));
     }
-	
+    
+    
+    @MessageMapping("/p2p/chat")
+    public void p2pChat(WsMessageDto msg) {
+		System.out.println("SimpMessagingTemplate p2p msg = " + msg.getContent() + " from = " + msg.getFrom() + " to = " + msg.getTo());
+		template.convertAndSend("/subscribe-page/chat/" + msg.getTo(), new WsMessageView(msg.getTo(), msg.getFrom(), msg.getContent()));
+    }
 }
 
 

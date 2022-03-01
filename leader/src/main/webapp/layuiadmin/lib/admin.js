@@ -422,20 +422,6 @@ layui.extend(
 	    },
 	    
 	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-		    
 		    //便签
 		    note: function(othis){
 		      var mobile = admin.screen() < 2

@@ -56,11 +56,11 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
 	 */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-    	registry.addEndpoint("/matrix-endpoint")
+    	String[] arr = this.getConfig("matrix-websocket.endpoint").split(",");
+    	registry.addEndpoint(arr)		// "/matrix-endpoint"
     		.addInterceptors(new HttpHandShakeIntecepter())
     		.setAllowedOriginPatterns("*")
     		.withSockJS();
-//    	  String[] arr = this.getConfig("matrix-websocket.endpoint").split(",");
 //        registry.addEndpoint(arr).addInterceptors(new HttpHandShakeIntecepter()).setAllowedOrigins("*").withSockJS();
     }
 

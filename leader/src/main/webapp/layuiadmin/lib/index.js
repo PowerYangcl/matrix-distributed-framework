@@ -89,9 +89,6 @@ layui.extend(
 
 	// 加载公共模块
 	// layui.use('common');
-	var logout = function(){
-		
-	}
 
 	// 对外输出
 	exports('index', { openTabsPage : openTabsPage });

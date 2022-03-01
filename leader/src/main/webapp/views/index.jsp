@@ -67,7 +67,7 @@
 						</li>
 						<li class="layui-nav-item" lay-unselect>
 							<a href="javascript:;">
-								<cite>贤心</cite>
+								<cite id='user-name'></cite>
 							</a>
 							<dl class="layui-nav-child">
 								<dd>
@@ -202,15 +202,19 @@
 
 <script src="${layui}/layui/layui.js"></script>
 <script>
-
-	
-	
 	layui.config({
 		base : '../layuiadmin/' //静态资源所在路径
 	}).extend({
 		index : 'lib/index' //主入口模块
 	}).use(['index'], function(){
 		basePath = layui.setter.path;	  // 设置全局路径
+		var $ = layui.$;
+		
+  	  	$(function(){
+  	  		var userInfo = JSON.parse(localStorage.userInfo);
+  	  		$("#user-name").html(userInfo.userName);
+  	  		
+  		});
 	});
 </script>	
 

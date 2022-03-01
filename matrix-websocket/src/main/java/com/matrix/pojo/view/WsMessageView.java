@@ -20,6 +20,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class WsMessageView {
 
+	private String to;
+	
     private String from;
 
     private String content;
@@ -38,7 +40,15 @@ public class WsMessageView {
 		this.content = content;
 		this.channel = channel;
 	}
+
+
+	public WsMessageView(String to , String from, String content) {
+		this.to = to;
+		this.from = from;
+		this.content = content;
+	}
     
+	
     
 }
 
