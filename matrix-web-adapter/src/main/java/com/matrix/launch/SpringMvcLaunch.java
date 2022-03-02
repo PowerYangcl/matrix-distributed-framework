@@ -13,6 +13,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.util.IntrospectorCleanupListener;
 
 import com.matrix.listener.MatrixWebListener;
+import com.matrix.listener.WebSessionListener;
 import com.matrix.system.UrlInterceptor;
 
 /**
@@ -39,6 +40,11 @@ public class SpringMvcLaunch implements WebMvcConfigurer{
 	@Bean(name = "mw-listener")
 	public MatrixWebListener initWebListener() {
 		return new MatrixWebListener();
+	}
+	
+	@Bean
+	public WebSessionListener initWebSessionListener() {
+		return new WebSessionListener();
 	}
 	
     @Bean

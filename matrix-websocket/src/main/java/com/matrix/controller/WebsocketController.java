@@ -2,14 +2,18 @@ package com.matrix.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.matrix.pojo.dto.WsMessageDto;
+import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.pojo.view.WsMessageView;
 
 /**
  * @description: websocket通信支持类
+ * 		HttpSession session 类不能加在MessageMapping注解的方法内，否则导致接口调用失败。
+ * 		可以使用：SimpMessageHeaderAccessor headerAccessor
  * 
  * @author Yangcl
  * @date 2021-7-27 18:16:27
@@ -53,6 +57,23 @@ public class WebsocketController{
     public void p2pChat(WsMessageDto msg) {
 		System.out.println("SimpMessagingTemplate p2p msg = " + msg.getContent() + " from = " + msg.getFrom() + " to = " + msg.getTo());
 		template.convertAndSend("/subscribe-page/chat/" + msg.getTo(), new WsMessageView(msg.getTo(), msg.getFrom(), msg.getContent()));
+    }
+    
+    /**
+     * @description: 多人聊天
+     * 
+     * @author Yangcl
+     * @date 2022-3-2 16:15:25
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.0.6-websocket
+     */
+    @MessageMapping("/group/chat")
+    public void groupChat(WsMessageDto msg, SimpMessageHeaderAccessor headerAccessor) {
+    	String sessionId = headerAccessor.getSessionAttributes().get("sessionId").toString();
+    	McUserInfoView e = (McUserInfoView) headerAccessor.getSessionAttributes().get(sessionId);
+    	
+		System.out.println("SimpMessagingTemplate group msg = " + msg.getContent() + " sessionId = " + sessionId + " to = " + msg.getTo());
+		template.convertAndSend("/subscribe-page/group/" + msg.getTo(), new WsMessageView(msg.getTo(), e.getUserName(), msg.getContent()));
     }
 }
 

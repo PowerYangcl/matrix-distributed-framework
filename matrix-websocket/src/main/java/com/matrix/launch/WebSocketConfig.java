@@ -1,6 +1,5 @@
 package com.matrix.launch;
 
-import java.util.List;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -133,6 +132,7 @@ public class WebSocketConfig extends BaseClass implements WebSocketMessageBroker
 ////    	messageConverters.add(new GsonMessageConverter());
 //		return true;
 //	}
+    
 }
 
 

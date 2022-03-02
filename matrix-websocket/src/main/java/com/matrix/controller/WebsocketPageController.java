@@ -64,6 +64,20 @@ public class WebsocketPageController extends BaseController{
 		super.userBehavior(session, logger, "page_websocket_p2p", "前往一对一聊天页面");
 		return "views/websocket/p2p/chat";
 	}
+	
+	/**
+	 * @description: 前往多人聊天页面
+	 * 
+	 * @author Yangcl
+	 * @date 2022-3-2 11:42:22
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.6-websocket
+	 */
+	@RequestMapping("page_websocket_group")  
+	public String websocketGroup(HttpSession session){ 
+		super.userBehavior(session, logger, "page_websocket_p2p", "前往多人聊天页面");
+		return "views/websocket/group/group-chat";
+	}
 }
 
 

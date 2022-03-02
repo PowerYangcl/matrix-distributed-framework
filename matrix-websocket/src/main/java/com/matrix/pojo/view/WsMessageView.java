@@ -19,6 +19,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WsMessageView {
+	
+	private Long id;
 
 	private String to;
 	
@@ -32,6 +34,11 @@ public class WsMessageView {
 
 
     public WsMessageView(String content) {
+        this.content = content;
+    }
+    
+    public WsMessageView(Long id, String content) {
+    	this.id = id;
         this.content = content;
     }
 

@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import com.matrix.base.BaseClass;
+import com.matrix.pojo.view.McUserInfoView;
 
 /**
  * @description: WebSocket握手请求的拦截器。 检查握手请求和响应，对WebSocketHandler传递属性。
@@ -36,17 +37,15 @@ public class HttpHandShakeIntecepter extends BaseClass implements HandshakeInter
 	 * @version 1.6.0.6-websocket
 	 */
 	@Override
-	public boolean beforeHandshake(ServerHttpRequest request, 
-			ServerHttpResponse response, 
-			WebSocketHandler wsHandler, 
-			Map<String, Object> attributes) throws Exception {
-		
+	public boolean beforeHandshake(ServerHttpRequest request,  ServerHttpResponse response,  WebSocketHandler wsHandler,  Map<String, Object> attributes) throws Exception {
 		if(request instanceof ServletServerHttpRequest) {
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest)request;
 			HttpSession session =  servletRequest.getServletRequest().getSession();
+			McUserInfoView e = (McUserInfoView) session.getAttribute("userInfo");
 			String sessionId = session.getId();
-			attributes.put("sessionId", sessionId); // 这里将sessionId放入SessionAttributes中
-			this.getLogger(null).sysoutInfo("HttpHandShakeIntecepter beforeHandshake 握手之前加入HttpSession = " + sessionId, this.getClass()); 
+			attributes.put("sessionId", sessionId);	// 这里必须指定为：sessionId，否则请求不到@MessageMapping注解的方法。
+			attributes.put(sessionId, e);		// 携带当前登录用户信息
+			
 			return true;
 		}
 		return false;
