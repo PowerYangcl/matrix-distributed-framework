@@ -106,26 +106,24 @@
 						</div>
 						
 						
-						<div class="layui-card-body" style="width:50%;height: auto; float:left; ">
-							<form id="websocket-admin-form"  action="javascript:void(0)" autocomplete="off">
-								<table class="layui-table" lay-skin="line" style="width:100%;">
-									<colgroup>
-										<col width="80">
-								    	<col width="400">
-								    	<col width="100">
-								  	</colgroup>
-									<thead>
-								    	<tr>
-								    		<th>用户名</th>
-								      		<th colspan="2" align="left">消息内容</th>
-								      		<th>发送时间</th>
-								    	</tr> 
-								  	</thead>
-									<tbody id="notice">
-										<tr id="notice-defalut-tr"><td colspan="4" align="center">暂无消息</td></tr>
-								  	</tbody>
-								</table>
-							</form>
+						<div class="layui-table-body layui-table-main" style="width:50%;height: 600px; float:left; ">
+							<table class="layui-table" lay-skin="line">
+								<colgroup>
+									<col width="80">
+							    	<col width="400">
+							    	<col width="100">
+							  	</colgroup>
+								<thead>
+							    	<tr>
+							    		<th>用户名</th>
+							      		<th colspan="2" align="left">消息内容</th>
+							      		<th>发送时间</th>
+							    	</tr> 
+							  	</thead>
+								<tbody id="notice">
+									<tr id="notice-defalut-tr"><td colspan="4" align="center">暂无消息</td></tr>
+							  	</tbody>
+							</table>
 						</div>
 						
 					</div>
