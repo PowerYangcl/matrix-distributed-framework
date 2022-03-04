@@ -11,4 +11,13 @@ package com.matrix.base;
  */
 public interface ErrorCode {
 	public static String MISSING_ARGUMENT = "请求参数为空：";
+	
+	
+	public static String OUT_OF_RANGE = null;
+
+
+	public static String MISMATCH_ARGUMENT_TYPE = null;
+
+
+	public static String INVALID_ARGUMENT = null;
 }
