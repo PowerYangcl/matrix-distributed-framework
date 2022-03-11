@@ -97,7 +97,6 @@ public class ContextLaunch {
     /**
      * @description: 开启注解校验
      * 		https://blog.csdn.net/f641385712/article/details/97402946
-     * 		http://cache.baiducontent.com/c?m=JY8vvW09J3uiuaqPBL7j5gqby-cJdyXgq370BbUktSQyc9qlUGmJ0ExCh6LvUCoLspdYNewxu7CuLmNXX-OnWJW_KnnPZjOXtyAbFkIG7a4Gj4GNeURfnH9c3ZyNu3uC6-h3aIXwUQWeoU0OkqpHTGscwhAQZ3es4nvok9LbVPv-mTXDkTnKGWq9ZjlWDAQvL2FsB9Kd6YsqOFhX6KI9Aa&p=9765d311879712a05abd9b7d0d169e&newp=9b769a479f934eac58edf82f1141a5231610db2151d7d3126b82c825d7331b001c3bbfb422201506d5c47c6202a8495ae1f73079370923a3dda5c91d9fb4c57479c1&s=cfcd208495d565ef&user=baidu&fm=sc&query=spring+validation%D7%D4%B6%A8%D2%E5%B7%B5%BB%D8%B8%F1%CA%BD&qid=ef5bbee300001589&p1=4
      * 
      * @author Yangcl
      * @date 2022-3-4 18:28:53

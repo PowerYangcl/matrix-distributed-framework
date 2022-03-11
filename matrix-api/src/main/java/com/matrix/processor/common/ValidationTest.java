@@ -1,26 +1,24 @@
 package com.matrix.processor.common;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.validation.annotation.Validated;
 
 import com.matrix.validate.Validation;
 
 import lombok.Data;
 
 @Data
-@Validated
 public class ValidationTest {
 	private Long id;
 	
-	@NotBlank(message = "target is blank")
-	@Length(max = 10, message = "00000005")
+	@NotBlank(message = "100020111")
+	@Length(max = 10, message = "600010072")
 	private String target;
 	
-	@NotBlank(message = "atype is blank")
-	@Pattern(regexp = Validation.REGEX_LINE_TYPE, message = "atype just in : bgp|ct|un|cm|dynamic_bgp")
+	@NotBlank(message = "600010060")
+	@Pattern(regexp = Validation.REGEX_LINE_TYPE, message = "600010068")
     private String atype;
 
 	@Override

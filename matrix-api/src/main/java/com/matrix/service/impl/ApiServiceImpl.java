@@ -78,8 +78,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 					return this.errorMsg(response, 10010, 600010010, result.getData().getTarget());	// 600010010=系统错误, 未找到{0}接口对应的处理类.请联系开发人员!
 				}
 			}catch (Exception e) {
-				e.printStackTrace(); 
-				return this.errorMsg(response, 10011, 600010011);	// 600010011=系统错误, 请联系开发人员!
+				throw new RuntimeException(e);
 			}
 		}else { 
 			return result;

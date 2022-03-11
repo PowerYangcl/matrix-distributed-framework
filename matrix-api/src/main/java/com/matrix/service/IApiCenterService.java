@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.Result;
@@ -33,6 +34,7 @@ import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
 import com.matrix.pojo.view.ApiTreeView;
+import com.matrix.processor.common.ValidationTest;
 
 public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView>{
 
@@ -69,4 +71,6 @@ public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiI
 	public Result<String> ajaxFindRequestValue(String key);
 	public Result<Object> ajaxFindRequestDto(String target);			// controller层未引用
  
+	
+	public Result<String> ajaxValidationTest(@Valid ValidationTest dto);
 }

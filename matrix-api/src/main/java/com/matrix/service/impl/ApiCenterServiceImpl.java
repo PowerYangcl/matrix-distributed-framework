@@ -6,10 +6,12 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -60,8 +62,10 @@ import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
 import com.matrix.pojo.view.ApiTreeView;
+import com.matrix.processor.common.ValidationTest;
 import com.matrix.service.IApiCenterService;
 
+@Validated
 @Service("apiCenterService")
 public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView> implements IApiCenterService {
 
@@ -677,6 +681,12 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			e.printStackTrace();// 100020112=系统错误, 请联系开发人员!
 			return Result.ERROR(this.getInfo(100020112), ResultCode.SERVER_EXCEPTION);
 		}
+	}
+
+	@Override
+	public Result<String> ajaxValidationTest(@Valid ValidationTest dto) {
+		
+		return Result.SUCCESS("ajaxValidationTest");
 	}
 }
 

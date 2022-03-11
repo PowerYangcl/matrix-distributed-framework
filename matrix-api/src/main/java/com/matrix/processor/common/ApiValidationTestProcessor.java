@@ -4,12 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseProcessor;
+import com.matrix.service.IApiCenterService;
 
 /**
  * @description: validate 测试
@@ -21,10 +22,13 @@ import com.matrix.base.interfaces.IBaseProcessor;
  */
 public class ApiValidationTestProcessor extends BaseClass implements IBaseProcessor {
 
+	@Inject
+	private IApiCenterService apiCenterService; 
+	
 	@Override
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, @Validated JSONObject param) {
+	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session,  JSONObject param) {
 		ValidationTest dto = JSONObject.parseObject(param.getString("data"), ValidationTest.class);
 		this.getLogger(null).sysoutInfo("validate 测试", this.getClass());
-		return Result.SUCCESS("ApiValidationTest return success", dto.toString());
+		return apiCenterService.ajaxValidationTest(dto);
 	}
 }

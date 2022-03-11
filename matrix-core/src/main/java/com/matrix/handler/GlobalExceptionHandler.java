@@ -1,15 +1,17 @@
-package com.matrix.validate;
+package com.matrix.handler;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
+import javax.validation.Path;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
@@ -41,13 +43,11 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.ErrorCode;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
+import com.matrix.validate.Vmsg;
 
 
 /**
  * @description: 全局异常捕获
- * 		https://blog.csdn.net/f641385712/article/details/97402946\
- * 		https://www.cnblogs.com/xuwujing/p/10933082.html
- * 		http://cache.baiducontent.com/c?m=JY8vvW09J3uiuaqPBL7j5gqby-cJdyXgq370BbUktSQyc9qlUGmJ0ExCh6LvUCoLspdYNewxu7CuLmNXX-OnWJW_KnnPZjOXtyAbFkIG7a4Gj4GNeURfnH9c3ZyNu3uC6-h3aIXwUQWeoU0OkqpHTGscwhAQZ3es4nvok9LbVPv-mTXDkTnKGWq9ZjlWDAQvL2FsB9Kd6YsqOFhX6KI9Aa&p=9765d311879712a05abd9b7d0d169e&newp=9b769a479f934eac58edf82f1141a5231610db2151d7d3126b82c825d7331b001c3bbfb422201506d5c47c6202a8495ae1f73079370923a3dda5c91d9fb4c57479c1&s=cfcd208495d565ef&user=baidu&fm=sc&query=spring+validation%D7%D4%B6%A8%D2%E5%B7%B5%BB%D8%B8%F1%CA%BD&qid=ef5bbee300001589&p1=4
  * 
  * @author Yangcl
  * @date 2022-3-4 18:39:24
@@ -56,7 +56,7 @@ import com.matrix.base.ResultCode;
  * @version 1.6.0.8-validation
  */
 @ControllerAdvice
-public class ValidationErrorHandler extends BaseClass {			// TODO BaseClass是否能生效？
+public class GlobalExceptionHandler extends BaseClass {
 	
     @Autowired
     private MessageSource i18n;
@@ -75,15 +75,49 @@ public class ValidationErrorHandler extends BaseClass {			// TODO BaseClass是�
         return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
     }
 	
-	
+	/**
+	 * @description: Service层参数验证，如果调用matrix-api则用到此处
+	 * 		@ Valid 和@ Validated的service层的应用：
+	 * 			1、service接口的方法参数上添加注解@Valid；
+	 * 			2、service实现的类上加注解 @ Validated service实现的方法参数上加注解 @ Valid
+	 * 			3、:方法参数对象上加参数的限制注解
+	 * 		参考：https://www.cnblogs.com/newAndHui/p/14185091.html
+	 * 
+	 * @author Yangcl
+	 * @date 2022-3-11 15:39:59
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.0.8-validation
+	 */
     @ResponseBody
     @ExceptionHandler(ConstraintViolationException.class)
-    public Result<?> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException e) {
+    public Result<?> handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException ex) {
+    	List<Vmsg> list = new ArrayList<Vmsg>();
+    	Set<ConstraintViolation<?>> set = ex.getConstraintViolations();
+    	for(ConstraintViolation<?> cv : set) {
+    		Class<? extends Annotation> annotationType = cv.getConstraintDescriptor().getAnnotation().annotationType();
+    		String[] annoArr = annotationType.getName().split("\\.");		// javax.validation.constraints.NotBlank
+    		String msg = cv.getMessage();			// 100020111
+    		Path propertyPath = cv.getPropertyPath(); 
+    		String[] split = propertyPath.toString().split("\\.");		// ajaxValidationTest.dto.target
+    		Vmsg vm = new Vmsg();
+    		vm.setFiled(split[split.length - 1]);
+    		vm.setAnnotation(annoArr[annoArr.length - 1]);
+    		vm.setMsg(this.getInfo(Long.valueOf(msg)));
+    		list.add(vm);
+    	}
     	
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	String msg = "ConstraintViolationException in param validation. " + JSONArray.toJSONString(list);
+        return Result.ERROR(msg, ResultCode.PARAM_VALIDATION_FAILED);
     }
     
-    // http://localhost:8080/leader/manager/ajax_validate.do
+    /**
+     * @description: Controller入口层面进行参数验证。
+     * 
+     * @author Yangcl
+     * @date 2022-3-11 15:41:46
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.0.8-validation
+     */
     @ResponseBody
     @ExceptionHandler(BindException.class)
     public Result<?> handleBindException(HttpServletRequest request, BindException ex) {
