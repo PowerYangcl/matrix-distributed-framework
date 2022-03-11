@@ -6,10 +6,11 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
+import com.matrix.pojo.dto.FindConfigInfoDto;
 
 /**
  * @description: 获取API接口项目中的Config配置信息|如果部署多个API接口服务器，
@@ -21,15 +22,44 @@ import com.matrix.base.interfaces.IBaseProcessor;
  * @date 2018年11月26日 下午7:12:44 
  * @version 1.0.0.1
  */
-public class ApiFindConfigInfoProcessor extends BaseClass implements IBaseProcessor {
+public class ApiFindConfigInfoProcessor extends BaseClass implements IBaseProcessor<FindConfigInfoDto> {
 
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		param = param.getJSONObject("data");
-		String value = this.getConfig(param.getString("key"));
+	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindConfigInfoDto> param) {
+		String value = this.getConfig(param.getData().getKey());
 		if(StringUtils.isBlank(value)) {
 			value = "未发现对应的值";
 		}
 		return Result.SUCCESS(value); 
 	}
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

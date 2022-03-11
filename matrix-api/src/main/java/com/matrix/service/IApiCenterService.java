@@ -11,6 +11,7 @@ import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
+import com.matrix.pojo.dto.ValidationTest;
 import com.matrix.pojo.entity.AcApiInfo;
 import com.matrix.pojo.request.AddAcIncludeDomainRequest;
 import com.matrix.pojo.request.AddApiInfoRequest;
@@ -34,7 +35,6 @@ import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
 import com.matrix.pojo.view.ApiTreeView;
-import com.matrix.processor.common.ValidationTest;
 
 public interface IApiCenterService extends IBaseService<Long , AcApiInfo, AcApiInfoDto , AcApiInfoView>{
 

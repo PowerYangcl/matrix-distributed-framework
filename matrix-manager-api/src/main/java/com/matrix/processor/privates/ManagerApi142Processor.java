@@ -5,8 +5,9 @@ package com.matrix.processor.privates;/**
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

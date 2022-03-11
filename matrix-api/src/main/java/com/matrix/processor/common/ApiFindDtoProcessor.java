@@ -4,11 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
+import com.matrix.pojo.dto.FindApiInfoDto;
 import com.matrix.service.IApiCenterService;
 
 
@@ -20,14 +21,47 @@ import com.matrix.service.IApiCenterService;
  * @date 2018年10月8日 上午10:29:09 
  * @version 1.0.0.1
  */
-public class ApiFindDtoProcessor  extends BaseClass implements IBaseProcessor {
+public class ApiFindDtoProcessor  extends BaseClass implements IBaseProcessor<FindApiInfoDto> {
 
 	@Inject
 	private IApiCenterService apiCenterService;  
 	
 	@Override
-	public Result<Object> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
-		return apiCenterService.ajaxFindRequestDto(data.getString("target"));
+	public Result<Object> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindApiInfoDto> param) {
+		return apiCenterService.ajaxFindRequestDto(param.getData().getTarget());
 	}
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

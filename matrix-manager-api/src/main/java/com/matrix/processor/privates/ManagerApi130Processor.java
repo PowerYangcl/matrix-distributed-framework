@@ -7,8 +7,8 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
 
 /**
  * @description: 暂时空闲，未使用

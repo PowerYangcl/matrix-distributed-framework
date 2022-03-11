@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -103,7 +104,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiProjectAdd(AddApiProjectListRequest param , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectAdd(@Validated AddApiProjectListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_add", "向ac_api_project表添加信息");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxBtnApiProjectAdd(param, session);  
@@ -118,7 +119,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiProjectEdit(UpdateApiProjectListRequest param , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectEdit(@Validated UpdateApiProjectListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_edit", "向ac_api_project表修改信息");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxBtnApiProjectEdit(param, session);  
@@ -133,7 +134,7 @@ public class ApiCenterController extends BaseController {
 	 */
 	@RequestMapping(value = "ajax_btn_api_project_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnApiProjectDelete(DeleteApiProjectListRequest param , HttpSession session){ 
+	public Result<?> ajaxBtnApiProjectDelete(@Validated DeleteApiProjectListRequest param , HttpSession session){ 
 		super.userBehavior(session, logger, "ajax_btn_api_project_delete", "向ac_api_project表删除一条记录");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return service.ajaxBtnApiProjectDelete(param, session);

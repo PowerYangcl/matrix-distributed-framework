@@ -8,8 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.pojo.request.DeleteMcRoleRequest;
 import com.matrix.service.IMcRoleService;
 

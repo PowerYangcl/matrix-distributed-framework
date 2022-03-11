@@ -10,15 +10,16 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.matrix.base.ApiHead;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
 import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.cache.AcApiInfoCache;
-import com.matrix.pojo.dto.Head;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IApiService;
 import com.matrix.util.SignUtil;
@@ -26,28 +27,6 @@ import com.matrix.util.SignUtil;
 /**
  * @description: 网关入口
  * 
- * 请求接口数据格式示例：
-			{
-				"head": {
-					"target": "MANAGER-API-100",
-					"accessToken": "",
-					"client": 3,
-					"version": "vsesion-2.0.0.1",
-					"requestTime": "2018-12-14 16:47:09",
-					"channel": "mip会员平台PC前端",
-					"key": "133C9CB27DA0",
-					"value": "58b6e0bd4d34a35b9773d4762be0f521"
-				},
-				"data": {
-					"cid":2735828374812748174428374,  // cid如果 != 0则代表用户拥有多店铺，需要前端传入cid
-					"userName": "admin-lqx",
-					"password": "xxxxxx",
-					"validateCodeKey": "b89e4919-2620-4c52-a371-240e452fbc3b",
-					"validateCode": "SOFH",
-					"platform": "133EFB922DF3"
-				}
-			}
- *
  * @author Yangcl
  * @home https://github.com/PowerYangcl
  * @date 2019年8月9日 下午5:32:44 
@@ -66,21 +45,22 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 	 * @date 2019年10月29日 下午11:02:06 
 	 * @version 1.0.0.1
 	 */
-	public  Result<?> apiService(HttpServletRequest request, HttpServletResponse response , HttpSession session , String json) {
-		Result<AcApiInfoCache> result = this.checkRequest(request , response , json);
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public  Result<?> apiService(HttpServletRequest request, HttpServletResponse response , HttpSession session , BaseApiDto<?> param) {
+		Result<AcApiInfoCache> result = this.checkRequest(request , response , param);
 		if (result.getStatus().equals("success")){
 			try {     
 				Class<?> clazz = Class.forName("com.matrix.processor." + result.getData().getProcessor());   
 				if (clazz != null && clazz.getDeclaredMethods() != null){
 					IBaseProcessor iprocessor = (IBaseProcessor) clazz.newInstance();
-					return iprocessor.processor(request , response , session ,  result.getData().getParam());
+					return iprocessor.processor(request , response , session ,  param);
 				}else {
 					return this.errorMsg(response, 10010, 600010010, result.getData().getTarget());	// 600010010=系统错误, 未找到{0}接口对应的处理类.请联系开发人员!
 				}
 			}catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-		}else { 
+		} else { 
 			return result;
 		}
 	}
@@ -97,23 +77,22 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */
-	private Result<AcApiInfoCache> checkRequest(HttpServletRequest request, HttpServletResponse response , String json) {
+	private Result<AcApiInfoCache> checkRequest(HttpServletRequest request, HttpServletResponse response , BaseApiDto<?> param) {
 		/////// 请求信息验证 ///////
-		if(StringUtils.isBlank(json)) {
+		if(param == null) {
 			return this.errorMsg(response, 10017, 600010017);	// 600010017=非法的请求数据结构，未检测到请求数据
 		}
-		JSONObject param = JSONObject.parseObject(json);
-		if(StringUtils.isBlank(param.getString("head"))) {
+		if(param.getHead() == null) {
 			return this.errorMsg(response,  10018, 600010018);		// 600010018=非法的请求数据结构，缺少请求头
 		}
-		Head head = JSONObject.parseObject(param.getString("head"), Head.class); 
+		ApiHead head = param.getHead();
 		String key = head.getKey() == null ? "" : head.getKey();
 		String value = head.getValue() == null ? "" : head.getValue();
 		if(StringUtils.isAnyBlank(key , value)) {
 			return this.errorMsg(response, 10016, 600010016);	// 600010016=非法的请求数据结构，缺少key或value
 		}
 		if(StringUtils.isBlank(head.getTarget())) {  
-			return this.errorMsg(response, 10003, 600010003);	// 非法的请求数据结构，缺少所访问的接口名。
+			return this.errorMsg(response, 10003, 600010003);	// 600010003 非法的请求数据结构，缺少所访问的接口名。
 		}
 
 		/////// API信息验证 ///////
@@ -149,7 +128,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 		}
 		
 		/////// 秘钥验 ///////
-		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(key);  // ac_request_info表的缓存
+		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(head.getKey());  // ac_request_info表的缓存
 		if(StringUtils.isBlank(requestInfo)) {
 			return this.errorMsg(response, 10012, 600010012);	// 非法的请求! 您请求的公钥未包含在我们的系统中.
 		}
@@ -157,7 +136,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 		if(StringUtils.isBlank(requester.getString("value"))) {
 			return this.errorMsg(response, 10002, 600010002);	// 系统秘钥数据为空，请联系开发人员，为您带来不便请谅解!
 		}
-		String md5 = SignUtil.md5Sign( requester.getString("value") + head.getTarget()	+ head.getRequestTime() ); 
+		String md5 = SignUtil.md5Sign( requester.getString("value") + head.getTarget() + head.getRequestTime() ); 
 		if( !value.equals(md5) ){
 			return this.errorMsg(response, 10005, 600010005);	// 秘钥验证失败
 		}
@@ -196,21 +175,20 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 			response.setHeader("Access-Control-Allow-Origin", "*"); // 解决跨域访问限制，开发环境和测试环境不在限制跨域
 		}
 		
-		/////// 登录后可访问的接口添加用户信息附着  ///////
+		/////// 登录后可访问的接口，添加用户信息附着  ///////
 		if(StringUtils.isNotBlank(userInfo)) { 		// 登录后可访问的接口
 			McUserInfoView view = JSONObject.parseObject(userInfo, McUserInfoView.class);
-			if(view.getCid() != 0) {		// 0 或 -1		
-				JSONObject shopObj = view.getShopInfoMap().get("key-" + param.getJSONObject("data").getLong("cid"));
+			if(view.getCid() != 0) {		// 0 或 -1；cid如果 != 0 则代表用户拥有多店铺，需要前端传入cid
+				JSONObject shopObj = view.getShopInfoMap().get("key-" + param.getHead().getCid());
 				if (shopObj != null){
-					view.setCid(param.getJSONObject("data").getLong("cid"));  // cid如果 != 0 则代表用户拥有多店铺，需要前端传入cid
+					view.setCid(param.getHead().getCid());  
 					view.setTenantInfoId(shopObj.getLong("tenantInfoId"));
 				}
 			}
-			param.getJSONObject("data").put("userCache", view);  // 加入用户Session信息
+			param.setUserCache(view); 		// 加入用户Session信息
 			this.getLogger(null).sysoutInfo("用户：" + view.getUserName() + " 接口名称：" + apiInfo.getName() + " target = " + head.getTarget(), this.getClass()); 
 		}
 		
-		apiInfo.setParam(param);
 		return Result.SUCCESS(apiInfo);
 	}
 	

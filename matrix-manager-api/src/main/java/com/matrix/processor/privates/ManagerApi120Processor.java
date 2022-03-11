@@ -6,8 +6,8 @@ import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
 
 /**
  * @description:修改角色功能|【角色列表】->【角色功能】->【提交按钮】|TODO 接口功能已移除，等待另作他用

@@ -6,9 +6,11 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
 import com.matrix.service.IApiService;
@@ -41,8 +43,8 @@ public class ApiController  extends BaseController{
 	 */
 	@RequestMapping(value = "api", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> apiService(HttpServletRequest request , HttpServletResponse response , HttpSession session , String json){ 
-		return service.apiService(request , response , session , json);
+	public Result<?> apiService(HttpServletRequest request , HttpServletResponse response , HttpSession session , @Validated BaseApiDto<?> param){ 
+		return service.apiService(request , response , session , param);
 	}
 }
 

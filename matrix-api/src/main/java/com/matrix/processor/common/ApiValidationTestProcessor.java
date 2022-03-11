@@ -5,11 +5,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
+import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
+import com.matrix.pojo.dto.ValidationTest;
 import com.matrix.service.IApiCenterService;
 
 /**
@@ -20,15 +22,44 @@ import com.matrix.service.IApiCenterService;
  * @date 2018年10月8日 上午10:34:58 
  * @version 1.0.0.1
  */
-public class ApiValidationTestProcessor extends BaseClass implements IBaseProcessor {
+@MatrixRequest(clazz=com.matrix.pojo.dto.ValidationTest.class) 
+public class ApiValidationTestProcessor extends BaseClass implements IBaseProcessor<ValidationTest> {
 
 	@Inject
 	private IApiCenterService apiCenterService; 
 	
 	@Override
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session,  JSONObject param) {
-		ValidationTest dto = JSONObject.parseObject(param.getString("data"), ValidationTest.class);
+	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session,  BaseApiDto<ValidationTest> dto) {
 		this.getLogger(null).sysoutInfo("validate 测试", this.getClass());
-		return apiCenterService.ajaxValidationTest(dto);
+		return apiCenterService.ajaxValidationTest(dto.getData());
 	}
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

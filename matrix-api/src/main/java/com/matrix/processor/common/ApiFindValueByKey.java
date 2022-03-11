@@ -4,11 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
+import com.matrix.pojo.dto.FindValueByKeyDto;
 import com.matrix.service.IApiCenterService;
 
 /**
@@ -19,15 +20,15 @@ import com.matrix.service.IApiCenterService;
  * @date 2018年10月8日 上午10:34:58 
  * @version 1.0.0.1
  */
-public class ApiFindValueByKey extends BaseClass implements IBaseProcessor {
+public class ApiFindValueByKey extends BaseClass implements IBaseProcessor<FindValueByKeyDto> {
 
 	@Inject
 	private IApiCenterService apiCenterService;  
 	
 	
 	@Override
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject data) {
-		return apiCenterService.ajaxFindRequestValue(data.getString("key"));
+	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindValueByKeyDto> param) {
+		return apiCenterService.ajaxFindRequestValue(param.getData().getKey());
 	}
 
 }

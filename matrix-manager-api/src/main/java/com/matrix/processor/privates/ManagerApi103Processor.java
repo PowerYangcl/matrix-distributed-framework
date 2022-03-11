@@ -7,8 +7,8 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseClass;
+import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
-import com.matrix.base.interfaces.IBaseProcessor;
 
 /**
  * @description: 添加用户界面-绘制所属公司和平台分配|TODO 接口功能已移除，等待另作他用

@@ -1,4 +1,4 @@
-package com.matrix.processor.common;
+package com.matrix.pojo.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;

@@ -34,6 +34,7 @@ import com.matrix.dao.IAcRequestInfoMapper;
 import com.matrix.dao.IAcRequestOpenApiMapper;
 import com.matrix.pojo.cache.AcApiInfoCache;
 import com.matrix.pojo.dto.AcApiInfoDto;
+import com.matrix.pojo.dto.ValidationTest;
 import com.matrix.pojo.entity.AcApiDomain;
 import com.matrix.pojo.entity.AcApiInfo;
 import com.matrix.pojo.entity.AcApiProject;
@@ -62,7 +63,6 @@ import com.matrix.pojo.view.AcApiProjectView;
 import com.matrix.pojo.view.AcIncludeDomainView;
 import com.matrix.pojo.view.AcRequestInfoView;
 import com.matrix.pojo.view.ApiTreeView;
-import com.matrix.processor.common.ValidationTest;
 import com.matrix.service.IApiCenterService;
 
 @Validated
@@ -119,10 +119,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 
 	@Transactional
 	public Result<?> ajaxBtnApiProjectAdd(AddApiProjectListRequest param, HttpSession session) {
-		Result<?> validate = param.validate();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			AcApiProject e = param.buildAjaxBtnApiProjectAdd();
 			int flag = acApiProjectMapper.insertSelective(e);
@@ -146,10 +142,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 */
 	@Transactional
 	public Result<?> ajaxBtnApiProjectEdit(UpdateApiProjectListRequest param, HttpSession session) {
-		Result<?> validate = param.validate();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		AcApiProject e = param.buildAjaxBtnApiProjectEdit();
 		try {
 			int flag = acApiProjectMapper.updateSelective(e); 
@@ -172,10 +164,6 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @version 1.0.0.1
 	 */
 	public Result<?> ajaxBtnApiProjectDelete(DeleteApiProjectListRequest param, HttpSession session) {
-		Result<?> validate = param.validate();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			int flag = acApiProjectMapper.deleteById(param.getId());
 			if(flag == 1) {
