@@ -12,8 +12,9 @@ public class ResultCode {
 	public static Integer SUCCESS = 200;			// 返回成功		100020100
 	
 	
-	public static Integer OPERATION_FAILED = 301; // 操作失败	100020101
+	public static Integer OPERATION_FAILED = 300; // 操作失败	100020101
 	
+	public static Integer PARAM_VALIDATION_FAILED = 301;		// controller层入参校验错误
 	public static Integer INTERNAL_VALIDATION_FAILED = 302; // 100020113=内部校验失败
 
 	
@@ -24,6 +25,7 @@ public class ResultCode {
 	public static Integer OUT_OF_RANGE = 400;  	// 参数超出范围		100020105
 	public static Integer INVALID_ACTION = 400;  	// 无效的action		100020106
 	public static Integer ILLEGAL_ARGUMENT = 400;    // 非法的参数
+	
 	
 	public static Integer NOT_FOUND = 404;  	// 找不到对象			100020107
 	public static Integer RESULT_NULL = 404;      // 结果集为空		100020108

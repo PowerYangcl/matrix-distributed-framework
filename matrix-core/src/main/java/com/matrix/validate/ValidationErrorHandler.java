@@ -3,6 +3,7 @@ package com.matrix.validate;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -33,6 +35,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.ErrorCode;
 import com.matrix.base.Result;
@@ -79,12 +83,26 @@ public class ValidationErrorHandler extends BaseClass {			// TODO BaseClassÊòØÂê
         return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
     }
     
-    
+    // http://localhost:8080/leader/manager/ajax_validate.do
     @ResponseBody
     @ExceptionHandler(BindException.class)
-    public Result<?> handleBindException(HttpServletRequest request, BindException e) {
+    public Result<?> handleBindException(HttpServletRequest request, BindException ex) {
+    	BindingResult binding_result = ex.getBindingResult();
+    	Class<?> target_class = binding_result.getTarget().getClass();
+    	String className = target_class.getName();
     	
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	List<Vmsg> list = new ArrayList<Vmsg>();
+    	List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
+    	for(ObjectError e : errorList) {
+    		JSONObject parse = JSONObject.parseObject(JSONObject.toJSON(e.getArguments()[0]).toString());
+    		Vmsg vm = new Vmsg();
+    		vm.setFiled(parse.getString("defaultMessage"));
+    		vm.setAnnotation(e.getCode());
+    		vm.setMsg(this.getInfo(Long.valueOf(e.getDefaultMessage())));
+    		list.add(vm);
+    	}
+    	String msg = className + ":BindException in param validation. " + JSONArray.toJSONString(list);
+        return Result.ERROR(msg, ResultCode.PARAM_VALIDATION_FAILED);
     }
     
     @ResponseBody
