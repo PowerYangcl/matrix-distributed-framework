@@ -2,6 +2,8 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import com.matrix.base.BaseClass;
 import com.matrix.pojo.view.McUserInfoView;
 import lombok.Data;
@@ -15,6 +17,7 @@ public class FindLogoutRequest extends BaseClass implements Serializable{
 	
 	private McUserInfoView userCache;
 	
+	@NotBlank(message = "101010014")		// 101010014=用户令牌(accessToken)为空
 	private String accessToken;
 }
 

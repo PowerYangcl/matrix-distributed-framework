@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -23,15 +24,14 @@ import com.matrix.service.IMcSysFunctionService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateMcSysFunctionRequest.class)
-public class ManagerApi116Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi116Processor extends BaseClass implements IBaseProcessor<UpdateMcSysFunctionRequest> {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;  
 	
 	@Override
-	public Result<McSysFunction> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		UpdateMcSysFunctionRequest entity = JSONObject.parseObject(param.getString("data"), UpdateMcSysFunctionRequest.class);
-		return mcSysFunctionService.editMcSysFunction(entity);
+	public Result<McSysFunction> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<UpdateMcSysFunctionRequest> param) {
+		return mcSysFunctionService.editMcSysFunction(param.getData());
 	}
 
 }

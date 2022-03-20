@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -22,15 +23,14 @@ import com.matrix.service.IMcSysFunctionService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcSysFunctionRequest.class)
-public class ManagerApi118Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi118Processor extends BaseClass implements IBaseProcessor<DeleteMcSysFunctionRequest> {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;  
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		DeleteMcSysFunctionRequest dto = JSONObject.parseObject(param.getString("data"), DeleteMcSysFunctionRequest.class);
-		return mcSysFunctionService.deleteNode(dto);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcSysFunctionRequest> param) {
+		return mcSysFunctionService.deleteNode(param.getData());
 	}
 
 }

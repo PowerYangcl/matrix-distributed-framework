@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -22,16 +22,15 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcUserInfoRequest.class)
-public class ManagerApi107Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi107Processor extends BaseClass implements IBaseProcessor<DeleteMcUserInfoRequest> {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		DeleteMcUserInfoRequest dto = JSONObject.parseObject(param.getString("data"), DeleteMcUserInfoRequest.class);
-		return mcUserInfoService.deleteUser(dto);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcUserInfoRequest> param) {
+		return mcUserInfoService.deleteUser(param.getData());
 	}
 
 }

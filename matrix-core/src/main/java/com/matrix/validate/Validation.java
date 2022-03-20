@@ -2,6 +2,10 @@ package com.matrix.validate;
 
 public interface Validation {
 
+	String MATRIX_PERMISSIONS_NAV_TYPE = "0|1|2|3|4|5";
+	
+	
+	
     String REGEX_NETWORK_TYPE = "basic|vpc|retail|custom";
     String REGEX_LINE_TYPE = "bgp|ct|un|cm|dynamic_bgp";
     String REGEX_IMAGE_TYPE = "standard";

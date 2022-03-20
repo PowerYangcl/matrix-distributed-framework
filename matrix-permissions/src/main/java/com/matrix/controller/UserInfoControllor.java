@@ -15,6 +15,7 @@ import com.matrix.base.Result;
 import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
+import com.matrix.pojo.request.FindMcUserInfoListRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 import com.matrix.pojo.view.LoginView;
@@ -85,7 +86,7 @@ public class UserInfoControllor  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_system_user_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoRequest param , HttpSession session , HttpServletRequest request) {
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoListRequest param , HttpSession session , HttpServletRequest request) {
 		super.userBehavior(session, logger, "ajax_system_user_list", "获取系统用户列表页数据");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.ajaxSystemUserList(param , request);

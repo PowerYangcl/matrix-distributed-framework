@@ -3,6 +3,8 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.base.BaseClass;
@@ -34,13 +36,23 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 	private McUserInfoView userCache;
 	
 	private Long cid;
+	
+	@NotBlank(message = "101010001")			// 101010001=用户名或密码不得为空
     private String userName;
-    private Long mcOrganizationId;
+	
+	@NotBlank(message = "101010001")			// 101010001=用户名或密码不得为空
     private String password;
+	
+    private Long mcOrganizationId;
     private String idcard;
     private Integer sex;
+    
+    @NotBlank(message = "101010020")			// 101010020=用户手机号码不得为空
     private String mobile;
+    
+    @NotBlank(message = "101010021")		// 101010021=用户电子邮箱不得为空
     private String email;
+    
     private String qq;
     private String remark;
     private String platform;
@@ -74,19 +86,7 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 		return e;
 	}
 	
-	public Result<?> validateAddSysUser(IMcUserInfoMapper mcUserInfoMapper) {
-		if (StringUtils.isBlank(userName) || StringUtils.isBlank(password)) {
-			// 101010001=用户名或密码不得为空
-			return Result.ERROR(this.getInfo(101010001), ResultCode.MISSING_ARGUMENT);
-		}
-		if (StringUtils.isBlank(mobile)) {
-			// 101010020=用户手机号码不得为空
-			return Result.ERROR(this.getInfo(101010020), ResultCode.MISSING_ARGUMENT);
-		}
-		if (StringUtils.isBlank(email)) {
-			// 101010021=用户电子邮箱不得为空
-			return Result.ERROR(this.getInfo(101010020), ResultCode.MISSING_ARGUMENT);
-		}
+	public Result<?> validate(IMcUserInfoMapper mcUserInfoMapper) {
 		if (userCache.getType().equals("leader") && StringUtils.isBlank(platform)) {   
 			// 101010018=平台识别码错误
 			return Result.ERROR(this.getInfo(101010018), ResultCode.MISSING_ARGUMENT);

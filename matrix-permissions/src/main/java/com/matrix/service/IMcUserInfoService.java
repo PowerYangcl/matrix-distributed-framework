@@ -16,6 +16,7 @@ import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindLogoutRequest;
+import com.matrix.pojo.request.FindMcUserInfoListRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 import com.matrix.pojo.view.ClientLoginView;
@@ -59,7 +60,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoRequest param , HttpServletRequest request);
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoListRequest param , HttpServletRequest request);
 	
 	/**
 	 * @description: 添加用户

@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -22,15 +22,14 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateMcRoleRequest.class)
-public class ManagerApi114Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi114Processor extends BaseClass implements IBaseProcessor<UpdateMcRoleRequest> {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		UpdateMcRoleRequest info = JSONObject.parseObject(param.getString("data"), UpdateMcRoleRequest.class);
-		return mcRoleService.editSysRole(info);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<UpdateMcRoleRequest> param) {
+		return mcRoleService.editSysRole(param.getData());
 	}
 
 }

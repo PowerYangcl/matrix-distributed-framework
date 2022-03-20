@@ -2,6 +2,8 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
@@ -19,7 +21,10 @@ public class AddMcUserRoleRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
+	@NotBlank(message = "100010126")	   // 100010126=请求参数不允许为空
     private Long mcUserId;
+	
+	@NotBlank(message = "100010126")	   // 100010126=请求参数不允许为空
     private Long mcRoleId; 
 	
 	public McUserRole buildAllotUserRole() {
@@ -30,13 +35,6 @@ public class AddMcUserRoleRequest extends BaseClass implements Serializable{
 		return e;
 	}
 	
-	public Result<?> validateAllotUserRole() {
-		if(mcUserId == null || mcRoleId == null) {
-			// 100010126=请求参数不允许为空
-			return Result.ERROR(this.getInfo(100010126), ResultCode.MISMATCH_ARGUMENT);
-		}
-		return Result.SUCCESS();
-	}
 }
 
 

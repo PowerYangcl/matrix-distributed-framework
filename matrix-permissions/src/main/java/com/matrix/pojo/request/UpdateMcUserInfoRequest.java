@@ -2,6 +2,8 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.annotation.Inject;
@@ -28,7 +30,9 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 	
 	private McUserInfoView userCache;
 	
+	@NotBlank(message = "100020111")		// 100020111=主键丢失
 	private Long id;
+	
     private String userName;
     private String idcard;
     private Integer sex;
@@ -56,23 +60,7 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 	}
 	
 	public Result<?> validateEditSysUser() {
-		if(id == null) {		// 100020111=主键丢失
-			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
-		}
-		if (StringUtils.isBlank(userName)) {
-			// 101010019=用户名不得为空
-			return Result.ERROR(this.getInfo(101010019), ResultCode.MISSING_ARGUMENT);
-		}
-		if (StringUtils.isBlank(mobile)) {
-			// 101010020=用户手机号码不得为空
-			return Result.ERROR(this.getInfo(101010020), ResultCode.MISSING_ARGUMENT);
-		}
-		if (StringUtils.isBlank(email)) {
-			// 101010021=用户电子邮箱不得为空
-			return Result.ERROR(this.getInfo(101010020), ResultCode.MISSING_ARGUMENT);
-		}
-		
-		if( !userName.equals(userNameOld) ) {	// 开始用户名是否重复
+		if(StringUtils.isNotBlank(userName) && !userName.equals(userNameOld) ) {	// 开始用户名是否重复
 			McUserInfoDto dto = new McUserInfoDto();
 			dto.setUserName(userName);
 			McUserInfo ishas = mcUserInfoMapper.findEntityByDto(dto);
@@ -93,9 +81,6 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 	}
 	
 	public Result<?> validateAjaxPasswordReset() {
-		if(id == null) {		// 100020111=主键丢失
-			return Result.ERROR(this.getInfo(100020111), ResultCode.MISSING_ARGUMENT);
-		}
 		if (StringUtils.isBlank(password)) {
 			// 101010037=用户密码不得为空
 			return Result.ERROR(this.getInfo(101010037), ResultCode.MISSING_ARGUMENT);
