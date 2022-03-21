@@ -50,7 +50,7 @@
         <curator.version>4.0.0</curator.version>					<!-- Curator(ZooKeeper客户端)版本 -->
         
         <httpclient.version>4.5.1</httpclient.version>
-        <dubbo.version>2.6.5</dubbo.version>
+        <dubbo.version>2.6.9</dubbo.version>
     </properties>
     
     <dependencies>
