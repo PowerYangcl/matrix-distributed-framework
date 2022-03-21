@@ -26,6 +26,9 @@ public class LeaderApplication {
     		BaseLog.getInstance().setLogger(null).sysoutInfo("LeaderApplication 启动完成" , LeaderApplication.class);
 		} catch (Exception e) {
 			if(e.getClass().getName().contains("SilentExitException")) {  // spring-boot-devtools jsp页面自动刷新导致
+				
+				// TODO https://blog.csdn.net/aqsunkai/article/details/69663159  spring-boot-devtools  是否能解决此异常 2022-03-16
+				
 	            System.out.println("Spring is restarting the main thread - See spring-boot-devtools");
 	        }else {
 	        	e.printStackTrace();
