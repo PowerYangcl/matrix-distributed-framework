@@ -11,6 +11,7 @@ import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindLogoutRequest;
+import com.matrix.pojo.request.FindMcUserInfoListRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 
@@ -76,11 +77,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<LoginView> login(FindLoginRequest param , HttpSession session) {
-		Result<LoginView> validate = param.validateLogin();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
-		
 		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
 		if (StringUtils.isBlank(userInfoNpJson)) {		// 101010017=用户名或密码错误
 			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
@@ -140,7 +136,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoRequest param , HttpServletRequest request) {
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoListRequest param , HttpServletRequest request) {
 		Result<PageInfo<McUserInfoView>> validate = param.validateAjaxSystemUserList();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -189,7 +185,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<?> addSysUser(AddMcUserInfoRequest param) {
-		Result<?> validate = param.validateAddSysUser(mcUserInfoMapper);
+		Result<?> validate = param.validate(mcUserInfoMapper);
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
@@ -270,11 +266,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 */
 	@Transactional
 	public Result<?> deleteUser(DeleteMcUserInfoRequest param) {
-		Result<?> validate = param.validateDeleteUser();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
-		
 		Long id = param.getId();
 		McUserInfoView view = param.getUserCache();
 		try {
@@ -405,10 +396,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<?> ajaxClientLogout(FindLogoutRequest param) {
-		if(StringUtils.isBlank(param.getAccessToken())) {  // 101010014=用户令牌(accessToken)为空
-			return Result.ERROR(this.getInfo(101010014), ResultCode.MISSING_ARGUMENT);
-		}
-		
 		launch.loadDictCache(DCacheEnum.AccessToken , null).del(param.getAccessToken());
 		return Result.SUCCESS( this.getInfo(101010015));  // 101010015=系统已经退出
 	}
@@ -423,11 +410,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<McUserInfoView> ajaxFindSysUser(FindMcUserInfoRequest param) {
-		Result<McUserInfoView> validate = param.validateAjaxFindSysUser();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
-		
 		McUserInfo entity = mcUserInfoMapper.find(param.getId());
 		if(entity == null){		// 101010032=获取用户详情失败，状态查询异常
 			return Result.ERROR(this.getInfo(101010032), ResultCode.NOT_FOUND);

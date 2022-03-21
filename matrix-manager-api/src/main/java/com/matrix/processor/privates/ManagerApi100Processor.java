@@ -4,10 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -24,15 +23,14 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindLoginRequest.class)
-public class ManagerApi100Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi100Processor extends BaseClass implements IBaseProcessor<FindLoginRequest> {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public Result<ClientLoginView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		FindLoginRequest dto = JSONObject.parseObject(param.getString("data"), FindLoginRequest.class);
-		return mcUserInfoService.ajaxClientLogin(dto, request);
+	public Result<ClientLoginView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindLoginRequest> param) {
+		return mcUserInfoService.ajaxClientLogin(param.getData(), request);
 	}
 
 }

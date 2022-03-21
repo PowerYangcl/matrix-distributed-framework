@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -23,15 +23,14 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindMcRoleRequest.class)
-public class ManagerApi113Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi113Processor extends BaseClass implements IBaseProcessor<FindMcRoleRequest> {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public Result<McRole> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		FindMcRoleRequest info = JSONObject.parseObject(param.getString("data"), FindMcRoleRequest.class);
-		return mcRoleService.ajaxFindRoleInfo(info);
+	public Result<McRole> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindMcRoleRequest> param) {
+		return mcRoleService.ajaxFindRoleInfo(param.getData());
 	}
 
 }

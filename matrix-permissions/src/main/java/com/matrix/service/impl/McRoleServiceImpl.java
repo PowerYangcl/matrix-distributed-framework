@@ -93,7 +93,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> addMcRole(AddMcRoleRequest param) {
-		Result<?> validate = param.validateAddMcRole();
+		Result<?> validate = param.validate();
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
@@ -175,10 +175,6 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 */
 	@Transactional
 	public Result<?> deleteMcRole(DeleteMcRoleRequest param) {
-		Result<?> validate = param.validateDeleteMcRole();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			if(mcUserRoleMapper.selectByMcRoleId(param.getMcRoleId()).size() != 0){ 
 				// 该角色已经关联了用户，如果想删除则必选先将用户与该角色解除绑定
@@ -328,10 +324,6 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> allotUserRole(AddMcUserRoleRequest param) {
-		Result<?> validate = param.validateAllotUserRole();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			McUserRole entity = param.buildAllotUserRole();
 			Integer count = mcUserRoleMapper.insertSelective(entity);

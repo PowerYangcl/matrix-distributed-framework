@@ -2,6 +2,7 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
 
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
@@ -19,14 +20,9 @@ public class DeleteMcRoleRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
+	@NotBlank(message = "100020103")	   // 100020103=参数缺失：{0} TODO 后续解决
 	private Long mcRoleId;
 	
-	public Result<?> validateDeleteMcRole() {
-		if(mcRoleId == null){  // 100020103=参数缺失：{0}
-			return Result.ERROR(this.getInfo(100020103, "mcRoleId"), ResultCode.MISSING_ARGUMENT);
-		}
-		return Result.SUCCESS();
-	}
 }
 
 

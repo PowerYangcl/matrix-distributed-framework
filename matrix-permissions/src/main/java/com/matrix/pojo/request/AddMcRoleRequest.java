@@ -2,6 +2,8 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.base.BaseClass;
@@ -22,7 +24,10 @@ public class AddMcRoleRequest extends BaseClass implements Serializable{
 	private McUserInfoView userCache;
 	
 	private String platform;	// 非Leader平台用户创建角色不得携带平台编码
+	
+	@NotBlank(message = "101010027")		// 101010027=角色名称不得为空
     private String roleName;
+	
     private String roleDesc;
 	
 	public McRole buildAddMcRole() {
@@ -43,10 +48,7 @@ public class AddMcRoleRequest extends BaseClass implements Serializable{
 		return e;
 	}
 	
-    public Result<?> validateAddMcRole() {
-    	if(StringUtils.isBlank(roleName)){ // 101010027=角色名称不得为空
-			return Result.ERROR(this.getInfo(101010027), ResultCode.MISSING_ARGUMENT);
-		}
+    public Result<?> validate() {
     	if(userCache.getType().equals("leader") && StringUtils.isBlank(platform)) {	// 100020103=参数缺失：{0}
     		return Result.ERROR(this.getInfo(100020103, "platform"), ResultCode.MISSING_ARGUMENT);
     	}

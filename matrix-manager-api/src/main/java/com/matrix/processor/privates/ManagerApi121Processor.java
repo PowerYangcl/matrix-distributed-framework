@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -24,15 +24,14 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcRoleRequest.class)
-public class ManagerApi121Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi121Processor extends BaseClass implements IBaseProcessor<DeleteMcRoleRequest> {
 
 	@Inject
 	private IMcRoleService mcRoleService;   
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		DeleteMcRoleRequest dto = JSONObject.parseObject(param.getString("data"), DeleteMcRoleRequest.class);
-		return mcRoleService.deleteMcRole(dto);
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcRoleRequest> param) {
+		return mcRoleService.deleteMcRole(param.getData());
 	}
 
 }

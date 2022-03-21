@@ -62,7 +62,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	public Result<McSysFunction> addMcSysFunction(AddMcSysFunctionRequest param) {
-		Result<McSysFunction> validate = param.validateDeleteMcRole();
+		Result<McSysFunction> validate = param.validate();
 		if(validate.getStatus().equals("error")) {
 			return validate;
 		}
@@ -145,10 +145,6 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	public Result<?> deleteNode(DeleteMcSysFunctionRequest param) {
-		Result<?> validate = param.validateDeleteNode();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			List<Long> list = param.buildDeleteNode();
 			Integer flag = mcSysFunctionMapper.deleteByIds(list);
