@@ -18,6 +18,7 @@ import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.pojo.request.FindMcUserInfoListRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
+import com.matrix.pojo.request.UpdateMcUserInfoPasswordRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 import com.matrix.pojo.view.ClientLoginView;
 import com.matrix.pojo.view.LoginView;
@@ -88,7 +89,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月29日 上午11:05:07 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxPasswordReset(UpdateMcUserInfoRequest param);
+	public Result<?> ajaxPasswordReset(UpdateMcUserInfoPasswordRequest param);
 	
 	/**
 	 * @description: 删除一个用户 | 不保留数据库中的记录

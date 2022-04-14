@@ -13,6 +13,7 @@ import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindLogoutRequest;
 import com.matrix.pojo.request.FindMcUserInfoListRequest;
 import com.matrix.pojo.request.FindMcUserInfoRequest;
+import com.matrix.pojo.request.UpdateMcUserInfoPasswordRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -236,7 +237,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月29日 上午11:05:07 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxPasswordReset(UpdateMcUserInfoRequest param) {
+	public Result<?> ajaxPasswordReset(UpdateMcUserInfoPasswordRequest param) {
 		Result<?> validate = param.validateAjaxPasswordReset();
 		if(validate.getStatus().equals("error")) {
 			return validate;

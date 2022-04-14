@@ -45,10 +45,13 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 
 	@Resource
 	private IMcOrganizationMapper mcOrganizationMapper;
+	
 	@Resource
 	private IMcUserInfoOrganizationMapper mcUserInfoOrganizationMapper;
+	
 	@Resource
 	private IMcUserInfoMapper mcUserInfoMapper;
+	
 	@Resource
 	private IStoreInfoService storeInfoService;
 
@@ -126,10 +129,6 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<McOrganization> updateOrganizationInfo(UpdateMcOrganizationRequest param) {
-		Result<McOrganization> validate = param.validateUpdateOrganizationInfo();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		McOrganization entity = param.buildUpdateOrganizationInfo();
 		try {
 			if (entity.getType() != 3) {
@@ -159,10 +158,6 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<?> deleteOrganizationInfo(DeleteMcOrganizationRequest param) {
-		Result<?> validate = param.validate();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			McUserInfoView userCache = param.getUserCache();
 			String arr[] = param.getIds().split(",");
@@ -200,10 +195,6 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<?> updateTreeNodes(UpdateTreeNodesRequest param) {
-		Result<?> validate = param.validate();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			String[] arr = param.getUstring().split(",");
 			for (int i = 0; i < arr.length; i++) {
@@ -230,10 +221,6 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 */
 	@Transactional
 	public Result<?> ajaxUserAddOrgRequest(UpdateUserAddOrgRequest param) {
-		Result<?> validate = param.validate();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			McUserInfoView userInfo = param.getUserCache();
 			McUserInfoOrganization  entity = new McUserInfoOrganization();

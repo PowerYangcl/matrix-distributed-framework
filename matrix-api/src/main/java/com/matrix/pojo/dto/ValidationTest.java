@@ -18,7 +18,7 @@ public class ValidationTest {
 	private String target;
 	
 	@NotBlank(message = "600010060")
-	@Pattern(regexp = Validation.REGEX_LINE_TYPE, message = "600010068")
+	@Pattern(regexp = Validation.GATEWAY_TYPE, message = "600010068")
     private String atype;
 
 	@Override

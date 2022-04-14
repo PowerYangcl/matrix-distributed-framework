@@ -4,11 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
+import com.matrix.pojo.entity.McOrganization;
 
 /**
  * @description: 暂时空闲，未使用
@@ -19,11 +20,11 @@ import com.matrix.base.Result;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.entity.McOrganization.class)
-public class ManagerApi130Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi130Processor extends BaseClass implements IBaseProcessor<McOrganization> {
 
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<McOrganization> param) {
 		return null;
 	}
 

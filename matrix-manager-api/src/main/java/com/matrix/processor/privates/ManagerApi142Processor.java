@@ -2,11 +2,12 @@ package com.matrix.processor.privates;/**
  * Created by mashaohua on 2018/12/19.
  */
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
+import com.matrix.pojo.dto.McRoleDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,11 +23,10 @@ import javax.servlet.http.HttpSession;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.McRoleDto.class)
-public class ManagerApi142Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi142Processor extends BaseClass implements IBaseProcessor<McRoleDto> {
 
     @Override
-    public Result<?> processor(HttpServletRequest request, 
-    		HttpServletResponse response, HttpSession session, JSONObject param) {
+    public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<McRoleDto> param) {
         return null;
     }
 }

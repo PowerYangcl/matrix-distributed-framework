@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -23,15 +23,15 @@ import com.matrix.service.IMcOrganizationService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.AddMcOrganizationRequest.class)
-public class ManagerApi125Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi125Processor extends BaseClass implements IBaseProcessor<AddMcOrganizationRequest> {
 	
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public Result<McOrganization> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-		AddMcOrganizationRequest e = JSONObject.parseObject(param.getString("data"), AddMcOrganizationRequest.class);
-		return mcOrganizationService.addOrganizationInfo(e);
+	public Result<McOrganization> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, 
+			BaseApiDto<AddMcOrganizationRequest> param) {
+		return mcOrganizationService.addOrganizationInfo(param.getData());
 	}
 
 }

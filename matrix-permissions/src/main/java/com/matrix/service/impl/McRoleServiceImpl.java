@@ -347,10 +347,6 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	public Result<?> deleteUserRole(DeleteMcUserRoleRequest param) {
-		Result<?> validate = param.validateDeleteUserRole();
-		if(validate.getStatus().equals("error")) {
-			return validate;
-		}
 		try {
 			McUserRoleDto dto = param.buildDeleteUserRole();
 			mcUserRoleMapper.deleteByDto(dto);   

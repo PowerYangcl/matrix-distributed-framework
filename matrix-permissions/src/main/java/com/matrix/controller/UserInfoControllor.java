@@ -16,7 +16,7 @@ import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
 import com.matrix.pojo.request.FindLoginRequest;
 import com.matrix.pojo.request.FindMcUserInfoListRequest;
-import com.matrix.pojo.request.FindMcUserInfoRequest;
+import com.matrix.pojo.request.UpdateMcUserInfoPasswordRequest;
 import com.matrix.pojo.request.UpdateMcUserInfoRequest;
 import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
@@ -131,7 +131,7 @@ public class UserInfoControllor  extends BaseController{
 	 */
 	@RequestMapping(value = "ajax_btn_password_reset", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<?> ajaxBtnPasswordReset(UpdateMcUserInfoRequest param , HttpSession session) {
+	public Result<?> ajaxBtnPasswordReset(UpdateMcUserInfoPasswordRequest param , HttpSession session) {
 		super.userBehavior(session, logger, "ajax_btn_password_reset", "修改用户密码");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.ajaxPasswordReset(param);

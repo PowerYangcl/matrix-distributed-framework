@@ -2,9 +2,9 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import com.matrix.base.BaseClass;
-import com.matrix.base.Result;
-import com.matrix.base.ResultCode;
 import com.matrix.pojo.entity.McOrganization;
 import com.matrix.pojo.view.McUserInfoView;
 
@@ -16,6 +16,8 @@ import lombok.EqualsAndHashCode;
 public class UpdateMcOrganizationRequest extends BaseClass implements Serializable{
 
 	private static final long serialVersionUID = 5906142417951173008L;
+	
+	@NotBlank(message = "101010063")		// 101010063=更新失败，节点id不得为空!
 	private Long id;
     private String name;
     private Long parentId;
@@ -31,12 +33,6 @@ public class UpdateMcOrganizationRequest extends BaseClass implements Serializab
     
 	private McUserInfoView userCache;
 	
-	public Result<McOrganization> validateUpdateOrganizationInfo(){
-		if (id == null) {  // 101010025=更新失败 + 101010012=节点id不得为空!
-			return Result.ERROR(this.getInfo(101010025) + "," + this.getInfo(101010012), ResultCode.ERROR_UPDATE);
-		}
-		return Result.SUCCESS();
-	}
 	
 	public McOrganization buildUpdateOrganizationInfo() {
 		McOrganization e = new McOrganization();

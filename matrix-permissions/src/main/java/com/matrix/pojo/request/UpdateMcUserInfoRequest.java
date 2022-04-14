@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.lang3.StringUtils;
-
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
@@ -14,8 +13,6 @@ import com.matrix.dao.IMcUserInfoMapper;
 import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.view.McUserInfoView;
-import com.matrix.util.SignUtil;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -42,9 +39,6 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
     private String remark;
     private String userNameOld;
 
-    private String password;				// 更新密码作为单独的权限进行剥离 - Yangcl
-    private String oldPassWord;  	// 页面修改密码时传入原始的密码。如果页面传入的旧密码和原始密码不相等则返回错误提示
-	
 	public McUserInfo buildEditSysUser() {
 		McUserInfo e = new McUserInfo();
 		e.setId(id);
@@ -68,41 +62,6 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 				return Result.ERROR(this.getInfo(101010029), ResultCode.INTERNAL_VALIDATION_FAILED);
 			}
 		}
-		return Result.SUCCESS();
-	}
-	
-	
-	public McUserInfo buildAjaxPasswordReset() {
-		McUserInfo e = new McUserInfo();
-		e.setId(id);
-		e.setPassword(SignUtil.md5Sign(password));
-		e.buildUpdateCommon(userCache);
-		return e;
-	}
-	
-	public Result<?> validateAjaxPasswordReset() {
-		if (StringUtils.isBlank(password)) {
-			// 101010037=用户密码不得为空
-			return Result.ERROR(this.getInfo(101010037), ResultCode.MISSING_ARGUMENT);
-		}
-		if(password.length() < 6) {			// 101010047=新密码长度不得小于6位
-			return Result.ERROR(this.getInfo(101010047), ResultCode.INVALID_ARGUMENT);
-		}
-//		if (StringUtils.isBlank(oldPassWord)) {
-//			// 101010016=密码更新失败，原密码缺失
-//			return Result.ERROR(this.getInfo(101010016), ResultCode.MISSING_ARGUMENT);
-//		}
-		McUserInfo user = mcUserInfoMapper.find(id);
-		if(user == null) {			// 101010038=用户密码重置失败，未找到指定用户，请重试
-			return Result.ERROR(this.getInfo(101010038), ResultCode.RESULT_NULL);
-		}
-//		if (!user.getPassword().equals(SignUtil.md5Sign( oldPassWord ))){
-//			// 101010042=用户密码重置失败，原始密码不正确
-//			return Result.ERROR(this.getInfo(101010042), ResultCode.INTERNAL_VALIDATION_FAILED);
-//		}
-		// 重新赋值，避免使用页面传入的值。
-		this.userName = user.getUserName();
-		this.oldPassWord = user.getPassword();
 		return Result.SUCCESS();
 	}
 }

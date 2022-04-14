@@ -4,12 +4,20 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
 
-import com.matrix.base.ErrorCode;
 import com.matrix.pojo.entity.McOrganization;
 import com.matrix.pojo.view.McUserInfoView;
 
 import lombok.Data;
 
+/**
+ * @description: 暂时用不上，字段约束后面再说
+ * 
+ * @author Yangcl
+ * @date 2022-4-14 20:52:36
+ * @home https://github.com/PowerYangcl
+ * @path matrix-permissions / com.matrix.pojo.request.AddMcOrganizationRequest.java
+ * @version 1.6.0.8-validation
+ */
 @Data
 public class AddMcOrganizationRequest implements Serializable{
 
@@ -17,17 +25,29 @@ public class AddMcOrganizationRequest implements Serializable{
 
 	
     private Long cid;
-    @NotBlank(message = ErrorCode.MISSING_ARGUMENT + "name")
+    
+    
     private String name;
+    
     private Long parentId;
-    private Integer type;
+    
+    private Integer type;			// 门店类型：1加盟，2直营|type=3则此字段必填
+    
+    @NotBlank(message = "101010002")		// 101010002=平台唯一标识码不得为空
     private String platform;
+    
     private Long managerId;
+    
     private String managerName;
+    
     private Integer storeType;
+    
     private Integer seqnum;
+    
     private String mobile;
+    
     private String address;
+    
     private String remark;
     
 	private McUserInfoView userCache;

@@ -12,7 +12,6 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
 import com.matrix.pojo.request.FindMcUserInfoListRequest;
-import com.matrix.pojo.request.FindMcUserInfoRequest;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
 

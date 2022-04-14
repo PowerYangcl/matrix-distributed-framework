@@ -1,9 +1,9 @@
 package com.matrix.processor.privates;
 
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
@@ -26,13 +26,40 @@ import javax.servlet.http.HttpSession;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindStoreListRequest.class)
-public class ManagerApi141Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi141Processor extends BaseClass implements IBaseProcessor<FindStoreListRequest> {
     @Inject
     private IMcOrganizationService mcOrganizationService;
 
     @Override
-    public Result<List<McOrganizationView>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
-    	FindStoreListRequest dto = JSONObject.parseObject(param.getString("data"), FindStoreListRequest.class);
-        return mcOrganizationService.ajaxStoreList(dto);
+    public Result<List<McOrganizationView>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindStoreListRequest> param) {
+        return mcOrganizationService.ajaxStoreList(param.getData());
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

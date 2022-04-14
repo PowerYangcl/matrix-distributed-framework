@@ -6,9 +6,11 @@ import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
+import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
+import com.matrix.pojo.dto.McUserInfoDto;
 import com.matrix.support.ValidateCodeSupport;
 
 /**
@@ -19,9 +21,9 @@ import com.matrix.support.ValidateCodeSupport;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.McUserInfoDto.class)
-public class ManagerApi140Processor extends BaseClass implements IBaseProcessor {
+public class ManagerApi140Processor extends BaseClass implements IBaseProcessor<McUserInfoDto> {
 	@Override
-	public Result<JSONObject> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, JSONObject param) {
+	public Result<JSONObject> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<McUserInfoDto> param) {
 		ValidateCodeSupport code = new ValidateCodeSupport(100,30,4,30,25);
 		return code.createValidateCode();
 		
