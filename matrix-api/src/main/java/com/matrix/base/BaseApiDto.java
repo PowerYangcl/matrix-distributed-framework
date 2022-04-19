@@ -1,16 +1,18 @@
 package com.matrix.base;
 
-import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import com.alibaba.fastjson.JSONObject;
 import com.matrix.pojo.view.McUserInfoView;
 import lombok.Data;
 
 @Data
-public class BaseApiDto<T> {
+public class BaseApiDto {
 	
-	@Valid
+	@NotNull(message = "600010004")   // 600010004=open-api请求头不得为空
 	private ApiHead head;
 	
-	private T data;
+	private JSONObject data;
 	
 	private McUserInfoView userCache;
 }

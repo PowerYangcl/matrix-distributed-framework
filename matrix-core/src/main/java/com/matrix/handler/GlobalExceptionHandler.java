@@ -64,22 +64,24 @@ public class GlobalExceptionHandler extends BaseClass {
 	@ResponseBody
     @ExceptionHandler({HttpMediaTypeException.class, HttpMediaTypeNotAcceptableException.class})
     public Result<?> handleHttpMediaTypeException(HttpServletRequest request, HttpMediaTypeException e) {
-		
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+		System.out.println("HttpMediaTypeException");
+		e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
 	
 	@ResponseBody
     @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
     public Result<?> handleHttpRequestMethodNotSupportedException(HttpServletRequest request, HttpRequestMethodNotSupportedException e) {
-		
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+		System.out.println("HttpRequestMethodNotSupportedException");
+		e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
 	
 	/**
 	 * @description: Service层参数验证，如果调用matrix-api则用到此处
 	 * 		@ Valid 和@ Validated的service层的应用：
-	 * 			1、service接口的方法参数上添加注解@Valid；
-	 * 			2、service实现的类上加注解 @ Validated service实现的方法参数上加注解 @ Valid
+	 * 			1、service【接口】的方法参数上添加注解@Valid；
+	 * 			2、service【实现类】上加注解 @ Validated service实现的方法参数上加注解 @ Valid
 	 * 			3、:方法参数对象上加参数的限制注解
 	 * 		参考：https://www.cnblogs.com/newAndHui/p/14185091.html
 	 * 
@@ -139,61 +141,89 @@ public class GlobalExceptionHandler extends BaseClass {
         return Result.ERROR(msg, ResultCode.PARAM_VALIDATION_FAILED);
     }
     
+    /**
+     * @description: 如果你使用了@ RequestBody @ Valid 来封装参数并校验，
+     * 		此时BindException这个异常处理器又不起作用，需要增加MethodArgumentNotValidException来处理。
+     * 
+     * @author Yangcl
+     * @date 2022-4-18 16:42:41
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.0.8-validation
+     */
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result<?> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException e) {
-    	
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    public Result<?> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
+    	BindingResult bindingResult = ex.getBindingResult();
+    	Class<?> targetClass = bindingResult.getTarget().getClass();
+    	String className = targetClass.getName();
+    	List<Vmsg> list = new ArrayList<Vmsg>();
+    	List<ObjectError> errorList = bindingResult.getAllErrors();
+    	for(ObjectError e : errorList) {
+    		JSONObject parse = JSONObject.parseObject(JSONObject.toJSON(e.getArguments()[0]).toString());
+    		Vmsg vm = new Vmsg();
+    		vm.setFiled(parse.getString("defaultMessage"));
+    		vm.setAnnotation(e.getCode());
+    		vm.setMsg(this.getInfo(Long.valueOf(e.getDefaultMessage())));
+    		list.add(vm);
+    	}
+    	String msg = className + ":MethodArgumentNotValidException in param validation. " + JSONArray.toJSONString(list);
+        return Result.ERROR(msg, ResultCode.PARAM_VALIDATION_FAILED);
     }
     
     @ResponseBody
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Result<?> handleMissingServletRequestParameterException(HttpServletRequest request, MissingServletRequestParameterException e) {
-    	
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	System.out.println("MissingServletRequestParameterException");
+    	e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
     
     @ResponseBody
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public Result<?> handleHttpMessageNotReadableException(HttpServletRequest request, HttpMessageNotReadableException e) {
-    	
-        return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	System.out.println("HttpMessageNotReadableException");
+    	e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
     
     @ResponseBody
     @ExceptionHandler(HttpStatusCodeException.class)
     public Result<?> handleHttpStatusCodeException(HttpServletRequest request, HttpStatusCodeException e) {
-    	
-    	return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	System.out.println("HttpStatusCodeException");
+    	e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
     
     @ResponseBody
     @ExceptionHandler(MultipartException.class)
     public Result<?> handleMultipartException(HttpServletRequest request, MultipartException e) {
-    	
-    	return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	System.out.println("MultipartException");
+    	e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
     
     @ResponseBody
     @ExceptionHandler(UnsatisfiedServletRequestParameterException.class)
     public Result<?> handleUnsatisfiedServletRequestParameterExceptionn(HttpServletRequest request, UnsatisfiedServletRequestParameterException e) {
-    	
-    	return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	System.out.println("UnsatisfiedServletRequestParameterException");
+    	e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
     
     
 //    @ResponseBody		TODO 是否开启？
 //    @ExceptionHandler(Throwable.class)
     public Result<?> handleError(HttpServletRequest request, Throwable e) {
-    	
+    	System.out.println("HttpServletRequest");
     	return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
     }
     
     @ResponseBody
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Result<?> handlerMethodArgumentTypeMismatchException(HttpServletRequest request, MethodArgumentTypeMismatchException e) {
-    	
-    	return Result.ERROR(this.getInfo(600010060), ResultCode.INVALID_ARGUMENT);
+    	System.out.println("MethodArgumentTypeMismatchException");
+    	e.printStackTrace();
+        return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
     }
     
     

@@ -23,15 +23,16 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindMcUserInfoRequest.class)
-public class ManagerApi105Processor extends BaseClass implements IBaseProcessor<FindMcUserInfoRequest> {
+public class ManagerApi105Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	
 	@Override
-	public Result<McUserInfoView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindMcUserInfoRequest> param) {
-		return mcUserInfoService.ajaxFindSysUser(param.getData());
+	public Result<McUserInfoView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindMcUserInfoRequest dto = param.getData().toJavaObject(FindMcUserInfoRequest.class);
+		return mcUserInfoService.ajaxFindSysUser(dto);
 	}
 
 }

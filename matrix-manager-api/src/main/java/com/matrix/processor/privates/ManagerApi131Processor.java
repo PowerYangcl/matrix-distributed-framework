@@ -26,14 +26,15 @@ import javax.servlet.http.HttpSession;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=StoreInfoDto.class)
-public class ManagerApi131Processor extends BaseClass implements IBaseProcessor<FindStoreInfoRequest> {
+public class ManagerApi131Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IStoreInfoService storeInfoService;
 	
 	@Override
-	public Result<List<StoreInfo>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindStoreInfoRequest> param) {
-		return storeInfoService.storeInfoList(param.getData());
+	public Result<List<StoreInfo>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindStoreInfoRequest dto = param.getData().toJavaObject(FindStoreInfoRequest.class);
+		return storeInfoService.storeInfoList(dto);
 	}
 
 }

@@ -22,14 +22,15 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateMcUserInfoPasswordRequest.class)
-public class ManagerApi129Processor extends BaseClass implements IBaseProcessor<UpdateMcUserInfoPasswordRequest> {
+public class ManagerApi129Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<UpdateMcUserInfoPasswordRequest> param) {
-		return  mcUserInfoService.ajaxPasswordReset(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		UpdateMcUserInfoPasswordRequest dto = param.getData().toJavaObject(UpdateMcUserInfoPasswordRequest.class);
+		return  mcUserInfoService.ajaxPasswordReset(dto);
 	}
 
 }

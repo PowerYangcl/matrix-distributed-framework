@@ -3,9 +3,12 @@ package com.matrix.service.impl;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -46,6 +49,7 @@ import com.matrix.service.IMcRoleService;
  * @date 2019年12月18日 下午3:48:30 
  * @version 1.0.0.1
  */
+@Validated
 @Service("mcRoleService") 
 public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto , McRoleView> implements IMcRoleService {
 	
@@ -65,7 +69,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2018年9月24日 下午3:58:48 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(FindMcRoleRequest param, HttpServletRequest request){
+	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(@Valid FindMcRoleRequest param, HttpServletRequest request){
 		Result<PageInfo<McRoleView>> validate = param.validateAjaxSystemRoleList();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -92,7 +96,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2017年5月19日 下午9:10:56 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> addMcRole(AddMcRoleRequest param) {
+	public Result<?> addMcRole(@Valid AddMcRoleRequest param) {
 		Result<?> validate = param.validate();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -128,7 +132,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> editSysRole(UpdateMcRoleRequest param) {
+	public Result<?> editSysRole(@Valid UpdateMcRoleRequest param) {
 		Result<?> validate = param.validateEditMcRole();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -174,7 +178,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> deleteMcRole(DeleteMcRoleRequest param) {
+	public Result<?> deleteMcRole(@Valid DeleteMcRoleRequest param) {
 		try {
 			if(mcUserRoleMapper.selectByMcRoleId(param.getMcRoleId()).size() != 0){ 
 				// 该角色已经关联了用户，如果想删除则必选先将用户与该角色解除绑定
@@ -268,7 +272,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2019年12月16日 下午4:15:53 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McRoleView>> userRoleList(FindUserRoleListRequest param , HttpServletRequest request) {
+	public Result<PageInfo<McRoleView>> userRoleList(@Valid FindUserRoleListRequest param , HttpServletRequest request) {
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
 		try {
@@ -323,7 +327,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> allotUserRole(AddMcUserRoleRequest param) {
+	public Result<?> allotUserRole(@Valid AddMcUserRoleRequest param) {
 		try {
 			McUserRole entity = param.buildAllotUserRole();
 			Integer count = mcUserRoleMapper.insertSelective(entity);
@@ -346,7 +350,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2019年12月17日 下午5:39:55 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> deleteUserRole(DeleteMcUserRoleRequest param) {
+	public Result<?> deleteUserRole(@Valid DeleteMcUserRoleRequest param) {
 		try {
 			McUserRoleDto dto = param.buildDeleteUserRole();
 			mcUserRoleMapper.deleteByDto(dto);   
@@ -365,7 +369,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2018年10月13日 下午3:37:05 
 	 * @version 1.0.0.1
 	 */
-	public Result<McRole> ajaxFindRoleInfo(FindMcRoleRequest param) {
+	public Result<McRole> ajaxFindRoleInfo(@Valid FindMcRoleRequest param) {
 		McRole e = param.buildAjaxFindRoleInfo();
 		if(e.getId() == null) {		// 101010033=角色id不得为空
 			return Result.ERROR(this.getInfo(101010033), ResultCode.MISMATCH_ARGUMENT);

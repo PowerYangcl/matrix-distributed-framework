@@ -26,14 +26,15 @@ import com.matrix.service.IMcSysFunctionService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindTreeListRequest.class)
-public class ManagerApi109Processor extends BaseClass implements IBaseProcessor<FindTreeListRequest> {
+public class ManagerApi109Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;   
 	
 	@Override
-	public Result<TreeListView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindTreeListRequest> param) {
-		return mcSysFunctionService.treeList(param.getData());
+	public Result<TreeListView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindTreeListRequest dto = param.getData().toJavaObject(FindTreeListRequest.class);
+		return mcSysFunctionService.treeList(dto);
 	}
 
 }

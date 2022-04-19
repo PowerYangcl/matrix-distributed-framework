@@ -22,14 +22,15 @@ import com.matrix.service.IMcSysFunctionService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateMcSysFunctionRequest.class)
-public class ManagerApi117Processor extends BaseClass implements IBaseProcessor<UpdateMcSysFunctionRequest> {
+public class ManagerApi117Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;  
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<UpdateMcSysFunctionRequest> param) {
-		return mcSysFunctionService.updateTreeNodes(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		UpdateMcSysFunctionRequest dto = param.getData().toJavaObject(UpdateMcSysFunctionRequest.class);
+		return mcSysFunctionService.updateTreeNodes(dto);
 	}
 
 }

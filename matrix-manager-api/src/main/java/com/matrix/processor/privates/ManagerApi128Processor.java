@@ -22,14 +22,15 @@ import com.matrix.service.IMcOrganizationService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateTreeNodesRequest.class)
-public class ManagerApi128Processor extends BaseClass implements IBaseProcessor<UpdateTreeNodesRequest> {
+public class ManagerApi128Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<UpdateTreeNodesRequest> param) {
-		return mcOrganizationService.updateTreeNodes(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		UpdateTreeNodesRequest dto = param.getData().toJavaObject(UpdateTreeNodesRequest.class);
+		return mcOrganizationService.updateTreeNodes(dto);
 	}
 
 }

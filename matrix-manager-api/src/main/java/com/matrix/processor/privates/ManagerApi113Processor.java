@@ -23,14 +23,15 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindMcRoleRequest.class)
-public class ManagerApi113Processor extends BaseClass implements IBaseProcessor<FindMcRoleRequest> {
+public class ManagerApi113Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public Result<McRole> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindMcRoleRequest> param) {
-		return mcRoleService.ajaxFindRoleInfo(param.getData());
+	public Result<McRole> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindMcRoleRequest dto = param.getData().toJavaObject(FindMcRoleRequest.class);
+		return mcRoleService.ajaxFindRoleInfo(dto);
 	}
 
 }

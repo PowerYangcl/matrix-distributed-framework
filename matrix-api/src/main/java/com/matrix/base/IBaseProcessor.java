@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
  * @version 1.0.0.1
  * @param <T>
  */
-public interface IBaseProcessor<T> {
+public interface IBaseProcessor {
 	
 	/**
 	 * @description: 每个业务对应的实现类均在此处进行详细逻辑处理 
@@ -28,6 +28,6 @@ public interface IBaseProcessor<T> {
 	 * @date 2017年11月13日 上午11:54:05 
 	 * @version 1.0.0
 	 */
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response , HttpSession session , BaseApiDto<T> param); 
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response , HttpSession session); 
 	
 }

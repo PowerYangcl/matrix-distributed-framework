@@ -45,15 +45,14 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 	 * @date 2019年10月29日 下午11:02:06 
 	 * @version 1.0.0.1
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public  Result<?> apiService(HttpServletRequest request, HttpServletResponse response , HttpSession session , BaseApiDto<?> param) {
+	public  Result<?> apiService(BaseApiDto param, HttpServletRequest request, HttpServletResponse response , HttpSession session) {
 		Result<AcApiInfoCache> result = this.checkRequest(request , response , param);
 		if (result.getStatus().equals("success")){
 			try {     
 				Class<?> clazz = Class.forName("com.matrix.processor." + result.getData().getProcessor());   
 				if (clazz != null && clazz.getDeclaredMethods() != null){
 					IBaseProcessor iprocessor = (IBaseProcessor) clazz.newInstance();
-					return iprocessor.processor(request , response , session ,  param);
+					return iprocessor.processor(param, request , response , session);
 				}else {
 					return this.errorMsg(response, 10010, 600010010, result.getData().getTarget());	// 600010010=系统错误, 未找到{0}接口对应的处理类.请联系开发人员!
 				}
@@ -77,7 +76,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */
-	private Result<AcApiInfoCache> checkRequest(HttpServletRequest request, HttpServletResponse response , BaseApiDto<?> param) {
+	private Result<AcApiInfoCache> checkRequest(HttpServletRequest request, HttpServletResponse response , BaseApiDto param) {
 		/////// 请求信息验证 ///////
 		if(param == null) {
 			return this.errorMsg(response, 10017, 600010017);	// 600010017=非法的请求数据结构，未检测到请求数据
@@ -220,9 +219,9 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 	 * @date 2017年12月3日 下午9:18:25 
 	 * @version 1.0.0.1
 	 */
-	private void apiRequestLogger(JSONObject requester , JSONObject apiInfo) {
-		
-	}
+//	private void apiRequestLogger(JSONObject requester , JSONObject apiInfo) {
+//		
+//	}
 	
 	private AcApiInfoCache initAcApiInfoCache(JSONObject apiInfo) {
 		AcApiInfoCache info = new AcApiInfoCache();

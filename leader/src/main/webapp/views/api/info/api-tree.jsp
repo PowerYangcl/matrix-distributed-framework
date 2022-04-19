@@ -123,7 +123,12 @@
 <script type="text/javascript" src="${js}/plugins/jquery.slimscroll-1.3.8.js"></script>
 <script type="text/javascript" src="${js}/ztree/jquery.ztree.all.js"></script>
 
+<!-- 传递复杂对象参数 -->
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
 <script type="text/javascript" src="${views}/api/info/api-tree.js"></script>
+
+
 <script>
 	$(function(){
 		

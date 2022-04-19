@@ -22,14 +22,15 @@ import com.matrix.service.IMcOrganizationService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcOrganizationRequest.class)
-public class ManagerApi127Processor extends BaseClass implements IBaseProcessor<DeleteMcOrganizationRequest> {
+public class ManagerApi127Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcOrganizationRequest> param) {
-		return mcOrganizationService.deleteOrganizationInfo(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		DeleteMcOrganizationRequest dto = param.getData().toJavaObject(DeleteMcOrganizationRequest.class);
+		return mcOrganizationService.deleteOrganizationInfo(dto);
 	}
 
 }

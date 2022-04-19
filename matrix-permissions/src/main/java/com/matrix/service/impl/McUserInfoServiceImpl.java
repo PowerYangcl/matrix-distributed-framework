@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import com.matrix.pojo.request.AddMcUserInfoRequest;
 import com.matrix.pojo.request.DeleteMcUserInfoRequest;
@@ -20,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -56,6 +58,7 @@ import com.matrix.util.SignUtil;
  * @date 2016年11月25日 下午3:30:37 
  * @version 1.0.0
  */
+@Validated
 @Service("mcUserInfo") 
 public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , McUserInfoDto , BaseView> implements IMcUserInfoService{
 	
@@ -137,7 +140,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoListRequest param , HttpServletRequest request) {
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(@Valid FindMcUserInfoListRequest param , HttpServletRequest request) {
 		Result<PageInfo<McUserInfoView>> validate = param.validateAjaxSystemUserList();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -185,7 +188,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2019年12月5日 上午10:28:56 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> addSysUser(AddMcUserInfoRequest param) {
+	public Result<?> addSysUser(@Valid AddMcUserInfoRequest param) {
 		Result<?> validate = param.validate(mcUserInfoMapper);
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -210,7 +213,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> editSysUser(UpdateMcUserInfoRequest param) {
+	public Result<?> editSysUser(@Valid UpdateMcUserInfoRequest param) {
 		Result<?> validate = param.validateEditSysUser();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -237,7 +240,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月29日 上午11:05:07 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxPasswordReset(UpdateMcUserInfoPasswordRequest param) {
+	public Result<?> ajaxPasswordReset(@Valid UpdateMcUserInfoPasswordRequest param) {
 		Result<?> validate = param.validateAjaxPasswordReset();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -266,7 +269,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> deleteUser(DeleteMcUserInfoRequest param) {
+	public Result<?> deleteUser(@Valid DeleteMcUserInfoRequest param) {
 		Long id = param.getId();
 		McUserInfoView view = param.getUserCache();
 		try {
@@ -346,7 +349,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
 	 */
-	public Result<ClientLoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request) {
+	public Result<ClientLoginView> ajaxClientLogin(@Valid FindLoginRequest param, HttpServletRequest request) {
 		Result<ClientLoginView> validate = param.validateAjaxClientLogin();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -363,7 +366,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		if(!info.getPlatform().equals(param.getPlatform())) {		// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
-			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
+			return Result.ERROR(this.getInfo(101010023 , info.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		
 		McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
@@ -396,7 +399,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月10日 下午7:29:38 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxClientLogout(FindLogoutRequest param) {
+	public Result<?> ajaxClientLogout(@Valid FindLogoutRequest param) {
 		launch.loadDictCache(DCacheEnum.AccessToken , null).del(param.getAccessToken());
 		return Result.SUCCESS( this.getInfo(101010015));  // 101010015=系统已经退出
 	}
@@ -410,7 +413,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @date 2018年10月12日 下午7:42:13 
 	 * @version 1.0.0.1
 	 */
-	public Result<McUserInfoView> ajaxFindSysUser(FindMcUserInfoRequest param) {
+	public Result<McUserInfoView> ajaxFindSysUser(@Valid FindMcUserInfoRequest param) {
 		McUserInfo entity = mcUserInfoMapper.find(param.getId());
 		if(entity == null){		// 101010032=获取用户详情失败，状态查询异常
 			return Result.ERROR(this.getInfo(101010032), ResultCode.NOT_FOUND);

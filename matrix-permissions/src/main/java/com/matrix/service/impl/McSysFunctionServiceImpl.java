@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseServiceImpl;
@@ -42,6 +45,7 @@ import com.matrix.util.NetUtil;
  * @date 2019年12月18日 下午3:33:02 
  * @version 1.0.0.1
  */
+@Validated
 @Service("mcSysFunctionService") 
 public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFunction , McSysFunctionDto , McSysFunctionView> implements IMcSysFunctionService {
 
@@ -61,7 +65,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @date 2017年3月1日 上午11:05:51 
 	 * @version 1.0.0.1
 	 */
-	public Result<McSysFunction> addMcSysFunction(AddMcSysFunctionRequest param) {
+	public Result<McSysFunction> addMcSysFunction(@Valid AddMcSysFunctionRequest param) {
 		Result<McSysFunction> validate = param.validate();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -88,7 +92,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @date 2017年3月1日 下午5:33:30 
 	 * @version 1.0.0.1
 	 */
-	public Result<McSysFunction> editMcSysFunction(UpdateMcSysFunctionRequest param) {
+	public Result<McSysFunction> editMcSysFunction(@Valid UpdateMcSysFunctionRequest param) {
 		Result<McSysFunction> validate = param.validateEditMcSysFunction();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -117,7 +121,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> updateTreeNodes(UpdateMcSysFunctionRequest param) {
+	public Result<?> updateTreeNodes(@Valid UpdateMcSysFunctionRequest param) {
 		Result<?> validate = param.validateUpdateTreeNodes();
 		if(validate.getStatus().equals("error")) {
 			return validate;
@@ -144,7 +148,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> deleteNode(DeleteMcSysFunctionRequest param) {
+	public Result<?> deleteNode(@Valid DeleteMcSysFunctionRequest param) {
 		try {
 			List<Long> list = param.buildDeleteNode();
 			Integer flag = mcSysFunctionMapper.deleteByIds(list);
@@ -170,7 +174,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	 * @date 2017年3月1日 上午11:03:16 
 	 * @version 1.0.0.1
 	 */
-	public Result<TreeListView> treeList(FindTreeListRequest param) {
+	public Result<TreeListView> treeList(@Valid FindTreeListRequest param) {
 		McSysFunctionDto dto = param.buildTreeList();
 		McUserInfoView userCache = param.getUserCache();
 		if(!userCache.getType().equals("leader")) {

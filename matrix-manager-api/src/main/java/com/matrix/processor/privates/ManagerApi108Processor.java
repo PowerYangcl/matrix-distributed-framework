@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
@@ -18,10 +17,10 @@ import com.matrix.base.Result;
  * @date 2018年10月10日 下午7:19:45 
  * @version 1.0.0.1
  */
-public class ManagerApi108Processor extends BaseClass implements IBaseProcessor<JSONObject> {
+public class ManagerApi108Processor extends BaseClass implements IBaseProcessor {
 
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<JSONObject> param) {
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		return null;
 	}
 

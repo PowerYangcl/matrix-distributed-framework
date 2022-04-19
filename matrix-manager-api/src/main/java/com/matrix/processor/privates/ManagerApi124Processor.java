@@ -23,14 +23,15 @@ import com.matrix.service.IMcOrganizationService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindMcOrganizationRequest.class)
-public class ManagerApi124Processor extends BaseClass implements IBaseProcessor<FindMcOrganizationRequest> {
+public class ManagerApi124Processor extends BaseClass implements IBaseProcessor {
 	
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public Result<UserOrgTreeListView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindMcOrganizationRequest> param) {
-		return mcOrganizationService.ajaxTreeList(param.getData());
+	public Result<UserOrgTreeListView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindMcOrganizationRequest dto = param.getData().toJavaObject(FindMcOrganizationRequest.class);
+		return mcOrganizationService.ajaxTreeList(dto);
 	}
 
 }

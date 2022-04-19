@@ -22,14 +22,15 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateMcRoleRequest.class)
-public class ManagerApi114Processor extends BaseClass implements IBaseProcessor<UpdateMcRoleRequest> {
+public class ManagerApi114Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<UpdateMcRoleRequest> param) {
-		return mcRoleService.editSysRole(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		UpdateMcRoleRequest dto = param.getData().toJavaObject(UpdateMcRoleRequest.class);
+		return mcRoleService.editSysRole(dto);
 	}
 
 }

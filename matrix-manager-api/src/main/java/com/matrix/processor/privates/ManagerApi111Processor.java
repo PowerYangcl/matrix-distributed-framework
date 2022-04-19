@@ -24,14 +24,15 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindUserRoleListRequest.class)
-public class ManagerApi111Processor extends BaseClass implements IBaseProcessor<FindUserRoleListRequest> {
+public class ManagerApi111Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public Result<PageInfo<McRoleView>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindUserRoleListRequest> param) {
-		return mcRoleService.userRoleList(param.getData() , request);
+	public Result<PageInfo<McRoleView>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindUserRoleListRequest dto = param.getData().toJavaObject(FindUserRoleListRequest.class);
+		return mcRoleService.userRoleList(dto , request);
 	}
 
 }

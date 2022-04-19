@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.annotation.Validated;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseServiceImpl;
@@ -38,6 +40,7 @@ import com.matrix.pojo.view.UserOrgTreeListView;
 import com.matrix.service.IMcOrganizationService;
 import com.matrix.service.IStoreInfoService;
 
+@Validated
 @Service("mcOrganizationService") 
 public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganization, McOrganizationDto, McOrganizationView> implements IMcOrganizationService {
 
@@ -65,7 +68,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */
-	public Result<UserOrgTreeListView> ajaxTreeList(FindMcOrganizationRequest param) {
+	public Result<UserOrgTreeListView> ajaxTreeList(@Valid FindMcOrganizationRequest param) {
 		McOrganizationDto dto = param.buildAjaxTreeList();
 		List<McOrganizationView> list = mcOrganizationMapper.findViewListByDto(dto);
 		if (list == null || list.size() == 0) {
@@ -100,7 +103,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<McOrganization> addOrganizationInfo(AddMcOrganizationRequest param) {
+	public Result<McOrganization> addOrganizationInfo(@Valid AddMcOrganizationRequest param) {
 		McOrganization e = param.buildAddOrganizationInfo();
 		try {
 			int flag = mcOrganizationMapper.insertGotEntityId(e);
@@ -128,7 +131,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<McOrganization> updateOrganizationInfo(UpdateMcOrganizationRequest param) {
+	public Result<McOrganization> updateOrganizationInfo(@Valid UpdateMcOrganizationRequest param) {
 		McOrganization entity = param.buildUpdateOrganizationInfo();
 		try {
 			if (entity.getType() != 3) {
@@ -157,7 +160,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> deleteOrganizationInfo(DeleteMcOrganizationRequest param) {
+	public Result<?> deleteOrganizationInfo(@Valid DeleteMcOrganizationRequest param) {
 		try {
 			McUserInfoView userCache = param.getUserCache();
 			String arr[] = param.getIds().split(",");
@@ -194,7 +197,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> updateTreeNodes(UpdateTreeNodesRequest param) {
+	public Result<?> updateTreeNodes(@Valid UpdateTreeNodesRequest param) {
 		try {
 			String[] arr = param.getUstring().split(",");
 			for (int i = 0; i < arr.length; i++) {
@@ -220,7 +223,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @version 1.0.0.1
 	 */
 	@Transactional
-	public Result<?> ajaxUserAddOrgRequest(UpdateUserAddOrgRequest param) {
+	public Result<?> ajaxUserAddOrgRequest(@Valid UpdateUserAddOrgRequest param) {
 		try {
 			McUserInfoView userInfo = param.getUserCache();
 			McUserInfoOrganization  entity = new McUserInfoOrganization();
@@ -257,7 +260,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */
-	public Result<List<McOrganizationView>> ajaxStoreList(FindStoreListRequest param) {
+	public Result<List<McOrganizationView>> ajaxStoreList(@Valid FindStoreListRequest param) {
 		McOrganizationDto dto = new McOrganizationDto();
 		dto.setCid(param.getUserCache().getCid());
 		dto.setParentId(0L);

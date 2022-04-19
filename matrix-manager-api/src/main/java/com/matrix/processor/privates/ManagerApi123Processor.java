@@ -22,14 +22,15 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcUserRoleRequest.class)
-public class ManagerApi123Processor extends BaseClass implements IBaseProcessor<DeleteMcUserRoleRequest> {
+public class ManagerApi123Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcUserRoleRequest> param) {
-		return mcRoleService.deleteUserRole(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		DeleteMcUserRoleRequest dto = param.getData().toJavaObject(DeleteMcUserRoleRequest.class);
+		return mcRoleService.deleteUserRole(dto);
 	}
 
 }

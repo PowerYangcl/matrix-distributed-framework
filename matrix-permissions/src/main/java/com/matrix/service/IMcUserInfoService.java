@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.BaseView;
@@ -61,7 +62,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年10月18日 下午3:42:34 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoListRequest param , HttpServletRequest request);
+	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(@Valid FindMcUserInfoListRequest param , HttpServletRequest request);
 	
 	/**
 	 * @description: 添加用户
@@ -70,7 +71,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月5日 上午10:28:56 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> addSysUser(AddMcUserInfoRequest param);
+	public Result<?> addSysUser(@Valid AddMcUserInfoRequest param);
 	
 	/**
 	 * @description: 修改用户信息
@@ -79,7 +80,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月5日 下午2:28:38 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> editSysUser(UpdateMcUserInfoRequest param);
+	public Result<?> editSysUser(@Valid UpdateMcUserInfoRequest param);
 	
 	/**
 	 * @description: 修改用户密码
@@ -89,7 +90,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月29日 上午11:05:07 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxPasswordReset(UpdateMcUserInfoPasswordRequest param);
+	public Result<?> ajaxPasswordReset(@Valid UpdateMcUserInfoPasswordRequest param);
 	
 	/**
 	 * @description: 删除一个用户 | 不保留数据库中的记录
@@ -98,7 +99,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2019年12月5日 下午5:21:34 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> deleteUser(DeleteMcUserInfoRequest param);
+	public Result<?> deleteUser(@Valid DeleteMcUserInfoRequest param);
 	
 	/**
 	 * @description: 重新加载系统用户缓存
@@ -133,7 +134,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月10日 上午10:51:44 
 	 * @version 1.0.0.1
 	 */
-	public Result<ClientLoginView> ajaxClientLogin(FindLoginRequest param, HttpServletRequest request);
+	public Result<ClientLoginView> ajaxClientLogin(@Valid FindLoginRequest param, HttpServletRequest request);
 
 	/**
 	 * @description: 【仅matrix-manager-api项目使用】
@@ -144,7 +145,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月10日 下午7:29:38 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> ajaxClientLogout(FindLogoutRequest param);
+	public Result<?> ajaxClientLogout(@Valid FindLogoutRequest param);
 	
 
 
@@ -157,7 +158,7 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	 * @date 2018年10月12日 下午7:42:13 
 	 * @version 1.0.0.1
 	 */
-	public Result<McUserInfoView> ajaxFindSysUser(FindMcUserInfoRequest param);
+	public Result<McUserInfoView> ajaxFindSysUser(@Valid FindMcUserInfoRequest param);
 
 }
 

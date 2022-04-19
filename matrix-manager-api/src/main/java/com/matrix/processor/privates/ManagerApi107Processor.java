@@ -22,15 +22,16 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcUserInfoRequest.class)
-public class ManagerApi107Processor extends BaseClass implements IBaseProcessor<DeleteMcUserInfoRequest> {
+public class ManagerApi107Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcUserInfoRequest> param) {
-		return mcUserInfoService.deleteUser(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		DeleteMcUserInfoRequest dto = param.getData().toJavaObject(DeleteMcUserInfoRequest.class);
+		return mcUserInfoService.deleteUser(dto);
 	}
 
 }

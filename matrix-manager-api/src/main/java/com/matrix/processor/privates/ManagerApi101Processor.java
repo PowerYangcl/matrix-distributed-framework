@@ -22,14 +22,14 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindLogoutRequest.class)
-public class ManagerApi101Processor extends BaseClass implements IBaseProcessor<FindLogoutRequest> {
+public class ManagerApi101Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindLogoutRequest> param) {
-		FindLogoutRequest dto = param.getData();
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindLogoutRequest dto = param.getData().toJavaObject(FindLogoutRequest.class);
 		dto.setAccessToken(param.getHead().getAccessToken());
 		return mcUserInfoService.ajaxClientLogout(dto);
 	}

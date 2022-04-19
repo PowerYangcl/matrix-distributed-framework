@@ -23,14 +23,15 @@ import com.matrix.service.IMcSysFunctionService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.AddMcSysFunctionRequest.class)
-public class ManagerApi115Processor extends BaseClass implements IBaseProcessor<AddMcSysFunctionRequest> {
+public class ManagerApi115Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;  
 	
 	@Override
-	public Result<McSysFunction> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<AddMcSysFunctionRequest> param) {
-		return mcSysFunctionService.addMcSysFunction(param.getData());
+	public Result<McSysFunction> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		AddMcSysFunctionRequest dto = param.getData().toJavaObject(AddMcSysFunctionRequest.class);
+		return mcSysFunctionService.addMcSysFunction(dto);
 	}
 
 }

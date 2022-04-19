@@ -13,6 +13,7 @@ import com.matrix.pojo.view.StoreInfoView;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * @description:  门店基本信息服务接口
@@ -39,7 +40,7 @@ public interface IStoreInfoService extends IBaseService<Long,StoreInfo,StoreInfo
      * @date  2018-11-20 17:35
      * @version 1.0.0.1
      */
-	public Result<List<StoreInfo>> storeInfoList(FindStoreInfoRequest param);
+	public Result<List<StoreInfo>> storeInfoList(@Valid FindStoreInfoRequest param);
 
     /**
      * @description:  门店列表信息

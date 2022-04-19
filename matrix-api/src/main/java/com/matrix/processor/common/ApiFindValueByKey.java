@@ -20,15 +20,16 @@ import com.matrix.service.IApiCenterService;
  * @date 2018年10月8日 上午10:34:58 
  * @version 1.0.0.1
  */
-public class ApiFindValueByKey extends BaseClass implements IBaseProcessor<FindValueByKeyDto> {
+public class ApiFindValueByKey extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IApiCenterService apiCenterService;  
 	
 	
 	@Override
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindValueByKeyDto> param) {
-		return apiCenterService.ajaxFindRequestValue(param.getData().getKey());
+	public Result<String> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindValueByKeyDto dto = param.getData().toJavaObject(FindValueByKeyDto.class);
+		return apiCenterService.ajaxFindRequestValue(dto.getKey());
 	}
 
 }

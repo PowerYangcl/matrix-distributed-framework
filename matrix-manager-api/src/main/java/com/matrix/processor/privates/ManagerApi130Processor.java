@@ -20,11 +20,12 @@ import com.matrix.pojo.entity.McOrganization;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.entity.McOrganization.class)
-public class ManagerApi130Processor extends BaseClass implements IBaseProcessor<McOrganization> {
+public class ManagerApi130Processor extends BaseClass implements IBaseProcessor {
 
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<McOrganization> param) {
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		McOrganization dto = param.getData().toJavaObject(McOrganization.class);
 		return null;
 	}
 

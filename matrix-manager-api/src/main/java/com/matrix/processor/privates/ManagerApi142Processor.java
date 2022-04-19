@@ -23,10 +23,11 @@ import javax.servlet.http.HttpSession;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.McRoleDto.class)
-public class ManagerApi142Processor extends BaseClass implements IBaseProcessor<McRoleDto> {
+public class ManagerApi142Processor extends BaseClass implements IBaseProcessor {
 
     @Override
-    public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<McRoleDto> param) {
+    public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    	McRoleDto dto = param.getData().toJavaObject(McRoleDto.class);
         return null;
     }
 }

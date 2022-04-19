@@ -1,6 +1,8 @@
 package com.matrix.service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import com.github.pagehelper.PageInfo;
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
@@ -34,7 +36,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2018年9月24日 下午3:58:48 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(FindMcRoleRequest param, HttpServletRequest request);
+	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(@Valid FindMcRoleRequest param, HttpServletRequest request);
 	
 	/**
 	 * @description: 添加一个角色，不勾选系统功能 | ajax_btn_开头【此接口需要验证用户按钮权限】
@@ -43,7 +45,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2017年5月19日 下午9:10:56 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> addMcRole(AddMcRoleRequest param);
+	public Result<?> addMcRole(@Valid AddMcRoleRequest param);
 	
 	/**
 	 * @descriptions 修改角色名称和描述，不勾选系统功能|角色编辑页面的提交按钮
@@ -52,7 +54,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> editSysRole(UpdateMcRoleRequest param);
+	public Result<?> editSysRole(@Valid UpdateMcRoleRequest param);
 	
 	/**
 	 * @description: 删除系统角色|系统权限配置 / 系统用户相关 / 系统角色列表
@@ -62,7 +64,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2017年4月20日 上午11:02:30 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> deleteMcRole(DeleteMcRoleRequest param);
+	public Result<?> deleteMcRole(@Valid DeleteMcRoleRequest param);
 	
 	/**
 	 * @description: 修改角色所关联的系统功能|【角色列表】->【角色功能】->【提交】按钮
@@ -93,7 +95,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2019年12月16日 下午4:15:53 
 	 * @version 1.0.0.1
 	 */
-	public Result<PageInfo<McRoleView>> userRoleList(FindUserRoleListRequest param , HttpServletRequest request);
+	public Result<PageInfo<McRoleView>> userRoleList(@Valid FindUserRoleListRequest param , HttpServletRequest request);
 
 	/**
 	 * @description: 给指定用户分配一个角色
@@ -103,7 +105,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> allotUserRole(AddMcUserRoleRequest param);
+	public Result<?> allotUserRole(@Valid AddMcUserRoleRequest param);
 	
 	/**
 	 * @description: 解除角色绑定，同时删除缓存
@@ -113,7 +115,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2019年12月17日 下午5:39:55 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> deleteUserRole(DeleteMcUserRoleRequest param);
+	public Result<?> deleteUserRole(@Valid DeleteMcUserRoleRequest param);
 	
 	/**
 	 * @description: 权限详情【仅matrix-manager-api项目使用】
@@ -122,7 +124,7 @@ public interface IMcRoleService extends IBaseService<Long , McRole , McRoleDto ,
 	 * @date 2018年10月13日 下午3:37:05 
 	 * @version 1.0.0.1
 	 */
-	public Result<McRole> ajaxFindRoleInfo(FindMcRoleRequest param);
+	public Result<McRole> ajaxFindRoleInfo(@Valid FindMcRoleRequest param);
 
 }
 

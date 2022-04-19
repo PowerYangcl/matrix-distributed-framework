@@ -708,13 +708,11 @@ var apiInfo = {
 				var type_ = 'post';
 				var param = apiInfo.requestHeadInit($("#api-target").val());
 				param.data = dto;
-				var obj = JSON.parse(ajaxs.sendAjax(type_, apiInfo.apiServiceUrl, {json : JSON.stringify(param)} ));
-				if (obj.status == 'success') {
-					$("#json-response").val(JSON.stringify(obj));
-				}else{
-					layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
-					$("#json-response").val("");  
-				}
+				axios.post(apiInfo.apiServiceUrl , param).then(function (res) { // 请求成功返回
+	                $("#json-response").val(JSON.stringify(res.data));
+	            }).catch(function (err) {
+	                layer.alert( err.response.data.message , {title:err.response.data.error , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+	            })
 			}
 		}
 		

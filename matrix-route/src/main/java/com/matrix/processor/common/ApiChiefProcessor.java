@@ -20,10 +20,10 @@ import com.matrix.pojo.dto.ApiChiefDto;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.ApiChiefDto.class) 
-public class ApiChiefProcessor  extends BaseClass implements IBaseProcessor<ApiChiefDto> {
+public class ApiChiefProcessor  extends BaseClass implements IBaseProcessor {
 
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<ApiChiefDto> param) {
-		ApiChiefDto dto = param.getData();
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		ApiChiefDto dto = param.getData().toJavaObject(ApiChiefDto.class);
 		// TODO invoke chiefCommand()
 		return null;
 	}

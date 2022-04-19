@@ -1,6 +1,8 @@
 package com.matrix.service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import com.matrix.base.Result;
 import com.matrix.base.interfaces.IBaseService;
 import com.matrix.pojo.dto.McSysFunctionDto;
@@ -30,7 +32,7 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 	 * @date 2017年3月1日 上午11:05:51 
 	 * @version 1.0.0.1
 	 */
-	public Result<McSysFunction> addMcSysFunction(AddMcSysFunctionRequest param);
+	public Result<McSysFunction> addMcSysFunction(@Valid AddMcSysFunctionRequest param);
 	
 	/**
 	 * @description: 更新系统功能到数据库-mc_sys_function表添加记录
@@ -39,7 +41,7 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 	 * @date 2017年3月1日 下午5:33:30 
 	 * @version 1.0.0.1
 	 */
-	public Result<McSysFunction> editMcSysFunction(UpdateMcSysFunctionRequest param);
+	public Result<McSysFunction> editMcSysFunction(@Valid UpdateMcSysFunctionRequest param);
 	
 	/**
 	 * @description: 系统功能同层节点拖拽更新
@@ -49,7 +51,7 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 	 * @date 2017年3月2日 下午5:33:07 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> updateTreeNodes(UpdateMcSysFunctionRequest param);
+	public Result<?> updateTreeNodes(@Valid UpdateMcSysFunctionRequest param);
 
 	/**
 	 * @description: 物理删除一个系统功能节点及其子节点
@@ -59,7 +61,7 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 	 * @date 2018年10月15日 下午3:00:50 
 	 * @version 1.0.0.1
 	 */
-	public Result<?> deleteNode(DeleteMcSysFunctionRequest param);
+	public Result<?> deleteNode(@Valid DeleteMcSysFunctionRequest param);
 	
 	/**
 	 * @description: 获取树列表|sys-user-role-function.js使用2次
@@ -71,7 +73,7 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 	 * @date 2017年3月1日 上午11:03:16 
 	 * @version 1.0.0.1
 	 */
-	public Result<TreeListView> treeList(FindTreeListRequest param);
+	public Result<TreeListView> treeList(@Valid FindTreeListRequest param);
 	
 	public Result<?> ajaxFuncRole(McUserInfo entity, HttpServletRequest request);
 	

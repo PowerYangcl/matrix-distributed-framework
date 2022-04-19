@@ -23,15 +23,16 @@ import com.matrix.service.IApiCenterService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.ValidationTest.class) 
-public class ApiValidationTestProcessor extends BaseClass implements IBaseProcessor<ValidationTest> {
+public class ApiValidationTestProcessor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IApiCenterService apiCenterService; 
 	
 	@Override
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session,  BaseApiDto<ValidationTest> dto) {
+	public Result<String> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		ValidationTest dto = param.getData().toJavaObject(ValidationTest.class);
 		this.getLogger(null).sysoutInfo("validate 测试", this.getClass());
-		return apiCenterService.ajaxValidationTest(dto.getData());
+		return apiCenterService.ajaxValidationTest(dto);
 	}
 
 

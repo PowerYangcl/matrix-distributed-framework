@@ -26,13 +26,14 @@ import javax.servlet.http.HttpSession;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindStoreListRequest.class)
-public class ManagerApi141Processor extends BaseClass implements IBaseProcessor<FindStoreListRequest> {
+public class ManagerApi141Processor extends BaseClass implements IBaseProcessor {
     @Inject
     private IMcOrganizationService mcOrganizationService;
 
     @Override
-    public Result<List<McOrganizationView>> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindStoreListRequest> param) {
-        return mcOrganizationService.ajaxStoreList(param.getData());
+    public Result<List<McOrganizationView>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    	FindStoreListRequest dto = param.getData().toJavaObject(FindStoreListRequest.class);
+        return mcOrganizationService.ajaxStoreList(dto);
     }
 }
 

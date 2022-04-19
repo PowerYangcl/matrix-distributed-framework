@@ -22,14 +22,15 @@ import com.matrix.service.IMcSysFunctionService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcSysFunctionRequest.class)
-public class ManagerApi118Processor extends BaseClass implements IBaseProcessor<DeleteMcSysFunctionRequest> {
+public class ManagerApi118Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcSysFunctionService mcSysFunctionService;  
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcSysFunctionRequest> param) {
-		return mcSysFunctionService.deleteNode(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		DeleteMcSysFunctionRequest dto = param.getData().toJavaObject(DeleteMcSysFunctionRequest.class);
+		return mcSysFunctionService.deleteNode(dto);
 	}
 
 }

@@ -24,14 +24,15 @@ import com.matrix.service.IMcRoleService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.DeleteMcRoleRequest.class)
-public class ManagerApi121Processor extends BaseClass implements IBaseProcessor<DeleteMcRoleRequest> {
+public class ManagerApi121Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcRoleService mcRoleService;   
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<DeleteMcRoleRequest> param) {
-		return mcRoleService.deleteMcRole(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		DeleteMcRoleRequest dto = param.getData().toJavaObject(DeleteMcRoleRequest.class);
+		return mcRoleService.deleteMcRole(dto);
 	}
 
 }

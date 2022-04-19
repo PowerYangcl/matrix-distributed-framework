@@ -22,14 +22,15 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.AddMcUserInfoRequest.class)
-public class ManagerApi104Processor extends BaseClass implements IBaseProcessor<AddMcUserInfoRequest> {
+public class ManagerApi104Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<AddMcUserInfoRequest> param) {
-		return mcUserInfoService.addSysUser(param.getData()); 
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		AddMcUserInfoRequest dto = param.getData().toJavaObject(AddMcUserInfoRequest.class);
+		return mcUserInfoService.addSysUser(dto); 
 	}
 
 }

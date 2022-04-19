@@ -23,15 +23,17 @@ import com.matrix.service.IMcUserInfoService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.FindLoginRequest.class)
-public class ManagerApi100Processor extends BaseClass implements IBaseProcessor<FindLoginRequest> {
+public class ManagerApi100Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcUserInfoService mcUserInfoService;
 	
 	@Override
-	public Result<ClientLoginView> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindLoginRequest> param) {
-		return mcUserInfoService.ajaxClientLogin(param.getData(), request);
+	public Result<ClientLoginView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindLoginRequest dto = param.getData().toJavaObject(FindLoginRequest.class);
+		return mcUserInfoService.ajaxClientLogin(dto, request);
 	}
+
 
 }
 

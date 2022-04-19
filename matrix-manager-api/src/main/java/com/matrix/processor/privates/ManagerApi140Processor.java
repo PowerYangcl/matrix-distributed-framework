@@ -21,9 +21,10 @@ import com.matrix.support.ValidateCodeSupport;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.dto.McUserInfoDto.class)
-public class ManagerApi140Processor extends BaseClass implements IBaseProcessor<McUserInfoDto> {
+public class ManagerApi140Processor extends BaseClass implements IBaseProcessor {
 	@Override
-	public Result<JSONObject> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<McUserInfoDto> param) {
+	public Result<JSONObject> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		McUserInfoDto dto = param.getData().toJavaObject(McUserInfoDto.class);
 		ValidateCodeSupport code = new ValidateCodeSupport(100,30,4,30,25);
 		return code.createValidateCode();
 		

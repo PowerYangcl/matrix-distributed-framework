@@ -18,9 +18,12 @@ import com.matrix.pojo.view.StoreInfoView;
 import com.matrix.service.IStoreInfoService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import java.util.List;
 
 /**
@@ -30,6 +33,7 @@ import java.util.List;
  * @date  2018-09-20 15:51
  * @version 1.0.0.1
  */
+@Validated
 @Service("storeInfoService")
 public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreInfoDto,StoreInfoView> implements IStoreInfoService {
 
@@ -57,7 +61,7 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
      * @date 2018-11-20 17:35
      * @version 1.0.0.1
      */
-    public Result<List<StoreInfo>> storeInfoList(FindStoreInfoRequest param){
+    public Result<List<StoreInfo>> storeInfoList(@Valid FindStoreInfoRequest param){
         List<StoreInfo> list = super.findListByDto(param.buildStoreInfoList());
         if (CollectionUtils.isEmpty(list)) {
         	return Result.ERROR(this.getInfo(100020108), ResultCode.RESULT_NULL);

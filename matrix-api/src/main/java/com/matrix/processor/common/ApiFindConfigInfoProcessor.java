@@ -22,10 +22,11 @@ import com.matrix.pojo.dto.FindConfigInfoDto;
  * @date 2018年11月26日 下午7:12:44 
  * @version 1.0.0.1
  */
-public class ApiFindConfigInfoProcessor extends BaseClass implements IBaseProcessor<FindConfigInfoDto> {
+public class ApiFindConfigInfoProcessor extends BaseClass implements IBaseProcessor {
 
-	public Result<String> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindConfigInfoDto> param) {
-		String value = this.getConfig(param.getData().getKey());
+	public Result<String> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindConfigInfoDto dto = param.getData().toJavaObject(FindConfigInfoDto.class);
+		String value = this.getConfig(dto.getKey());
 		if(StringUtils.isBlank(value)) {
 			value = "未发现对应的值";
 		}

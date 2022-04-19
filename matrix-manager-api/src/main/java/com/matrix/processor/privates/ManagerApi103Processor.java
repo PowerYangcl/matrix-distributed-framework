@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.MatrixRequest;
 import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseClass;
@@ -20,10 +19,10 @@ import com.matrix.base.Result;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=String.class)
-public class ManagerApi103Processor extends BaseClass implements IBaseProcessor<JSONObject> {
+public class ManagerApi103Processor extends BaseClass implements IBaseProcessor {
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<JSONObject> data) {
+	public Result<?> processor(BaseApiDto data, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		return null;
 	}
 

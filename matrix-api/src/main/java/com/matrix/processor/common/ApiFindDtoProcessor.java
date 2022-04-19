@@ -21,14 +21,15 @@ import com.matrix.service.IApiCenterService;
  * @date 2018年10月8日 上午10:29:09 
  * @version 1.0.0.1
  */
-public class ApiFindDtoProcessor  extends BaseClass implements IBaseProcessor<FindApiInfoDto> {
+public class ApiFindDtoProcessor  extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IApiCenterService apiCenterService;  
 	
 	@Override
-	public Result<Object> processor(HttpServletRequest request, HttpServletResponse response, HttpSession session, BaseApiDto<FindApiInfoDto> param) {
-		return apiCenterService.ajaxFindRequestDto(param.getData().getTarget());
+	public Result<Object> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		FindApiInfoDto dto = param.getData().toJavaObject(FindApiInfoDto.class);
+		return apiCenterService.ajaxFindRequestDto(dto.getTarget());
 	}
 }
 

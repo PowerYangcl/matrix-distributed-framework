@@ -22,14 +22,15 @@ import com.matrix.service.IMcOrganizationService;
  * @version 1.0.0.1
  */
 @MatrixRequest(clazz=com.matrix.pojo.request.UpdateUserAddOrgRequest.class)
-public class ManagerApi134Processor extends BaseClass implements IBaseProcessor<UpdateUserAddOrgRequest> {
+public class ManagerApi134Processor extends BaseClass implements IBaseProcessor {
 
 	@Inject
 	private IMcOrganizationService mcOrganizationService;
 	
 	@Override
-	public Result<?> processor(HttpServletRequest request, HttpServletResponse response,  HttpSession session, BaseApiDto<UpdateUserAddOrgRequest> param) {
-		return mcOrganizationService.ajaxUserAddOrgRequest(param.getData());
+	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response,  HttpSession session) {
+		UpdateUserAddOrgRequest dto = param.getData().toJavaObject(UpdateUserAddOrgRequest.class);
+		return mcOrganizationService.ajaxUserAddOrgRequest(dto);
 	}
 
 }
