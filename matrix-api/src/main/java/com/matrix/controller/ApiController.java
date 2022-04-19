@@ -54,13 +54,6 @@ public class ApiController  extends BaseController{
 		return service.apiService(param, request , response , session);
 	}
 	
-	
-//	@ResponseBody
-//	@CrossOrigin(origins="*",maxAge=3600)
-//	@RequestMapping(value = "api", produces = { "application/json;charset=utf-8" })
-//	public Result<?> apiService2(@RequestBody @Validated BaseApiDto2 param, HttpServletRequest request , HttpServletResponse response , HttpSession session){ 
-//		return service.apiService(param, request , response , session);
-//	}
 }
 
 

@@ -31,6 +31,7 @@ public class ManagerApi113Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<McRole> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindMcRoleRequest dto = param.getData().toJavaObject(FindMcRoleRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcRoleService.ajaxFindRoleInfo(dto);
 	}
 

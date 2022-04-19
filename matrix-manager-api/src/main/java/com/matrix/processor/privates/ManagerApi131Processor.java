@@ -34,6 +34,7 @@ public class ManagerApi131Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<List<StoreInfo>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindStoreInfoRequest dto = param.getData().toJavaObject(FindStoreInfoRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return storeInfoService.storeInfoList(dto);
 	}
 

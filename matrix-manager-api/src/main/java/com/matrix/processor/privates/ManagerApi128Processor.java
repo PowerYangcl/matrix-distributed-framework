@@ -30,6 +30,7 @@ public class ManagerApi128Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		UpdateTreeNodesRequest dto = param.getData().toJavaObject(UpdateTreeNodesRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcOrganizationService.updateTreeNodes(dto);
 	}
 

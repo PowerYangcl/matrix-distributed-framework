@@ -31,6 +31,7 @@ public class ManagerApi100Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<ClientLoginView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindLoginRequest dto = param.getData().toJavaObject(FindLoginRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcUserInfoService.ajaxClientLogin(dto, request);
 	}
 

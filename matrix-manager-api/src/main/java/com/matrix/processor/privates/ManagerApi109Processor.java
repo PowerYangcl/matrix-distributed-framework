@@ -34,6 +34,7 @@ public class ManagerApi109Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<TreeListView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindTreeListRequest dto = param.getData().toJavaObject(FindTreeListRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcSysFunctionService.treeList(dto);
 	}
 

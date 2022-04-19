@@ -2,7 +2,7 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.matrix.base.BaseClass;
 import com.matrix.pojo.view.McUserInfoView;
@@ -18,7 +18,7 @@ public class FindMcUserInfoRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
-	@NotBlank(message = "101010030") // 101010030=获取用户详情失败，用户id为空
+	@NotNull(message = "101010030") // 101010030=获取用户详情失败，用户id为空
 	private Long id;
 	
 }

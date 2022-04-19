@@ -32,6 +32,7 @@ public class ManagerApi111Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<PageInfo<McRoleView>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindUserRoleListRequest dto = param.getData().toJavaObject(FindUserRoleListRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcRoleService.userRoleList(dto , request);
 	}
 

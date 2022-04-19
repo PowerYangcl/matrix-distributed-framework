@@ -31,6 +31,7 @@ public class ManagerApi126Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<McOrganization> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		UpdateMcOrganizationRequest dto = param.getData().toJavaObject(UpdateMcOrganizationRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcOrganizationService.updateOrganizationInfo(dto);
 	}
 

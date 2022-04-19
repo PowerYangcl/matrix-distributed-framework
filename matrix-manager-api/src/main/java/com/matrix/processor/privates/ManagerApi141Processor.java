@@ -33,6 +33,7 @@ public class ManagerApi141Processor extends BaseClass implements IBaseProcessor 
     @Override
     public Result<List<McOrganizationView>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
     	FindStoreListRequest dto = param.getData().toJavaObject(FindStoreListRequest.class);
+    	dto.setUserCache(param.getUserCache());
         return mcOrganizationService.ajaxStoreList(dto);
     }
 }

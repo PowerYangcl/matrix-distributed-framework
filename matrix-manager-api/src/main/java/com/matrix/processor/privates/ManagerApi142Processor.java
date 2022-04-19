@@ -28,6 +28,7 @@ public class ManagerApi142Processor extends BaseClass implements IBaseProcessor 
     @Override
     public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
     	McRoleDto dto = param.getData().toJavaObject(McRoleDto.class);
+    	dto.setUserCache(param.getUserCache());
         return null;
     }
 }

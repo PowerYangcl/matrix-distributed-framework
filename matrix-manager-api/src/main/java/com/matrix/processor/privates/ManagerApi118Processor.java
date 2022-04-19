@@ -30,6 +30,7 @@ public class ManagerApi118Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		DeleteMcSysFunctionRequest dto = param.getData().toJavaObject(DeleteMcSysFunctionRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcSysFunctionService.deleteNode(dto);
 	}
 

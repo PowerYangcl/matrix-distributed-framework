@@ -25,6 +25,7 @@ public class ManagerApi140Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<JSONObject> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		McUserInfoDto dto = param.getData().toJavaObject(McUserInfoDto.class);
+		dto.setUserCache(param.getUserCache());
 		ValidateCodeSupport code = new ValidateCodeSupport(100,30,4,30,25);
 		return code.createValidateCode();
 		

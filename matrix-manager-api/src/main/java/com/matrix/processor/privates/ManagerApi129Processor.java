@@ -30,6 +30,7 @@ public class ManagerApi129Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		UpdateMcUserInfoPasswordRequest dto = param.getData().toJavaObject(UpdateMcUserInfoPasswordRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return  mcUserInfoService.ajaxPasswordReset(dto);
 	}
 

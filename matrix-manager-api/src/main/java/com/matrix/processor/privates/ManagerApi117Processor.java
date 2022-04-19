@@ -30,6 +30,7 @@ public class ManagerApi117Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		UpdateMcSysFunctionRequest dto = param.getData().toJavaObject(UpdateMcSysFunctionRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcSysFunctionService.updateTreeNodes(dto);
 	}
 

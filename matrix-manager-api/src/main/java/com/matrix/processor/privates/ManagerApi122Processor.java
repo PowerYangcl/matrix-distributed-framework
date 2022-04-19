@@ -30,6 +30,7 @@ public class ManagerApi122Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		AddMcUserRoleRequest dto = param.getData().toJavaObject(AddMcUserRoleRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcRoleService.allotUserRole(dto);
 	}
 

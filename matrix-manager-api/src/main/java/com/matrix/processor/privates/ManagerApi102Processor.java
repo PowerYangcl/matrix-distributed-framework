@@ -33,6 +33,7 @@ public class ManagerApi102Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<PageInfo<McUserInfoView>> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindMcUserInfoListRequest dto = param.getData().toJavaObject(FindMcUserInfoListRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcUserInfoService.ajaxSystemUserList(dto , request);
 	}
 

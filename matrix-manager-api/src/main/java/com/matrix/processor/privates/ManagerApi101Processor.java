@@ -31,6 +31,7 @@ public class ManagerApi101Processor extends BaseClass implements IBaseProcessor 
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindLogoutRequest dto = param.getData().toJavaObject(FindLogoutRequest.class);
 		dto.setAccessToken(param.getHead().getAccessToken());
+		dto.setUserCache(param.getUserCache());
 		return mcUserInfoService.ajaxClientLogout(dto);
 	}
 

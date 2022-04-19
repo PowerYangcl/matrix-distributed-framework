@@ -30,6 +30,7 @@ public class ManagerApi104Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		AddMcUserInfoRequest dto = param.getData().toJavaObject(AddMcUserInfoRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcUserInfoService.addSysUser(dto); 
 	}
 

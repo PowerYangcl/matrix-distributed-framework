@@ -31,6 +31,7 @@ public class ManagerApi124Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<UserOrgTreeListView> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		FindMcOrganizationRequest dto = param.getData().toJavaObject(FindMcOrganizationRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcOrganizationService.ajaxTreeList(dto);
 	}
 

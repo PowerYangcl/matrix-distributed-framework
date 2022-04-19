@@ -30,6 +30,7 @@ public class ManagerApi123Processor extends BaseClass implements IBaseProcessor 
 	@Override
 	public Result<?> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		DeleteMcUserRoleRequest dto = param.getData().toJavaObject(DeleteMcUserRoleRequest.class);
+		dto.setUserCache(param.getUserCache());
 		return mcRoleService.deleteUserRole(dto);
 	}
 
