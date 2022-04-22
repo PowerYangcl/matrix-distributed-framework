@@ -30,7 +30,7 @@ import com.matrix.system.listener.MatrixDistributedFrameworkListener;
  */
 @Aspect
 @Configuration
-@ComponentScan({"com.matrix.dao,com.matrix.service,com.matrix.rpcimpl"})
+@ComponentScan({"com.matrix.dao,com.matrix.service"})
 public class ContextLaunch {
 	
 	private static final String execution = "execution(* com.matrix.service.impl.*.*(..))";
