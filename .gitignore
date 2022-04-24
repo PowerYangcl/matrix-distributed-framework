@@ -74,6 +74,13 @@
 /matrix-websocket/.DS_Store
 
 
+/matrix-dubbo/target/
+/matrix-dubbo/.settings/
+/matrix-dubbo/.project 
+/matrix-dubbo/.classpath
+/matrix-dubbo/.DS_Store
+
+
 /.idea/
 /matrix-distributed-framework.iml
 /matrix-admin/matrix-admin.iml
@@ -87,6 +94,7 @@
 /matrix-quartz/matrix-quartz.iml
 /matrix-permissions/matrix-permissions.iml
 /matrix-websocket/matrix-websocket.iml
+/matrix-dubbo/matrix-dubbo.iml
 
 *.iml
 

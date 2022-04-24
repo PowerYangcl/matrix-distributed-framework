@@ -9,12 +9,12 @@
 		info.matrix-manager-api.1020.properties
 		info.matrix-web-adapter.1030.properties
 		info.matrix-websocket.1040.properties
+		info.matrix-dubbo.1050.properties
 		
 		info.matrix-quartz.2000.properties
 		info.matrix-cache.3000.properties
 		info.matrix-file.5000.properties
 		info.matrix-api.6000.properties
-		info.matrix-route.1080.properties		【准备重构】
 		
 		
 		
