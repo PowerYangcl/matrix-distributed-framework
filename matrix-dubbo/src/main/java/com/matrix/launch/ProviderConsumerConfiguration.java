@@ -15,7 +15,7 @@ import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
  * @version 1.6.1.0-platform-init
  */
 @Configuration
-@EnableDubbo(scanBasePackages = "com.matrix.rpcimpl")
+@EnableDubbo(scanBasePackages = "com.matrix.rpc")
 @PropertySource("classpath:/properties/dubbo.properties")
 public class ProviderConsumerConfiguration {
 
