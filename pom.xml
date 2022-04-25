@@ -33,7 +33,7 @@
         <!-- 全局性控制项目编码为UTF-8 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <druid.version>1.1.10</druid.version> <!-- 需要和mysql-connector一起升级 -->
+        <druid-spring-boot-starter.version>1.2.4</druid-spring-boot-starter.version>
         <!--MyBatis-Spring		MyBatis	Spring 	Spring Framework    参考建议见官网：http://mybatis.org/spring/zh/index.html-->
         <!--2.0	                            3.5+	                    5.0+ -->
         <mybatis.version>3.5.6</mybatis.version>
@@ -42,7 +42,6 @@
         
         <log4j.version>1.2.17</log4j.version>
         <aspectjweaver.version>1.9.6</aspectjweaver.version>
-        <commons-lang3.version>3.2.1</commons-lang3.version>
         <commons-collections.version>3.2.1</commons-collections.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <fastjson.version>1.2.75</fastjson.version>
@@ -69,7 +68,7 @@
 		<dependency>
 		    <groupId>com.alibaba</groupId>
 		    <artifactId>druid-spring-boot-starter</artifactId>
-		    <version>1.2.4</version>
+		    <version>${druid-spring-boot-starter.version}</version>
 		</dependency>
 		
         <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
@@ -115,7 +114,7 @@
             <version>${log4j.version}</version>
         </dependency>
         
-        <!-- 由于SpringAOP的配置过于繁琐，因此使用了AspectJ依赖注解开发  -->
+        <!-- 由于SpringAOP的配置过于繁琐，因此使用了AspectJ依赖注解开发 LoggerAspect.java使用 -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
@@ -204,6 +203,12 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
         </dependency>
+        
+        <dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>28.2-jre</version>
+		</dependency>
 		
 		<!-- zookeeper -->
 		<dependency>

@@ -15,6 +15,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 /**
+ * @deprecated
  * from: https://github.com/spring-projects/spring-xd/blob/v1.3.1.RELEASE/spring-xd-dirt/src/main/java/org/springframework/xd/dirt/zookeeper/ZooKeeperUtils.java
  * Helper class to start an embedded instance of standalone (non clustered) ZooKeeper.
  *  
@@ -23,6 +24,8 @@ import java.util.UUID;
  * 
  * 
  * download url : https://archive.apache.org/dist/zookeeper/
+ * 
+ * 		此类在dubbo provider端使用，但实际感觉没鸡毛用。。。本地启动zookeeper一样使用，der的很。
  * 
  *
  * @author Patrick Peralta
