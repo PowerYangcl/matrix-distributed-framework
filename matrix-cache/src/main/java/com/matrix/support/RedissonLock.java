@@ -29,6 +29,7 @@ public class RedissonLock extends BaseClass{
 			redisson = (Redisson) Redisson.create(config);
         } catch (Exception e) {
             log.error("Redisson init error", e);
+            e.printStackTrace();
             throw new IllegalArgumentException("please input correct configurations," +
                     "connectionType must in standalone/sentinel/cluster/master-replica");
         }

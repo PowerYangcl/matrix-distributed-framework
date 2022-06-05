@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.matrix.aspectj.Idempotent;
 import com.matrix.base.BaseApiDto;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
@@ -48,6 +49,7 @@ public class ApiController  extends BaseController{
 	 * @version 1.0.0
 	 */
 	@ResponseBody
+	@Idempotent(accessToken = true)		// 幂等验证取当且方法的accessToken字段
 	@CrossOrigin(origins="*",maxAge=3600)
 	@RequestMapping(value = "api", produces = { "application/json;charset=utf-8" })
 	public Result<?> apiService(@RequestBody @Validated BaseApiDto param, HttpServletRequest request , HttpServletResponse response , HttpSession session){ 
