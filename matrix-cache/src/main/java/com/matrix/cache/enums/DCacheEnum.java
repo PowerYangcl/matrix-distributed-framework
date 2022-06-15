@@ -37,6 +37,8 @@ public enum DCacheEnum {
 	
 	ApiInfo,               // ac_api_info 与ac_include_domain 的复合缓存。
 	
+	Idempotent,  // 接口幂等性 v1.6.1.0-Idempotent
+
 	SysJob,				// 系统定时任务
 	
 	SysJobGroup, 	// 系统定时任务分组
@@ -62,6 +64,7 @@ public enum DCacheEnum {
 	McOrganization, // 组织结构
 	
 	TcShopInfo , // 店铺信息
+	
 }
 
 

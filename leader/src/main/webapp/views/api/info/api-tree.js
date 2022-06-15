@@ -708,6 +708,11 @@ var apiInfo = {
 				var type_ = 'post';
 				var param = apiInfo.requestHeadInit($("#api-target").val());
 				param.data = dto;
+				var accessToken = param.head.accessToken;
+				if(accessToken != ""){	// 如果是是登录接口则有可能为空
+					accessToken = accessToken + "-";
+				}
+				param.clientToken = accessToken + md5(param.head.target) + "-" + new Date(param.head.requestTime).getTime();
 				axios.post(apiInfo.apiServiceUrl , param).then(function (res) { // 请求成功返回
 	                $("#json-response").val(JSON.stringify(res.data));
 	            }).catch(function (err) {

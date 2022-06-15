@@ -17,6 +17,6 @@ import org.hibernate.validator.constraints.Length;
 @Data
 public class IdempotentRequest {
 
-	@Length(min = 12, max = 36, message="100020118")	// 100020118=字符串长度不在合理区间内
+	@Length(min = 12, max = 128, message="100020118") 		// 100020118=字符串长度不在合理区间内
 	private String clientToken;
 }
