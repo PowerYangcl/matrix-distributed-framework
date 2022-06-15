@@ -24,6 +24,4 @@ public @interface Idempotent {
 	
 	public boolean accessToken() default false;
 	
-	
-	// TODO 
 }
