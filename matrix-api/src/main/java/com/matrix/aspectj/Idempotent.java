@@ -22,6 +22,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Idempotent {
 	
-	public boolean accessToken() default false;
+	public boolean accessToken() default false;   // true：open-api请求；false：JSP页面的常规Controller请求
 	
 }

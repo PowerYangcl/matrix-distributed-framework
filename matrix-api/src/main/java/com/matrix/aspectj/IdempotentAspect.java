@@ -27,7 +27,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * @description: 幂等请求拦截器；添加标签 @Idempotent 的接口请求会进入此处
+ * @description: 幂等请求拦截器；添加标签 @Idempotent 的接口请求会进入此处，同时传入的DTO请求类需要 extends IdempotentRequest.java
+ * 		注意：针对Jsp页面传来的接口请求，对应的Controller层的方法中必须传入的两个固定参数：HttpServletRequest request, HttpSession session
+ * 					比如：public Result<?> apiWithDtoRequest(JspRequest param, HttpServletRequest request, HttpSession session)   // 这是一个示例
+ * 					我们封装参数的请求类最好放在第一个，因为for (Object arg : joinPoint.getArgs()){....} 进行遍历的时候第一个就是我们需要的值，可以提升效率
+ * 		
+ * 		使用场景：参考IdempotentTestController.java
  * 
  * @author Yangcl
  * @date 2022-6-15 16:22:59
@@ -63,7 +68,6 @@ public class IdempotentAspect extends BaseClass{
         		redisKey = idem.getJspIden();
         	}
         	
-        	
         	String value = launch.loadDictCache(DCacheEnum.Idempotent , "").get(redisKey); 
         	if (StringUtils.isNotBlank(value)) {
         		return JSONObject.parseObject(value, Result.class);   
@@ -78,6 +82,14 @@ public class IdempotentAspect extends BaseClass{
         }
     }
     
+    /**
+     * @description: 构造来自open-api的接口请求
+     * 
+     * @author Yangcl
+     * @date 2022-6-18 21:08:20
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.1.0-Idempotent
+     */
     private IdempotentMethod buildApi(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         IdempotentMethod method = new IdempotentMethod();
@@ -85,12 +97,21 @@ public class IdempotentAspect extends BaseClass{
         for (Object arg : joinPoint.getArgs()) {
             if (arg instanceof IdempotentRequest) {
                 method.setParam((IdempotentRequest) arg);
+                break;
             }
         }
         method.setIden(method.getParam().getClientToken());
         return method;
     }
 
+    /**
+     * @description: 构造来自jsp页面的接口请求
+     * 
+     * @author Yangcl
+     * @date 2022-6-18 21:08:20
+     * @home https://github.com/PowerYangcl
+     * @version 1.6.1.0-Idempotent
+     */
     private IdempotentMethod buildPage(JoinPoint joinPoint, McUserInfoView userInfo) {
         String methodName = joinPoint.getSignature().getName();
         IdempotentMethod method = new IdempotentMethod();
@@ -99,6 +120,7 @@ public class IdempotentAspect extends BaseClass{
         for (Object arg : joinPoint.getArgs()) {
             if (arg instanceof IdempotentRequest) {
                 method.setParam((IdempotentRequest) arg);
+                break;
             }
         }
         return method;
@@ -117,8 +139,9 @@ public class IdempotentAspect extends BaseClass{
         	return this.param != null;   // StringUtils.isNotBlank(param.getClientToken());
         }
         
+        // this.methodName.toLowerCase()，如果包含驼峰则设置缓存时失败，很奇怪。。
         public String getJspIden() {
-        	return this.iden + "-" + this.methodName + "-" + SignUtil.md5Sign(param.toString());
+        	return this.iden + "-" + this.methodName.toLowerCase() + "-" + SignUtil.md5Sign(param.toString());
         }
     }
 }
