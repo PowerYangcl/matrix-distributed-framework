@@ -1,7 +1,10 @@
 package com.matrix.cache.redis;
 
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.DCachePrefix;
 import com.matrix.cache.enums.SCacheEnum;
+import com.matrix.cache.enums.SCachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.redis.core.RedisFactory;
@@ -29,7 +32,7 @@ public class RedisLaunch implements IBaseLaunch<ICacheFactory> {
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public RedisFactory loadServiceCache(SCacheEnum enum_ , String load) {
+	public RedisFactory loadServiceCache(SCachePrefix enum_ , String load) {
 		return new RedisFactory("xs-" + enum_.toString() + "-" , load);
 	}
 
@@ -43,8 +46,20 @@ public class RedisLaunch implements IBaseLaunch<ICacheFactory> {
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public RedisFactory loadDictCache(DCacheEnum enum_ , String load) {
+	public RedisFactory loadDictCache(DCachePrefix enum_ , String load) {
 		return new RedisFactory("xd-" + enum_.toString() + "-" , load);
+	}
+
+	@Override
+	public ICacheFactory loadServiceCache(CachePrefix enum_, String load) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ICacheFactory loadDictCache(CachePrefix enum_, String load) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
