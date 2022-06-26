@@ -1,10 +1,13 @@
 package com.matrix.cache.power;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.enums.SCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.power.core.PowerFactory;
+import com.matrix.cache.redis.core.RedisFactory;
 
 /**
  * @description: 系统一级缓存核心工具类
@@ -21,6 +24,22 @@ public class PowerLaunch implements IBaseLaunch<ICacheFactory>  {
 
 	public PowerFactory loadDictCache(DCacheEnum enum_, String load) {
 		return new PowerFactory("xd-" + enum_.toString() + "-" , load);
+	}
+
+	@Override
+	public ICacheFactory loadServiceCache(String prefix, String load) {
+		if(StringUtils.isBlank(prefix)) {
+			return null;
+		}
+		return new RedisFactory("xs-" + prefix + "-" , load);
+	}
+
+	@Override
+	public ICacheFactory loadDictCache(String prefix, String load) {
+		if(StringUtils.isBlank(prefix)) {
+			return null;
+		}
+		return new RedisFactory("xs-" + prefix + "-" , load);
 	}
 
 }

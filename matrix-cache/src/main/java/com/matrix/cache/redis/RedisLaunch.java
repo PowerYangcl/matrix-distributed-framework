@@ -1,10 +1,13 @@
 package com.matrix.cache.redis;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.matrix.cache.enums.CachePrefix;
-import com.matrix.cache.enums.DCacheEnum;
 import com.matrix.cache.enums.DCachePrefix;
-import com.matrix.cache.enums.SCacheEnum;
 import com.matrix.cache.enums.SCachePrefix;
+
+import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.SCacheEnum;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.redis.core.RedisFactory;
@@ -23,6 +26,7 @@ public class RedisLaunch implements IBaseLaunch<ICacheFactory> {
 	
 
 	/**
+	 * @deprecated
 	 * @descriptions 操作业务相关的缓存数据
 	 *
 	 * @param enum_
@@ -32,12 +36,12 @@ public class RedisLaunch implements IBaseLaunch<ICacheFactory> {
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public RedisFactory loadServiceCache(SCachePrefix enum_ , String load) {
+	public RedisFactory loadServiceCache(SCacheEnum enum_ , String load) {
 		return new RedisFactory("xs-" + enum_.toString() + "-" , load);
 	}
 
 	/**
-	 * @descriptions 操作字典相关的缓存数据
+	 * @descriptions 操作字典相关的缓存数据，仅限于matrix-distributed-framework项目内部使用。
 	 *
 	 * @param enum_
 	 * @param load 缓存load类|除去操作缓存的get行为，该参数均为null。
@@ -46,23 +50,67 @@ public class RedisLaunch implements IBaseLaunch<ICacheFactory> {
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	public RedisFactory loadDictCache(DCachePrefix enum_ , String load) {
+	public RedisFactory loadDictCache(DCacheEnum enum_ , String load) {
 		return new RedisFactory("xd-" + enum_.toString() + "-" , load);
 	}
 
+	/**
+	 * @description: 操作业务系统的服务缓存
+	 *
+	 * @author Yangcl
+	 * @date 2022-6-26 20:44:40
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.0-redis-enum
+	 */
 	@Override
-	public ICacheFactory loadServiceCache(CachePrefix enum_, String load) {
-		// TODO Auto-generated method stub
-		return null;
+	public RedisFactory loadServiceCache(String prefix, String load) {
+		if(StringUtils.isBlank(prefix)) {
+			return null;			// TODO 最好能够跑出异常
+		}
+		if(prefix.startsWith("S")) {
+			return null;			// TODO 最好能够跑出异常
+		}
+		return new RedisFactory("xs-" + prefix + "-" , load);
 	}
 
+	/**
+	 * @description: 操作业务系统的字典缓存
+	 *
+	 * @author Yangcl
+	 * @date 2022-6-26 20:45:13
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.0-redis-enum
+	 */
 	@Override
-	public ICacheFactory loadDictCache(CachePrefix enum_, String load) {
-		// TODO Auto-generated method stub
-		return null;
+	public RedisFactory loadDictCache(String prefix, String load) {
+		if(StringUtils.isBlank(prefix)) {
+			return null;
+		}
+		if(prefix.startsWith("D")) {
+			return null;
+		}
+		return new RedisFactory("xd-" + prefix  + "-" , load);
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
