@@ -16,7 +16,7 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.IBaseProcessor;
 import com.matrix.base.Result;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.cache.AcApiInfoCache;
@@ -95,7 +95,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 		}
 
 		/////// API信息验证 ///////
-		String apiInfoStr = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(head.getTarget()); 
+		String apiInfoStr = launch.loadDictCache(CachePrefix.ApiInfo , "ApiInfoInit").get(head.getTarget()); 
 		if(StringUtils.isBlank(apiInfoStr)){
 			return this.errorMsg(response, 10014, 600010014);	// 600010014=系统未检测到您所访问的接口
 		} 
@@ -119,15 +119,15 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 			if(StringUtils.isBlank(head.getAccessToken() )) {		// 开始验证用户是否登录，令牌是否过期
 				return this.errorMsg(response, 10019, 600010019);	// 600010019=用户令牌(accessToken)为空
 			}
-			userInfo = launch.loadDictCache(DCacheEnum.AccessToken , null).get(head.getAccessToken()); 
+			userInfo = launch.loadDictCache(CachePrefix.AccessToken , null).get(head.getAccessToken()); 
 			if(StringUtils.isBlank(userInfo)) {
 				return this.errorMsg(response, 10020, 600010020);	// 600010020=用户登录已经超时
 			}
-			launch.loadDictCache(DCacheEnum.AccessToken , null).setKeyTimeout(head.getAccessToken() , 15*24*60*60L); 
+			launch.loadDictCache(CachePrefix.AccessToken , null).setKeyTimeout(head.getAccessToken() , 15*24*60*60L); 
 		}
 		
 		/////// 秘钥验 ///////
-		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(head.getKey());  // ac_request_info表的缓存
+		String requestInfo = launch.loadDictCache(CachePrefix.ApiRequester , "ApiRequesterInit").get(head.getKey());  // ac_request_info表的缓存
 		if(StringUtils.isBlank(requestInfo)) {
 			return this.errorMsg(response, 10012, 600010012);	// 非法的请求! 您请求的公钥未包含在我们的系统中.
 		}

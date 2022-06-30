@@ -17,7 +17,7 @@ import com.matrix.base.BaseServiceImpl;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcRoleFunctionMapper;
@@ -115,7 +115,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			
 			int count = mcRoleMapper.insertGotEntityId(role); 
 			if(count == 1){
-				launch.loadDictCache(DCacheEnum.McRole , null).del(role.getId().toString());
+				launch.loadDictCache(CachePrefix.McRole , null).del(role.getId().toString());
 				return Result.SUCCESS(this.getInfo(100010102));	// 100010102=数据添加成功!
 			}
 			return Result.ERROR(this.getInfo(100010103), ResultCode.ERROR_INSERT);	// 100010103=数据添加失败，服务器异常!
@@ -159,7 +159,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McRole e = param.buildEditSysRole(); 
 			int count = mcRoleMapper.updateSelective(e);
 			if(count == 1){
-				launch.loadDictCache(DCacheEnum.McRole , null).del(param.getId().toString());
+				launch.loadDictCache(CachePrefix.McRole , null).del(param.getId().toString());
 				return Result.SUCCESS(this.getInfo(100010104));	// 100010104=数据更新成功!
 			}
 			return Result.ERROR(this.getInfo(101010004), ResultCode.ERROR_UPDATE);	// 系统角色创建失败
@@ -193,7 +193,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			
 			mcRoleMapper.deleteById(param.getMcRoleId());
 			mcRoleFunctionMapper.deleteByMcRoleId(param.getMcRoleId()); 
-			launch.loadDictCache(DCacheEnum.McRole , null).del(param.getMcRoleId().toString());  
+			launch.loadDictCache(CachePrefix.McRole , null).del(param.getMcRoleId().toString());  
 			return Result.SUCCESS(this.getInfo(100010106));	// 100010106=数据删除成功!
 		} catch (Exception ex) {
 			ex.printStackTrace(); // 101010006=系统角色删除失败
@@ -220,7 +220,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McRole role = param.buildEditMcRole();
 			mcRoleMapper.updateSelective(role);	// 仅修改更新时间
 			mcRoleFunctionMapper.deleteByMcRoleId(param.getMcRoleId()); 
-			launch.loadDictCache(DCacheEnum.McRole , null).del(param.getMcRoleId().toString());  
+			launch.loadDictCache(CachePrefix.McRole , null).del(param.getMcRoleId().toString());  
 			String[] arr = param.getIds().split(",");
 			for(int i = 0 ; i < arr.length ; i ++){
 				McRoleFunction rf = new McRoleFunction();
@@ -229,7 +229,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 				rf.buildAddCommon(param.getUserCache());
 				mcRoleFunctionMapper.insertSelective(rf);
 			}
-			McRoleCache c = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(param.getMcRoleId().toString()), McRoleCache.class);
+			McRoleCache c = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McRole , "McRoleInit").get(param.getMcRoleId().toString()), McRoleCache.class);
 			return Result.SUCCESS(this.getInfo(101010045), c);  // 101010045=系统角色与系统功能绑定成功!
 		} catch (Exception ex) {
 			ex.printStackTrace(); // 101010005=系统角色修改失败
@@ -256,7 +256,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McRole role = param.buildEditMcRole();
 			mcRoleMapper.updateSelective(role);
 			mcRoleFunctionMapper.deleteByMcRoleId(param.getMcRoleId()); 
-			launch.loadDictCache(DCacheEnum.McRole , null).del(param.getMcRoleId().toString());  
+			launch.loadDictCache(CachePrefix.McRole , null).del(param.getMcRoleId().toString());  
 			return Result.SUCCESS(this.getInfo(101010046));  // 101010046=系统角色与系统功能解绑成功!
 		} catch (Exception ex) {
 			ex.printStackTrace();  // 系统角色修改失败
@@ -332,7 +332,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McUserRole entity = param.buildAllotUserRole();
 			Integer count = mcUserRoleMapper.insertSelective(entity);
 			if(count != 0){
-				launch.loadDictCache(DCacheEnum.McUserRole , null).del(entity.getMcUserId().toString()); 
+				launch.loadDictCache(CachePrefix.McUserRole , null).del(entity.getMcUserId().toString()); 
 				return Result.SUCCESS(this.getInfo(101010056));	// 101010056=系统角色分配成功
 			}
 			return Result.ERROR(this.getInfo(101010007), ResultCode.ERROR_INSERT);	// 101010007=系统角色分配失败
@@ -354,7 +354,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		try {
 			McUserRoleDto dto = param.buildDeleteUserRole();
 			mcUserRoleMapper.deleteByDto(dto);   
-			launch.loadDictCache(DCacheEnum.McUserRole , null).del(dto.getUserId().toString());
+			launch.loadDictCache(CachePrefix.McUserRole , null).del(dto.getUserId().toString());
 			return Result.SUCCESS(this.getInfo(101010010));	// 101010010=系统角色移除成功! 
 		} catch (Exception ex) {
 			ex.printStackTrace();	// 100010112=服务器异常!

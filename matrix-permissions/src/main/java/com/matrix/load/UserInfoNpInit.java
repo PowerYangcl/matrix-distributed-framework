@@ -8,7 +8,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcUserInfoMapper;
@@ -84,11 +84,11 @@ public class UserInfoNpInit extends BaseClass implements ILoadCache<String> {
 			
 			String value = JSONObject.toJSONString(view);
 			if(view.getMcOrganizationId() != null && view.getMcOrganizationId() != 0) {
-				String mcOrg = launch.loadDictCache(DCacheEnum.McOrganization , "McOrganizationInit").get(view.getMcOrganizationId().toString());
+				String mcOrg = launch.loadDictCache(CachePrefix.McOrganization , "McOrganizationInit").get(view.getMcOrganizationId().toString());
 				view.setMcOrg(JSONObject.parseObject(mcOrg));
 			}
-			launch.loadDictCache(DCacheEnum.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 4*60*60);
-			launch.loadDictCache(DCacheEnum.UserInfoId , null).set(view.getId().toString() , e.getUserName() + "," + e.getPassword() , 4*60*60);  // 依据user info id，方便操作
+			launch.loadDictCache(CachePrefix.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 4*60*60);
+			launch.loadDictCache(CachePrefix.UserInfoId , null).set(view.getId().toString() , e.getUserName() + "," + e.getPassword() , 4*60*60);  // 依据user info id，方便操作
 			return value;
 		}
 		return "";

@@ -11,8 +11,7 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
-import com.matrix.cache.enums.SCacheEnum;
+//import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.service.IPowerCacheService;
@@ -40,11 +39,11 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		String value = "";
 		try {
 			if(type.equals("dict")){
-				DCacheEnum [] arr = DCacheEnum.values();
-				value = launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key);
+//				CachePrefix [] arr = CachePrefix.values();
+//				value = launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key);
+				value = launch.loadDictCache(prefix , prefix + "Init" ).get(key);
 			}else{
-				SCacheEnum [] arr = SCacheEnum.values();
-				value = launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key); 
+				value = launch.loadServiceCache(prefix , prefix + "Init" ).get(key); 
 			}
 		} catch (Exception e) {		// 300010109=未找到对应缓存前缀：{0} 
 			return Result.ERROR(this.getInfo(300010109, prefix), ResultCode.OPERATION_FAILED);
@@ -80,13 +79,14 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		String value = "";
 		try {
 			if(type.equals("dict")){
-				DCacheEnum [] arr = DCacheEnum.values();
-				launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).del(key);
-				value = launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).get(key);
+//				CachePrefix [] arr = CachePrefix.values();
+//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).del(key);
+//				value = launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).get(key);
+				launch.loadDictCache(prefix , null).del(key);
+				value = launch.loadDictCache(prefix , null).get(key);
 			}else{
-				SCacheEnum [] arr = SCacheEnum.values();
-				launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).del(key); 
-				value = launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).get(key); 
+				launch.loadServiceCache(prefix , null).del(key); 
+				value = launch.loadServiceCache(prefix , null).get(key); 
 			}
 			
 			if(StringUtils.isBlank(value)) { 
@@ -115,11 +115,11 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 
 		try {
 			if(type.equals("dict")){
-				DCacheEnum [] arr = DCacheEnum.values();
-				launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
+//				CachePrefix [] arr = CachePrefix.values();
+//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
+				launch.loadDictCache(prefix , null).batchDeleteByPrefix(key);
 			}else{
-				SCacheEnum [] arr = SCacheEnum.values();
-				launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
+				launch.loadServiceCache(prefix , null).batchDeleteByPrefix(key);
 			}
 			return Result.SUCCESS(this.getInfo(300010101));	// 300010101=缓存删除成功
 		} catch (Exception e) {
@@ -146,11 +146,11 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		
 		try {
 			if(type.equals("dict")){
-				DCacheEnum [] arr = DCacheEnum.values();
-				launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).set(key , jsonStr , 30*60);
+//				CachePrefix [] arr = CachePrefix.values();
+//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).set(key , jsonStr , 30*60);
+				launch.loadDictCache(prefix , null).set(key , jsonStr , 30*60);
 			}else{
-				SCacheEnum [] arr = SCacheEnum.values();
-				launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).set(key , jsonStr , 30*60); 
+				launch.loadServiceCache(prefix , null).set(key , jsonStr , 30*60); 
 			}
 			return Result.SUCCESS(this.getInfo(300010104));	// 300010104=缓存重置成功
 		} catch (Exception e) {
@@ -178,11 +178,11 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		
 		try {
 			if(type.equals("dict")){
-				DCacheEnum [] arr = DCacheEnum.values();
-				launch.loadDictCache(arr[DCacheEnum.valueOf(prefix).ordinal()] , null).set(key , jsonStr);
+//				CachePrefix [] arr = CachePrefix.values();
+//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).set(key , jsonStr);
+				launch.loadDictCache(prefix , null).set(key , jsonStr);
 			}else{
-				SCacheEnum [] arr = SCacheEnum.values();
-				launch.loadServiceCache(arr[SCacheEnum.valueOf(prefix).ordinal()] , null).set(key , jsonStr); 
+				launch.loadServiceCache(prefix , null).set(key , jsonStr); 
 			}
 			return Result.SUCCESS(this.getInfo(300010104));	// 300010104=缓存重置成功
 		} catch (Exception e) {

@@ -6,7 +6,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcSysFunctionMapper;
@@ -58,7 +58,7 @@ public class McSysFuncInit extends BaseClass implements ILoadCache<String> {
 			e.setPageSize(null);
 			e.setStartIndex(null);
 			String value = JSONObject.toJSONString(e); 
-			launch.loadDictCache(DCacheEnum.McSysFunc , null).set(key , value , 30*24*60*60);
+			launch.loadDictCache(CachePrefix.McSysFunc , null).set(key , value , 30*24*60*60);
 			return value;
 		}catch (Exception e) {
 			e.printStackTrace();

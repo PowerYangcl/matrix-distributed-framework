@@ -5,7 +5,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcOrganizationMapper;
@@ -59,7 +59,7 @@ public class McOrganizationInit extends BaseClass implements ILoadCache<String> 
 		e.put("remark", org.getRemark() );
 		
 		String value = e.toJSONString();
-		launch.loadDictCache(DCacheEnum.McOrganization , null).set(key , value , 30*24*60*60);
+		launch.loadDictCache(CachePrefix.McOrganization , null).set(key , value , 30*24*60*60);
 		return value;
 	}
 

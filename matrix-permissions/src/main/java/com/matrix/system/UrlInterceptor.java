@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.cache.McUserRoleCache;
@@ -87,7 +87,7 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         	
         	if(StringUtils.startsWith(url, "dialog_")) {
         		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
+        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
         		List<McSysFunction> list = cache.getMsfList();
         		for(McSysFunction sf : list) {
         			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
@@ -106,7 +106,7 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         	
         	if(StringUtils.startsWith(url, "page_")){ 
         		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
+        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
         		List<McSysFunction> list = cache.getMsfList();
         		for(McSysFunction sf : list) {
         			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
@@ -134,7 +134,7 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         			}
         			
         			// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-            		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
+            		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
             		List<McSysFunction> list = cache.getMsfList();
             		for(McSysFunction sf : list) {
             			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)

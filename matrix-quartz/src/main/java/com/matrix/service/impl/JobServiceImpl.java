@@ -16,7 +16,7 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IJobExecLogMapper;
@@ -68,7 +68,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	 * @version 1.0.0.1
 	 */
 	public Integer updateSelectiveByJobName(JobInfo entity) {
-		launch.loadDictCache(DCacheEnum.SysJob , "").del(entity.getJobName());     // 小于10分钟间隔的任务会出现问题 - 李玟霆
+		launch.loadDictCache(CachePrefix.SysJob , "").del(entity.getJobName());     // 小于10分钟间隔的任务会出现问题 - 李玟霆
 		return jobInfoMapper.updateSelectiveByJobName(entity); 
 	}
 
@@ -176,7 +176,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 			Integer flag = jobInfoMapper.updateSelective(e);
 			if(flag == 1) {
 				JobInfo find = jobInfoMapper.find(e.getId());
-				launch.loadDictCache(DCacheEnum.SysJob , "").del(find.getJobName());   // 保证定时任务名称永远不变
+				launch.loadDictCache(CachePrefix.SysJob , "").del(find.getJobName());   // 保证定时任务名称永远不变
 				return Result.SUCCESS(this.getInfo(200010027));		// 200010027=定时任务修改成功
 			}
 		} catch (Exception ex) {
@@ -200,7 +200,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 		}
 		try {
 			JobInfoDto dto = param.buildAjaxJobInfoDetail();
-			String value = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(dto.getJobName()); 
+			String value = launch.loadDictCache(CachePrefix.SysJob , "SysJobInit").get(dto.getJobName()); 
 			if(StringUtils.isNotBlank(value)) {		
 				return Result.SUCCESS(this.getInfo(200010030), JSONObject.parseObject(value));	// 200010030=定时任务详情获取成功
 			}
@@ -227,7 +227,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 			JobInfo e = param.build();
 			Integer flag = jobInfoMapper.updateSelectiveByJobName(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.SysJob , "").del(param.getJobName()); 
+				launch.loadDictCache(CachePrefix.SysJob , "").del(param.getJobName()); 
 				return Result.SUCCESS(this.getInfo(200010034));   // 200010034=定时任务删除成功
 			}
 		} catch (Exception ex) {
@@ -255,7 +255,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 				JobInfo e = param.buildAjaxJobInfoPauseOne();
 				Integer flag = jobInfoMapper.updateSelectiveByJobName(e);
 				if(flag == 1) {
-					launch.loadDictCache(DCacheEnum.SysJob , "").del(param.getJobName()); 
+					launch.loadDictCache(CachePrefix.SysJob , "").del(param.getJobName()); 
 					msg = this.getInfo(200010038);  // 200010038=定时任务恢复成功
 					if(param.getPause() == 1) {
 						msg = this.getInfo(200010035);  // 200010035=定时任务暂停成功
@@ -274,7 +274,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 				JobInfo e = param.buildAjaxJobInfoPauseAll();
 				Integer flag = jobInfoMapper.pauseAll(e); // 开始批量更新数据库中的所有状态 
 				if(flag != 0) {
-					launch.loadDictCache(DCacheEnum.SysJob , null).batchDeleteByPrefix("");
+					launch.loadDictCache(CachePrefix.SysJob , null).batchDeleteByPrefix("");
 					msg = this.getInfo(200010038);  // 200010038=定时任务恢复成功
 					if(param.getPause() == 1) {
 						msg =  this.getInfo(200010035);  // 200010035=定时任务暂停成功
@@ -368,7 +368,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 			return validate;
 		}
 		try {
-			String value = launch.loadDictCache(DCacheEnum.SysJobGroup , "SysJobGroupInit").get(String.valueOf(param.getId())); 
+			String value = launch.loadDictCache(CachePrefix.SysJobGroup , "SysJobGroupInit").get(String.valueOf(param.getId())); 
 			if(StringUtils.isNotBlank(value)) {
 				JobGroup entity = JSONObject.parseObject(value, JobGroup.class);
 				if(entity != null) {
@@ -401,8 +401,8 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 			Integer flag = jobGroupMapper.updateSelective(entity);
 			if(flag == 1) {
 				if(!find.getIp().equals(param.getIp())) {  // 批量删除所有定时任务缓存信息 同时 删除当前定时任务分组缓存信息|广谱删除
-					launch.loadDictCache(DCacheEnum.SysJobGroup , null).batchDeleteByPrefix("");
-					launch.loadDictCache(DCacheEnum.SysJob , null).batchDeleteByPrefix("");
+					launch.loadDictCache(CachePrefix.SysJobGroup , null).batchDeleteByPrefix("");
+					launch.loadDictCache(CachePrefix.SysJob , null).batchDeleteByPrefix("");
 				}
 				return Result.SUCCESS(this.getInfo(200010042));  // 200010042=定时任务分组修改成功
 			}
@@ -430,7 +430,7 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 			JobGroup entity = param.buildAjaxBtnJobGroupDelete();
 			Integer flag = jobGroupMapper.updateSelective(entity);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.SysJobGroup , null).del(entity.getId().toString());
+				launch.loadDictCache(CachePrefix.SysJobGroup , null).del(entity.getId().toString());
 				return Result.SUCCESS(this.getInfo(200010052));		// 200010052=定时任务分组删除成功
 			}
 		} catch (Exception ex) {

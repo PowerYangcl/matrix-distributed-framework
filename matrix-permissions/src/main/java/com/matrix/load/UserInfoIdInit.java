@@ -4,7 +4,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcUserInfoMapper;
@@ -32,7 +32,7 @@ public class UserInfoIdInit  extends BaseClass implements ILoadCache<String> {
 			return "";
 		}
 		String value = e.getUserName() + "," + e.getPassword();
-		launch.loadDictCache(DCacheEnum.UserInfoId , null).set(key , value , 4*60*60);  // 依据user info id，方便操作
+		launch.loadDictCache(CachePrefix.UserInfoId , null).set(key , value , 4*60*60);  // 依据user info id，方便操作
 		return value;
 	}
 

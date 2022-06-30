@@ -8,7 +8,7 @@ import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreV2;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
 import com.matrix.base.BaseClass;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.enums.ZkLockPathEnum;
 
 /**
@@ -40,7 +40,7 @@ public class DistributeLockZk extends BaseClass{
 		return LazyHolder.INSTANCE; 
 	}
 	
-	private static final String rootPath = "/" + DCacheEnum.zkLockRoot.toString() + "/";     // zookeeper锁基础路径
+	private static final String rootPath = "/" + CachePrefix.zkLockRoot.toString() + "/";     // zookeeper锁基础路径
 	
 	
 	/**

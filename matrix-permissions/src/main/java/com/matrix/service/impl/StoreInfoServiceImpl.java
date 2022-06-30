@@ -5,7 +5,7 @@ import com.matrix.base.BaseServiceImpl;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IStoreInfoMapper;
@@ -68,7 +68,7 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         }
         // 加载一下门店缓存，mip-member-service服务需要
         for (StoreInfo store: list){
-        	launch.loadDictCache(DCacheEnum.StoreInfo , "StoreInfoInit").get(store.getCid()+"-"+store.getId());
+        	launch.loadDictCache(CachePrefix.StoreInfo , "StoreInfoInit").get(store.getCid()+"-"+store.getId());
         }
         return Result.SUCCESS(list);
     }
@@ -141,7 +141,7 @@ public class StoreInfoServiceImpl extends BaseServiceImpl<Long,StoreInfo,StoreIn
         	return Result.ERROR(this.getInfo(100010106), ResultCode.ERROR_DELETE);
         }
         
-        launch.loadDictCache(DCacheEnum.StoreInfo , null).del(entity.getCid()+"-"+entity.getId());
+        launch.loadDictCache(CachePrefix.StoreInfo , null).del(entity.getCid()+"-"+entity.getId());
         return Result.SUCCESS(this.getInfo(100010107));  // 100010107=数据删除失败，服务器异常!
     }
 }

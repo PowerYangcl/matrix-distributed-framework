@@ -11,7 +11,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcUserInfoMapper;
@@ -54,7 +54,7 @@ public class McUserRoleInit extends BaseClass implements ILoadCache<String> {
 		if(list != null && list.size() != 0){
 			Set<Long> set = new TreeSet<Long>();  
 			for(McUserRole r : list){
-				String roleJson = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(r.getMcRoleId().toString());
+				String roleJson = launch.loadDictCache(CachePrefix.McRole , "McRoleInit").get(r.getMcRoleId().toString());
 				if(StringUtils.isNotBlank(roleJson)){
 					McRoleCache role = JSONObject.parseObject(roleJson, McRoleCache.class);
 					if(role == null){
@@ -70,7 +70,7 @@ public class McUserRoleInit extends BaseClass implements ILoadCache<String> {
 			}
 			if(set != null && set.size() != 0){
 				for(Long id : set){
-					String rfJson = launch.loadDictCache(DCacheEnum.McSysFunc , "McSysFuncInit").get(id.toString());
+					String rfJson = launch.loadDictCache(CachePrefix.McSysFunc , "McSysFuncInit").get(id.toString());
 					if(StringUtils.isNotBlank(rfJson)){
 						McSysFunction rf = JSONObject.parseObject(rfJson, McSysFunction.class);
 						if(rf == null){
@@ -81,7 +81,7 @@ public class McUserRoleInit extends BaseClass implements ILoadCache<String> {
 				}
 			}
 			String value = JSONObject.toJSONString(cache);
-			launch.loadDictCache(DCacheEnum.McUserRole , null).set(userId.toString(), value , 30*24*60*60); 
+			launch.loadDictCache(CachePrefix.McUserRole , null).set(userId.toString(), value , 30*24*60*60); 
 			return value;
 		}else {
 			return "";

@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IJobExecLogMapper;
@@ -38,7 +38,7 @@ public class JobLog extends BaseClass implements Runnable {
 			return;
 		}
 		JobExecLog e = new JobExecLog();
-		String value = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(result.getJSONObject("jobInfo").getString("jobName")); 
+		String value = launch.loadDictCache(CachePrefix.SysJob , "SysJobInit").get(result.getJSONObject("jobInfo").getString("jobName")); 
 		JSONObject o = JSONObject.parseObject(value);
 		e.setJobName(o.getString("jobName"));
 		e.setJobTitle(o.getString("jobTitle"));

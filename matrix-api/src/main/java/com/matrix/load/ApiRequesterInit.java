@@ -8,7 +8,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IAcRequestInfoMapper;
@@ -68,7 +68,7 @@ public class ApiRequesterInit extends BaseClass implements ILoadCache<String> {
 			cache.put("list", new ArrayList<String>());   
 		}
 		String value = cache.toJSONString();
-		launch.loadDictCache(DCacheEnum.ApiRequester , null).set(e.getKey() , value); 
+		launch.loadDictCache(CachePrefix.ApiRequester , null).set(e.getKey() , value); 
 		
 		return value;
 	}

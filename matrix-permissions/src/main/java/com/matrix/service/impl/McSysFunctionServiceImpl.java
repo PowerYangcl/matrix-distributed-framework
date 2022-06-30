@@ -16,7 +16,7 @@ import com.matrix.base.BaseServiceImpl;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcRoleMapper;
@@ -76,7 +76,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			int count = mcSysFunctionMapper.insertSelective(entity);
 			if(count == 1){
 				// 开始创建缓存
-				launch.loadDictCache(DCacheEnum.McSysFunc , null).set(entity.getId().toString(), JSONObject.toJSONString(entity) , 30*24*60*60); 
+				launch.loadDictCache(CachePrefix.McSysFunc , null).set(entity.getId().toString(), JSONObject.toJSONString(entity) , 30*24*60*60); 
 				return Result.SUCCESS(this.getInfo(100010102), entity);	// 100010102=数据添加成功!
 			}
 		} catch (Exception ex) {
@@ -102,7 +102,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			McSysFunction entity = param.buildEditMcSysFunction();
 			int count = mcSysFunctionMapper.updateSelective(entity);
 			if(count == 1){
-				launch.loadDictCache(DCacheEnum.McSysFunc , null).del(entity.getId().toString()); 
+				launch.loadDictCache(CachePrefix.McSysFunc , null).del(entity.getId().toString()); 
 				return Result.SUCCESS(this.getInfo(100010104), entity);	// 100010104=数据更新成功!
 			}
 		} catch (Exception ex) {
@@ -131,7 +131,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			List<McSysFunction> list = param.buildUpdateTreeNodes();
 			for(McSysFunction e : list) {
 				mcSysFunctionMapper.updateSelective(e);
-				launch.loadDictCache(DCacheEnum.McSysFunc , null).del(e.getId().toString());
+				launch.loadDictCache(CachePrefix.McSysFunc , null).del(e.getId().toString());
 			}
 			return Result.SUCCESS(this.getInfo(100010104));	// 100010104=数据更新成功!
 		} catch (Exception ex) {
@@ -154,7 +154,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			Integer flag = mcSysFunctionMapper.deleteByIds(list);
 			if(flag != 0){
 				for(Long s : list){
-					launch.loadDictCache(DCacheEnum.McSysFunc , null).del(s.toString());  
+					launch.loadDictCache(CachePrefix.McSysFunc , null).del(s.toString());  
 				}
 			}
 			return Result.SUCCESS(this.getInfo(100010106));		// 100010106=数据删除成功!
@@ -179,7 +179,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		McUserInfoView userCache = param.getUserCache();
 		if(!userCache.getType().equals("leader")) {
 			dto.setPlatform(userCache.getPlatform()); // 不再使用页面传入的平台编码，防止造假
-			String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(userCache.getId().toString());
+			String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(userCache.getId().toString());
 			McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
 			String ids = "";
 			for(McSysFunction m : cache.getMsfList()) {	// 去掉与平台标识码无关的功能项
@@ -207,7 +207,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 				List<McRole> roleList = mcRoleMapper.findList(role);
 				if(roleList != null && roleList.size() != 0){
 					for(McRole m : roleList){
-						String json = launch.loadDictCache(DCacheEnum.McRole , "McRoleInit").get(m.getId().toString());
+						String json = launch.loadDictCache(CachePrefix.McRole , "McRoleInit").get(m.getId().toString());
 						if(StringUtils.isBlank(json)){
 							continue;
 						}

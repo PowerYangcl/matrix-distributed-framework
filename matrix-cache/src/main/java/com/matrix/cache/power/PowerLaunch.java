@@ -2,8 +2,7 @@ package com.matrix.cache.power;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.matrix.cache.enums.DCacheEnum;
-import com.matrix.cache.enums.SCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.power.core.PowerFactory;
@@ -18,11 +17,7 @@ import com.matrix.cache.redis.core.RedisFactory;
  */
 public class PowerLaunch implements IBaseLaunch<ICacheFactory>  {
 
-	public PowerFactory loadServiceCache(SCacheEnum enum_, String load) {
-		return new PowerFactory("xs-" + enum_.toString() + "-" , load);
-	}
-
-	public PowerFactory loadDictCache(DCacheEnum enum_, String load) {
+	public PowerFactory loadDictCache(CachePrefix enum_, String load) {
 		return new PowerFactory("xd-" + enum_.toString() + "-" , load);
 	}
 

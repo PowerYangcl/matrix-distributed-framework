@@ -31,7 +31,7 @@ import com.matrix.base.BaseView;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcOrganizationMapper;
@@ -81,12 +81,12 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<LoginView> login(FindLoginRequest param , HttpSession session) {
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
+		String userInfoNpJson = launch.loadDictCache(CachePrefix.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
 		if (StringUtils.isBlank(userInfoNpJson)) {		// 101010017=用户名或密码错误
 			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
+		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString());
 		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
 			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
@@ -223,7 +223,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			McUserInfo e = param.buildEditSysUser();
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1){
-				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(find.getUserName() + "," + find.getPassword());
+				launch.loadDictCache(CachePrefix.UserInfoNp , null).del(find.getUserName() + "," + find.getPassword());
 				return Result.SUCCESS(this.getInfo(100010104));
 			}
 			return Result.ERROR(this.getInfo(100010105), ResultCode.ERROR_UPDATE);
@@ -250,7 +250,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			McUserInfo e = param.buildAjaxPasswordReset();
 			int count = mcUserInfoMapper.updateSelective(e);
 			if(count == 1) {
-				launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(param.getUserName() + "," + param.getOldPassWord());
+				launch.loadDictCache(CachePrefix.UserInfoNp , null).del(param.getUserName() + "," + param.getOldPassWord());
 				return Result.SUCCESS(this.getInfo(101010008));		// 101010008=密码更新成功
 			}
 			return Result.ERROR(this.getInfo(101010038), ResultCode.OPERATION_FAILED);		// 101010038=用户密码重置失败
@@ -286,8 +286,8 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 				}
 			}
 			
-			launch.loadDictCache(DCacheEnum.McUserRole , null).del(id.toString());
-			launch.loadDictCache(DCacheEnum.UserInfoNp , null).del(view.getUserName() + "," + view.getPassword());
+			launch.loadDictCache(CachePrefix.McUserRole , null).del(id.toString());
+			launch.loadDictCache(CachePrefix.UserInfoNp , null).del(view.getUserName() + "," + view.getPassword());
 			return Result.SUCCESS(this.getInfo(100010106));		// 100010106=数据删除成功!
 		} catch (Exception ex) {
 			ex.printStackTrace();		 // 100010105=数据更新失败，服务器异常!
@@ -304,10 +304,10 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 */
 	public Result<?> ajaxBtnUserCacheReload() {
 		try {
-			launch.loadDictCache(DCacheEnum.McSysFunc , null).batchDeleteByPrefix("");
-			launch.loadDictCache(DCacheEnum.McRole , null).batchDeleteByPrefix("");
-			launch.loadDictCache(DCacheEnum.McUserRole , null).batchDeleteByPrefix("");
-			launch.loadDictCache(DCacheEnum.UserInfoNp , null).batchDeleteByPrefix("");
+			launch.loadDictCache(CachePrefix.McSysFunc , null).batchDeleteByPrefix("");
+			launch.loadDictCache(CachePrefix.McRole , null).batchDeleteByPrefix("");
+			launch.loadDictCache(CachePrefix.McUserRole , null).batchDeleteByPrefix("");
+			launch.loadDictCache(CachePrefix.UserInfoNp , null).batchDeleteByPrefix("");
 			return Result.SUCCESS(this.getInfo(101010011));	// 101010011=系统字典缓存刷新完成!
 		} catch (Exception ex) {
 			ex.printStackTrace();		 // 100020112=系统错误, 请联系开发人员!
@@ -355,13 +355,13 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return validate;
 		}
 		
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
+		String userInfoNpJson = launch.loadDictCache(CachePrefix.UserInfoNp , "UserInfoNpInit").get(param.getUserName() + "," + SignUtil.md5Sign(param.getPassword()));
 		if (StringUtils.isBlank(userInfoNpJson)) {		// 101010017=用户名或密码错误
 			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		String pageJson = launch.loadDictCache(DCacheEnum.McUserRole , "McUserRoleInit").get(info.getId().toString());
+		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString());
 		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
 			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
@@ -380,7 +380,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		
 		// launch.loadDictCache(DCacheEnum.AccessToken , null).get(dto.getAccessToken());  token获取为空，则用户登录已经超时，需要重新登录
 		String accessToken = SignUtil.md5Sign(param.getUserName()) + SignUtil.md5Sign(String.valueOf(System.currentTimeMillis()));
-		launch.loadDictCache(DCacheEnum.AccessToken , null).set(accessToken , userInfoNpJson , 60*60);		// 设置用户令牌，有效时间1小时
+		launch.loadDictCache(CachePrefix.AccessToken , null).set(accessToken , userInfoNpJson , 60*60);		// 设置用户令牌，有效时间1小时
 		
 		ClientLoginView view = new ClientLoginView();
 		view.setAccessToken(accessToken);
@@ -400,7 +400,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	 * @version 1.0.0.1
 	 */
 	public Result<?> ajaxClientLogout(@Valid FindLogoutRequest param) {
-		launch.loadDictCache(DCacheEnum.AccessToken , null).del(param.getAccessToken());
+		launch.loadDictCache(CachePrefix.AccessToken , null).del(param.getAccessToken());
 		return Result.SUCCESS( this.getInfo(101010015));  // 101010015=系统已经退出
 	}
 
@@ -419,7 +419,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return Result.ERROR(this.getInfo(101010032), ResultCode.NOT_FOUND);
 		}
 		
-		String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp , "UserInfoNpInit").get(entity.getUserName() + "," + entity.getPassword());
+		String userInfoNpJson = launch.loadDictCache(CachePrefix.UserInfoNp , "UserInfoNpInit").get(entity.getUserName() + "," + entity.getPassword());
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		return Result.SUCCESS(this.getInfo(100010100), info);	// 100010100=数据请求成功!
 	}

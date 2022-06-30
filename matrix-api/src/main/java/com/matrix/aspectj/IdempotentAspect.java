@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.view.McUserInfoView;
@@ -68,13 +68,13 @@ public class IdempotentAspect extends BaseClass{
         		redisKey = idem.getJspIden();
         	}
         	
-        	String value = launch.loadDictCache(DCacheEnum.Idempotent , "").get(redisKey); 
+        	String value = launch.loadDictCache(CachePrefix.Idempotent , "").get(redisKey); 
         	if (StringUtils.isNotBlank(value)) {
         		return JSONObject.parseObject(value, Result.class);   
         	}
         	
             Object obj = joinPoint.proceed();
-            launch.loadDictCache(DCacheEnum.Idempotent , "").set(redisKey, JSONObject.toJSONString(obj), 60);
+            launch.loadDictCache(CachePrefix.Idempotent , "").set(redisKey, JSONObject.toJSONString(obj), 60);
             return obj;
         } catch (Exception ex) {
         	ex.printStackTrace();

@@ -17,7 +17,7 @@ import com.matrix.base.BaseServiceImpl;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcOrganizationMapper;
@@ -86,7 +86,7 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 		UserOrgTreeListView view_ = new UserOrgTreeListView();
 		view_.getList().addAll(list);
 		if (StringUtils.isNotBlank(param.getRedisKey())) { 			// 数据权限功能 - 弹窗中的树 - 勾选
-			String userInfoNpJson = launch.loadDictCache(DCacheEnum.UserInfoNp, "UserInfoNpInit").get(param.getRedisKey());
+			String userInfoNpJson = launch.loadDictCache(CachePrefix.UserInfoNp, "UserInfoNpInit").get(param.getRedisKey());
 			McUserInfoView user = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 			if(!CollectionUtils.isEmpty(user.getOrgidList())) {
 				view_.getOrgidList().addAll(user.getOrgidList());
@@ -242,8 +242,8 @@ public class McOrganizationServiceImpl extends BaseServiceImpl<Long, McOrganizat
 				mcUserInfoOrganizationMapper.insertSelective(e);
 			}
 			McUserInfo user = mcUserInfoMapper.find(param.getUserId());        // 开始重置用户缓存
-			launch.loadDictCache(DCacheEnum.UserInfoNp, "").del(user.getUserName() + "," + user.getPassword());
-			launch.loadDictCache(DCacheEnum.UserInfoNp, "UserInfoNpInit").get(user.getUserName() + "," + user.getPassword());
+			launch.loadDictCache(CachePrefix.UserInfoNp, "").del(user.getUserName() + "," + user.getPassword());
+			launch.loadDictCache(CachePrefix.UserInfoNp, "UserInfoNpInit").get(user.getUserName() + "," + user.getPassword());
 			return Result.SUCCESS(this.getInfo(101010040));		// 101010040=用户数据权限关联成功
 		} catch (Exception ex) {
 			ex.printStackTrace();   // 100010105=数据更新失败，服务器异常!

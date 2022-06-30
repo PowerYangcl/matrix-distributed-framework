@@ -7,7 +7,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IAcIncludeDomainMapper;
@@ -69,7 +69,7 @@ public class ApiDomainInit extends BaseClass implements ILoadCache<String>{
 			cache.put("status", "success");
 			cache.put("data", list);
 			String value = cache.toJSONString();
-			launch.loadDictCache(DCacheEnum.ApiDomain , null).set(key , value);   
+			launch.loadDictCache(CachePrefix.ApiDomain , null).set(key , value);   
 			return value ;
 		}
 		

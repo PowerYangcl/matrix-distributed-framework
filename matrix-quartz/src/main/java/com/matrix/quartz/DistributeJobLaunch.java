@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseInit;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.entity.JobInfo;
@@ -58,7 +58,7 @@ public class DistributeJobLaunch extends BaseInit{
         		return true;
         	}
         	for(JobInfo s : list_ ){ 
-        		String jobjson = launch.loadDictCache(DCacheEnum.SysJob , "SysJobInit").get(s.getJobName()); 
+        		String jobjson = launch.loadDictCache(CachePrefix.SysJob , "SysJobInit").get(s.getJobName()); 
     			if(StringUtils.isNotBlank(jobjson) && s.getTrigerType() == 1){	// Scheduler中轮询状态的任务
     				list.add(s);
     			}

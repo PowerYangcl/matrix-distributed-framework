@@ -5,7 +5,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IJobGroupMapper;
@@ -42,7 +42,7 @@ public class SysJobGroupInit extends BaseClass implements ILoadCache<String>{
 			result.put("updateUser" , s.getUpdateUserName()); 
 			
 			String value = result.toJSONString();
-			launch.loadDictCache(DCacheEnum.SysJobGroup , null).set(key, value , 24*60*60);
+			launch.loadDictCache(CachePrefix.SysJobGroup , null).set(key, value , 24*60*60);
 			return value;
 		}
 		return "";

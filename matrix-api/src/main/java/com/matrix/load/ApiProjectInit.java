@@ -7,7 +7,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IAcApiProjectMapper;
@@ -77,7 +77,7 @@ public class ApiProjectInit extends BaseClass implements ILoadCache<String>{
 			cache.put("status", "success");
 			cache.put("data", list);
 			String value = cache.toJSONString();
-			launch.loadDictCache(DCacheEnum.ApiProject , null).set("all" , value);  
+			launch.loadDictCache(CachePrefix.ApiProject , null).set("all" , value);  
 			return value ;
 		}
 		

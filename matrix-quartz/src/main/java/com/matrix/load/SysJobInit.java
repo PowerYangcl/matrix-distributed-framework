@@ -6,7 +6,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IJobInfoMapper;
@@ -33,7 +33,7 @@ public class SysJobInit  extends BaseClass implements ILoadCache<String>{
 		if(e != null) {
 			result = JSONObject.parseObject(JSONObject.toJSONString(e)); 
 			
-			String group = launch.loadDictCache(DCacheEnum.SysJobGroup, "SysJobGroupInit").get( String.valueOf(e.getRunGroupId()) );
+			String group = launch.loadDictCache(CachePrefix.SysJobGroup, "SysJobGroupInit").get( String.valueOf(e.getRunGroupId()) );
 			if(StringUtils.isNotBlank(group)) {
 				JSONObject gr = JSONObject.parseObject(group);
 				result.put("runGroupId" , gr.getLong("id"));
@@ -42,7 +42,7 @@ public class SysJobInit  extends BaseClass implements ILoadCache<String>{
 			}
 			
 			String value = result.toJSONString();
-			launch.loadDictCache(DCacheEnum.SysJob , null).set(key, value , 24*60*60);
+			launch.loadDictCache(CachePrefix.SysJob , null).set(key, value , 24*60*60);
 			return value;
 		}
 		return "";

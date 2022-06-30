@@ -10,7 +10,7 @@ import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.ILoadCache;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IAcApiDomainMapper;
@@ -101,7 +101,7 @@ public class ApiInfoInit  extends BaseClass implements ILoadCache<String>{
 		}
 		
 		String value = JSONObject.toJSONString(caches);
-		launch.loadDictCache(DCacheEnum.ApiInfo , null).set(key , value , 24*60*60); 
+		launch.loadDictCache(CachePrefix.ApiInfo , null).set(key , value , 24*60*60); 
 		return value;
 	}
 	

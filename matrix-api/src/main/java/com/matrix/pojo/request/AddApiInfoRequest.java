@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.pojo.entity.AcApiInfo;
@@ -51,7 +51,7 @@ public class AddApiInfoRequest extends BaseClass implements Serializable{
 			// 600010074=【业务处理实现】路径输入错误!应该以{0}起始
 			return Result.ERROR(this.getInfo(600010074 , atype), ResultCode.INVALID_ARGUMENT);
 		}
-		String isRecord = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(target);
+		String isRecord = launch.loadDictCache(CachePrefix.ApiInfo , "ApiInfoInit").get(target);
 		if(StringUtils.isNotBlank(isRecord)) { // 600010075=系统接口名称：{0} 已经在数据库中存在,请修改.
 			return Result.ERROR(this.getInfo(600010075 , target), ResultCode.ALREADY_EXISTS);
 		}

@@ -23,7 +23,7 @@ import com.matrix.base.BaseServiceImpl;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
-import com.matrix.cache.enums.DCacheEnum;
+import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IAcApiDomainMapper;
@@ -123,7 +123,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			AcApiProject e = param.buildAjaxBtnApiProjectAdd();
 			int flag = acApiProjectMapper.insertSelective(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
+				launch.loadDictCache(CachePrefix.ApiProject , null).del("all");   
 				return Result.SUCCESS(this.getInfo(100010102));  		// 100010102=数据添加成功!
 			} 
 		} catch (Exception ex) {
@@ -146,7 +146,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		try {
 			int flag = acApiProjectMapper.updateSelective(e); 
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");
+				launch.loadDictCache(CachePrefix.ApiProject , null).del("all");
 				return Result.SUCCESS(this.getInfo(100010104));  // 100010104=数据更新成功!
 			} 
 		} catch (Exception ex) {
@@ -167,7 +167,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		try {
 			int flag = acApiProjectMapper.deleteById(param.getId());
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiProject , null).del("all");   
+				launch.loadDictCache(CachePrefix.ApiProject , null).del("all");   
 				return Result.SUCCESS(this.getInfo(100010106));   	// 100010106=数据删除成功!
 			}
 		} catch (Exception ex) {
@@ -221,7 +221,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @version 1.0.0.1
 	 */
 	public Result<List<AcIncludeDomainView>> ajaxIncludeDomainList(HttpServletRequest request, HttpSession session) {
-		String value = launch.loadDictCache(DCacheEnum.ApiDomain , "ApiDomainInit").get("all");  
+		String value = launch.loadDictCache(CachePrefix.ApiDomain , "ApiDomainInit").get("all");  
 		if (StringUtils.isNotBlank(value)) {
 			String jsonArrStr = JSONObject.parseObject(value).getJSONArray("data").toJSONString();
 			List<AcIncludeDomainView> list = JSONArray.parseArray(jsonArrStr, AcIncludeDomainView.class);
@@ -247,7 +247,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			AcIncludeDomain e = param.buildAjaxBtnAcIncludeDomainAdd();
 			int flag = acIncludeDomainMapper.insertSelective(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
+				launch.loadDictCache(CachePrefix.ApiDomain , null).del("all");
 				return Result.SUCCESS(this.getInfo(100010102));  		// 100010102=数据添加成功!
 			}
 		} catch (Exception ex) {
@@ -273,8 +273,8 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			AcIncludeDomain e = param.buildAjaxBtnAcIncludeDomainEdit();
 			int flag = acIncludeDomainMapper.updateSelective(e);
 			if(flag == 1){
-				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
-				launch.loadDictCache(DCacheEnum.ApiInfo , null).batchDeleteByPrefix("");
+				launch.loadDictCache(CachePrefix.ApiDomain , null).del("all");
+				launch.loadDictCache(CachePrefix.ApiInfo , null).batchDeleteByPrefix("");
 				return Result.SUCCESS(this.getInfo(100010104));  // 100010104=数据更新成功!
 			}
 		} catch (Exception ex) {
@@ -300,8 +300,8 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			AcIncludeDomain e = param.buildAjaxBtnAcIncludeDomainDelete();
 			int flag = acIncludeDomainMapper.updateSelective(e);
 			if(flag == 1){
-				launch.loadDictCache(DCacheEnum.ApiDomain , null).del("all");
-				launch.loadDictCache(DCacheEnum.ApiInfo , null).batchDeleteByPrefix("");
+				launch.loadDictCache(CachePrefix.ApiDomain , null).del("all");
+				launch.loadDictCache(CachePrefix.ApiInfo , null).batchDeleteByPrefix("");
 				return Result.SUCCESS(this.getInfo(100010106));   	// 100010106=数据删除成功!
 			}
 		} catch (Exception ex) {
@@ -434,13 +434,13 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 					acApiDomainMapper.insertSelective(ad);
 				}
 			}
-			launch.loadDictCache(DCacheEnum.ApiInfo , null).del(param.getTarget());
+			launch.loadDictCache(CachePrefix.ApiInfo , null).del(param.getTarget());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(this.getInfo(600010093));   // 600010093=API接口信息修改失败，数据已回滚
 		}
 		
-		String record = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(param.getTarget());
+		String record = launch.loadDictCache(CachePrefix.ApiInfo , "ApiInfoInit").get(param.getTarget());
 		AcApiInfoCache acApiInfo = JSON.parseObject(record, AcApiInfoCache.class);
 		return Result.SUCCESS(this.getInfo(600010080) , acApiInfo);
 	}
@@ -461,7 +461,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			AcApiInfo e = param.buildAjaxApiInfoRemove();
 			int flag = acApiInfoMapper.updateSelective(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(param.getTarget());
+				launch.loadDictCache(CachePrefix.ApiInfo , null).del(param.getTarget());
 				return Result.SUCCESS(this.getInfo(100010106));   	// 100010106=数据删除成功!
 			}
 			return Result.ERROR(this.getInfo(100010107), ResultCode.ERROR_DELETE); // 100010107=数据删除失败，服务器异常!
@@ -488,7 +488,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 			AcApiInfo e = param.buildAjaxApiInfoDiscard();
 			int flag = acApiInfoMapper.updateSelective(e);
 			if(flag == 1) {
-				launch.loadDictCache(DCacheEnum.ApiInfo , null).del(param.getApi().getTarget());
+				launch.loadDictCache(CachePrefix.ApiInfo , null).del(param.getApi().getTarget());
 				return Result.SUCCESS(this.getInfo(100010104));		// 100010104=数据更新成功!
 			}
 		} catch (Exception ex) {
@@ -557,7 +557,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 		int flag = acRequestInfoMapper.insertSelective(e);
 		if(flag == 1) {
 			// 开始初始化API缓存
-			launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(e.getKey());
+			launch.loadDictCache(CachePrefix.ApiRequester , "ApiRequesterInit").get(e.getKey());
 			return Result.SUCCESS(this.getInfo(100010102), e);  // 100010102=数据添加成功!
 		}
 		return Result.ERROR(this.getInfo(100010103), ResultCode.SERVER_EXCEPTION);	// 100010103=数据添加失败，服务器异常!
@@ -595,7 +595,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 				}
 				// TODO 如果从开发接口更新为内部接口，还需要acRequestOpenApiMapper软删除关联的信息
 			}
-			launch.loadDictCache(DCacheEnum.ApiRequester , null).del(param.getOld().getKey()); // 删除缓存，获取该缓存时会自动加载，少写冗余代码。
+			launch.loadDictCache(CachePrefix.ApiRequester , null).del(param.getOld().getKey()); // 删除缓存，获取该缓存时会自动加载，少写冗余代码。
 			return Result.SUCCESS(this.getInfo(100010104));		// 100010104=数据更新成功!
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -624,7 +624,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @version 1.0.0.1
 	 */
 	public Result<String> ajaxFindRequestValue(String key) {
-		String requestInfo = launch.loadDictCache(DCacheEnum.ApiRequester , "ApiRequesterInit").get(key);  // ac_request_info表的缓存
+		String requestInfo = launch.loadDictCache(CachePrefix.ApiRequester , "ApiRequesterInit").get(key);  // ac_request_info表的缓存
 		if(StringUtils.isBlank(requestInfo)) { // 10012 非法的请求! 您请求的公钥未包含在我们的系统中.
 			return Result.ERROR(this.getInfo(600010012), 10012);
 		}
@@ -645,7 +645,7 @@ public class ApiCenterServiceImpl extends BaseServiceImpl<Long , AcApiInfo, AcAp
 	 * @version 1.0.0
 	 */
 	public Result<Object> ajaxFindRequestDto(String target) {
-		String apiInfoStr = launch.loadDictCache(DCacheEnum.ApiInfo , "ApiInfoInit").get(target);  
+		String apiInfoStr = launch.loadDictCache(CachePrefix.ApiInfo , "ApiInfoInit").get(target);  
 		if(StringUtils.isBlank(apiInfoStr)){ 	// 600010014=系统未检测到您所访问的接口
 			return Result.ERROR(this.getInfo(600010014), 10014); 
 		} 
