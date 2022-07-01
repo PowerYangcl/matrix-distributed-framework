@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Range;
 
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
@@ -37,7 +38,7 @@ public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
     private Integer seqnum;
     
     // 101010062=nav type 类型错误
-    @Pattern(regexp=Validation.MATRIX_PERMISSIONS_NAV_TYPE, message="101010062")
+    @Range(min=0, max=5, message="101010062")
     private Integer navType;		// -1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
     
     private Integer authorize;      // 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。

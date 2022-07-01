@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
+import javax.validation.UnexpectedTypeException;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -75,6 +76,13 @@ public class GlobalExceptionHandler extends BaseClass {
 		System.out.println("HttpRequestMethodNotSupportedException");
 		e.printStackTrace();
         return Result.ERROR(this.getInfo(100010129), ResultCode.INVALID_ARGUMENT);		// 100010129=出现捕获GlobalExceptionHandler全局异常
+    }
+	
+	@ResponseBody
+    @ExceptionHandler({UnexpectedTypeException.class})
+    public Result<?> handleUnexpectedTypeException(HttpServletRequest request, UnexpectedTypeException ex) {
+		String message = "系统代码错误：" + ex.getMessage();
+        return Result.ERROR(message, ResultCode.INVALID_ARGUMENT);
     }
 	
 	/**

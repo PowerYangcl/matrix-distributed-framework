@@ -5,11 +5,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 import com.matrix.base.BaseInit;
 import com.matrix.base.BaseLog;
 import com.matrix.system.cache.PowerCache;
+import com.matrix.system.cache.PropConfig;
 
 /**
  * @descriptions 差异化配置信息验证
@@ -34,6 +36,11 @@ public class MatrixCoreInit extends BaseInit {
 	 * @version 1.0.0.1
 	 */
 	private boolean deployEnvValidate(){
+		List<String> keys = PropConfig.getInstance().getKeys();
+		for(String e : keys) {
+			System.err.println(e + " = " + PropConfig.getInstance().getValue(e));
+		}
+		
 		if(StringUtils.isNotBlank(this.getConfig("matrix-web.model"))) {
 			BaseLog.getInstance().sysoutInfo("-------------------------------------------Web Project Properties File Init Finished ! ! ! ! ! ! ! " , this.getClass());
 			return true;
@@ -61,6 +68,9 @@ public class MatrixCoreInit extends BaseInit {
 			e.printStackTrace();
 		}
 		
+		if(StringUtils.isBlank(properties.getProperty("dubbo.application.model"))) {
+			return true;
+		}
 		BaseLog.getInstance().sysoutInfo("-------------------------------------------Dubbo服务开始初始化差异化配置! " , this.getClass());
 		BaseLog.getInstance().sysoutInfo("-------------------------------------------系统初始运行环境：" + this.getConfig("matrix-core.model")  , this.getClass());
 		if(this.getConfig("matrix-core.build_type").equals("jenkins")) {

@@ -1,5 +1,6 @@
 package com.matrix.validate;
 
+import javax.validation.constraints.Pattern;
 
 /**
  * @description: 入参通用基础验证规则，适用于绝大部分业务场景。
@@ -14,6 +15,7 @@ package com.matrix.validate;
  */
 public interface Validation {
 
+	// @Pattern(regexp=Validation.MATRIX_PERMISSIONS_NAV_TYPE, message="101010062")   只能验证String 字段，不能验证Integer字段
 	String MATRIX_PERMISSIONS_NAV_TYPE = "0|1|2|3|4|5";
 	
 	

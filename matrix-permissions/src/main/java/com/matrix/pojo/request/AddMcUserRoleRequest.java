@@ -3,6 +3,7 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
@@ -21,10 +22,10 @@ public class AddMcUserRoleRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
-	@NotBlank(message = "100010126")	   // 100010126=请求参数不允许为空
+	@NotNull(message = "100010126")	   // 100010126=请求参数不允许为空
     private Long mcUserId;
 	
-	@NotBlank(message = "100010126")	   // 100010126=请求参数不允许为空
+	@NotNull(message = "100010126")	   // 100010126=请求参数不允许为空
     private Long mcRoleId; 
 	
 	public McUserRole buildAllotUserRole() {
