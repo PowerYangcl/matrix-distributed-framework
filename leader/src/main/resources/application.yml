@@ -3,6 +3,8 @@ server:
   servlet: 
     context-path: /leader
 spring:
+  application:
+    name: leader
   profiles:
     active: dev
   jackson:

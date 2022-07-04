@@ -11,6 +11,7 @@
     
     <modules>
    	    <module>leader</module>
+   	    <module>matrix-gateway</module>
         <module>matrix-core</module>
         <module>matrix-cache</module>
         <module>matrix-permissions</module>
@@ -62,6 +63,15 @@
 	                <artifactId>logback-classic</artifactId>
 	            </exclusion>
 		   </exclusions>
+        </dependency>
+        
+        <!-- 
+        	springboot 对应用系统的自省和监控的集成功能；监控当前应用的健康，虚拟机等信息，通过前端以可视化的界面展示出来 
+        	参考：http://www.ityouknow.com/springboot/2018/02/06/spring-boot-actuator.html
+        -->
+        <dependency>  
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         
   	    <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->

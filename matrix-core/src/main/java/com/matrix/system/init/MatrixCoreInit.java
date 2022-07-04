@@ -36,11 +36,6 @@ public class MatrixCoreInit extends BaseInit {
 	 * @version 1.0.0.1
 	 */
 	private boolean deployEnvValidate(){
-		List<String> keys = PropConfig.getInstance().getKeys();
-		for(String e : keys) {
-			System.err.println(e + " = " + PropConfig.getInstance().getValue(e));
-		}
-		
 		if(StringUtils.isNotBlank(this.getConfig("matrix-web.model"))) {
 			BaseLog.getInstance().sysoutInfo("-------------------------------------------Web Project Properties File Init Finished ! ! ! ! ! ! ! " , this.getClass());
 			return true;
