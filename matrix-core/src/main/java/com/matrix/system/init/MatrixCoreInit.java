@@ -5,13 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
+
 import com.matrix.base.BaseInit;
 import com.matrix.base.BaseLog;
 import com.matrix.system.cache.PowerCache;
-import com.matrix.system.cache.PropConfig;
 
 /**
  * @descriptions 差异化配置信息验证

@@ -1,10 +1,12 @@
 package com.matrix.launch;
 
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +18,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import com.matrix.base.BaseLog;
+import com.matrix.system.cache.PowerCache;
 import com.matrix.system.init.SystemInit;
 import com.matrix.system.listener.MatrixDistributedFrameworkListener;
 
@@ -42,8 +45,9 @@ public class ContextLaunch {
 	
 	@Bean(name = "mdf-listener")
 	public MatrixDistributedFrameworkListener initBbean() {
-		return new MatrixDistributedFrameworkListener(systemInit);
+		return new MatrixDistributedFrameworkListener(systemInit);	// 初始化配置文件中的类
 	}
+	
 	
     @Bean(name = "tx-advice")
     public TransactionInterceptor txAdvice() {
@@ -76,17 +80,28 @@ public class ContextLaunch {
         return new TransactionInterceptor(transactionManager, source);
     }
 
-    @Bean
-    public Advisor txAdviceAdvisor() {
-    	this.systemInit();
+	/**
+	 * @description: 初始化配置文件中的config和info信息
+	 *
+	 * @author Yangcl
+	 * @date 22018年9月14日 下午16:22:58
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.0.0.1
+	 */
+    @Bean(name = "tx-advice-advisor")
+    public Advisor txAdviceAdvisor(@Value("${spring.profiles.active}") String model) {
+    	this.systemInit(model);		// 如果项目配置了yaml文件，则使用yaml文件中的环境信息	
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression(execution);
         return new DefaultPointcutAdvisor(pointcut, this.txAdvice());
     }
     
-    private void systemInit() {
+    private void systemInit(String model) {
     	BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing starting ! ! ! ! !" , this.getClass());
     	boolean flag = systemInit.onInit();
+    	if(StringUtils.isNotBlank(model)) {
+    		PowerCache.getInstance().reset("PropConfig", "matrix-core.model", model);
+    	}
 		if(flag) {
 			BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing Finished ! ! ! ! !" , this.getClass());
 		}else {

@@ -22,6 +22,14 @@ public class MatrixDistributedFrameworkListener implements ApplicationListener<C
 		this.systemInit = systemInit;
 	}
 
+	/**
+	 * @description: 初始化配置文件中的类
+	 *
+	 * @author Yangcl
+	 * @date 22018年9月14日 下午12:41:19
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.0.0.1
+	 */
 	public void onApplicationEvent(ContextRefreshedEvent e) {
 		if(e.getApplicationContext().getParent() != null) {
 			BaseLog.getInstance().setLogger(null).sysoutInfo("MatrixDistributedFrameworkListener出现二次调用 ! ! ! ! !" , this.getClass()); 
