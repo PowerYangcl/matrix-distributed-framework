@@ -2,6 +2,7 @@ server:
   port: 8086
   servlet: 
     context-path: /matrix-gateway
+
 spring:
   application:
     name: matrix-gateway
@@ -16,10 +17,8 @@ spring:
     encoding:
       charset: UTF-8
       force: true
-  mvc:
-    pathmatch:
-      # springboot2.6版本Spring MVC 处理映射匹配的默认策略已从AntPathMatcher更改为PathPatternParser
-      matching-strategy: ant-path-matcher
-      # springboot2.0x中，默认不支持带后缀.do，此处如果关闭*.do请求将全部失效
-      use-suffix-pattern: true
-# server.jsp-servlet.init-parameters.development=true # 修改JSP文件，页面动态更新，但不起作用。
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从注册中心动态创建路由的功能，利用微服务名进行路由

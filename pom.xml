@@ -50,9 +50,19 @@
         <curator.version>4.0.0</curator.version>					<!-- Curator(ZooKeeper客户端)版本 -->
         
         <httpclient.version>4.5.1</httpclient.version>
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
     </properties>
     
     <dependencies>
+        <!-- 转型到spring-cloud-alibaba 2021.0.1.0为GA  2022-08-05  -->
+       	<dependency>
+           	<groupId>com.alibaba.cloud</groupId>
+           	<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+           	<version>${spring-cloud-alibaba.version}</version>
+           	<type>pom</type>
+           	<scope>import</scope>
+       	</dependency>
+       	
     	<!-- spring framework -->
         <dependency> <!-- springboot web依赖 --> 
             <groupId>org.springframework.boot</groupId>

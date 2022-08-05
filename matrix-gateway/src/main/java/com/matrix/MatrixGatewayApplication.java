@@ -9,8 +9,6 @@ import com.matrix.base.BaseLog;
 
 /**
  * @description: 网关入口
- * 		访问地址：http://localhost:8086/matrix-gateway/login.html
- * 
  * 		参考：
  * 					https://spring.io/projects/spring-cloud-gateway/#samples
  * 					
@@ -23,7 +21,7 @@ import com.matrix.base.BaseLog;
  * @date 2022-7-1 10:25:43
  * @home https://github.com/PowerYangcl
  * @path matrix-gateway / com.matrix.MatrixGatewayApplication.java
- * @version v-2.1.2
+ * @version 1.6.1.4-spring-cloud-gateway
  */
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MatrixGatewayApplication {
@@ -34,12 +32,7 @@ public class MatrixGatewayApplication {
     		SpringApplication.run(MatrixGatewayApplication.class, args);
     		BaseLog.getInstance().setLogger(null).sysoutInfo("MatrixGatewayApplication 启动完成" , MatrixGatewayApplication.class);
 		} catch (Exception e) {
-			if(e.getClass().getName().contains("SilentExitException")) {  // spring-boot-devtools jsp页面自动刷新导致
-				// TODO https://blog.csdn.net/aqsunkai/article/details/69663159  spring-boot-devtools  是否能解决此异常 2022-03-16
-	            System.out.println("Spring is restarting the main thread - See spring-boot-devtools");
-	        }else {
-	        	e.printStackTrace();
-	        }
+			e.printStackTrace();
 		}
     }
 
