@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.matrix.dao.IGwRouteSnapshotMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.GwRouteSnapshot" extends="BaseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="route_iden" property="routeIden" jdbcType="BIGINT" />
+		<result column="route_id" property="routeId" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="header" property="header" jdbcType="VARCHAR" />
+		<result column="cookies" property="cookies" jdbcType="VARCHAR" />
+		<result column="request_type" property="requestType" jdbcType="CHAR" />
+	</resultMap>
+	
+	<sql id="table_column_list">
+		id, 
+		route_iden, 
+		route_id, 
+		url, 
+		header, 
+		cookies, 
+		request_type,
+		create_time, create_user_id,create_user_name, update_time, update_user_id, update_user_name, delete_flag
+	</sql>
+	
+	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+			<include refid="table_column_list" />
+		from 
+			gw_route_snapshot
+		where 
+			delete_flag = 1
+		and 
+			id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from gw_route_snapshot where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.GwRouteSnapshot">
+		insert into gw_route_snapshot
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="routeIden != null">
+				route_iden,
+			</if>
+			<if test="routeId != null">
+				route_id,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="header != null">
+				header,
+			</if>
+			<if test="cookies != null">
+				cookies,
+			</if>
+			<if test="requestType != null">
+				request_type,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="routeIden != null">
+				#{routeIden,jdbcType=BIGINT},
+			</if>
+			<if test="routeId != null">
+				#{routeId,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="header != null">
+				#{header,jdbcType=VARCHAR},
+			</if>
+			<if test="cookies != null">
+				#{cookies,jdbcType=VARCHAR},
+			</if>
+			<if test="requestType != null">
+				#{requestType,jdbcType=CHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.GwRouteSnapshot">
+		update gw_route_snapshot
+		<set>
+			<if test="routeIden != null">
+				route_iden = #{routeIden,jdbcType=BIGINT},
+			</if>
+			<if test="routeId != null">
+				route_id = #{routeId,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="header != null">
+				header = #{header,jdbcType=VARCHAR},
+			</if>
+			<if test="cookies != null">
+				cookies = #{cookies,jdbcType=VARCHAR},
+			</if>
+			<if test="requestType != null">
+				request_type = #{requestType,jdbcType=CHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

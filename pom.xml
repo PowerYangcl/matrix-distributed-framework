@@ -12,6 +12,7 @@
     <modules>
    	    <module>leader</module>
    	    <module>matrix-gateway</module>
+   	    <module>matrix-gateway-config</module>
         <module>matrix-core</module>
         <module>matrix-cache</module>
         <module>matrix-permissions</module>

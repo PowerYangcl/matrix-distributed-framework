@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 public class BaseEntity implements Serializable {
 
-	private static final long serialVersionUID = -7383391444275138625L;
+	private static final long serialVersionUID = 6688916882722888289L;
 
 	/** 
 	 * 起始页数 - 微服务化项目需要的字段

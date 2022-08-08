@@ -10,6 +10,7 @@
 		info.matrix-web-adapter.1030.properties
 		info.matrix-websocket.1040.properties
 		info.matrix-dubbo.1050.properties
+		info.matrix-gateway-config.1060.properties
 		
 		info.matrix-quartz.2000.properties
 		info.matrix-cache.3000.properties

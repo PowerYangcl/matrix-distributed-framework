@@ -8,13 +8,12 @@ import com.matrix.base.BaseLog;
 
 
 /**
- * @description: 网关入口
+ * @description: 系统网关入口，配置页面在Leader中，所需配置操作在matrix-gateway-config项目中(增删改查逻辑)
  * 		参考：
  * 					https://spring.io/projects/spring-cloud-gateway/#samples
  * 					
- * 					https://cloud.spring.io/spring-cloud-gateway/reference/html/#_after_route_predicate_factory
  * 					http://www.yl-blog.com/article/703.html | https://github.com/zhoutaoo/SpringCloud.git
- * 					https://www.cnblogs.com/idea360/p/12632801.html
+ * 					https://www.cnblogs.com/idea360/p/12632801.html					可供参考，他重写了动态路由服务
  * 					http://www.javashuo.com/article/p-pfhkaakh-qm.html
  * 
  * @author Yangcl

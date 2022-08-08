@@ -14,13 +14,7 @@
 	<name>matrix-gateway</name>
 	<url>https://github.com/PowerYangcl</url>
 	
-	<properties>
-	    <failOnMissingWebXml>false</failOnMissingWebXml>
-	    <start-class>com.matrix.MatrixGatewayApplication</start-class>
-	</properties>
-
 	<dependencies>
-		
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
@@ -36,14 +30,9 @@
 		
 		<dependency>
 			<groupId>com.matrix</groupId>
-			<artifactId>matrix-core</artifactId>
+			<artifactId>matrix-gateway-config</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		
-		
-		
-		
 		
 		
 		
