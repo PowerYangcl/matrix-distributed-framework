@@ -8,7 +8,7 @@ layui.config({
   	}).use(['index', 'table'], function(){
   	    var table = layui.table;
   	  	var $ = layui.$;
-  	  	var layer = layui.layer;
+  	  	var layer = layui.layer;				// layer.pageDialog = pageDialog; 弹窗调用父页面保存的对象，需要写在脚本最后
   	    table.render({
   	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload 
   	      	elem: '#table-toolbar',				// 表格控制句柄

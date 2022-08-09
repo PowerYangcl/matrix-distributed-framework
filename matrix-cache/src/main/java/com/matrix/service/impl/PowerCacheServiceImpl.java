@@ -11,6 +11,7 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 import com.matrix.base.ResultCode;
 import com.matrix.cache.CacheLaunch;
+import com.matrix.cache.enums.CachePrefix;
 //import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
@@ -39,9 +40,9 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		String value = "";
 		try {
 			if(type.equals("dict")){
-//				CachePrefix [] arr = CachePrefix.values();
-//				value = launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key);
-				value = launch.loadDictCache(prefix , prefix + "Init" ).get(key);
+				CachePrefix [] arr = CachePrefix.values();
+				value = launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , prefix + "Init" ).get(key);
+//				value = launch.loadDictCache(prefix , prefix + "Init" ).get(key);
 			}else{
 				value = launch.loadServiceCache(prefix , prefix + "Init" ).get(key); 
 			}
@@ -79,11 +80,11 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		String value = "";
 		try {
 			if(type.equals("dict")){
-//				CachePrefix [] arr = CachePrefix.values();
-//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).del(key);
-//				value = launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).get(key);
-				launch.loadDictCache(prefix , null).del(key);
-				value = launch.loadDictCache(prefix , null).get(key);
+				CachePrefix [] arr = CachePrefix.values();
+				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).del(key);
+				value = launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).get(key);
+//				launch.loadDictCache(prefix , null).del(key);
+//				value = launch.loadDictCache(prefix , null).get(key);
 			}else{
 				launch.loadServiceCache(prefix , null).del(key); 
 				value = launch.loadServiceCache(prefix , null).get(key); 
@@ -115,9 +116,9 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 
 		try {
 			if(type.equals("dict")){
-//				CachePrefix [] arr = CachePrefix.values();
-//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
-				launch.loadDictCache(prefix , null).batchDeleteByPrefix(key);
+				CachePrefix [] arr = CachePrefix.values();
+				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).batchDeleteByPrefix(key);
+//				launch.loadDictCache(prefix , null).batchDeleteByPrefix(key);
 			}else{
 				launch.loadServiceCache(prefix , null).batchDeleteByPrefix(key);
 			}
@@ -146,9 +147,9 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		
 		try {
 			if(type.equals("dict")){
-//				CachePrefix [] arr = CachePrefix.values();
-//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).set(key , jsonStr , 30*60);
-				launch.loadDictCache(prefix , null).set(key , jsonStr , 30*60);
+				CachePrefix [] arr = CachePrefix.values();
+				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).set(key , jsonStr , 30*60);
+//				launch.loadDictCache(prefix , null).set(key , jsonStr , 30*60);
 			}else{
 				launch.loadServiceCache(prefix , null).set(key , jsonStr , 30*60); 
 			}
@@ -178,9 +179,9 @@ public class PowerCacheServiceImpl extends BaseClass implements IPowerCacheServi
 		
 		try {
 			if(type.equals("dict")){
-//				CachePrefix [] arr = CachePrefix.values();
-//				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).set(key , jsonStr);
-				launch.loadDictCache(prefix , null).set(key , jsonStr);
+				CachePrefix [] arr = CachePrefix.values();
+				launch.loadDictCache(arr[CachePrefix.valueOf(prefix).ordinal()] , null).set(key , jsonStr);
+//				launch.loadDictCache(prefix , null).set(key , jsonStr);
 			}else{
 				launch.loadServiceCache(prefix , null).set(key , jsonStr); 
 			}

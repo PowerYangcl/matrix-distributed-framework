@@ -67,7 +67,7 @@ public class RedisFactory extends BaseClass implements ICacheFactory{
 					Class<?> clazz = Class.forName(load);   
 					if (clazz != null && clazz.getDeclaredMethods() != null){
 						// Redis 开始增量计次：20次。如果10分钟内20次连续查询数据库，则10分钟内返回空
-						Long count = RedisTemplateLettuce.getInstance().incrementTimeout(baseKey + key, 10*60L);
+						Long count = RedisTemplateLettuce.getInstance().incrementTimeout("incre-" + baseKey + key, 10*60L);
 						if(count >= 20) {
 							return "";
 						}

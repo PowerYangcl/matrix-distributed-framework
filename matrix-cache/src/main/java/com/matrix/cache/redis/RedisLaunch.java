@@ -33,6 +33,9 @@ public class RedisLaunch implements IBaseLaunch<ICacheFactory> {
 		return new RedisFactory("xd-" + prefix + "-" , load);
 	}
 
+	
+	
+	
 	/**
 	 * @description: 操作业务系统的服务缓存
 	 *

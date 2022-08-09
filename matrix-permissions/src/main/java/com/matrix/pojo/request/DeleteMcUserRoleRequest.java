@@ -3,6 +3,7 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.matrix.base.BaseClass;
 import com.matrix.pojo.dto.McUserRoleDto;
@@ -20,10 +21,10 @@ public class DeleteMcUserRoleRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
-	@NotBlank(message = "100010126")			// 100010126=请求参数不允许为空
+	@NotNull(message = "100010126")			// 100010126=请求参数不允许为空
     private Long userId;
 	
-	@NotBlank(message = "100010126")			// 100010126=请求参数不允许为空
+	@NotNull(message = "100010126")			// 100010126=请求参数不允许为空
     private Long mcRoleId; 
 	
 	public McUserRoleDto buildDeleteUserRole() {
