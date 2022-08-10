@@ -10,7 +10,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 		<link rel="stylesheet" href="${layui}/layui/css/layui.css" media="all">
 		<link rel="stylesheet" href="${layui}/style/admin.css" media="all">
+		<link rel="stylesheet" href="${layui}/layui/css/modules/laydate/default/laydate.css" media="all">
+		<link rel="stylesheet" href="${layui}/layui/css/modules/laydate/default/font.css" media="all">
+		
 		<script src="${layui}/layui/layui.js"></script>
+		<script src="${layui}/layui/lay/modules/laydate.js"></script>
+		
 		
 		<style type="text/css">
 			form input[type=text],select,textarea{

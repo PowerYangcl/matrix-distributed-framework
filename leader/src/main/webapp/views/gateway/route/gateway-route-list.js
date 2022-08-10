@@ -5,10 +5,12 @@ layui.config({
     	base: '../layuiadmin/' //静态资源所在路径
   	}).extend({
     	index: 'lib/index' //主入口模块
-  	}).use(['index', 'table'], function(){
+  	}).use(['index','laydate', 'table'], function(){
   	    var table = layui.table;
   	  	var $ = layui.$;
   	  	var layer = layui.layer;				// layer.pageDialog = pageDialog; 弹窗调用父页面保存的对象，需要写在脚本最后
+  	  	var laydate = layui.laydate;
+		
   	    table.render({
   	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload 
   	      	elem: '#table-toolbar',				// 表格控制句柄
@@ -143,6 +145,7 @@ layui.config({
 			}else if (o.event === 'log') {
 			}
 		});
+
 		
 		// 查询按钮
 		var search = {		
@@ -204,6 +207,13 @@ layui.config({
           			}, 
           			cancel : function(){  // 右上角关闭回调
           				// return false; // 开启该代码可禁止点击该按钮关闭
+          			},
+          			success: function(layero, index) {
+          				// 因为是弹窗，所以重新渲染时间空间
+          				laydate.render({
+          					elem: '#test5',
+          					type: 'datetime'
+          				});
           			}
 		        });
 			},
@@ -222,6 +232,8 @@ layui.config({
 				var routeTypeUrl = ''; 
 				var rateFlowMark0 = '';
 				var rateFlowMark1 = '';
+				var requestSnapshotMark0 = '';
+				var requestSnapshotMark1 = '';
 				
 				
 				var expireTime = '';
@@ -246,13 +258,18 @@ layui.config({
 					}else{
 						routeTypeUrl = 'checked="checked" ';
 					}
-					if(e.rateFlowMark = 0){
+					
+					if(e.rateFlowMark == 0){
 						rateFlowMark0 = 'checked="checked" ';
 					}else{
 						rateFlowMark1 = 'checked="checked" ';
 					}
 					
-					
+					if(e.requestSnapshotMark == 0){
+						requestSnapshotMark0 = 'checked="checked" ';
+					}else{
+						requestSnapshotMark1 = 'checked="checked" ';
+					}
 					
 					
 				}
@@ -261,61 +278,89 @@ layui.config({
 						title += '<h3>' + alert + '</h3>';
 					title += '</div>';
 				
-				var html = '<form id="dialog-gateway-form">' + title + '<table id="dialog-gateway-table" class="dialog-form-talbe" style="width:95%;margin-left:20px">';
-					html += '<tr>';
-						html += '<td style="text-align: left;width:80px;">路由规则ID：</td>';
-						html += '<td style="text-align: left">';
-							html += '<input type="text" name="routeId" value="' + routeId + '" class="dialog-form-input" style="width:90%;" placeholder="52个字符以内"  maxlength="52">';
-						html += '</td>';
-						html += '<td style="text-align: left;width:80px;">生产环境：</td>';
-						html += '<td style="text-align: left">';
-							html += '<select name="active" class="active-select" style="width:94%;">';
-								html += pageDialog.envList(env);
-							html += '</select>';
-						html += '</td>';
-					html += '</tr>';
-					
-					html += '<tr>';
-						html += '<td style="text-align: left;width:160px;" colspan="1">路由转发路径：</td>';
-						html += '<td style="text-align: left" colspan="3">';
-							html += '<input type="text" name="uri" value="' + uri + '" class="dialog-form-input" style="width:96%;" placeholder="256个字符以内"  maxlength="256">';
-						html += '</td>';
-					html += '</tr>';
-					
-					html += '<tr>';
-						html += '<td style="text-align: left;width:80px;">请求方式：</td>';
-						html += '<td style="text-align: left">';
-							html += '<select name="requestType" class="request-type-select" style="width:94%;">';
-								html += pageDialog.requestTypeList(requestType);
-							html += '</select>';
-						html += '</td>';
+				var html = '<form id="dialog-gateway-form">' + title;
+					html +=  '<table id="dialog-gateway-table" class="dialog-form-talbe" style="width:95%;margin-left:20px">';
+						html += '<tr>';
+							html += '<td style="text-align: left;width:80px;">路由规则ID：</td>';
+							html += '<td style="text-align: left">';
+								html += '<input type="text" autocomplete="off" name="routeId" value="' + routeId + '" class="dialog-form-input" style="width:90%;" placeholder="52个字符以内"  maxlength="52">';
+							html += '</td>';
+							html += '<td style="text-align: left;width:80px;">生产环境：</td>';
+							html += '<td style="text-align: left">';
+								html += '<select name="active" class="active-select" style="width:94%;">';
+									html += pageDialog.envList(env);
+								html += '</select>';
+							html += '</td>';
+						html += '</tr>';
 						
-						html += '<td style="text-align: left;width:90px;">路由类型：</td>';
-						html += '<td style="text-align: left">';
-							html += '<span id="" class="field" style="padding-top:5px">';
-								html += '<input type="radio" name="routeType" value="project" style="vertical-align:middle;" ' + routeTypeProject + '>';
-								html += '<span style="vertical-align:middle;margin-left:5px;">项目</span>';
-								html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-								html += '<input type="radio" name="routeType" value="url" style="vertical-align:middle;" ' + routeTypeUrl + '>';
-								html += '<span style="vertical-align:middle;margin-left:5px;">单接口</span>';
-							html += '</span>';
-						html += '</td>';
-					html += '</tr>';	
-					
-					
-					html += '<tr>';
-						html += '<td style="text-align: left;width:160px;" colspan="1">是否开启流量标记：</td>';
-						html += '<td style="text-align: left" colspan="3">';
-							html += '<span id="" class="field" style="padding-top:5px">';
-								html += '<input type="radio" name="rateFlowMark" value="0" style="vertical-align:middle;" ' + rateFlowMark0 + '>';
-								html += '<span style="vertical-align:middle;margin-left:5px;">不标记</span>';
-								html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-								html += '<input type="radio" name="rateFlowMark" value="1" style="vertical-align:middle;" ' + rateFlowMark1 + ' onclick="layer.pageDialog.rateFlowMarkModule(\'dialog-gateway-table\')">';
-								html += '<span style="vertical-align:middle;margin-left:5px;">标记</span>';
-							html += '</span>';
-						html += '</td>';
-					html += '</tr>';	
-
+						html += '<tr>';
+							html += '<td style="text-align: left;width:160px;" colspan="1">路由转发路径：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html += '<input type="text" autocomplete="off" name="uri" value="' + uri + '" class="dialog-form-input" style="width:96%;" placeholder="256个字符以内"  maxlength="256">';
+							html += '</td>';
+						html += '</tr>';
+						
+						html += '<tr>';
+							html += '<td style="text-align: left;width:80px;">请求方式：</td>';
+							html += '<td style="text-align: left">';
+								html += '<select name="requestType" class="request-type-select" style="width:94%;">';
+									html += pageDialog.requestTypeList(requestType);
+								html += '</select>';
+							html += '</td>';
+							
+							html += '<td style="text-align: left;width:90px;">路由类型：</td>';
+							html += '<td style="text-align: left">';
+								html += '<span id="" class="field" style="padding-top:5px">';
+									html += '<input type="radio" name="routeType" value="project" style="vertical-align:middle;" ' + routeTypeProject + '>';
+									html += '<span style="vertical-align:middle;margin-left:5px;">项目</span>';
+									html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									html += '<input type="radio" name="routeType" value="url" style="vertical-align:middle;" ' + routeTypeUrl + '>';
+									html += '<span style="vertical-align:middle;margin-left:5px;">单接口</span>';
+								html += '</span>';
+							html += '</td>';
+						html += '</tr>';	
+						
+						html += '<tr>';
+							html += '<td style="text-align: left;width:160px;" colspan="1">是否保存流量快照：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html += '<span id="" class="field" style="padding-top:5px">';
+									html += '<input type="radio" name="requestSnapshotMark" value="0" style="vertical-align:middle;" ' + requestSnapshotMark0 + '>';
+									html += '<span style="vertical-align:middle;margin-left:5px;">不保存</span>';
+									html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									html += '<input type="radio" name="requestSnapshotMark" value="1" style="vertical-align:middle;" ' + requestSnapshotMark1 + ' onclick="layer.pageDialog.rateFlowMarkModule(\'dialog-gateway-table\')">';
+									html += '<span style="vertical-align:middle;margin-left:5px;">保存(用于模拟压测使用)</span>';
+								html += '</span>';
+							html += '</td>';
+						html += '</tr>';	
+						
+						html += '<tr>';
+							html += '<td style="text-align: left;width:80px;" colspan="1">快照请求条数：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html += '<input type="text" autocomplete="off" name="routeId" value="' + routeId + '" class="dialog-form-input" style="width:30%;" placeholder="请输入整数"  maxlength="7">';
+							html += '</td>';
+						html += '</tr>';
+						html += '<tr>';
+							html += '<td style="text-align: left;width:80px;" colspan="1">快照时间段：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html += '<div class="layui-input-inline"><input  id="test5" type="text" class="layui-input" placeholder="yyyy-MM-dd HH:mm:ss" lay-key="7"></div>'
+							html += '</td>';
+						html += '</tr>';
+						
+						
+						
+						html += '<tr>';
+							html += '<td style="text-align: left;width:160px;" colspan="1">是否开启流量标记：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html += '<span id="" class="field" style="padding-top:5px">';
+									html += '<input type="radio" name="rateFlowMark" value="0" style="vertical-align:middle;" ' + rateFlowMark0 + '>';
+									html += '<span style="vertical-align:middle;margin-left:5px;">不标记</span>';
+									html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									html += '<input type="radio" name="rateFlowMark" value="1" style="vertical-align:middle;" ' + rateFlowMark1 + ' onclick="layer.pageDialog.rateFlowMarkModule(\'dialog-gateway-table\')">';
+									html += '<span style="vertical-align:middle;margin-left:5px;">标记</span>';
+								html += '</span>';
+							html += '</td>';
+						html += '</tr>';	
+					html += '</table>';
 					
 					
 					
@@ -323,7 +368,7 @@ layui.config({
 						html += '<input type="hidden" name="id" value="' + id + '">';
 					}
 					html += '<input type="hidden" name="eleValue" value="' + key + '">';
-				html += '</table></form>';
+				html += '</form>';
 				return html;
 			},
 			
@@ -366,27 +411,27 @@ layui.config({
 					html += '</td>';
 				html += '</tr>'
 					
-//				html += '<tr class="" style="">';	
-//				html += '<table id="aaaaaaaaaa" style="border-collapse: collapse;width:95%;margin-left:20px; border-bottom: 1px solid red;">';
-//					html += '<tr class="" style="">';
-//						html += '<th>';
-//							html += '统计项目';
-//						html += '</th>';
-//						html += '<th>';
-//							html += '统计接口';
-//						html += '</th>';
-//						html += '<th>';
-//							html += '统计参数';
-//						html += '</th>';
-//						html += '<th>';
-//							html += '统计值';
-//						html += '</th>';
-//						html += '<th>';
-//							html += '操作';
-//						html += '</th>';
-//					html += '</tr>';
-//				html += '</table>';
-//				html += '</tr>'
+				html += '<tr class="" style="">';	
+				html += '<table id="aaaaaaaaaa" style="border-collapse: collapse;width:95%;margin-left:20px; border-bottom: 1px solid red;">';
+					html += '<tr class="" style="">';
+						html += '<th>';
+							html += '统计项目';
+						html += '</th>';
+						html += '<th>';
+							html += '统计接口';
+						html += '</th>';
+						html += '<th>';
+							html += '统计参数';
+						html += '</th>';
+						html += '<th>';
+							html += '统计值';
+						html += '</th>';
+						html += '<th>';
+							html += '操作';
+						html += '</th>';
+					html += '</tr>';
+				html += '</table>';
+				html += '</tr>'
 				$("#" + trId).append(html);
 			}
 			

@@ -54,6 +54,13 @@
 			<artifactId>matrix-gateway-config</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+        <!--nacos-discovery 注册中心-服务发现与注册-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${spring-cloud-alibaba.version}</version>
+        </dependency>
 	</dependencies>
 	
     <build>
