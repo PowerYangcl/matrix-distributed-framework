@@ -181,7 +181,7 @@ layui.config({
 				layer.open({
 					title : '添加网关路由规则',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
-		          	area : ['920px', '650px'],
+		          	area : ['1200px', '650px'],
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
@@ -210,10 +210,18 @@ layui.config({
           			},
           			success: function(layero, index) {
           				// 因为是弹窗，所以重新渲染时间空间
-          				laydate.render({
-          					elem: '#test5',
-          					type: 'datetime'
-          				});
+          				laydate.render(
+      						{
+      							elem: '#snapshot-begin-time',
+      							type: 'datetime'
+      						}
+          				);
+          				laydate.render(
+      						{
+      							elem: '#snapshot-end-time',
+      							type: 'datetime'
+      						}
+          				);
           			}
 		        });
 			},
@@ -234,12 +242,12 @@ layui.config({
 				var rateFlowMark1 = '';
 				var requestSnapshotMark0 = '';
 				var requestSnapshotMark1 = '';
+				var snapshotCount = '';
+				var snapshotBeginTime = '';
+				var snapshotEndTime = '';
+				var description = '';
 				
 				
-				var expireTime = '';
-				var timeOut = '';
-				var trigerTypeIn = '';
-				var trigerTypeOut = '';
 				var log = '';
 				var unlog = '';
 				var jobClass = '';
@@ -270,16 +278,18 @@ layui.config({
 					}else{
 						requestSnapshotMark1 = 'checked="checked" ';
 					}
-					
-					
+					snapshotCount = e.snapshotCount;
+					snapshotBeginTime = e.snapshotBeginTime;
+					snapshotEndTime = e.snapshotEndTime;
+					description = e.description;
 				}
 				
 				var title = '<div class="dialog-form-title">';
 						title += '<h3>' + alert + '</h3>';
 					title += '</div>';
 				
-				var html = '<form id="dialog-gateway-form">' + title;
-					html +=  '<table id="dialog-gateway-table" class="dialog-form-talbe" style="width:95%;margin-left:20px">';
+				var html = '<form id="dialog-gateway-form" action="javascript:void(0)">' + title;
+					html +=  '<table id="dialog-gateway-table" class="dialog-form-talbe" style="width:95%;margin-left:20px;padding-bottom:5px">';
 						html += '<tr>';
 							html += '<td style="text-align: left;width:80px;">路由规则ID：</td>';
 							html += '<td style="text-align: left">';
@@ -297,6 +307,13 @@ layui.config({
 							html += '<td style="text-align: left;width:160px;" colspan="1">路由转发路径：</td>';
 							html += '<td style="text-align: left" colspan="3">';
 								html += '<input type="text" autocomplete="off" name="uri" value="' + uri + '" class="dialog-form-input" style="width:96%;" placeholder="256个字符以内"  maxlength="256">';
+							html += '</td>';
+						html += '</tr>';
+						
+						html += '<tr>';
+							html += '<td style="text-align: left;width:160px;" colspan="1">基础描述：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html += '<input type="text" autocomplete="off" name="description" value="' + description + '" class="dialog-form-input" style="width:96%;" placeholder="52个字符以内"  maxlength="52">';
 							html += '</td>';
 						html += '</tr>';
 						
@@ -324,25 +341,27 @@ layui.config({
 							html += '<td style="text-align: left;width:160px;" colspan="1">是否保存流量快照：</td>';
 							html += '<td style="text-align: left" colspan="3">';
 								html += '<span id="" class="field" style="padding-top:5px">';
-									html += '<input type="radio" name="requestSnapshotMark" value="0" style="vertical-align:middle;" ' + requestSnapshotMark0 + '>';
+									html += '<input type="radio" name="requestSnapshotMark" value="0" style="vertical-align:middle;" ' + requestSnapshotMark0 + ' onclick="layer.pageDialog.snapshotTrHiden()">';
 									html += '<span style="vertical-align:middle;margin-left:5px;">不保存</span>';
 									html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-									html += '<input type="radio" name="requestSnapshotMark" value="1" style="vertical-align:middle;" ' + requestSnapshotMark1 + ' onclick="layer.pageDialog.rateFlowMarkModule(\'dialog-gateway-table\')">';
+									html += '<input type="radio" name="requestSnapshotMark" value="1" style="vertical-align:middle;" ' + requestSnapshotMark1 + ' onclick="layer.pageDialog.snapshotTrShow()">';
 									html += '<span style="vertical-align:middle;margin-left:5px;">保存(用于模拟压测使用)</span>';
 								html += '</span>';
 							html += '</td>';
 						html += '</tr>';	
 						
-						html += '<tr>';
+						html += '<tr class="gw-snapshot" style="display:none">';
 							html += '<td style="text-align: left;width:80px;" colspan="1">快照请求条数：</td>';
 							html += '<td style="text-align: left" colspan="3">';
-								html += '<input type="text" autocomplete="off" name="routeId" value="' + routeId + '" class="dialog-form-input" style="width:30%;" placeholder="请输入整数"  maxlength="7">';
+								html += '<input type="text" autocomplete="off" name="snapshotCount" value="' + snapshotCount + '" class="dialog-form-input" style="width:30%;" placeholder="请输入整数"  maxlength="7">';
 							html += '</td>';
 						html += '</tr>';
-						html += '<tr>';
+						html += '<tr class="gw-snapshot" style="display:none">';
 							html += '<td style="text-align: left;width:80px;" colspan="1">快照时间段：</td>';
 							html += '<td style="text-align: left" colspan="3">';
-								html += '<div class="layui-input-inline"><input  id="test5" type="text" class="layui-input" placeholder="yyyy-MM-dd HH:mm:ss" lay-key="7"></div>'
+								html += '<input id="snapshot-begin-time" type="text" autocomplete="off" name="snapshotBeginTime" value="' + snapshotBeginTime + '" class="layui-input" placeholder="开始时间">';
+								html += '<span> - </span>';
+								html += '<input id="snapshot-end-time" type="text" autocomplete="off" name="snapshotEndTime" value="' + snapshotEndTime + '" class="layui-input" placeholder="结束时间">';
 							html += '</td>';
 						html += '</tr>';
 						
@@ -355,8 +374,8 @@ layui.config({
 									html += '<input type="radio" name="rateFlowMark" value="0" style="vertical-align:middle;" ' + rateFlowMark0 + '>';
 									html += '<span style="vertical-align:middle;margin-left:5px;">不标记</span>';
 									html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-									html += '<input type="radio" name="rateFlowMark" value="1" style="vertical-align:middle;" ' + rateFlowMark1 + ' onclick="layer.pageDialog.rateFlowMarkModule(\'dialog-gateway-table\')">';
-									html += '<span style="vertical-align:middle;margin-left:5px;">标记</span>';
+									html += '<input type="radio" name="rateFlowMark" value="1" style="vertical-align:middle;" ' + rateFlowMark1 + ' onclick="layer.pageDialog.rateFlowMarkTitle()">';
+									html += '<span id="rate-mark-1" style="vertical-align:middle;margin-left:5px;">标记</span>';
 								html += '</span>';
 							html += '</td>';
 						html += '</tr>';	
@@ -390,52 +409,123 @@ layui.config({
 				return html_;
 			},
 			
-			/**
-			 * 如果开启流量标记，则展示此组建
-			 */
-			rateFlowMarkModule : function(trId, a){
-				this.rateFlowMarkModuleTable(trId);
-				
+			snapshotTrShow : function(){
+				$(".gw-snapshot").show();
 			},
 			
-			rateFlowMarkModuleTable : function(trId, a){
-				if($(".rate-flow-mark").length != 0){
-					return;
-				}
-				var html = '<tr class="rate-flow-mark">';
-					html += '<td style="text-align: left" colspan="3">';
-						html += '<input type="text" name="name" value="" class="dialog-form-input" style="width:96%;" placeholder="请输入统计规则描述，25个字符以内"  maxlength="25">';
-					html += '</td>';
-					html += '<td style="text-align: right" colspan="1">';
-						html += '<button class="layui-btn layui-btn-sm">添&nbsp&nbsp&nbsp&nbsp&nbsp加</button>';
-					html += '</td>';
-				html += '</tr>'
-					
-				html += '<tr class="" style="">';	
-				html += '<table id="aaaaaaaaaa" style="border-collapse: collapse;width:95%;margin-left:20px; border-bottom: 1px solid red;">';
-					html += '<tr class="" style="">';
-						html += '<th>';
-							html += '统计项目';
-						html += '</th>';
-						html += '<th>';
-							html += '统计接口';
-						html += '</th>';
-						html += '<th>';
-							html += '统计参数';
-						html += '</th>';
-						html += '<th>';
-							html += '统计值';
-						html += '</th>';
-						html += '<th>';
-							html += '操作';
-						html += '</th>';
-					html += '</tr>';
+			snapshotTrHiden : function(){
+				$(".gw-snapshot").hide();
+				$("input[name='snapshotCount']").val("");
+				$("input[name='snapshotBeginTime']").val("");
+				$("input[name='snapshotEndTime']").val("");
+			},
+			
+			/**
+			 * 如果开启流量标记，则展示此组建 以class=rate-flow-mark进行【不标记】后的删除操作
+			 */
+			rateFlowMarkModule : function(trId, a){
+				this.rateFlowMarkTitle();
+			},
+			
+			rateFlowMarkTitle : function(){
+				var html ='<button class="rate-flow-mark layui-btn" style="margin-left:80px;height:30px;line-height:30px;font-size:12px"  onclick="layer.pageDialog.rateFlowMarkBody()">添&nbsp&nbsp&nbsp&nbsp&nbsp加</button>';
+				html += '  ';
+				html +='<button class="rate-flow-mark layui-btn layui-btn-danger" style="height:30px;line-height:30px;font-size:12px"  onclick="layer.pageDialog.rateFlowMarkRemove()">移&nbsp&nbsp&nbsp&nbsp&nbsp除</button>';
+				$("#rate-mark-1").append(html);
+				this.rateFlowMarkTable();
+			},
+			
+			rateFlowMarkTable : function(){
+				var html = '<table id="rate-flow-mark-table" class="rate-flow-mark" border="1" style="width:95%;margin-left:10px; border: 1px solid #ddd;">';
+					html += '<thead style="line-height: 40px">';
+						html += '<tr class="" style="">';
+							html += '<th width="40px" bgcolor="#eee">';
+								html += '';
+							html += '</th>';
+							html += '<th width="120px" bgcolor="#eee">';
+								html += '统计项目';
+							html += '</th>';
+							html += '<th width="200px">';
+								html += '统计接口';
+							html += '</th>';
+							html += '<th width="200px" bgcolor="#eee">';
+								html += '统计参数';
+							html += '</th>';
+							html += '<th width="200px">';
+								html += '统计值';
+							html += '</th>';
+							html += '<th width="120px" bgcolor="#eee">';
+								html += '统计维度';
+							html += '</th>';
+							html += '<th >';
+								html += '统计规则描述';
+							html += '</th>';
+						html += '</tr>';
+					html += '</thead>';
+					html += '<tbody id="rate-flow-mark-tbody"></tbody>';
 				html += '</table>';
-				html += '</tr>'
-				$("#" + trId).append(html);
-			}
+				$("#dialog-gateway-table").after(html);
+			},
 			
+			rateFlowMarkBody : function(){
+				var html = '<tr>';
+					html += '<td style="text-align: center" width="40px">';
+						html += '<input type="checkbox" class="rate-checkbox" style="vertical-align:middle;">';
+					html += '</td>';
+					html += '<td style="text-align: left" width="120px">';
+						html += '<select class="key-words-type-select" style="width:100%;">';
+							html += pageDialog.keyWordsTypeList();
+						html += '</select>';
+					html += '</td>';
+					html += '<td style="text-align: left" width="200px">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+					html += '</td>';
+					html += '<td style="text-align: left" width="200px">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+					html += '</td>';
+					html += '<td style="text-align: left" width="200px">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+					html += '</td>';
+					html += '<td style="text-align: left" width="120px">';
+						html += '<select class="key-words-statistical-dimension-select" style="width:100%;">';
+							html += pageDialog.keyWordsStatisticalDimensionList();
+						html += '</select>';
+					html += '</td>';
+					html += '<td style="text-align: left">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+					html += '</td>';
+				html += '</tr>';
+				$("#rate-flow-mark-tbody").append(html);
+			},
 			
+			keyWordsTypeList : function() {
+				var html_ = '<option value="">请选择</option>';
+					html_ += '<option value="1">整个项目</option>';
+					html_ += '<option value="2">指定接口</option>';
+					html_ += '<option value="3">指定参数</option>';
+					html_ += '<option value="4">参数对应值</option>';
+				return html_;
+			},
+			
+			// 统计维度：month|day|hour|minute|second，不按周统计。
+			keyWordsStatisticalDimensionList : function() {
+				var html_ = '<option value="">请选择</option>';
+					html_ += '<option value="month">按月统计</option>';
+					html_ += '<option value="day">按天统计</option>';
+					html_ += '<option value="hour">按小时统计</option>';
+					html_ += '<option value="minute">按分钟统计</option>';
+					html_ += '<option value="second">按秒统计</option>';
+				return html_;
+			},
+			
+			rateFlowMarkRemove : function(){
+				var arr = $('.rate-checkbox:checked');
+				if(arr.length != 0){
+					for(var i = 0 ; i < arr.length; i ++){
+						$(arr[i].parentElement.parentElement).remove();
+					}
+				}
+			},
 			
 		};
 		
