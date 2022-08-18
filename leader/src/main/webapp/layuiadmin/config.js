@@ -261,6 +261,26 @@ var ajaxs = {
 	        return msg_;
 	    },
 	    
+	    //  例如：contentType_ = 'application/json'，spring-boot配合@RequestBody 接手数组类型参数，参考添加网关路由规则
+	    sendAjaxContentType:function(type_, url_ , data_, contentType_){
+	        var msg_ = null;
+	        layui.$.ajax({
+	            dataType : "text",
+	            type :type_,
+	            url : url_,
+	            data : data_,
+	            contentType:contentType_,
+	            async : false,
+	            success : function(msg) {
+	                msg_ = msg;
+	            },
+	            error: function(msg) {
+	                msg_ = msg;
+	            }
+	        });
+	        return msg_;
+	    },
+	    
 	    /**
 	     * @descriptions 封装异步ajax请求
 	     *

@@ -18,11 +18,6 @@
 			<artifactId>matrix-cache</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.matrix</groupId>
-			<artifactId>matrix-file</artifactId>
-			<version>${project.version}</version>
-		</dependency>
         <!-- 轻量级密码术包，对称加密和非对称加密。使用类：RSAUtil.java and RsaUtils.java -->
         <dependency>
             <groupId>org.bouncycastle</groupId>

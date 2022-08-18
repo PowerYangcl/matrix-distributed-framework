@@ -15,7 +15,7 @@ layui.config({
   	    	id: 'page-table-reload',  			// 页面查询按钮需要table.reload 
   	      	elem: '#table-toolbar',				// 表格控制句柄
   	      	title: '路由规则列表',
-  	      	url : layui.setter.path + 'quartz/ajax_job_info_list.do',
+  	      	url : layui.setter.path + 'gateway/ajax_gateway_route_list.do',
   	      	toolbar: '#table-search-toolbar',
   	      	height: 'full-100', 
  	      	limit: 16,
@@ -23,24 +23,25 @@ layui.config({
  	    	  	[
  	  	         	{
  	  	         		field:'jobTitle', 
- 	  	         		title:'任务名称 | 标题', 
- 	  	         		width:340,
+ 	  	         		title:'描述 | 标题', 
+ 	  	         		width:200,
  	  	         		unresize: true,
  	  	         		templet: function(res){
-	 	  	         		var html_ = res.jobName + '</br> <a>' + res.jobTitle +'</a>';
+	 	  	         		var html_ = res.description + '</br> <a>' + res.routeId +'</a>';
 					  		return html_;
  	  	         		}
  	  	         	}, 
- 	  	         	{field:'jobTriger', title:'触发器规则'},
+ 	  	         	{field:'active', width:80, title:'环境'},
  	  	         	{
- 	  	         		field:'beginTime', 
- 	  	         		title:'时间状态', 
- 	  	         		width:240,
+ 	  	         		field:'predicateList', 
+ 	  	         		title:'断言规则', 
  	  	         		unresize: true,
  	  	         		templet: function(res){
-	 	  	         		var html_ = '<p style="margin:0px;">开始时间: ' + res.beginTime + '</p>'
-								+ '<p style="margin:0px;">结束时间: ' + res.endTime + '</p>'
-								+ '<p style="margin:0px;">下次时间: ' + res.nextTime + '</p>';
+ 	  	         			var arr = res.predicateList;
+ 	  	         			var html_ = '<p style="margin:0px;">转发路径:  ' + res.uri + '</p>';
+ 	  	         			for(var i = 0 ; i < arr.length ; i ++){
+ 	  	         				html_ += '<p style="margin:0px;">' + arr[i].predicate + ':  ' + arr[i].predicateValue + '</p>';
+ 	  	         			}
 					  		return html_;
  	  	         		}
  	  	         	}, 
@@ -99,16 +100,16 @@ layui.config({
 						 }
 					 },
  	  	         	 {
-						 field:'pause', 
+						 field:'status', 
 						 title:'状态', 
-						 width:70, 
+						 width:80, 
 	 	  	         	 unresize: true,
 						 templet: function(res){
-							 var pause = '运行';
-							 if(res.pause == 1){
-								 pause = '<p style="margin:0px;color:red">暂停</p>';
+							 var status = '不生效';
+							 if(res.status == '生效'){
+								 status = '<p style="margin:0px;color:red">生效</p>';
 							 }
-					  		 return pause;
+					  		 return status;
 						 }
 					 },
  	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar',width:160}
@@ -190,8 +191,46 @@ layui.config({
 	          		btn : ['提交' , '取消'],
 	          		yes : function(index , layero){
 	          			var url_ =  layui.setter.path + 'gateway/ajax_btn_gateway_route_add.do';
-						var data_ = $("#dialog-gateway-form").serializeArray();
-						var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
+						var data_ = $("#dialog-gw-form").serializeArray();
+						
+						var rfmArr = $("#rate-flow-mark-tbody tr");
+						if(rfmArr.length != 0) {
+							var rfmList = [];
+							for(var i = 0; i < rfmArr.length; i ++){
+								var rfm = new Object();
+								var tds = rfmArr[i].children;
+								rfm.type = $(tds[1]).find("select").val();
+								rfm.target = $(tds[2]).find("input").val();
+								rfm.param = $(tds[3]).find("input").val();
+								rfm.value = $(tds[4]).find("input").val();
+								rfm.statisticalDimension = $(tds[5]).find("select").val();
+								rfm.name = $(tds[6]).find("input").val();
+								rfmList.push(rfm);
+							}
+							data_.rfmList = rfmList;
+						}
+						
+						var predicateArr = $("#gw-predicates-tbody tr");
+						if(predicateArr.length != 0) {
+							var predicateList = [];
+							for(var i = 0; i < predicateArr.length; i ++){
+								var e = new Object();
+								var tds =  predicateArr[i].children;
+								e.predicate = $(tds[1]).find("select").val();
+								e.predicateValue = $(tds[2]).find("input").val();
+								predicateList.push(e);
+							}
+							data_.predicateList = predicateList;
+						}
+						
+						var o = new Object();
+						for(var i = 0; i < data_.length; i ++){
+							o[data_[i].name] = data_[i].value;
+						}
+						o.rfmList = data_.rfmList;
+						o.predicateList = data_.predicateList;
+						
+						var obj = JSON.parse(layui.setter.ajaxs.sendAjaxContentType('post' , url_ , JSON.stringify(o), 'application/json'));
 						if(obj.status == 'success'){
 			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
 			            		search.reload();
@@ -209,7 +248,7 @@ layui.config({
           				// return false; // 开启该代码可禁止点击该按钮关闭
           			},
           			success: function(layero, index) {
-          				// 因为是弹窗，所以重新渲染时间空间
+          				// 因为是弹窗，所以重新渲染时间控件
           				laydate.render(
       						{
       							elem: '#snapshot-begin-time',
@@ -253,7 +292,7 @@ layui.config({
 				var jobClass = '';
 				var jobList = '';
 				if(type == 'add') {
-					alert = '网关转发规则请务必区分生产环境！';
+					alert = '断言规则请参考：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories';
 				}else if(type == 'edit'){
 					alert = "路由规则描述：" + e.description;
 					id = e.id;
@@ -288,8 +327,8 @@ layui.config({
 						title += '<h3>' + alert + '</h3>';
 					title += '</div>';
 				
-				var html = '<form id="dialog-gateway-form" action="javascript:void(0)">' + title;
-					html +=  '<table id="dialog-gateway-table" class="dialog-form-talbe" style="width:95%;margin-left:20px;padding-bottom:5px">';
+				var html = '<form id="dialog-gw-form" action="javascript:void(0)">' + title;
+					html +=  '<table id="dialog-gw-table" class="dialog-form-talbe" style="width:95%;margin-left:20px;padding-bottom:5px">';
 						html += '<tr>';
 							html += '<td style="text-align: left;width:80px;">路由规则ID：</td>';
 							html += '<td style="text-align: left">';
@@ -371,7 +410,7 @@ layui.config({
 							html += '<td style="text-align: left;width:160px;" colspan="1">是否开启流量标记：</td>';
 							html += '<td style="text-align: left" colspan="3">';
 								html += '<span id="" class="field" style="padding-top:5px">';
-									html += '<input type="radio" name="rateFlowMark" value="0" style="vertical-align:middle;" ' + rateFlowMark0 + '>';
+									html += '<input type="radio" name="rateFlowMark" value="0" style="vertical-align:middle;" ' + rateFlowMark0 + ' onclick="layer.pageDialog.rateFlowMarkDelete()">';
 									html += '<span style="vertical-align:middle;margin-left:5px;">不标记</span>';
 									html += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 									html += '<input type="radio" name="rateFlowMark" value="1" style="vertical-align:middle;" ' + rateFlowMark1 + ' onclick="layer.pageDialog.rateFlowMarkTitle()">';
@@ -381,12 +420,38 @@ layui.config({
 						html += '</tr>';	
 					html += '</table>';
 					
-					
+					// 路由断言规则
+					html +=  '<table id="dialog-gw-table-predicates" class="dialog-form-talbe" style="width:95%;margin-left:20px;padding-bottom:5px;padding-top:2px">';
+						html += '<tr>';
+							html += '<td style="text-align: left;width:160px;" colspan="1">断言设置：</td>';
+							html += '<td style="text-align: left" colspan="3">';
+								html +='<button class="gw-predicates layui-btn" style="margin-left:80px;height:30px;line-height:30px;font-size:12px" onclick="layer.pageDialog.addGwPredicatesTable()">添&nbsp&nbsp&nbsp&nbsp&nbsp加</button>';
+								html += '  ';
+								html +='<button class="gw-predicates layui-btn layui-btn-danger" style="height:30px;line-height:30px;font-size:12px"  onclick="layer.pageDialog.predicatesRemove()">移&nbsp&nbsp&nbsp&nbsp&nbsp除</button>';
+							html += '</td>';
+						html += '</tr>';
+					html += '</table>';
+					html += '<table id="gw-predicates-table" class="gw-predicates" border="1" style="width:95%;margin-left:10px; border: 1px solid #ddd;">';	// .gw-predicates 用于删除
+						html += '<thead style="line-height: 40px">';
+							html += '<tr>';
+								html += '<th width="40px" bgcolor="#eee">';
+									html += '';
+								html += '</th>';
+								html += '<th width="200px" bgcolor="#eee">';
+									html += '断言规则';
+								html += '</th>';
+								html += '<th>';
+									html += '断言规则对应值';
+								html += '</th>';
+							html += '</tr>';
+						html += '</thead>';
+						html += '<tbody id="gw-predicates-tbody"></tbody>';
+					html += '</table>';
 					
 					if(type == 'edit'){
 						html += '<input type="hidden" name="id" value="' + id + '">';
 					}
-					html += '<input type="hidden" name="eleValue" value="' + key + '">';
+					html += '<input type="hidden" name="eleValue" value="' + key + '">';  //权限标识
 				html += '</form>';
 				return html;
 			},
@@ -409,6 +474,7 @@ layui.config({
 				return html_;
 			},
 			
+			///////////////////////////////////////////////////////////////// 流量快照 /////////////////////////////////////////////////////////////////////////////
 			snapshotTrShow : function(){
 				$(".gw-snapshot").show();
 			},
@@ -420,14 +486,21 @@ layui.config({
 				$("input[name='snapshotEndTime']").val("");
 			},
 			
+			
+			
+			/////////////////////////////////////////////////////////////////  流量标记  /////////////////////////////////////////////////////////////////////////////
+			// radio按钮：不标记
+			rateFlowMarkDelete : function(){
+				$(".rate-flow-mark").remove();
+			},
+			
 			/**
 			 * 如果开启流量标记，则展示此组建 以class=rate-flow-mark进行【不标记】后的删除操作
 			 */
-			rateFlowMarkModule : function(trId, a){
-				this.rateFlowMarkTitle();
-			},
-			
 			rateFlowMarkTitle : function(){
+				if($("#rate-flow-mark-table").length != 0){
+					return;
+				}
 				var html ='<button class="rate-flow-mark layui-btn" style="margin-left:80px;height:30px;line-height:30px;font-size:12px"  onclick="layer.pageDialog.rateFlowMarkBody()">添&nbsp&nbsp&nbsp&nbsp&nbsp加</button>';
 				html += '  ';
 				html +='<button class="rate-flow-mark layui-btn layui-btn-danger" style="height:30px;line-height:30px;font-size:12px"  onclick="layer.pageDialog.rateFlowMarkRemove()">移&nbsp&nbsp&nbsp&nbsp&nbsp除</button>';
@@ -464,7 +537,7 @@ layui.config({
 					html += '</thead>';
 					html += '<tbody id="rate-flow-mark-tbody"></tbody>';
 				html += '</table>';
-				$("#dialog-gateway-table").after(html);
+				$("#dialog-gw-table").after(html);
 			},
 			
 			rateFlowMarkBody : function(){
@@ -518,6 +591,7 @@ layui.config({
 				return html_;
 			},
 			
+			// 移除一条或多条 流量标记 记录
 			rateFlowMarkRemove : function(){
 				var arr = $('.rate-checkbox:checked');
 				if(arr.length != 0){
@@ -526,6 +600,55 @@ layui.config({
 					}
 				}
 			},
+			
+			/////////////////////////////////////////////////////////////////  断言设置 /////////////////////////////////////////////////////////////////////////////
+			addGwPredicatesTable : function(){
+				var html = '<tr>';
+					html += '<td style="text-align: center" width="40px">';
+						html += '<input type="checkbox" class="predicates-checkbox" style="vertical-align:middle;">';
+					html += '</td>';
+					html += '<td style="text-align: left" width="200px">';
+						html += '<select class="predicates-select" style="width:100%;">';
+							html += pageDialog.predicateList();
+						html += '</select>';
+					html += '</td>';
+					html += '<td style="text-align: left">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width: 900px" placeholder="请输入合法的断言规则，100个字符以内"  maxlength="100">';
+					html += '</td>';
+				html += '</tr>';
+				$("#gw-predicates-tbody").append(html);
+			},
+			
+			predicateList : function(){
+				var html_ = '<option value="">请选择断言类型</option>';
+				html_ += '<option value="Path">Path</option>';
+				html_ += '<option value="After">After</option>';
+				html_ += '<option value="Before">Before</option>';
+				html_ += '<option value="Between">Between(时间点英文逗号分隔)</option>';
+				html_ += '<option value="Cookie">Cookie</option>';
+				html_ += '<option value="Header">Header</option>';
+				html_ += '<option value="Host">Host</option>';
+				html_ += '<option value="Method">Method</option>';
+				html_ += '<option value="Query">Query(匹配某几个参数，英文逗号分隔)</option>';
+				html_ += '<option value="RemoteAddr">RemoteAddr(ipv4 cidr)</option>';
+				html_ += '<option value="Weight">Weight(不常用)</option>';
+				html_ += '<option value="XForwardedRemoteAddr">XForwardedRemoteAddr</option>';
+				return html_;
+			},
+			
+			// 移除一条或多条 断言记录
+			predicatesRemove : function(){
+				var arr = $('.predicates-checkbox:checked');
+				if(arr.length != 0){
+					for(var i = 0 ; i < arr.length; i ++){
+						$(arr[i].parentElement.parentElement).remove();
+					}
+				}
+			},
+			
+			
+			
+			
 			
 		};
 		

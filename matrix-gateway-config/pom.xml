@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.matrix</groupId>
-			<artifactId>matrix-cache</artifactId>
+			<artifactId>matrix-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

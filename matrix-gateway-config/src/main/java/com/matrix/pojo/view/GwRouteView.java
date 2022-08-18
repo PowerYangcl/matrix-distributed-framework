@@ -9,5 +9,4 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class GwRouteView  extends BaseView{
 	private static final long serialVersionUID = 2682519132645430551L;
-
 }

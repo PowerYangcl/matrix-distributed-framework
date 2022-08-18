@@ -1,6 +1,5 @@
 package com.matrix.validate;
 
-import javax.validation.constraints.Pattern;
 
 /**
  * @description: 入参通用基础验证规则，适用于绝大部分业务场景。
@@ -18,6 +17,13 @@ public interface Validation {
 	// @Pattern(regexp=Validation.MATRIX_PERMISSIONS_NAV_TYPE, message="101010062")   只能验证String 字段，不能验证Integer字段
 	String MATRIX_PERMISSIONS_NAV_TYPE = "0|1|2|3|4|5";
 	
+	String GW_ACTIVE = "dev|test|pre|master|prod";		// spring cloud gateway生产环境
+	String GW_REQUEST_TYPE = "get|post|put|delete";		// spring cloud gateway 请求方式
+	String GW_ROUTE_TYPE = "project|url";		// spring cloud gateway 路由类型
+	String GW_PREDICATES = "Path|After|Before|Between|Cookie|Header|Host|Method|Query|RemoteAddr|Weight|XForwardedRemoteAddr";		// spring cloud gateway 断言规则
+	String GW_STATISTICAL_DIMENSION = "month|day|hour|minute|second";
+	
+	String REGEX_NUMBER = "^[0-9]*$";
 	
 	String REGEX_EMAIL = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}";
 	String REGEX_PASSWORD = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d\\*\\(\\)`~!@#\\$%&_\\-+=\\|\\{\\}\\[\\]:\";\\'<>,.\\?\\/\\）])[a-zA-Z\\d\\*\\(\\)`~!@#\\$%&_\\-+=\\|\\{\\}\\[\\]:\";\\'<>,.\\?\\/\\）]{8,30}$";

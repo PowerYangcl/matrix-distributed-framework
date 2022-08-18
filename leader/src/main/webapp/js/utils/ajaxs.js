@@ -12,13 +12,14 @@ var ajaxs = {
      * @author Yangcl
      * @version 1.0.1
      */
-    sendAjax:function(type_, url_ , data_){
+    sendAjax:function(type_, url_ , data_, contentType_){
         var msg_ = null;
         $.ajax({
             dataType : "text",
             type :type_,
             url : url_,
             data : data_,
+            contentType:contentType_,
             async : false,
             success : function(msg) {
                 msg_ = msg;

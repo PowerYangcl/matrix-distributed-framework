@@ -46,6 +46,18 @@
 			id = #{id,jdbcType=BIGINT}
 	</select>
 	
+	<select id="findList" resultMap="BaseResultMap" parameterType="com.matrix.pojo.entity.GwRouteRateFlowKeyWords">
+		select
+			<include refid="table_column_list" />
+		from 
+			gw_route_rate_flow_key_words
+		where 
+			delete_flag = 1
+		<if test="routeId != null">
+			and route_id = #{routeId,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
 	<delete id="deleteById" parameterType="java.lang.Long">
 		delete from gw_route_rate_flow_key_words where id = #{id,jdbcType=BIGINT}
 	</delete>

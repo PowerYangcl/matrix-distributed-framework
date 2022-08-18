@@ -58,6 +58,27 @@
 			id = #{id,jdbcType=BIGINT}
 	</select>
 	
+	<select id="queryPageByDto" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.GwRouteDto">
+		select
+			<include refid="table_column_list" />
+		from 
+			gw_route
+		where 
+			delete_flag = 1
+			<if test="routeId != null">
+				and route_id = #{routeId,jdbcType=VARCHAR} 
+			</if>
+			<if test="active != null">
+				and active = #{active,jdbcType=VARCHAR} 
+			</if>
+			<if test="rateFlowMark != null">
+				and rate_flow_mark = #{rateFlowMark,jdbcType=INTEGER}
+			</if>
+			<if test="description != null">
+				and description like CONCAT('%' , '${description}' , '%' )
+			</if>
+	</select>
+	
 	<delete id="deleteById" parameterType="java.lang.Long">
 		delete from gw_route where id = #{id,jdbcType=BIGINT}
 	</delete>

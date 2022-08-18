@@ -445,7 +445,7 @@ layui.config({
 					if(type == 'edit'){
 						html += '<input type="hidden" name="id" value="' + id + '">';
 					}
-					html += '<input type="hidden" name="eleValue" value="' + key + '">';
+					html += '<input type="hidden" name="eleValue" value="' + key + '">';  //权限标识
 				html += '</table></form>';
 				return html;
 			},

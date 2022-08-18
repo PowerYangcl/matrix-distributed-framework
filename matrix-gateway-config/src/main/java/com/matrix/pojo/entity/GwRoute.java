@@ -1,6 +1,5 @@
 package com.matrix.pojo.entity;
 
-import java.util.Date;
 
 import com.matrix.base.BaseEntity;
 
@@ -9,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class GwRoute  extends BaseEntity{
+public class GwRoute extends BaseEntity{
 	private static final long serialVersionUID = 2382519132645430551L;
 
 	private Long id;
@@ -21,9 +20,9 @@ public class GwRoute  extends BaseEntity{
     private Integer rateFlowMark;
     private Integer requestSnapshotMark;
     private Integer snapshotCount;
-    private Date snapshotBeginTime;
-    private Date snapshotEndTime;
-    private Integer status;
+    private String snapshotBeginTime;
+    private String snapshotEndTime;
+    private Integer status;		// 此条规则是否生效：0-不生效 1-生效；默认不生效，生效需要在列表触发
     private String description;
 
 }

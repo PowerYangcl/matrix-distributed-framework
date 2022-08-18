@@ -125,6 +125,11 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         	
         	if(StringUtils.startsWith(url, "ajax_")) {
         		if(StringUtils.startsWith(url, "ajax_btn_")) {		// 开始验证用户按钮权限
+        			String contentType = request.getContentType(); // 如果ajax发送到请求为application/json类型，则request.getParameter == null
+        			if(contentType.equals("application/json")) {
+        				return true;
+        			}
+        			
         			String btn = request.getParameter("eleValue");
         			String ajaxErrorUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-error.html" ;
         			if(StringUtils.isBlank(btn)) {

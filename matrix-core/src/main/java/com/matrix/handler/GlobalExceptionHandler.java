@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.BindException;
@@ -81,6 +82,36 @@ public class GlobalExceptionHandler extends BaseClass {
 	@ResponseBody
     @ExceptionHandler({UnexpectedTypeException.class})
     public Result<?> handleUnexpectedTypeException(HttpServletRequest request, UnexpectedTypeException ex) {
+		String message = "系统代码错误：" + ex.getMessage();
+        return Result.ERROR(message, ResultCode.INVALID_ARGUMENT);
+    }
+	
+	/**
+	 * @description: 抛出运行时异常
+	 * 
+	 * @author Yangcl
+	 * @date 2022-8-18 13:29:24
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.4-spring-cloud-gateway
+	 */
+	@ResponseBody
+    @ExceptionHandler({RuntimeException.class})
+    public Result<?> handleRuntimeException(HttpServletRequest request, RuntimeException ex) {
+		String message = ex.getMessage();
+        return Result.ERROR(message, ResultCode.INVALID_ARGUMENT);
+    }
+	
+	/**
+	 * @description: 数据库唯一索引异常
+	 * 
+	 * @author Yangcl
+	 * @date 2022-8-18 13:29:56
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.4-spring-cloud-gateway
+	 */
+	@ResponseBody
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public Result<?> handleDataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException ex) {
 		String message = "系统代码错误：" + ex.getMessage();
         return Result.ERROR(message, ResultCode.INVALID_ARGUMENT);
     }
