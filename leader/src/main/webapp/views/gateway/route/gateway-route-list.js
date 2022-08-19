@@ -22,12 +22,12 @@ layui.config({
   	      	cols: [
  	    	  	[
  	  	         	{
- 	  	         		field:'jobTitle', 
- 	  	         		title:'描述 | 标题', 
+ 	  	         		field:'routeId', 
+ 	  	         		title:'描述 | 标题|请求类型', 
  	  	         		width:200,
  	  	         		unresize: true,
  	  	         		templet: function(res){
-	 	  	         		var html_ = res.description + '</br> <a>' + res.routeId +'</a>';
+	 	  	         		var html_ = res.description + '</br> <a>' + res.routeId +'</a></br>' + res.requestType +'</a>';
 					  		return html_;
  	  	         		}
  	  	         	}, 
@@ -46,64 +46,30 @@ layui.config({
  	  	         		}
  	  	         	}, 
  	  	         	{
- 	  	         		field:'groupName', 
- 	  	         		title:'任务组', 
- 	  	         		width:180,
+ 	  	         		field:'requestSnapshotMark', 
+ 	  	         		title:'快照信息', 
+ 	  	         		width:225,
  	  	         		templet: function(res){
-	 	  	         		var html_ = '<p style="margin:0px;">组: ' + res.groupName + '</p>'
-								+ '<p style="margin:0px;">IP: ' + res.ip + '</p>';
+	 	  	         		var html_ = '<p style="margin:0px;">是否保存快照: ' + res.requestSnapshotMark + '</p>';
+	 	  	         			html_ += '<p style="margin:0px;">保存数量: ' + res.snapshotCount + '</p>';
+	 	  	         			html_ += '<p style="margin:0px;">开始时间: ' + res.snapshotBeginTime + '</p>';
+	 	  	         			html_ += '<p style="margin:0px;">结束时间: ' + res.snapshotEndTime + '</p>';
 					  		return html_;
  	  	         		}
  	  	         	}, 
  	  	         	{
- 	  	         		field:'expireTime', 
- 	  	         		title:'锁有效时间' ,
- 	  	         		width:100, 
- 	  	         		unresize: true,
+ 	  	         		field:'rateFlowMark', 
+ 	  	         		title:'流量标记', 
+ 	  	         		width:90,
  	  	         		templet: function(res){
- 	  	         			return res.expireTime +  '(秒)';
+ 	  	         			return res.rateFlowMark;
  	  	         		}
  	  	         	},
- 	  	         	{
- 	  	         		field:'timeOut', 
- 	  	         		title:'锁超时时间' ,
- 	  	         		width:100, 
- 	  	         		unresize: true,
- 	  	         		templet: function(res){
- 	  	         			return res.timeOut +  '(毫秒)';
- 	  	         		}
- 	  	         	},
- 	  	         	{
-						 field:'trigerType', 
-						 title:'被触发', 
-						 width:80, 
- 	  	         		 unresize: true,
-						 templet: function(res){
-							 var triger = '否';
-							 if(res.trigerType == 2){
-								 triger = '是';
-							 }
-					  		 return triger;
-						 }
-					 },
- 	  	         	 {
-						 field:'logType', 
-						 title:'日志', 
-						 width:70, 
-	 	  	         	 unresize: true,
-						 templet: function(res){
-							 var log_ = '记录';
-							 if(res.logType == 1){
-								log_ = '否';
-							 }
-					  		 return log_;
-						 }
-					 },
- 	  	         	 {
+					{
 						 field:'status', 
 						 title:'状态', 
 						 width:80, 
-	 	  	         	 unresize: true,
+						 unresize: true,
 						 templet: function(res){
 							 var status = '不生效';
 							 if(res.status == '生效'){
@@ -111,7 +77,19 @@ layui.config({
 							 }
 					  		 return status;
 						 }
-					 },
+					},
+					{
+						field:'requestSnapshotMark', 
+						title:'创建信息', 
+						width:225,
+						templet: function(res){
+					 		var html_ = '<p style="margin:0px;">创建人: ' + res.createUserName + '</p>';
+					 			html_ += '<p style="margin:0px;">创建时间: ' + res.createTime + '</p>';
+					 			html_ += '<p style="margin:0px;">更新人: ' + res.updateUserName + '</p>';
+					 			html_ += '<p style="margin:0px;">更新时间: ' + res.updateTime + '</p>';
+					  		return html_;
+						}
+					},  	  	         	
  	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar',width:160}
  	    	  	]
   	      	],
@@ -151,25 +129,25 @@ layui.config({
 		// 查询按钮
 		var search = {		
 			reload : function() {
-				var jobName = $('#job-name').val();
-				var jobTitle = $('#job-title').val();
+				var routeId = $('#route-id').val();
+				var description = $('#description').val();
 				table.reload('page-table-reload', {
 					page : {
 						curr : 1  // 重新从第 1 页开始
 					},
 					where : {  // 此参数会合并请求到后台
-						jobName:jobName,
-						jobTitle:jobTitle
+						routeId:routeId,
+						description:description
 					}
 				}, 'data');
 				
-				$('#job-name').val(jobName);
-				$('#job-title').val(jobTitle);
+				$('#route-id').val(routeId);
+				$('#description').val(description);
 			},
 			
 			reset : function(){
-				$('#job-name').val('');
-				$('#job-title').val('');
+				$('#route-id').val('');
+				$('#description').val('');
 				search.reload();
 			}
 		};

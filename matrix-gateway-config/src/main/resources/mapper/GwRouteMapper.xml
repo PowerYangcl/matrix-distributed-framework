@@ -65,16 +65,16 @@
 			gw_route
 		where 
 			delete_flag = 1
-			<if test="routeId != null">
+			<if test="routeId != null and routeId != '' ">
 				and route_id = #{routeId,jdbcType=VARCHAR} 
 			</if>
-			<if test="active != null">
+			<if test="active != null and active != '' ">
 				and active = #{active,jdbcType=VARCHAR} 
 			</if>
-			<if test="rateFlowMark != null">
+			<if test="rateFlowMark != null and rateFlowMark != '' ">
 				and rate_flow_mark = #{rateFlowMark,jdbcType=INTEGER}
 			</if>
-			<if test="description != null">
+			<if test="description != null and description != '' ">
 				and description like CONCAT('%' , '${description}' , '%' )
 			</if>
 	</select>

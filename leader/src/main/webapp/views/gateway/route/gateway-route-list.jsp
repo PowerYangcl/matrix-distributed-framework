@@ -68,10 +68,10 @@
 							
 							<script id="table-search-toolbar" type="text/html">
               					<div class="layui-btn-container">
-									<div class="layui-table-search-div" >定时任务名称：</div>
-									<input id="job-name" name="job-name" class="layui-table-search" autocomplete="off">
-									<div class="layui-table-search-div" >定时任务标题：</div>
-									<input id="job-title" name="job-title" class="layui-table-search" autocomplete="off">
+									<div class="layui-table-search-div" >routeId：</div>
+									<input id="route-id" name="routeId" class="layui-table-search" autocomplete="off">
+									<div class="layui-table-search-div" >描述：</div>
+									<input id="description" name="description" class="layui-table-search" autocomplete="off">
 
                 					<button class="security-btn layui-btn layui-btn-sm" key="gateway_route_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
                 					<button class="security-btn layui-btn layui-btn-sm" key="gateway_route_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
