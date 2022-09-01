@@ -21,3 +21,6 @@ public class GwRouteSnapshot extends BaseEntity{
     private String requestType;
 
 }
+
+
+

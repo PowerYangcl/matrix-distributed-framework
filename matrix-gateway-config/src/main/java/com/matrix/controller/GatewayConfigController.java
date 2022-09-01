@@ -19,7 +19,6 @@ import com.matrix.base.Result;
 import com.matrix.pojo.request.AddGatewayRouteRequest;
 import com.matrix.pojo.request.FindGatewayRouteListRequest;
 import com.matrix.pojo.response.GwRouteListResponse;
-import com.matrix.pojo.view.GwRouteView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IGatewayConfigService;
 

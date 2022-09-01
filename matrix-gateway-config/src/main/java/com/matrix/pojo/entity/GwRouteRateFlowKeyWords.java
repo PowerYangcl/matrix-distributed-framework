@@ -9,6 +9,36 @@ import com.matrix.validate.Validation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * @description: 
+ * 		1、统计整个接口项目流量 type=1 or 2 or 3 or 4
+ * 		2、统计当前接口项目下某个接口流量
+ * 		3、统计当前接口项目下指定接口的某个或某几个参数产生的流量
+ * 		4、统计当前接口项目下指定接口的某个参数对应的值所产生的流量
+					{
+						"type": "1"
+					},
+					{
+						"type": "2",
+						"target": "MANAGER-API-901"
+					},
+					{
+						"type": "3",
+						"target": "MANAGER-API-901",
+						"param": "productName"
+					},{
+						"type": "4",
+						"target": "MANAGER-API-901",
+						"param": "productName",
+						"value": "时间简史"
+					}
+ * 
+ * @author Yangcl
+ * @date 2022-9-1 18:31:22
+ * @home https://github.com/PowerYangcl
+ * @path matrix-gateway-config / com.matrix.pojo.entity.GwRouteSnapshot.java
+ * @version 1.6.1.4-spring-cloud-gateway
+ */
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class GwRouteRateFlowKeyWords extends BaseEntity{
