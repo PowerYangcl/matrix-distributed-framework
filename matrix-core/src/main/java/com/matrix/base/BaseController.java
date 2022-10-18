@@ -6,6 +6,9 @@ import org.apache.log4j.Logger;
 
 import com.matrix.pojo.view.McUserInfoView;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class BaseController extends BaseClass{
 
 	/**
@@ -24,9 +27,12 @@ public class BaseController extends BaseClass{
 		String name = "未授权用户";
 		McUserInfoView e = (McUserInfoView) session.getAttribute("userInfo");
 		if(e != null){
-			name = "用户:  " + e.getUserName();
+			name = "用户：" + e.getUserName();
 		}
-		this.getLogger(logger).logInfo(name + " - 尝试请求 - " + action + "() - 方法 - " + remark , this.getClass()); 
+//		this.getLogger(logger).logInfo(name + " - 尝试请求 - " + action + "() - 方法 - " + remark , this.getClass()); 
+		
+		log.info(name + "-尝试请求-" + this.getClass().getName() + "." +  action + "()-" + remark);
+		
 		return true;
 	}
 	
