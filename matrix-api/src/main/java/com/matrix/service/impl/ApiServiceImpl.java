@@ -24,6 +24,8 @@ import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IApiService;
 import com.matrix.util.SignUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description: 网关入口
  * 
@@ -32,6 +34,7 @@ import com.matrix.util.SignUtil;
  * @date 2019年8月9日 下午5:32:44 
  * @version 1.0.0.1
  */
+@Slf4j
 @Service("apiService")
 public class ApiServiceImpl extends BaseClass implements IApiService {
 	
@@ -185,7 +188,7 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 				}
 			}
 			param.setUserCache(view); 		// 加入用户Session信息
-			this.getLogger(null).sysoutInfo("用户：" + view.getUserName() + " 接口名称：" + apiInfo.getName() + " target = " + head.getTarget(), this.getClass()); 
+			log.info("用户：" + view.getUserName() + " 接口名称：" + apiInfo.getName() + " target = " + head.getTarget());
 		}
 		
 		return Result.SUCCESS(apiInfo);

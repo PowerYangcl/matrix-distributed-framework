@@ -2,7 +2,6 @@ package com.matrix.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -21,8 +20,6 @@ import com.matrix.base.BaseController;
 @RequestMapping("websocket")
 public class WebsocketPageController extends BaseController{
 	
-	private static Logger logger = Logger.getLogger(WebsocketPageController.class);
-	
 	/**
 	 * @description: 前往公告发布页面
 	 * 
@@ -33,7 +30,7 @@ public class WebsocketPageController extends BaseController{
 	 */
 	@RequestMapping("page_websocket_affiche_admin")  
 	public String websocketAfficheAdmin(HttpSession session){ 
-		super.userBehavior(session, logger, "page_websocket_affiche_admin", "前往公告发布页面");
+		super.userBehavior(session, "page_websocket_affiche_admin", "前往公告发布页面");
 		return "views/websocket/affiche/admin";
 	}
 	
@@ -47,7 +44,7 @@ public class WebsocketPageController extends BaseController{
 	 */
 	@RequestMapping("page_websocket_affiche_user")  
 	public String websocketAfficheUser(HttpSession session){ 
-		super.userBehavior(session, logger, "page_websocket_affiche_user", "前往公告接受页面");
+		super.userBehavior(session, "page_websocket_affiche_user", "前往公告接受页面");
 		return "views/websocket/affiche/user";
 	}
 	
@@ -61,7 +58,7 @@ public class WebsocketPageController extends BaseController{
 	 */
 	@RequestMapping("page_websocket_p2p")  
 	public String websocketP2p(HttpSession session){ 
-		super.userBehavior(session, logger, "page_websocket_p2p", "前往一对一聊天页面");
+		super.userBehavior(session, "page_websocket_p2p", "前往一对一聊天页面");
 		return "views/websocket/p2p/chat";
 	}
 	
@@ -75,7 +72,7 @@ public class WebsocketPageController extends BaseController{
 	 */
 	@RequestMapping("page_websocket_group")  
 	public String websocketGroup(HttpSession session){ 
-		super.userBehavior(session, logger, "page_websocket_p2p", "前往多人聊天页面");
+		super.userBehavior(session, "page_websocket_p2p", "前往多人聊天页面");
 		return "views/websocket/group/group-chat";
 	}
 }

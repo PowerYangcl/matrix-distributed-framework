@@ -3,7 +3,6 @@ package com.matrix.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -35,8 +34,6 @@ import com.matrix.service.IGatewayConfigService;
 @RequestMapping("gateway")
 public class GatewayConfigController extends BaseController {
 	
-	private static Logger logger = Logger.getLogger(GatewayConfigController.class);
-	
 	@Autowired
 	private IGatewayConfigService gatewayConfigService;  
 	
@@ -51,7 +48,7 @@ public class GatewayConfigController extends BaseController {
 	 */
 	@RequestMapping("page_gateway_route_list")  
 	public String apiProjectList(HttpSession session){ 
-		super.userBehavior(session, logger, "page_gateway_route_list", "前往网关路由规则列表");
+		super.userBehavior(session, "page_gateway_route_list", "前往网关路由规则列表");
 		return "views/gateway/route/gateway-route-list";
 	}
 	
@@ -67,7 +64,7 @@ public class GatewayConfigController extends BaseController {
 	@Idempotent(accessToken = false)	
 	@RequestMapping(value = "ajax_btn_gateway_route_add",method = {RequestMethod.POST}, produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnGatewayRouteAdd(@RequestBody @Validated AddGatewayRouteRequest param , HttpServletRequest request, HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_btn_gateway_route_add", "添加一条网关路由规则");
+		super.userBehavior(session, "ajax_btn_gateway_route_add", "添加一条网关路由规则");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return gatewayConfigService.ajaxBtnGatewayRouteAdd(param, request);  
 	}
@@ -84,7 +81,7 @@ public class GatewayConfigController extends BaseController {
 	@Idempotent(accessToken = false)	
 	@RequestMapping(value = "ajax_gateway_route_list.do", produces = { "application/json;charset=utf-8" })
 	public Result<PageInfo<GwRouteListResponse>> ajaxGatewayRouteList(FindGatewayRouteListRequest param , HttpServletRequest request, HttpSession session){ 
-		super.userBehavior(session, logger, "ajax_gateway_route_list", "网关路由规则列表");
+		super.userBehavior(session, "ajax_gateway_route_list", "网关路由规则列表");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return gatewayConfigService.ajaxGatewayRouteList(param, request);  
 	}

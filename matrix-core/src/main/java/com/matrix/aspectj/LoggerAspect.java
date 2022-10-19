@@ -1,9 +1,8 @@
 package com.matrix.aspectj;
 
-//import com.alibaba.dubbo.common.logger.Logger;
-//import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.matrix.base.BaseClass;
-import com.matrix.base.BaseLog;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,11 +17,10 @@ import org.springframework.stereotype.Component;
  * @date: 2019/8/20 17:47
  * @version: 1.0.1
  */
+@Slf4j
 @Aspect
 @Component
 public class LoggerAspect extends BaseClass{
-
-	private static Logger logger = Logger.getLogger(LoggerAspect.class);
 
     /**
      *@description: web service耗时日志
@@ -39,10 +37,10 @@ public class LoggerAspect extends BaseClass{
             long startTimeMillis = System.currentTimeMillis();
             Object result = joinPoint.proceed();
             long execTimeMillis = System.currentTimeMillis() - startTimeMillis;
-            BaseLog.getInstance().setLogger(logger).logInfo("接口地址：" + methodAddress + " 请求耗时：" + execTimeMillis + " ms", this.getClass());
+            log.info("接口地址：" + methodAddress + " 请求耗时：" + execTimeMillis + " ms");
             return result;
         } catch (Throwable te) {
-            logger.error(te.getMessage(), te);
+        	log.error(te.getMessage(), te);
             throw new RuntimeException(te.getMessage());
         }
     }

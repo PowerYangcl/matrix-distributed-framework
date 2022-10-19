@@ -2,7 +2,8 @@ package com.matrix.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.base.BaseClass;
-import org.apache.log4j.Logger;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @date: 2019/5/18 9:39
  * @version 1.0.0.1
  */
+@Slf4j
 public class Express100Util extends BaseClass {
     /**
      * 请求参数说明
@@ -55,8 +57,6 @@ public class Express100Util extends BaseClass {
      * }
      * }
      */
-
-    private static Logger logger = Logger.getLogger(Express100Util.class);
 
     /**
      * 实时查询请求地址
@@ -153,7 +153,7 @@ public class Express100Util extends BaseClass {
      */
     public Boolean subscribe() {
         String result = NetUtil.post(SUBSCRIBE_URL, this.param);
-        this.getLogger(logger).logInfo("express return: " + result , this.getClass());
+        log.info("express return: " + result);
         Map<String, Object> map = (Map) JSONObject.parse(result);
         return (Boolean) map.get("result");
     }

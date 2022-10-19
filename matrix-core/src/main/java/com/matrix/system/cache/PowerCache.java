@@ -2,8 +2,7 @@ package com.matrix.system.cache;
 
 import java.net.URL;
 
-import com.matrix.base.BaseLog;
-
+import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
@@ -21,6 +20,7 @@ import net.sf.ehcache.Element;
  * @date 2018年11月2日 下午8:18:09 
  * @version 1.0.0.1
  */
+@Slf4j
 public class PowerCache{
 	
 	private CacheManager cacheManager = null;
@@ -29,7 +29,7 @@ public class PowerCache{
 		if (cacheManager == null) {
 			URL url = this.getClass().getResource("/META-INF/ehcache/ehcache.xml");  
 			cacheManager = CacheManager.create(url);
-			BaseLog.getInstance().sysoutInfo("System Power Cache Instantiated Finish !" , this.getClass());
+			log.info("System Power Cache Instantiated Finish !");
 		}
 	}
 	private static class LazyHolder{

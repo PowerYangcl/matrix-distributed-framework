@@ -2,7 +2,8 @@ package com.matrix.launch;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
-import com.matrix.base.BaseLog;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -26,6 +27,7 @@ import javax.sql.DataSource;
  * @path api-matrix-web / com.matrix.launch.DataSourceMatrixConfig.java
  * @version 1.0.0.1
  */
+@Slf4j
 @Configuration
 @MapperScan(basePackages = "com.matrix.dao", sqlSessionTemplateRef = "matrixSqlSessionTemplate")
 public class DataSourceMatrixConfig {
@@ -33,7 +35,7 @@ public class DataSourceMatrixConfig {
     @Bean(name = "matrixDatasource")
     @ConfigurationProperties(prefix = "spring.datasource.matrix")
     public DruidDataSource datasource() {
-    	BaseLog.getInstance().setLogger(null).sysoutInfo("开始初始化matrix-core核心库数据源链接" , this.getClass());
+    	log.info("开始初始化matrix-core核心库数据源链接");
         return DruidDataSourceBuilder.create().build();
     }
 

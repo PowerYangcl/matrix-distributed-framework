@@ -3,7 +3,6 @@ package com.matrix.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +21,8 @@ import com.matrix.pojo.view.LoginView;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IMcUserInfoService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description: 系统后台用户控制器
  * 																											
@@ -30,10 +31,10 @@ import com.matrix.service.IMcUserInfoService;
  * @date 2016年11月25日 下午3:30:37 
  * @version 1.0.0
  */
+@Slf4j
 @Controller
 @RequestMapping("userInfo")
 public class UserInfoControllor  extends BaseController{
-	private static Logger logger = Logger.getLogger(UserInfoControllor.class);
 	
 	@Autowired
 	private IMcUserInfoService mcUserInfoService;
@@ -49,7 +50,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "login", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<LoginView> login(HttpServletRequest request , FindLoginRequest param, HttpSession session) {
-		logger.info(param.getUserName() + " - 尝试请求 - " + "login() - 方法 - " +  "正在尝试登录"); 
+		log.info(param.getUserName() + " - 尝试请求 - " + "login() - 方法 - " +  "正在尝试登录"); 
 		return mcUserInfoService.login(param, session);
 	}
 	
@@ -63,7 +64,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "logout", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> logout(HttpSession session) {
-		super.userBehavior(session, logger, "logout", ((McUserInfoView) session.getAttribute("userInfo")).getUserName() + "：退出系统|PC端用户");
+		super.userBehavior(session, "logout", ((McUserInfoView) session.getAttribute("userInfo")).getUserName() + "：退出系统|PC端用户");
 		return mcUserInfoService.logout(session);
 	}
 	
@@ -87,7 +88,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "ajax_system_user_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<PageInfo<McUserInfoView>> ajaxSystemUserList(FindMcUserInfoListRequest param , HttpSession session , HttpServletRequest request) {
-		super.userBehavior(session, logger, "ajax_system_user_list", "获取系统用户列表页数据");
+		super.userBehavior(session, "ajax_system_user_list", "获取系统用户列表页数据");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.ajaxSystemUserList(param , request);
 	}
@@ -102,7 +103,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "ajax_btn_add_system_user", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnAddSystemUser(AddMcUserInfoRequest param , HttpSession session) {
-		super.userBehavior(session, logger, "ajax_btn_add_system_user", "添加用户");
+		super.userBehavior(session, "ajax_btn_add_system_user", "添加用户");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.addSysUser(param);
 	}
@@ -117,7 +118,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "ajax_btn_edit_sys_user", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnEditSysUser(UpdateMcUserInfoRequest param , HttpSession session) {
-		super.userBehavior(session, logger, "ajax_btn_edit_sys_user", "修改用户信息");
+		super.userBehavior(session, "ajax_btn_edit_sys_user", "修改用户信息");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.editSysUser(param);
 	}
@@ -132,7 +133,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "ajax_btn_password_reset", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnPasswordReset(UpdateMcUserInfoPasswordRequest param , HttpSession session) {
-		super.userBehavior(session, logger, "ajax_btn_password_reset", "修改用户密码");
+		super.userBehavior(session, "ajax_btn_password_reset", "修改用户密码");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.ajaxPasswordReset(param);
 	}
@@ -147,7 +148,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "ajax_btn_delete_system_user", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnDeleteSystemUser(DeleteMcUserInfoRequest param , HttpSession session) {
-		super.userBehavior(session, logger, "ajax_btn_delete_system_user", "删除一个用户|不保留数据库中的记录");
+		super.userBehavior(session, "ajax_btn_delete_system_user", "删除一个用户|不保留数据库中的记录");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.deleteUser(param);
 	}
@@ -162,7 +163,7 @@ public class UserInfoControllor  extends BaseController{
 	@RequestMapping(value = "ajax_btn_user_cache_reload", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnUserCacheReload(HttpSession session , HttpServletRequest request){
-		super.userBehavior(session, logger, "ajax_btn_user_cache_reload", "重新加载系统用户缓存");
+		super.userBehavior(session, "ajax_btn_user_cache_reload", "重新加载系统用户缓存");
 		return mcUserInfoService.ajaxBtnUserCacheReload();
 	}
 	

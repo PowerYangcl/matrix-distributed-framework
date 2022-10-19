@@ -9,8 +9,9 @@ import java.util.Properties;
 import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.base.BaseInit;
-import com.matrix.base.BaseLog;
 import com.matrix.system.cache.PowerCache;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @descriptions 差异化配置信息验证
@@ -20,6 +21,7 @@ import com.matrix.system.cache.PowerCache;
  * @date 2016年11月15日 下午9:41:57
  * @version 1.0.1
  */
+@Slf4j
 public class MatrixCoreInit extends BaseInit {
 
 	public boolean onInit() {
@@ -36,18 +38,18 @@ public class MatrixCoreInit extends BaseInit {
 	 */
 	private boolean deployEnvValidate(){
 		if(StringUtils.isNotBlank(this.getConfig("matrix-web.model"))) {
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------Web Project Properties File Init Finished ! ! ! ! ! ! ! " , this.getClass());
+			log.info("-------------------------------------------Web Project Properties File Init Finished ! ! ! ! ! ! ! ");
 			return true;
 		}
 		
 		String path = this.getClass().getClassLoader().getResource("").getPath();
-		BaseLog.getInstance().sysoutInfo("-------------------------------------------Current System Running Path Is : " + path , this.getClass());
+		log.info("-------------------------------------------Current System Running Path Is : " + path);
 		if(!StringUtils.contains(path, "properties")) {
 			path += "properties";
 		}
 		File file = new File(path);
 		if(!file.exists()) {
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------不存在额外的差异化配置文件 " , this.getClass());
+			log.info("-------------------------------------------不存在额外的差异化配置文件 ");
 			return true;
 		}
 		
@@ -65,21 +67,19 @@ public class MatrixCoreInit extends BaseInit {
 		if(StringUtils.isBlank(properties.getProperty("dubbo.application.model"))) {
 			return true;
 		}
-		BaseLog.getInstance().sysoutInfo("-------------------------------------------Dubbo服务开始初始化差异化配置! " , this.getClass());
-		BaseLog.getInstance().sysoutInfo("-------------------------------------------系统初始运行环境：" + this.getConfig("matrix-core.model")  , this.getClass());
+		log.info("-------------------------------------------Dubbo服务开始初始化差异化配置! ");
+		log.info("-------------------------------------------系统初始运行环境：" + this.getConfig("matrix-core.model"));
 		if(this.getConfig("matrix-core.build_type").equals("jenkins")) {
 			// 根据部署结果重置项目版本信息，此时将覆盖config.matrix-core.properties文件中的model信息
 			PowerCache.getInstance().reset("PropConfig", "matrix-core.model", properties.getProperty("dubbo.application.model")); 
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------系统重置运行环境：" + this.getConfig("matrix-core.model")  , this.getClass());
+			log.info("-------------------------------------------系统重置运行环境：" + this.getConfig("matrix-core.model"));
 		}
 		PowerCache.getInstance().reset("PropConfig", "matrix-core.zookeeper_host", properties.getProperty("dubbo.registry.address")); 
 		PowerCache.getInstance().reset("PropConfig", "matrix-core.dubbo_application_name", properties.getProperty("dubbo.application.name")); 
 		PowerCache.getInstance().reset("PropConfig", "matrix-core.dubbo_application_owner", properties.getProperty("dubbo.application.owner")); 
-		BaseLog.getInstance().sysoutInfo("-------------------------------------------Zookeepper重置地址：" + this.getConfig("matrix-core.zookeeper_host")  , this.getClass());
+		log.info("-------------------------------------------Zookeepper重置地址：" + this.getConfig("matrix-core.zookeeper_host"));
 		return true;
 	}
-	
-	
 	
 
 	public boolean onDestory() {

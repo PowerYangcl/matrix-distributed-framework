@@ -21,6 +21,7 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.resource.DefaultClientResources;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @description: 单机模式适配器 
@@ -31,6 +32,7 @@ import io.lettuce.core.resource.DefaultClientResources;
  * @path matrix-cache / com.matrix.cache.redis.core.mode.LettuceStandalone.java
  * @version 1.0.0.1
  */
+@Slf4j
 public class LettuceStandalone extends AbstractLettuceMode {
 	
 //	TODO 事务和批量命令执行  模仿内部类的方式解决，对外暴露一个可实现的接口
@@ -228,7 +230,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     */
 	    public Long incrementTimeout(String key, Long expire) {
 	    	Long value = this.increment(key, 1L, expire);
-	    	this.getLogger(null).sysoutInfo("获取缓存开始增量计次|Redis Key = " + key + "  当前增量值 = " + value, this.getClass());
+	    	log.info("获取缓存开始增量计次|Redis Key = " + key + "  当前增量值 = " + value);
 	    	return value;
 	    }
 

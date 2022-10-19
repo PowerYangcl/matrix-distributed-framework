@@ -2,7 +2,6 @@ package com.matrix.base;
 
 import java.lang.reflect.Field;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
@@ -10,6 +9,8 @@ import com.matrix.annotation.Inject;
 import com.matrix.helper.FormatHelper;
 import com.matrix.system.SpringCtxUtil;
 import com.matrix.system.cache.PropVisitor;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @description: 顶层基类，提供多样化的注解功能、配置文件访问等等 
@@ -19,9 +20,8 @@ import com.matrix.system.cache.PropVisitor;
  * @date 2016年9月29日 下午2:40:02 
  * @version 1.0.0.1
  */
+@Slf4j
 public class BaseClass {
-	private static Logger logger = Logger.getLogger(BaseClass.class);
-
 	public BaseClass() {
 		inject(this.getClass());
 	}
@@ -44,10 +44,10 @@ public class BaseClass {
 					}
 				} catch (NoSuchBeanDefinitionException e) {
 					e.printStackTrace();
-					getLogger(logger).logError(e.getMessage());
+					log.error(e.getMessage());
 				} catch(IllegalAccessException e) {
 					e.printStackTrace();
-					getLogger(logger).logError(e.getMessage()); 
+					log.error(e.getMessage());
 				}
 			}
 		}
@@ -71,10 +71,15 @@ public class BaseClass {
 	 * @author Yangcl 
 	 * @date 2016年11月11日 下午6:37:29 
 	 * @version 1.0.0.1
+	 * 
+	 * 
+	 * @description: 废弃，不再使用。
+	 * @date 2022-10-19 17:56:57
+	 * @version 1.6.1.4-spring-cloud-gateway
 	 */ 
-	public BaseLog getLogger(Logger logger) {
-		return BaseLog.getInstance().setLogger(logger); 
-	}
+//	public BaseLog getLogger(Logger logger) {
+//		return BaseLog.getInstance().setLogger(logger); 
+//	}
 	
 	/**
 	 * @description: 通过访问每一个项目的 config.*****.properties文件，获取其配置内容

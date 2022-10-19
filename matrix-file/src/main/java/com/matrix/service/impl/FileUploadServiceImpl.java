@@ -24,6 +24,9 @@ import com.matrix.util.IpUtil;
 import com.matrix.util.JarUtil;
 import com.matrix.util.UuidUtil;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service("fileUploadService")
 public class FileUploadServiceImpl extends BaseClass implements IFileUploadService{
 	
@@ -94,6 +97,7 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 	 *
 	 * @param fileName 要保存文件的名称
 	 * @param file 该文件的二进制流
+	 * 
 	 * @date 2017年8月2日 下午2:39:57
 	 * @author Yangcl 
 	 * @version 1.0.0.1
@@ -160,7 +164,7 @@ public class FileUploadServiceImpl extends BaseClass implements IFileUploadServi
 			result.put("msg", this.getInfo(500010004));   // 500010004=文件持久化异常，请参照FileUploadServiceImpl.java -> saveFile() 
 			return result;
 		}
-		this.getLogger(null).sysoutInfo(result.toJSONString() , this.getClass()); 
+		log.info(result.toJSONString());
 		return result;
 	}
 

@@ -13,6 +13,8 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.IBaseExecute;
 import com.matrix.util.ExceptionUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description:日志守卫 
  * 	
@@ -22,6 +24,7 @@ import com.matrix.util.ExceptionUtils;
  * @date 2019年1月7日 上午11:29:15 
  * @version 1.0.0.1
  */
+@Slf4j
 public class LoggerGuard extends BaseClass implements IBaseExecute {
 
 	public String execute(String json) {
@@ -62,9 +65,7 @@ public class LoggerGuard extends BaseClass implements IBaseExecute {
 			result.put("status", "error");
 			result.put("exception", ExceptionUtils.getExceptionInfo(e)); 
 		}
-		
-		this.getLogger(null).sysoutInfo("LoggerGuard.java 文件读取完成！", this.getClass());
-		
+		log.debug("LoggerGuard.java 文件读取完成！");
 		return result.toJSONString();
 	}
 

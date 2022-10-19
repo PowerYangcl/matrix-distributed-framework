@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,6 @@ import com.matrix.service.IMcUserInfoService;
 @Controller
 @RequestMapping("manager")
 public class ManagerCenterController extends BaseController{
-	private static Logger logger = Logger.getLogger(ManagerCenterController.class);
 	
 	@Autowired
 	private IMcUserInfoService mcUserInfoService;
@@ -36,7 +34,7 @@ public class ManagerCenterController extends BaseController{
 	@RequestMapping(value = "ajax_platform_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<List<McSysFunction>> ajaxPlatformInfoList(HttpSession session) {
-		super.userBehavior(session, logger, "ajax_platform_info_list", "获取平台信息列表");
+		super.userBehavior(session, "ajax_platform_info_list", "获取平台信息列表");
 		return mcUserInfoService.ajaxPlatformInfoList();
 	}
 	

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -45,7 +44,6 @@ import com.matrix.service.IJobService;
 @Controller
 @RequestMapping("quartz")
 public class QuartzCenterController extends BaseController{
-	private static Logger logger=Logger.getLogger(QuartzCenterController.class);
 	
 	@Autowired
 	private IJobService jobService;
@@ -59,7 +57,7 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping("page_quartz_job_info_list")  
 	public String pageQuartzJobInfo(HttpSession session){ 
-		super.userBehavior(session, logger, "page_quartz_job_info_list", "定时任务列表页");
+		super.userBehavior(session, "page_quartz_job_info_list", "定时任务列表页");
 		return "views/quartz/info/job-info-list";  
 	}
 	
@@ -74,7 +72,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_job_info_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<PageInfo<JobInfoView>> ajaxJobInfoList(FindAjaxJobInfoListRequest param , HttpSession session, HttpServletRequest request){
-		super.userBehavior(session, logger, "ajax_job_info_list", "定时任务列表页数据");
+		super.userBehavior(session, "ajax_job_info_list", "定时任务列表页数据");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobInfoList(param , request);
 	}
@@ -90,7 +88,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_job_group_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<List<JobGroup>> ajaxJobGroupList(FindAjaxJobGroupListRequest param , HttpSession session, HttpServletRequest request){
-		super.userBehavior(session, logger, "ajax_job_group_list", "定时任务列表页数据");
+		super.userBehavior(session, "ajax_job_group_list", "定时任务列表页数据");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobGroupList(param , request);
 	}
@@ -107,7 +105,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_btn_job_info_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnJobInfoAdd(AddJobInfoRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_btn_job_info_add", "添加定时任务");
+		super.userBehavior(session, "ajax_btn_job_info_add", "添加定时任务");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnAddJobInfo(param);
 	}
@@ -122,7 +120,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_btn_job_info_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnJobInfoEdit(UpdateJobInfoRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_btn_job_info_edit", "编辑定时任务");
+		super.userBehavior(session, "ajax_btn_job_info_edit", "编辑定时任务");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnJobInfoEdit(param);
 	}
@@ -138,7 +136,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_job_info_detail", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<JSONObject> ajaxJobInfoDetail(FindAjaxJobInfoRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_info_detail", "定时任务详情");
+		super.userBehavior(session, "ajax_job_info_detail", "定时任务详情");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobInfoDetail(param);
 	}
@@ -153,7 +151,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_btn_job_info_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnJobInfoDelete(DeleteJobInfoRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_btn_job_info_delete", "删除定时任务");
+		super.userBehavior(session, "ajax_btn_job_info_delete", "删除定时任务");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnJobInfoDelete(param);
 	}
@@ -169,9 +167,9 @@ public class QuartzCenterController extends BaseController{
 	@ResponseBody
 	public Result<?> ajaxJobInfoPause(UpdateJobInfoPauseRequest param , HttpSession session){
 		if(param.getPauseType().equals("one")) {
-			super.userBehavior(session, logger, "ajax_job_info_pause", "暂停一个定时任务");
+			super.userBehavior(session, "ajax_job_info_pause", "暂停一个定时任务");
 		}else {
-			super.userBehavior(session, logger, "ajax_job_info_pause", "暂停全部定时任务");
+			super.userBehavior(session, "ajax_job_info_pause", "暂停全部定时任务");
 		}
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobInfoPause(param);
@@ -187,7 +185,7 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping("page_quartz_job_group_list")  
 	public String pageQuartzJobGroup(HttpSession session){ 
-		super.userBehavior(session, logger, "page_quartz_job_group_list", "定时任务分组列表页");
+		super.userBehavior(session, "page_quartz_job_group_list", "定时任务分组列表页");
 		return "views/quartz/group/job-group-list";  
 	}
 	
@@ -205,7 +203,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_job_group_page_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<PageInfo<JobGroupView>> ajaxJobGroupPageList(FindAjaxJobGroupListRequest param , HttpSession session, HttpServletRequest request){
-		super.userBehavior(session, logger, "ajax_job_group_page_list", "定时任务分组列表页信息");
+		super.userBehavior(session, "ajax_job_group_page_list", "定时任务分组列表页信息");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobGroupPageList(param , request);
 	}
@@ -221,7 +219,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_btn_job_group_add", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnJobGroupAdd(AddJobGroupRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_group_add", "添加定时任务分组");
+		super.userBehavior(session, "ajax_job_group_add", "添加定时任务分组");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnJobGroupAdd(param);
 	}
@@ -237,7 +235,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_job_group_detail", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<JobGroup> ajaxJobGroupDetail(FindJobGroupRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_group_detail", "定时任务分组详情");
+		super.userBehavior(session, "ajax_job_group_detail", "定时任务分组详情");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobGroupDetail(param);
 	}
@@ -252,7 +250,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_btn_job_group_edit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnJobGroupEdit(UpdateJobGroupRequest param , HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_group_edit", "修改定时任务分组");
+		super.userBehavior(session, "ajax_job_group_edit", "修改定时任务分组");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnJobGroupEdit(param);
 	}
@@ -267,7 +265,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_btn_job_group_delete", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<?> ajaxBtnJobGroupDelete(DeleteJobGroupRequest param, HttpSession session){
-		super.userBehavior(session, logger, "ajax_job_group_delete", "删除定时任务分组");
+		super.userBehavior(session, "ajax_job_group_delete", "删除定时任务分组");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxBtnJobGroupDelete(param);
 	}
@@ -284,7 +282,7 @@ public class QuartzCenterController extends BaseController{
 	 */
 	@RequestMapping("page_quartz_job_log_list")  
 	public String pageQuartzJobLog(HttpSession session , ModelMap map , HttpServletRequest request){ 
-		super.userBehavior(session, logger, "page_quartz_job_log_list", "定时任务执行日志记录列表页");
+		super.userBehavior(session, "page_quartz_job_log_list", "定时任务执行日志记录列表页");
 		map.put("jobName", request.getParameter("jobName"));
 		return "views/quartz/log/job-log-list";
 	}
@@ -299,7 +297,7 @@ public class QuartzCenterController extends BaseController{
 	@RequestMapping(value = "ajax_job_log_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
 	public Result<PageInfo<JobExecLogView>> ajaxJobLogList(FindAjaxJobLogListRequest param , HttpSession session, HttpServletRequest request){
-		super.userBehavior(session, logger, "ajax_job_log_list", "定时任务日志列表页信息");
+		super.userBehavior(session, "ajax_job_log_list", "定时任务日志列表页信息");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return jobService.ajaxJobLogList(param , request);
 	}
@@ -316,7 +314,7 @@ public class QuartzCenterController extends BaseController{
 //	@RequestMapping(value = "ajax_job_info_exec", produces = { "application/json;charset=utf-8" })
 //	@ResponseBody
 //	public JSONObject ajaxJobInfoExec(JobInfoDto dto , HttpSession session){
-//		super.userBehavior(session, logger, "ajax_job_info_exec", "主动触发定时任务");
+//		super.userBehavior(session, "ajax_job_info_exec", "主动触发定时任务");
 //		dto.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 //		return jobService.ajaxJobInfoExec(dto);
 //	}

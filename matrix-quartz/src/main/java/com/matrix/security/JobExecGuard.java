@@ -13,6 +13,8 @@ import com.matrix.pojo.entity.JobInfo;
 import com.matrix.quartz.job.RootJob;
 import com.matrix.quartz.support.JobSupport;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description: 主动触发定时任务|当定时任务在一个节点处于关闭状态的
  * 			时候，此处会将所有定时任务加入轮询器，同时激活
@@ -21,6 +23,7 @@ import com.matrix.quartz.support.JobSupport;
  * @date 2019年1月9日 下午3:26:31 
  * @version 1.0.0.1
  */
+@Slf4j
 public class JobExecGuard extends BaseClass implements IBaseExecute {
 
 	@Inject
@@ -42,11 +45,9 @@ public class JobExecGuard extends BaseClass implements IBaseExecute {
 			if(dto.getGuardType().equals("add")) {
 				JobSupport.getInstance().addJob(info);
 			}
-			
-			this.getLogger(null).sysoutInfo(200010005, this.getClass() , info.getJobName() , info.getJobTitle() , info.getJobTriger());	// 开始加载任务{0}，任务执行周期为{1}
-			
+			log.info(this.getInfo(200010005, info.getJobName() , info.getJobTitle() , info.getJobTriger()));  // 200010005=开始加载任务: {0}，定时任务标题: {1}，任务执行周期为: {2}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | JobExecutionException ex) {
-			ex.printStackTrace();
+			log.error("JobExecGuard.execute exception ", ex);
 			return "JobExecGuard exception !";
 		}
 		return "执行成功!";

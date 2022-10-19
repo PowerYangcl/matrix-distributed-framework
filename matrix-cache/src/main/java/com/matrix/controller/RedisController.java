@@ -8,6 +8,9 @@ import com.matrix.annotation.DistributedLock;
 import com.matrix.base.BaseClass;
 import com.matrix.base.Result;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("redis")
 public class RedisController extends BaseClass{
@@ -34,9 +37,9 @@ public class RedisController extends BaseClass{
         }
         Thread.sleep(50);
         if(total != 0) {
-        	this.getLogger(null).sysoutInfo("===注解模式=== 减完库存后，当前库存===" + total, this.getClass());
+        	log.info("===注解模式=== 减完库存后，当前库存===" + total);
         }else {
-        	this.getLogger(null).sysoutInfo("===库存 = " + total, this.getClass());
+        	log.info("===库存 = " + total);
         }
         return Result.SUCCESS(total);
     }

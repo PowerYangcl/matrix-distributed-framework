@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
 import com.matrix.base.BaseEhcache;
-import com.matrix.base.BaseLog;
+
+import lombok.extern.slf4j.Slf4j;
 
  
 /**
@@ -18,6 +18,7 @@ import com.matrix.base.BaseLog;
  * @date 2016年11月12日 下午6:43:22
  * @version 1.0.1
  */
+@Slf4j
 public class ConfigMap extends BaseEhcache<String, Map<String , String>> {
 
 	private ConfigMap(){
@@ -35,7 +36,7 @@ public class ConfigMap extends BaseEhcache<String, Map<String , String>> {
 		if (config.getKeys().size() == 0){
 			config.refresh(key_);
 		}
-		BaseLog.getInstance().sysoutInfo("System beginning organiza the class" , this.getClass());
+		log.info("System beginning organiza the class");
 		for (String s : config.getKeys()) {
 			if (StringUtils.indexOf(s, "[") > -1) {
 				String key = StringUtils.substringBefore(s, "[");

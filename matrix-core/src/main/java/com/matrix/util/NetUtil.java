@@ -24,9 +24,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 
 import com.matrix.base.BaseClass;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -39,9 +40,8 @@ import com.matrix.base.BaseClass;
  * @date 2016年9月29日 下午3:09:07 
  * @version 1.0.0
  */
+@Slf4j
 public class NetUtil extends BaseClass {
-	
-	private static Logger logger = Logger.getLogger(NetUtil.class);
 	
 	public static String userAgent =  "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.66 Safari/537.36";
 	
@@ -305,7 +305,7 @@ public class NetUtil extends BaseClass {
 				if (state == 200||state==404) {
 					bFlag = true;
 				} else {
-					getLogger(logger).logWarn("connect to " + urlStr + " return status " + state);  
+					log.info("connect to " + urlStr + " return status " + state);
 				}
 				break;
 			} catch (Exception ex) {

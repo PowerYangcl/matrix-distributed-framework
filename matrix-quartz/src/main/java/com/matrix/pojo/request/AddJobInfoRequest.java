@@ -13,7 +13,7 @@ import com.matrix.dao.IJobInfoMapper;
 import com.matrix.pojo.entity.JobInfo;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.util.UuidUtil;
-import com.matrix.validate.StringValidate;
+import com.matrix.validate.Validation;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,7 +50,7 @@ public class AddJobInfoRequest extends BaseClass implements Serializable{
 			// 200010015=定时任务弹窗中的字段均为必填项，请核查
 			return Result.ERROR(this.getInfo(200010015), ResultCode.MISSING_ARGUMENT);
 		}
-		if(!StringValidate.isNumeric(expireTime.toString()) || !StringValidate.isNumeric(timeOut.toString())) {
+		if(!Validation.isNumeric(expireTime.toString()) || !Validation.isNumeric(timeOut.toString())) {
 			// 200010016=锁有效时间和超时时间为正数
 			return Result.ERROR(this.getInfo(200010016), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}

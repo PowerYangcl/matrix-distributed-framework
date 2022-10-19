@@ -19,6 +19,8 @@ import com.matrix.base.BaseClass;
 import com.matrix.base.interfaces.IBaseJob;
 import com.matrix.pojo.entity.JobInfo;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * @descriptions 定时任务的增删改功能
@@ -27,6 +29,7 @@ import com.matrix.pojo.entity.JobInfo;
  * @date 2016年11月24日 下午11:30:29
  * @version 1.0.1
  */
+@Slf4j
 public class JobSupport extends BaseClass {
 
 	private Scheduler scheduler = null;
@@ -37,8 +40,7 @@ public class JobSupport extends BaseClass {
 			scheduler = sf.getScheduler();
 			scheduler.start();
 		} catch (SchedulerException e) {
-			e.printStackTrace();
-			this.getLogger(null).sysoutInfo(200010006, this.getClass());  // 200010006=org.quartz.Scheduler初始化异常!
+			log.error(this.getInfo(200010006), e);  // 200010006=org.quartz.Scheduler初始化异常!
 		}
 	}
 	
@@ -84,8 +86,7 @@ public class JobSupport extends BaseClass {
 			scheduler.scheduleJob(job , triggerSet , true); // 设置调度作业
 			
 		} catch (SchedulerException | ClassNotFoundException e) {
-			e.printStackTrace();
-			this.getLogger(null).sysoutInfo(200010007 , this.getClass());  // 200010007=定时任务添加失败!
+			log.error(this.getInfo(200010007) , e);  // 200010007=定时任务添加失败!
 		}
 	}
 

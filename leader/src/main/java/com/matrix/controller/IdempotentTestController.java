@@ -17,6 +17,7 @@ import com.matrix.util.DateUtil;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -28,6 +29,7 @@ import lombok.EqualsAndHashCode;
  * @path leader / com.matrix.controller.IdempotentTestController.java
  * @version 1.6.1.0-Idempotent
  */
+@Slf4j
 @Controller
 @RequestMapping("ide")
 public class IdempotentTestController extends BaseController{
@@ -50,7 +52,7 @@ public class IdempotentTestController extends BaseController{
 	public Result<?> apiWithDtoRequest(JspRequest param, HttpServletRequest request, HttpSession session){ 
 		DateUtil du = new DateUtil();
 		String time = du.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
-		this.getLogger(null).sysoutInfo("api_with_dto_request time = " + time, this.getClass());
+		log.info("api_with_dto_request time = " + time);
 		return Result.SUCCESS("api_with_dto_request.do time = " + time + " param = " + JSONObject.toJSONString(param));
 	}
 	
@@ -71,7 +73,7 @@ public class IdempotentTestController extends BaseController{
 	public Result<String> apiWithoutDtoRequest(HttpServletRequest request, HttpSession session){ 
 		DateUtil du = new DateUtil();
 		String time = du.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
-		this.getLogger(null).sysoutInfo("api_without_dto_request time = " + time, this.getClass());
+		log.info("api_without_dto_request time = " + time);
 		return Result.SUCCESS("api_without_dto_request.do time = " + time);
 	}
 	
@@ -91,7 +93,7 @@ public class IdempotentTestController extends BaseController{
 	public Result<String> apiWithoutIdempotent(HttpServletRequest request, HttpSession session){ 
 		DateUtil du = new DateUtil();
 		String time = du.dateToString(new Date(), "yyyy-MM-dd HH:mm:ss");
-		this.getLogger(null).sysoutInfo("api_without_idempotent_request time = " + time, this.getClass());
+		log.info("api_without_idempotent_request time = " + time);
 		return Result.SUCCESS("api_without_idempotent_request.do time = " + time);
 	}
 	

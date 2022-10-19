@@ -17,10 +17,11 @@ import org.springframework.transaction.interceptor.NameMatchTransactionAttribute
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
-import com.matrix.base.BaseLog;
 import com.matrix.system.cache.PowerCache;
 import com.matrix.system.init.SystemInit;
 import com.matrix.system.listener.MatrixDistributedFrameworkListener;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @description: Spring配置核心入口类
@@ -31,6 +32,7 @@ import com.matrix.system.listener.MatrixDistributedFrameworkListener;
  * @path matrix-core/com.matrix.launch.Launch.java
  * @version 1.0.0.1
  */
+@Slf4j
 @Aspect
 @Configuration
 @ComponentScan({"com.matrix.dao,com.matrix.service"})
@@ -97,15 +99,15 @@ public class ContextLaunch {
     }
     
     private void systemInit(String model) {
-    	BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing starting ! ! ! ! !" , this.getClass());
+    	log.info("Power Matrix Initializing starting ! ! ! ! !");
     	boolean flag = systemInit.onInit();
     	if(StringUtils.isNotBlank(model)) {
     		PowerCache.getInstance().reset("PropConfig", "matrix-core.model", model);
     	}
 		if(flag) {
-			BaseLog.getInstance().setLogger(null).sysoutInfo("Power Matrix Initializing Finished ! ! ! ! !" , this.getClass());
+			log.info("Power Matrix Initializing Finished ! ! ! ! !");
 		}else {
-			BaseLog.getInstance().setLogger(null).sysoutInfo("Error occurs in initializing Power Matrix " , this.getClass());
+			log.error("Error occurs in initializing Power Matrix ");
 		}
     }
     
@@ -132,3 +134,12 @@ public class ContextLaunch {
 // spring boot  配置事务通知  参考
 // 配置文件：https://my.oschina.net/u/2331760/blog/3020092 
 // 注解方式：https://www.cnblogs.com/edi-kai/p/11289701.html  推荐
+
+
+
+
+
+
+
+
+

@@ -25,6 +25,7 @@ import io.lettuce.core.cluster.api.StatefulRedisClusterConnection;
 import io.lettuce.core.cluster.api.async.RedisAdvancedClusterAsyncCommands;
 import io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands;
 import io.lettuce.core.resource.DefaultClientResources;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @description: Cluster集群模式适配器
@@ -38,6 +39,7 @@ import io.lettuce.core.resource.DefaultClientResources;
  * @path matrix-cache / com.matrix.cache.redis.core.mode.LettuceCluster.java
  * @version 1.0.0.1
  */
+@Slf4j
 public class LettuceCluster extends AbstractLettuceMode{
 	
 	private RedisClusterClient clusterClient = null;
@@ -242,7 +244,7 @@ public class LettuceCluster extends AbstractLettuceMode{
 	 */
 	public Long incrementTimeout(String key, Long expire) {
 		Long value = this.increment(key, 1L, expire);
-		this.getLogger(null).sysoutInfo("获取缓存开始增量计次|Redis Key = " + key + "  当前增量值 = " + value, this.getClass());
+		log.info("获取缓存开始增量计次|Redis Key = " + key + "  当前增量值 = " + value);
 		return value;
 	}
 

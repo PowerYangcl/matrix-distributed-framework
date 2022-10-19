@@ -15,6 +15,8 @@ import com.matrix.quartz.support.JobSupport;
 import com.matrix.service.IJobService;
 import com.matrix.system.cache.PowerCache;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description: 分布式定时任务实例化。定时任务区分运行组，运行组包含服务器列表信息。
  *
@@ -23,6 +25,7 @@ import com.matrix.system.cache.PowerCache;
  * @date 2018年9月1日 下午12:40:49 
  * @version 1.0.0.1
  */
+@Slf4j
 public class DistributeJobLaunch extends BaseInit{
 	
 	private IBaseLaunch<ICacheFactory> launch = CacheLaunch.getInstance().Launch();
@@ -42,11 +45,11 @@ public class DistributeJobLaunch extends BaseInit{
 	public boolean onInit() {
 		boolean flag = true;
 		if(!this.getConfig("matrix-web.model").equals("job-system")) {  // job-system|web-system|mq-system
-			this.getLogger(null).sysoutInfo(200010010, this.getClass());  // 200010010=系统定时任务已关闭
+			log.info(this.getInfo(200010010));   // 200010010=系统定时任务已关闭
 			return true;
 		}
 		if(!this.getConfig("matrix-quartz.job_init").equals("true")) {
-			this.getLogger(null).sysoutInfo(200010010, this.getClass());  // 200010010=系统定时任务已关闭
+			log.info(this.getInfo(200010010));  // 200010010=系统定时任务已关闭
 			return true;
 		}
 		
@@ -73,7 +76,7 @@ public class DistributeJobLaunch extends BaseInit{
         			continue;
         		}
         		JobSupport.getInstance().addJob(info);
-        		this.getLogger(null).sysoutInfo(200010005, this.getClass() , info.getJobName() , info.getJobTitle() , info.getJobTriger());	// 开始加载任务{0}，任务执行周期为{1}
+        		log.info(this.getInfo(200010005, info.getJobName() , info.getJobTitle() , info.getJobTriger()));  // 200010005=开始加载任务: {0}，定时任务标题: {1}，任务执行周期为: {2}
         	}
 		} catch (Exception e) {
 			e.printStackTrace();

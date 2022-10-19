@@ -13,6 +13,8 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import com.matrix.base.BaseClass;
 import com.matrix.pojo.view.McUserInfoView;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description: WebSocket握手请求的拦截器。 检查握手请求和响应，对WebSocketHandler传递属性。
  * 		可以通过这个类的方法获取resuest,和response。
@@ -24,6 +26,7 @@ import com.matrix.pojo.view.McUserInfoView;
  * @path matrix-websocket / com.matrix.system.HttpHandShakeIntecepter.java
  * @version 1.6.0.6-websocket
  */
+@Slf4j
 public class HttpHandShakeIntecepter extends BaseClass implements HandshakeInterceptor {
 
 	/**
@@ -65,7 +68,7 @@ public class HttpHandShakeIntecepter extends BaseClass implements HandshakeInter
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest)request;
 			HttpSession session =  servletRequest.getServletRequest().getSession();
 			String sessionId = session.getId();
-			this.getLogger(null).sysoutInfo("HttpHandShakeIntecepter afterHandshake 握手之后 Session = " + sessionId, this.getClass()); 
+			log.info("HttpHandShakeIntecepter afterHandshake 握手之后 Session = " + sessionId);
 			// TODO 指明状态码？
 		}
 	}

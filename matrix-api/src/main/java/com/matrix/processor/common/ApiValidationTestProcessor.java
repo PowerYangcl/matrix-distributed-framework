@@ -14,6 +14,8 @@ import com.matrix.base.Result;
 import com.matrix.pojo.dto.ValidationTest;
 import com.matrix.service.IApiCenterService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @description: validate 测试
  * @tag API-COMMON-FIND-VALUE-BY-KEY
@@ -22,6 +24,7 @@ import com.matrix.service.IApiCenterService;
  * @date 2018年10月8日 上午10:34:58 
  * @version 1.0.0.1
  */
+@Slf4j
 @MatrixRequest(clazz=com.matrix.pojo.dto.ValidationTest.class) 
 public class ApiValidationTestProcessor extends BaseClass implements IBaseProcessor {
 
@@ -31,7 +34,7 @@ public class ApiValidationTestProcessor extends BaseClass implements IBaseProces
 	@Override
 	public Result<String> processor(BaseApiDto param, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		ValidationTest dto = param.getData().toJavaObject(ValidationTest.class);
-		this.getLogger(null).sysoutInfo("validate 测试", this.getClass());
+		log.info("validate 测试");
 		return apiCenterService.ajaxValidationTest(dto);
 	}
 

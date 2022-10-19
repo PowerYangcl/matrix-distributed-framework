@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import javax.imageio.ImageIO;
 
 import com.alibaba.fastjson.JSONObject;
-import com.matrix.base.BaseLog;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @descriptions 基础的文件操作支持
@@ -25,6 +25,7 @@ import com.matrix.base.BaseLog;
  * @date 2017年8月2日 下午5:37:18
  * @version 1.0.1
  */
+@Slf4j
 public class FileSupport {
 	
 	private FileSupport(){
@@ -71,8 +72,7 @@ public class FileSupport {
 	        property.put("width", String.valueOf(img.getWidth()) );    // 获取图片长宽属性
 			property.put("height",  String.valueOf(img.getHeight()) ); 
 	    }catch (Exception e) {  
-//	        e.printStackTrace();  
-	        BaseLog.getInstance().sysoutInfo("图片长宽属性读取异常", this.getClass());
+	        log.error("图片长宽属性读取异常", e); 
 	    } finally {  
 	    	conn.disconnect();  
 	    } 

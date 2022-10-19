@@ -1,5 +1,8 @@
 package com.matrix.validate;
 
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @description: 入参通用基础验证规则，适用于绝大部分业务场景。
@@ -37,4 +40,45 @@ public interface Validation {
 	String REGEX_PROTOCOL = "TCP|UDP|HTTP|HTTPS";
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * @description: 判断字符串是正整数
+	 *
+	 * @param string
+	 * @author Yangcl
+	 * @date 2018年12月22日 下午3:38:18 
+	 * @version 1.0.0.1
+	 */
+	public static boolean isNumeric(String string) {
+        if (StringUtils.isBlank(string))
+            return false;
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(string).matches();  
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
