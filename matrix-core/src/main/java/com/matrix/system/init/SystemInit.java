@@ -13,6 +13,8 @@ import com.matrix.system.cache.PropInfo;
 import com.matrix.system.cache.PropVisitor;
 import com.matrix.system.cache.SysWorkDir;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * @descriptions 
@@ -26,6 +28,7 @@ import com.matrix.system.cache.SysWorkDir;
  * @date 2016年11月15日 下午8:28:41
  * @version 1.0.1
  */
+@Slf4j
 public class SystemInit extends BaseInit {
 	
 	public boolean onInit() {
@@ -60,7 +63,7 @@ public class SystemInit extends BaseInit {
 	private boolean initProps() {
 		try {
 			this.initDelete();
-			this.getLogger(null).sysoutInfo("开始实例化配置文件！！！！！！！！！", this.getClass());
+			log.info("开始实例化配置文件！！！！！！！！！"); 
 			super.initEcache(PropConfig.getInstance() , PropInfo.getInstance());
 			return true;
 		} catch (Exception ex) {
@@ -92,7 +95,7 @@ public class SystemInit extends BaseInit {
 					}
 				} catch (Exception e) {
 					bFlagInit = false;
-					this.getLogger(null).sysoutInfo(100090003 , this.getClass() , className);
+					log.error(this.getInfo(100090003, className));
 					e.printStackTrace();
 				}
 			}
@@ -117,7 +120,7 @@ public class SystemInit extends BaseInit {
 					}
 				} catch (Exception e) {
 					bFlagInit = false;
-					this.getLogger(null).sysoutInfo(100090003 , this.getClass() , sClassName);
+					log.info(this.getInfo(100090003, sClassName));
 					e.printStackTrace();
 				}
 			}

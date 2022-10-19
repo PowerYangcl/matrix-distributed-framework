@@ -8,6 +8,7 @@ import com.matrix.system.cache.PropVisitor;
 
 
 /**
+ * @deprecated
  * @description: 基础日志服务类  
  * 
  * @author Yangcl

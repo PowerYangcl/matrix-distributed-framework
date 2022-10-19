@@ -24,7 +24,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  * @author Yangcl
  * @home https://github.com/PowerYangcl
  * @date 2016年11月11日 下午8:51:10 
- * @version 1.0.0
+ * @version 1.0.0.1
  */
 public class IoUtil {
 
@@ -106,6 +106,36 @@ public class IoUtil {
 	}
 
 	/**
+	 * @description: 文件复制 
+	 *
+	 * @param input
+	 * @param target_ 
+	 * @author Yangcl
+	 * @date 2018年1月26日 下午5:44:46 
+	 * @version 1.0.0
+	 */
+	public void fileCopy(InputStream input, String target_){
+		File target = new File(target_);
+		FileOutputStream fs = null;
+		try {
+			fs = new FileOutputStream(target);
+			IOUtils.copy(input, fs);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				fs.flush();
+				fs.close();
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * @deprecated
 	 * @descriptions 文件夹拷贝(文件内含有文件和文件夹) 
 	 *		从jar包中复制资源到指定的项目目录下
 	 *
@@ -140,38 +170,6 @@ public class IoUtil {
 			}
 		}
     }
-	
-	/**
-	 * @description: 文件复制 
-	 *
-	 * @param input
-	 * @param target_ 
-	 * @author Yangcl
-	 * @date 2018年1月26日 下午5:44:46 
-	 * @version 1.0.0
-	 */
-	public void fileCopy(InputStream input, String target_){
-		File target = new File(target_);
-		FileOutputStream fs = null;
-		try {
-			fs = new FileOutputStream(target);
-			IOUtils.copy(input, fs);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				fs.flush();
-				fs.close();
-			}catch (IOException e){
-				e.printStackTrace();
-			}
-		}
-		 
-		
-	}
-	
 }
 
 

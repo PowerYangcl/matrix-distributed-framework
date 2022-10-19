@@ -32,12 +32,14 @@ public class RedisTemplateRedisson extends BaseClass {
 	
 	// // 连接类型，支持standalone-单机节点，sentinel-哨兵，cluster-集群，master-replica-主从
 	public Config createConfig() {
-		String type = this.getConfig("matrix-cache.redis_model_" + this.getConfig("matrix-core.model"));		// sentinel or cluster and so on.
+		String type = this.getConfig("matrix-cache.cache_model_model_" + this.getConfig("matrix-core.model"));		// sentinel or cluster and so on.
 		RedissonProperties properties = new RedissonProperties();
-		properties.setType(type);	
-		properties.setAddress(this.getConfig("matrix-cache.redis_url_" + this.getConfig("matrix-core.model")));
-		properties.setUsername(this.getConfig("matrix-cache.redis_username_" + this.getConfig("matrix-core.model")));
-		properties.setPassword(this.getConfig("matrix-cache.redis_password_" + this.getConfig("matrix-core.model")));
+		properties.setType(type);
+		String url = this.getConfig("matrix-cache.lettuce_cache_url_" + this.getConfig("matrix-core.model"));
+		String port = this.getConfig("matrix-cache.lettuce_port_" + this.getConfig("matrix-core.model"));
+		properties.setAddress(url + ":" + port);
+		properties.setUsername(this.getConfig("matrix-cache.lettuce_username_" + this.getConfig("matrix-core.model")));
+		properties.setPassword(this.getConfig("matrix-cache.lettuce_password_" + this.getConfig("matrix-core.model")));
 		properties.setDatabase(1);
 		
 		IRedissonConfigService redissonConfigService = null; 

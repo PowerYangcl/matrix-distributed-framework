@@ -10,8 +10,9 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang3.StringUtils;
 
 import com.matrix.base.BaseEhcache;
-import com.matrix.base.BaseLog;
 import com.matrix.util.IoUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @descriptions 初始化项目配置文件中的【属性配置信息】到ecache中
@@ -21,6 +22,7 @@ import com.matrix.util.IoUtil;
  * @date 2016年11月12日 下午6:23:36
  * @version 1.0.1
  */
+@Slf4j
 public class PropConfig extends BaseEhcache<String, String> {
 	
 	private PropConfig(){
@@ -36,14 +38,14 @@ public class PropConfig extends BaseEhcache<String, String> {
 	public synchronized void refresh(String key_) {
 		if(this.getRefreshFlag("prop-config").equals("true")) {
 			// 未发现的Key：系统配置信息同步已经完成 
-			BaseLog.getInstance().sysoutInfo("系统配置信息同步已经完成，未发现的key = " + key_ , this.getClass()); 
+			log.info("系统配置信息同步已经完成，未发现的key = " + key_ );
 			return;
 		}
 		this.addElement("prop-config", "true"); // 添加刷新标记
 		
 		SysWorkDir configDir = new SysWorkDir();
 		String tempPath = configDir.getTempDir("config/");
-		BaseLog.getInstance().sysoutInfo("开始同步并刷新项目配置文件： " + tempPath , this.getClass()); 
+		log.info("开始同步并刷新项目配置文件： " + tempPath);
 		IoUtil.getInstance().copyResources("classpath*:META-INF/matrix/config/*.properties" , tempPath , "/matrix/config/");
 		
 		LoadProperties loadProperties = new LoadProperties();
@@ -72,22 +74,20 @@ public class PropConfig extends BaseEhcache<String, String> {
 		}finally {
 			this.addElement("matrix-core.host_ip", "");
 		}
-		
-		BaseLog.getInstance().sysoutInfo("-------------------------------------------当前主机地址段：" + this.getValue("matrix-core.host_ip")  , this.getClass());
-		
+		log.info("当前主机地址段：" + this.getValue("matrix-core.host_ip"));
 		try {
 			ResourceBundle resource = ResourceBundle.getBundle("properties/dubbo");
 			if(this.getValue("matrix-core.build_type").equals("jenkins")) {
 				// 根据部署结果重置项目版本信息，此时将覆盖config.matrix-core.properties文件中的model信息
 				this.resetElement("matrix-core.model", resource.getString("dubbo.application.model"));  
-				BaseLog.getInstance().sysoutInfo("-------------------------------------------系统运行环境：" + this.getValue("matrix-core.model")  , this.getClass());
+				log.info("系统运行环境：" + this.getValue("matrix-core.model"));
 			}
 			this.addElement("matrix-core.zookeeper_host", resource.getString("dubbo.registry.address")); 
 			this.addElement("matrix-core.dubbo_application_name", resource.getString("dubbo.application.name")); 
 			this.addElement("matrix-core.dubbo_application_owner", resource.getString("dubbo.application.owner")); 
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------Zookeepper：" + this.getValue("matrix-core.zookeeper_host")  , this.getClass());
+			log.info("Zookeepper：" + this.getValue("matrix-core.zookeeper_host"));
 		} catch (Exception ex) {
-			BaseLog.getInstance().sysoutInfo("-------------------------------------------properties/dubbo.xml文件不存在", this.getClass());
+			log.error("properties/dubbo.xml文件不存在");
 		}
 		
 	}
