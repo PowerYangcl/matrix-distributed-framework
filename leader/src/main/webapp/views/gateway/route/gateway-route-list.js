@@ -120,8 +120,6 @@ layui.config({
 			}else if (o.event === 'exec') {
 			}else if (o.event === 'del') {
 				pageDialog.deleteJobInfo(o);
-			}else if (o.event === 'resume') {
-			}else if (o.event === 'log') {
 			}
 		});
 
@@ -243,9 +241,131 @@ layui.config({
 		        });
 			},
 			
+			// 编辑按钮对应的弹窗
+			editDialog : function(o){
+				layer.open({
+					title : '修改网关路由规则',
+		          	type : 1,	// 1：解析HTML代码段；2：解析url
+		          	area : ['1200px', '650px'],
+		          	fixed : false,
+		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
+		          	resize : false,        // 是否允许拉伸 默认：true
+	          		content : pageDialog.drawDialogPage('edit' , o.key , o.data),  // ('edit' , o.key , o.data),
+	          		anim : 0 ,		// 弹窗从上掉落
+	          		btn : ['提交' , '取消'],
+	          		yes : function(index , layero){
+	          			var url_ =  layui.setter.path + 'gateway/ajax_btn_gateway_route_edit.do';
+						var data_ = $("#dialog-gw-form").serializeArray();
+						
+						var rfmArr = $("#rate-flow-mark-tbody tr");
+						if(rfmArr.length != 0) {
+							var rfmList = [];
+							for(var i = 0; i < rfmArr.length; i ++){
+								var rfm = new Object();
+								var tds = rfmArr[i].children;
+								rfm.type = $(tds[1]).find("select").val();
+								rfm.target = $(tds[2]).find("input").val();
+								rfm.param = $(tds[3]).find("input").val();
+								rfm.value = $(tds[4]).find("input").val();
+								rfm.statisticalDimension = $(tds[5]).find("select").val();
+								rfm.name = $(tds[6]).find("input").val();
+								rfmList.push(rfm);
+							}
+							data_.rfmList = rfmList;
+						}
+						
+						var predicateArr = $("#gw-predicates-tbody tr");
+						if(predicateArr.length != 0) {
+							var predicateList = [];
+							for(var i = 0; i < predicateArr.length; i ++){
+								var e = new Object();
+								var tds =  predicateArr[i].children;
+								e.predicate = $(tds[1]).find("select").val();
+								e.predicateValue = $(tds[2]).find("input").val();
+								predicateList.push(e);
+							}
+							data_.predicateList = predicateList;
+						}
+						
+						var o = new Object();
+						for(var i = 0; i < data_.length; i ++){
+							o[data_[i].name] = data_[i].value;
+						}
+						o.rfmList = data_.rfmList;
+						o.predicateList = data_.predicateList;
+						
+						var obj = JSON.parse(layui.setter.ajaxs.sendAjaxContentType('post' , url_ , JSON.stringify(o), 'application/json'));
+						if(obj.status == 'success'){
+			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+			            		search.reload();
+			            		layer.close(a);
+			            		layer.close(index);
+		            		});
+			            }else{
+			            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+			            }
+	          		},
+          			btn2 : function(index, layero){ // 按钮【取消】的回调
+          				//return false 开启该代码可禁止点击该按钮关闭
+          			}, 
+          			cancel : function(){  // 右上角关闭回调
+          				// return false; // 开启该代码可禁止点击该按钮关闭
+          			},
+          			success: function(layero, index) {
+          				// 因为是弹窗，所以重新渲染时间控件
+          				laydate.render(
+      						{
+      							elem: '#snapshot-begin-time',
+      							type: 'datetime'
+      						}
+          				);
+          				laydate.render(
+      						{
+      							elem: '#snapshot-end-time',
+      							type: 'datetime'
+      						}
+          				);
+          				
+          				pageDialog.initEditDialogPage(o.key , o.data);
+          			}
+		        });
+			},
+			
+			// 绘制完成编辑弹窗后实例化其中的数据
+			initEditDialogPage : function(securityKey, e){
+				// 生产环境下拉框 
+				$(".active-select").find("option[value='" + e.active + "']").attr("selected" , true);
+				
+				// 请求方式下拉框 
+				$(".request-type-select").find("option[value='" + e.requestType + "']").attr("selected" , true);
+				
+				// 是否保存流量快照 1 保存
+				if(e.requestSnapshotMark == '保存'){	
+					layer.pageDialog.snapshotTrShow();
+				}
+				
+				// 是否开启流量标记 1 标记
+				if(e.rateFlowMark == '标记') {
+					layer.pageDialog.rateFlowMarkTitle();
+					var size = e.rfmList.length;
+					for(var i = 0 ; i < size; i ++){
+						var tr_ = e.rfmList[i];
+						layer.pageDialog.rateFlowMarkBody(tr_);
+					}
+				}
+				
+				// 断言设置
+				var psize = e.predicateList.length;
+				for(var i = 0 ; i < psize; i ++){
+					var tr_ = e.predicateList[i];
+					layer.pageDialog.addGwPredicatesTable(tr_)
+				}
+				
+			},
+			
 			
 	        // 绘制添加和编辑弹框
-			drawDialogPage : function(type , key , e){
+			drawDialogPage : function(type , key , e){		// ('edit' , o.key , o.data),
 				var id = "";
 				var alert = '';
 				var routeId = '';
@@ -284,16 +404,16 @@ layui.config({
 						routeTypeUrl = 'checked="checked" ';
 					}
 					
-					if(e.rateFlowMark == 0){
-						rateFlowMark0 = 'checked="checked" ';
-					}else{
+					if(e.rateFlowMark == '标记') {		// 是否开启流量标记 1 标记
 						rateFlowMark1 = 'checked="checked" ';
+					}else{
+						rateFlowMark0 = 'checked="checked" ';
 					}
 					
-					if(e.requestSnapshotMark == 0){
-						requestSnapshotMark0 = 'checked="checked" ';
-					}else{
+					if(e.requestSnapshotMark == '保存'){	// 是否保存流量快照 1 保存
 						requestSnapshotMark1 = 'checked="checked" ';
+					}else{
+						requestSnapshotMark0 = 'checked="checked" ';
 					}
 					snapshotCount = e.snapshotCount;
 					snapshotBeginTime = e.snapshotBeginTime;
@@ -518,54 +638,109 @@ layui.config({
 				$("#dialog-gw-table").after(html);
 			},
 			
-			rateFlowMarkBody : function(){
+			rateFlowMarkBody : function(e){
+				var type_ = '';				// 统计整个接口项目流量 type=1 or 2 or 3 or 4
+				var target_ = '';			// 统计当前接口项目下某个接口流量,如：MANAGER-API-901
+				var param_ = '';			// 统计当前接口项目下指定接口的某个或某几个参数产生的流量,如：productType,productName
+				var value_ = '';				// 统计当前接口项目下指定接口的某个参数对应的值所产生的流量,如：时间简史
+				var sd_ = '';					// 统计维度：month|day|hour|minute|second，不按周统计。
+				var name_ = '';				// 统计规则描述
+				if(typeof e != 'undefined'){
+					var type_ = e.type; 
+					var target_ = e.target; 
+					var param_ = e.param; 
+					var value_ = e.value;
+					var sd_ = e.statisticalDimension;
+					var name_ = e.name;
+				}
+				
 				var html = '<tr>';
 					html += '<td style="text-align: center" width="40px">';
 						html += '<input type="checkbox" class="rate-checkbox" style="vertical-align:middle;">';
 					html += '</td>';
 					html += '<td style="text-align: left" width="120px">';
 						html += '<select class="key-words-type-select" style="width:100%;">';
-							html += pageDialog.keyWordsTypeList();
+							html += pageDialog.keyWordsTypeList(type_);
 						html += '</select>';
 					html += '</td>';
 					html += '<td style="text-align: left" width="200px">';
-						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52" value="' + target_ + '">';
 					html += '</td>';
 					html += '<td style="text-align: left" width="200px">';
-						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52" value="' + param_ + '">';
 					html += '</td>';
 					html += '<td style="text-align: left" width="200px">';
-						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52" value="' + value_ + '">';
 					html += '</td>';
 					html += '<td style="text-align: left" width="120px">';
 						html += '<select class="key-words-statistical-dimension-select" style="width:100%;">';
-							html += pageDialog.keyWordsStatisticalDimensionList();
+							html += pageDialog.keyWordsStatisticalDimensionList(sd_);
 						html += '</select>';
 					html += '</td>';
 					html += '<td style="text-align: left">';
-						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width:94%;" placeholder="52个字符以内"  maxlength="52" value="' + name_ + '">';
 					html += '</td>';
 				html += '</tr>';
 				$("#rate-flow-mark-tbody").append(html);
 			},
 			
-			keyWordsTypeList : function() {
+			keyWordsTypeList : function(e) {
+				var type_1 = '';
+				var type_2 = '';
+				var type_3 = '';
+				var type_4 = '';
+				if(typeof e != 'undefined'){
+					if(e == 1){
+						type_1 = 'selected';
+					}
+					if(e == 2){
+						type_2 = 'selected';
+					}
+					if(e == 3){
+						type_3 = 'selected';
+					}
+					if(e == 4){
+						type_4 = 'selected';
+					}
+				}
 				var html_ = '<option value="">请选择</option>';
-					html_ += '<option value="1">整个项目</option>';
-					html_ += '<option value="2">指定接口</option>';
-					html_ += '<option value="3">指定参数</option>';
-					html_ += '<option value="4">参数对应值</option>';
+					html_ += '<option value="1" ' + type_1 + '>整个项目</option>';
+					html_ += '<option value="2" ' + type_2 + '>指定接口</option>';
+					html_ += '<option value="3" ' + type_3 + '>指定参数</option>';
+					html_ += '<option value="4" ' + type_4 + '>参数对应值</option>';
 				return html_;
 			},
 			
 			// 统计维度：month|day|hour|minute|second，不按周统计。
-			keyWordsStatisticalDimensionList : function() {
+			keyWordsStatisticalDimensionList : function(e) {
+				var month_ = '';
+				var day_ = '';
+				var hour_ = '';
+				var minute_ = '';
+				var second_ = '';
+				if(typeof e != 'undefined'){
+					if(e == 'month'){
+						month_ = 'selected';
+					}
+					if(e == 'day'){
+						day_ = 'selected';
+					}
+					if(e == 'hour'){
+						hour_ = 'selected';
+					}
+					if(e == 'minute'){
+						minute_ = 'selected';
+					}
+					if(e == 'second'){
+						second_ = 'selected';
+					}
+				}
 				var html_ = '<option value="">请选择</option>';
-					html_ += '<option value="month">按月统计</option>';
-					html_ += '<option value="day">按天统计</option>';
-					html_ += '<option value="hour">按小时统计</option>';
-					html_ += '<option value="minute">按分钟统计</option>';
-					html_ += '<option value="second">按秒统计</option>';
+					html_ += '<option value="month" ' + month_ + '>按月统计</option>';
+					html_ += '<option value="day" ' + day_ + '>按天统计</option>';
+					html_ += '<option value="hour" ' + hour_ + '>按小时统计</option>';
+					html_ += '<option value="minute" ' + minute_ + '>按分钟统计</option>';
+					html_ += '<option value="second" ' + second_ + '>按秒统计</option>';
 				return html_;
 			},
 			
@@ -580,37 +755,97 @@ layui.config({
 			},
 			
 			/////////////////////////////////////////////////////////////////  断言设置 /////////////////////////////////////////////////////////////////////////////
-			addGwPredicatesTable : function(){
+			addGwPredicatesTable : function(e){
+				var predicate_ = '';				// "After"
+				var predicateValue_ = '';				// 2022-10-20T17:42:47.789-07:00[America/Denver]
+				if(typeof e != 'undefined'){
+					var predicate_ = e.predicate; 
+					var predicateValue_ = e.predicateValue;
+				}
+				
 				var html = '<tr>';
 					html += '<td style="text-align: center" width="40px">';
 						html += '<input type="checkbox" class="predicates-checkbox" style="vertical-align:middle;">';
 					html += '</td>';
 					html += '<td style="text-align: left" width="200px">';
 						html += '<select class="predicates-select" style="width:100%;">';
-							html += pageDialog.predicateList();
+							html += pageDialog.predicateList(predicate_);
 						html += '</select>';
 					html += '</td>';
 					html += '<td style="text-align: left">';
-						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width: 900px" placeholder="请输入合法的断言规则，100个字符以内"  maxlength="100">';
+						html += '<input type="text" autocomplete="off"  class="dialog-form-input" style="width: 900px" placeholder="请输入合法的断言规则，100个字符以内"  maxlength="100" value="' + predicateValue_ + '">';
 					html += '</td>';
 				html += '</tr>';
 				$("#gw-predicates-tbody").append(html);
 			},
 			
-			predicateList : function(){
+			predicateList : function(e){
+				var path = '';
+				var after = '';
+				var before = '';
+				var between = '';
+				
+				var cookie = '';
+				var header = '';
+				var host = '';
+				var method = '';
+				
+				var query = '';
+				var remoteAddr = '';
+				var weight = '';
+				var xforwardedremoteaddr = '';
+				if(typeof e != 'undefined'){
+					if(e == 'Path'){
+						path = 'selected';
+					}
+					if(e == 'After'){
+						after = 'selected';
+					}
+					if(e == 'Before'){
+						before = 'selected';
+					}
+					if(e == 'Between'){
+						between = 'selected';
+					}
+					if(e == 'Cookie'){
+						cookie = 'selected';
+					}
+					if(e == 'Header'){
+						header = 'selected';
+					}
+					if(e == 'Host'){
+						host = 'selected';
+					}
+					if(e == 'Method'){
+						method = 'selected';
+					}
+					if(e == 'Query'){
+						query = 'selected';
+					}
+					if(e == 'RemoteAddr'){
+						remoteAddr = 'selected';
+					}
+					if(e == 'Weight'){
+						weight = 'selected';
+					}
+					if(e == 'XForwardedRemoteAddr'){
+						xforwardedremoteaddr = 'selected';
+					}
+				}
+				
 				var html_ = '<option value="">请选择断言类型</option>';
-				html_ += '<option value="Path">Path</option>';
-				html_ += '<option value="After">After</option>';
-				html_ += '<option value="Before">Before</option>';
-				html_ += '<option value="Between">Between(时间点英文逗号分隔)</option>';
-				html_ += '<option value="Cookie">Cookie</option>';
-				html_ += '<option value="Header">Header</option>';
-				html_ += '<option value="Host">Host</option>';
-				html_ += '<option value="Method">Method</option>';
-				html_ += '<option value="Query">Query(匹配某几个参数，英文逗号分隔)</option>';
-				html_ += '<option value="RemoteAddr">RemoteAddr(ipv4 cidr)</option>';
-				html_ += '<option value="Weight">Weight(不常用)</option>';
-				html_ += '<option value="XForwardedRemoteAddr">XForwardedRemoteAddr</option>';
+				html_ += '<option value="Path" ' + path + '>Path</option>';
+				html_ += '<option value="After" ' + after + '>After</option>';
+				html_ += '<option value="Before" ' + before + '>Before</option>';
+				html_ += '<option value="Between" ' + between + '>Between(时间点英文逗号分隔)</option>';
+				html_ += '<option value="Cookie" ' + cookie + '>Cookie</option>';
+				html_ += '<option value="Header" ' + header + '>Header</option>';
+				html_ += '<option value="Host" ' + host + '>Host</option>';
+				html_ += '<option value="Method" ' + method + '>Method</option>';
+				html_ += '<option value="Query" ' + query + '>Query(匹配某几个参数，英文逗号分隔)</option>';
+				html_ += '<option value="RemoteAddr" ' + remoteAddr + '>RemoteAddr(ipv4 cidr)</option>';
+				html_ += '<option value="Weight" ' + weight + '>Weight(不常用)</option>';
+				html_ += '<option value="XForwardedRemoteAddr" ' + xforwardedremoteaddr + '>XForwardedRemoteAddr</option>';
 				return html_;
 			},
 			

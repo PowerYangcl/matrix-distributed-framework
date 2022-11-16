@@ -200,4 +200,46 @@
 		where id = #{id,jdbcType=BIGINT}
 	</update>
 	
+	<!-- 根据RouteId来软删除数据记录 -->
+	<update id="deleteByRouteId" parameterType="com.matrix.pojo.entity.GwRouteRateFlowKeyWords">
+		update gw_route_rate_flow_key_words
+		<set>
+			delete_flag = 0,
+			
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where route_id = #{routeId, jdbcType=VARCHAR} and delete_flag = 1
+	</update>	
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

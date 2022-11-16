@@ -16,6 +16,7 @@ import com.matrix.aspectj.Idempotent;
 import com.matrix.base.BaseController;
 import com.matrix.base.Result;
 import com.matrix.pojo.request.AddGatewayRouteRequest;
+import com.matrix.pojo.request.EditGatewayRouteRequest;
 import com.matrix.pojo.request.FindGatewayRouteListRequest;
 import com.matrix.pojo.response.GwRouteResponse;
 import com.matrix.pojo.view.McUserInfoView;
@@ -84,6 +85,25 @@ public class GatewayConfigController extends BaseController {
 		super.userBehavior(session, "ajax_gateway_route_list", "网关路由规则列表");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return gatewayConfigService.ajaxGatewayRouteList(param, request);  
+	}
+	
+	
+	/**
+	 * @description: 修改一条网关路由规则，入参以对象方式发送(对象包含数组)
+	 * 
+	 * @return Result<?>
+	 * @author Yangcl
+	 * @date 2022-11-16 17:55:55
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.4-spring-cloud-gateway
+	 */
+	@ResponseBody
+	@Idempotent(accessToken = false)	
+	@RequestMapping(value = "ajax_btn_gateway_route_edit",method = {RequestMethod.POST}, produces = { "application/json;charset=utf-8" })
+	public Result<?> ajaxBtnGatewayRouteEdit(@RequestBody @Validated EditGatewayRouteRequest param , HttpServletRequest request, HttpSession session){ 
+		super.userBehavior(session, "ajax_btn_gateway_route_edit", "修改一条网关路由规则");
+		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
+		return gatewayConfigService.ajaxBtnGatewayRouteEdit(param, request);  
 	}
 }
 

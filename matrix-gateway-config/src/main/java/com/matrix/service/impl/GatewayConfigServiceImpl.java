@@ -28,6 +28,7 @@ import com.matrix.pojo.entity.GwRoute;
 import com.matrix.pojo.entity.GwRoutePredicates;
 import com.matrix.pojo.entity.GwRouteRateFlowKeyWords;
 import com.matrix.pojo.request.AddGatewayRouteRequest;
+import com.matrix.pojo.request.EditGatewayRouteRequest;
 import com.matrix.pojo.request.FindGatewayRouteListRequest;
 import com.matrix.pojo.response.GwRouteResponse;
 import com.matrix.service.IGatewayConfigService;
@@ -128,6 +129,53 @@ public class GatewayConfigServiceImpl extends BaseClass implements IGatewayConfi
 			e.printStackTrace();
 			return Result.ERROR(this.getInfo(100010116), ResultCode.SERVER_EXCEPTION);   // 100010116=分页数据返回失败，服务器异常!
 		}
+	}
+
+	
+	
+	/**
+	 * @description: 修改一条网关路由规则，入参以对象方式发送(对象包含数组)
+	 * 
+	 * @return Result<?>
+	 * @author Yangcl
+	 * @date 2022-11-16 17:55:55
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.4-spring-cloud-gateway
+	 */
+	@Transactional
+	public Result<?> ajaxBtnGatewayRouteEdit(EditGatewayRouteRequest param, HttpServletRequest request) {
+		Result<?> validate = param.validate();
+		if(validate.getStatus().equals("error")) {
+			return validate;
+		}
+		
+		String routeId = param.getRouteId();
+		try {
+			GwRoute gr = param.buildGwRoute();
+			gwRouteMapper.updateByRouteId(gr);
+			
+			GwRoutePredicates grp = new GwRoutePredicates();
+			grp.setRouteId(routeId);
+			grp.buildUpdateCommon(param.getUserCache());
+			gwRoutePredicatesMapper.deleteByRouteId(grp);
+			List<GwRoutePredicates> plist = param.buildGwRoutePredicateList();
+			for(GwRoutePredicates e : plist) {
+				gwRoutePredicatesMapper.insertSelective(e);
+			}
+			
+			GwRouteRateFlowKeyWords grrfkw = new GwRouteRateFlowKeyWords();
+			grrfkw.setRouteId(routeId);
+			grrfkw.buildUpdateCommon(param.getUserCache());
+			gwRouteRateFlowKeyWordsMapper.deleteByRouteId(grrfkw);
+			List<GwRouteRateFlowKeyWords> rateList = param.buildGwRouteRateFlowKeyWordList();
+			for(GwRouteRateFlowKeyWords e : rateList) {
+				gwRouteRateFlowKeyWordsMapper.insertSelective(e);
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010105) + "：" + ex.getCause().getMessage());		// 100010105=数据更新失败，服务器异常!
+		}
+		return Result.SUCCESS(this.getInfo(100010104));  		// 100010104=数据更新成功!
 	}
 
 	
