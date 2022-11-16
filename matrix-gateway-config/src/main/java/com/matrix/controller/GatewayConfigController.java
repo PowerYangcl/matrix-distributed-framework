@@ -17,7 +17,7 @@ import com.matrix.base.BaseController;
 import com.matrix.base.Result;
 import com.matrix.pojo.request.AddGatewayRouteRequest;
 import com.matrix.pojo.request.FindGatewayRouteListRequest;
-import com.matrix.pojo.response.GwRouteListResponse;
+import com.matrix.pojo.response.GwRouteResponse;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.service.IGatewayConfigService;
 
@@ -80,7 +80,7 @@ public class GatewayConfigController extends BaseController {
 	@ResponseBody
 	@Idempotent(accessToken = false)	
 	@RequestMapping(value = "ajax_gateway_route_list.do", produces = { "application/json;charset=utf-8" })
-	public Result<PageInfo<GwRouteListResponse>> ajaxGatewayRouteList(FindGatewayRouteListRequest param , HttpServletRequest request, HttpSession session){ 
+	public Result<PageInfo<GwRouteResponse>> ajaxGatewayRouteList(FindGatewayRouteListRequest param , HttpServletRequest request, HttpSession session){ 
 		super.userBehavior(session, "ajax_gateway_route_list", "网关路由规则列表");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return gatewayConfigService.ajaxGatewayRouteList(param, request);  

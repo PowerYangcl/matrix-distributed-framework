@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class GwRouteListRateFlowKeyWordResponse {
+public class GwRouteRateFlowKeyWordResponse {
 	private static final long serialVersionUID = 2682519132645430553L;
 
 	private Long id;

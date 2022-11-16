@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class GwRouteListPredicateResponse {
+public class GwRoutePredicateResponse {
 	private static final long serialVersionUID = 2682519132645430552L;
 
 	private Long id;

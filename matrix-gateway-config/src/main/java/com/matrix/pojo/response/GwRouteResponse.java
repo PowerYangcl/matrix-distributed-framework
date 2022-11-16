@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class GwRouteListResponse {
+public class GwRouteResponse {
 	private static final long serialVersionUID = 2682519132645430551L;
 
 	private Long id;
@@ -39,9 +39,9 @@ public class GwRouteListResponse {
 	private String updateUserName;
 	private Integer deleteFlag;               // 0 删除 | 1 未删除 数据库记录默认未删除
 	
-	private List<GwRouteListPredicateResponse> predicateList = new ArrayList<GwRouteListPredicateResponse>();
+	private List<GwRoutePredicateResponse> predicateList = new ArrayList<GwRoutePredicateResponse>();
 	
-	private List<GwRouteListRateFlowKeyWordResponse> rfmList = new ArrayList<GwRouteListRateFlowKeyWordResponse>();
+	private List<GwRouteRateFlowKeyWordResponse> rfmList = new ArrayList<GwRouteRateFlowKeyWordResponse>();
     
     public void build(GwRoute e , Map<String, List<GwRoutePredicates>> pmaps, Map<String, List<GwRouteRateFlowKeyWords>> kmaps) {
     	id = e.getId();
@@ -67,7 +67,7 @@ public class GwRouteListResponse {
     	
     	List<GwRoutePredicates> plist = pmaps.get(routeId);
     	for(GwRoutePredicates r : plist) {
-    		GwRouteListPredicateResponse p = new GwRouteListPredicateResponse();
+    		GwRoutePredicateResponse p = new GwRoutePredicateResponse();
     		p.setId(r.getId());
     		p.setPredicate(r.getPredicate());
     		p.setPredicateValue(r.getPredicateValue());
@@ -77,7 +77,7 @@ public class GwRouteListResponse {
     	if(e.getRateFlowMark() == 1) {
     		List<GwRouteRateFlowKeyWords> klist = kmaps.get(routeId);
     		for(GwRouteRateFlowKeyWords r : klist) {
-    			GwRouteListRateFlowKeyWordResponse k = new GwRouteListRateFlowKeyWordResponse();
+    			GwRouteRateFlowKeyWordResponse k = new GwRouteRateFlowKeyWordResponse();
     			k.setId(r.getId());
     			k.setName(r.getName());
     			k.setType(r.getType());

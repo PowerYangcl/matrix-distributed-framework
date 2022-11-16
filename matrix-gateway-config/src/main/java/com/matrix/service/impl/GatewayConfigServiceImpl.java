@@ -29,7 +29,7 @@ import com.matrix.pojo.entity.GwRoutePredicates;
 import com.matrix.pojo.entity.GwRouteRateFlowKeyWords;
 import com.matrix.pojo.request.AddGatewayRouteRequest;
 import com.matrix.pojo.request.FindGatewayRouteListRequest;
-import com.matrix.pojo.response.GwRouteListResponse;
+import com.matrix.pojo.response.GwRouteResponse;
 import com.matrix.service.IGatewayConfigService;
 
 @Validated
@@ -88,7 +88,7 @@ public class GatewayConfigServiceImpl extends BaseClass implements IGatewayConfi
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.6.1.4-spring-cloud-gateway
 	 */
-	public Result<PageInfo<GwRouteListResponse>> ajaxGatewayRouteList(FindGatewayRouteListRequest param, HttpServletRequest request) {
+	public Result<PageInfo<GwRouteResponse>> ajaxGatewayRouteList(FindGatewayRouteListRequest param, HttpServletRequest request) {
 		GwRouteDto dto = param.buildGatewayRouteListRequest();
 		int pageNum = 1;	// 当前第几页 | 必须大于0
     	int pageSize = 10;	// 当前页所显示记录条数
@@ -114,13 +114,13 @@ public class GatewayConfigServiceImpl extends BaseClass implements IGatewayConfi
 					kmaps = keywordList.stream().collect(Collectors.groupingBy(GwRouteRateFlowKeyWords::getRouteId));
 				}
 				
-				List<GwRouteListResponse> list_ = new ArrayList<GwRouteListResponse>();
+				List<GwRouteResponse> list_ = new ArrayList<GwRouteResponse>();
 				for(GwRoute e : list) {
-					GwRouteListResponse v = new GwRouteListResponse();
+					GwRouteResponse v = new GwRouteResponse();
 					v.build(e, pmaps, kmaps); 
 					list_.add(v);
 				}
-				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<GwRouteListResponse>(list_));  // 100010114=分页数据返回成功!
+				return Result.SUCCESS(this.getInfo(100010114), new PageInfo<GwRouteResponse>(list_));  // 100010114=分页数据返回成功!
 			}else {
 				return Result.SUCCESS(this.getInfo(100010115), ResultCode.RESULT_NULL);  // 100010115=分页数据返回成功, 但没有查询到可以显示的数据!
 			}
