@@ -24,7 +24,7 @@ layui.config({
  	  	         	{
  	  	         		field:'routeId', 
  	  	         		title:'描述 | 标题|请求类型', 
- 	  	         		width:200,
+ 	  	         		width:240,
  	  	         		unresize: true,
  	  	         		templet: function(res){
 	 	  	         		var html_ = res.description + '</br> <a>' + res.routeId +'</a></br>' + res.requestType +'</a>';
@@ -90,7 +90,7 @@ layui.config({
 					  		return html_;
 						}
 					},  	  	         	
- 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar',width:160}
+ 	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar',width:70}
  	    	  	]
   	      	],
   	    	page: true
