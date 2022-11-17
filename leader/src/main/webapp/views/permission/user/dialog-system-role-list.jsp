@@ -62,6 +62,8 @@
                 					<button class="security-btn layui-btn layui-btn-sm" key="system_user_list:dialog_reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
               					</div>
             				</script>
+            				
+            				<!-- f(d.userId d 是固定就这么写的 -->
 							<script id="table-btn-toolbar" type="text/html">
        						{{#  if(d.userId == -1){ }}
             						<a class="security-btn layui-btn layui-btn-xs" key="system_user_list:allot_submit" lay-event="allotSubmit"> 分&nbsp&nbsp&nbsp配 </a>

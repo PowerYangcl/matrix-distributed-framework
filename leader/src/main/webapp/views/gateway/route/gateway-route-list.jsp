@@ -73,18 +73,26 @@
 									<div class="layui-table-search-div" >描述：</div>
 									<input id="description" name="description" class="layui-table-search" autocomplete="off">
 
-                					<button class="security-btn layui-btn layui-btn-sm" key="gateway_route_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
+                					<button id="page-search" class="security-btn layui-btn layui-btn-sm" key="gateway_route_list:search" lay-event="search">查&nbsp&nbsp&nbsp&nbsp&nbsp询</button>
                 					<button class="security-btn layui-btn layui-btn-sm" key="gateway_route_list:reset" lay-event="reset">重&nbsp&nbsp&nbsp&nbsp置</button>
                 					<button class="security-btn layui-btn layui-btn-sm" key="gateway_route_list:add" lay-event="add">添&nbsp&nbsp&nbsp&nbsp加</button>
               					</div>
             				</script>
+            				
+            				<!-- f(d.status d 是固定就这么写的 -->
 							<script id="table-btn-toolbar" type="text/html">
               					<a class="security-btn layui-btn layui-btn-xs" key="gateway_route_list:edit" lay-event="edit">修改</a></br>
-              					<a class="security-btn layui-btn layui-btn-xs" key="gateway_route_list:resume" lay-event="edit">生效</a></br>
-              					<a class="security-btn layui-btn layui-btn-xs layui-btn-danger" key="gateway_route_list:delete" lay-event="del">删除</a>
-              					<a class="security-btn layui-btn layui-btn-xs" key="gateway_route_list:rate_flow" lay-event="edit">流量标记</a>
-              					<a class="security-btn layui-btn layui-btn-xs" key="gateway_route_list:snapshot" lay-event="edit">流量快照</a>
+       						{{#  if(d.status == '不生效'){ }}
+            						<a class="security-btn layui-btn layui-btn-xs" key="gateway_route_list:enable" lay-event="enable">生效</a></br>
+          						{{#  } else { }}
+            						<a class="security-btn layui-btn layui-btn-xs" key="gateway_route_list:pause" lay-event="pause">暂停</a></br>
+         						{{#  } }}
+              					<a class="security-btn layui-btn layui-btn-xs layui-btn-danger" key="gateway_route_list:delete" lay-event="del">删除</a> 
             				</script>
+            				
+							<script id="table-btn-toolbar" type="text/html">
+            				</script>            				
+            				
 						</div>
 					</div>
 				</div>

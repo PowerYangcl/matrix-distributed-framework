@@ -74,7 +74,7 @@ public class IdempotentAspect extends BaseClass{
         	}
         	
             Object obj = joinPoint.proceed();
-            launch.loadDictCache(CachePrefix.Idempotent , "").set(redisKey, JSONObject.toJSONString(obj), 60);
+            launch.loadDictCache(CachePrefix.Idempotent , "").set(redisKey, JSONObject.toJSONString(obj), 15);	// 缓存15秒
             return obj;
         } catch (Exception ex) {
         	ex.printStackTrace();

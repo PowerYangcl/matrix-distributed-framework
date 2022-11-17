@@ -273,8 +273,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2019年12月17日 下午5:39:55 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_allot_user_role_remove", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_allot_user_role_remove", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnAllotUserRoleRemove(DeleteMcUserRoleRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_btn_allot_user_role_remove", "解除角色绑定，同时删除缓存");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));

@@ -338,7 +338,7 @@
 				update_user_name = #{updateUserName,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where route_id = #{routeId, jdbcType=VARCHAR}
+		where route_id = #{routeId, jdbcType=VARCHAR} and delete_flag = 1
 	</update>
 </mapper>
 

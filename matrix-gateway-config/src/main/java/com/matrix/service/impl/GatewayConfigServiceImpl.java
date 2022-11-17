@@ -28,6 +28,7 @@ import com.matrix.pojo.entity.GwRoute;
 import com.matrix.pojo.entity.GwRoutePredicates;
 import com.matrix.pojo.entity.GwRouteRateFlowKeyWords;
 import com.matrix.pojo.request.AddGatewayRouteRequest;
+import com.matrix.pojo.request.DeleteGatewayRouteRequest;
 import com.matrix.pojo.request.EditGatewayRouteRequest;
 import com.matrix.pojo.request.FindGatewayRouteListRequest;
 import com.matrix.pojo.response.GwRouteResponse;
@@ -132,7 +133,6 @@ public class GatewayConfigServiceImpl extends BaseClass implements IGatewayConfi
 	}
 
 	
-	
 	/**
 	 * @description: 修改一条网关路由规则，入参以对象方式发送(对象包含数组)
 	 * 
@@ -171,6 +171,57 @@ public class GatewayConfigServiceImpl extends BaseClass implements IGatewayConfi
 			for(GwRouteRateFlowKeyWords e : rateList) {
 				gwRouteRateFlowKeyWordsMapper.insertSelective(e);
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010105) + "：" + ex.getCause().getMessage());		// 100010105=数据更新失败，服务器异常!
+		}
+		return Result.SUCCESS(this.getInfo(100010104));  		// 100010104=数据更新成功!
+	}
+	
+	/**
+	 * @description: 软删除一条网关路由规则
+	 * 
+	 * @author Yangcl
+	 * @date 2022-11-17 15:51:31
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.4-spring-cloud-gateway
+	 */
+	@Transactional
+	public Result<?> ajaxBtnGatewayRouteDelete(DeleteGatewayRouteRequest param, HttpServletRequest request) {
+		String routeId = param.getRouteId();
+		try {
+			GwRoute gr = param.buildGatewayRouteDeleteRequest();
+			gwRouteMapper.deleteByRouteId(gr);
+			
+			GwRoutePredicates grp = new GwRoutePredicates();
+			grp.setRouteId(routeId);
+			grp.buildUpdateCommon(param.getUserCache());
+			gwRoutePredicatesMapper.deleteByRouteId(grp); 
+			
+			GwRouteRateFlowKeyWords grrfkw = new GwRouteRateFlowKeyWords();
+			grrfkw.setRouteId(routeId);
+			grrfkw.buildUpdateCommon(param.getUserCache());
+			gwRouteRateFlowKeyWordsMapper.deleteByRouteId(grrfkw); 
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(this.getInfo(100010107) + "：" + ex.getCause().getMessage());		// 100010107=数据删除失败，服务器异常!
+		}
+		return Result.SUCCESS(this.getInfo(100010106));  		// 100010106=数据删除成功!
+	}
+
+	
+	/**
+	 * @description: 让一跳网关路由规则状态 生效 或 暂停
+	 * 
+	 * @author Yangcl
+	 * @date 2022-11-17 16:09:04
+	 * @home https://github.com/PowerYangcl
+	 * @version 1.6.1.4-spring-cloud-gateway
+	 */
+	@Transactional
+	public Result<?> ajaxBtnGatewayRouteEnableOrPause(GwRoute param, HttpServletRequest request) {
+		try {
+			gwRouteMapper.updateByRouteId(param);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new RuntimeException(this.getInfo(100010105) + "：" + ex.getCause().getMessage());		// 100010105=数据更新失败，服务器异常!

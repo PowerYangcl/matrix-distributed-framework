@@ -22,5 +22,5 @@ import com.matrix.base.BaseClass;
 public class IdempotentRequest extends BaseClass{
 
 	@Length(min = 12, max = 128, message="100020118") 		// 100020118=字符串长度不在合理区间内
-	private String clientToken;
+	private String clientToken;		// 如果是来自jsp页面的请求，可以根据需求加一行：clientToken:Date.now()，参考gateway-route-list.js
 }

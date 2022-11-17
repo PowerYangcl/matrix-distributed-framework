@@ -117,9 +117,12 @@ layui.config({
 				pageDialog.detailDialog(o);
 			} else if (o.event === 'edit') {
 				pageDialog.editDialog(o);
-			}else if (o.event === 'exec') {
+			}else if (o.event === 'enable') {		//  生效
+				pageDialog.gatewayPredicateEnable(o);
+			}else if (o.event === 'pause') {		// 暂停
+				pageDialog.gatewayPredicatePause(o);
 			}else if (o.event === 'del') {
-				pageDialog.deleteJobInfo(o);
+				pageDialog.deleteGatewayPredicateInfo(o);
 			}
 		});
 
@@ -135,7 +138,7 @@ layui.config({
 					},
 					where : {  // 此参数会合并请求到后台
 						routeId:routeId,
-						description:description
+						description:description,
 					}
 				}, 'data');
 				
@@ -860,9 +863,86 @@ layui.config({
 			},
 			
 			
+			// 软删除一条网关规则
+			deleteGatewayPredicateInfo:function(o){
+	        	layer.confirm('您确定要删除【' + o.data.description + '】这条网关规则吗？' ,  { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+					function(index , ele) {  // 确定按钮
+						var type_ = 'post';
+			            var url_ = layui.setter.path + 'gateway/ajax_btn_gateway_route_delete.do';
+			        	var data_ = {
+			        			routeId:o.data.routeId,
+								eleValue : o.key
+						};
+			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
+			            if(obj.status == 'success'){
+			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+			            		$("#page-search").click();  // 定位在当前页同时刷新数据
+			            		layer.close(a);
+			            		layer.close(index);
+		            		});
+			            }else{
+			            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+			            }
+					}, 
+					function(index , ele) {  // 取消按钮
+						layer.close(index);
+					}
+				);
+	        },
+	        
+			// 生效
+	        gatewayPredicateEnable:function(o){
+	        	layer.confirm('您确定要让【' + o.data.description + '】这条网关规则生效吗？' ,  { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+					function(index , ele) {  // 确定按钮
+						var type_ = 'post';
+			            var url_ = layui.setter.path + 'gateway/ajax_btn_gateway_route_enable.do';
+			        	var data_ = {
+			        			routeId:o.data.routeId,
+								eleValue : o.key
+						};
+			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
+			            if(obj.status == 'success'){
+			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+			            		$("#page-search").click();  // 定位在当前页同时刷新数据
+			            		layer.close(a);
+			            		layer.close(index);
+		            		});
+			            }else{
+			            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+			            }
+					}, 
+					function(index , ele) {  // 取消按钮
+						layer.close(index);
+					}
+				);
+	        },
 			
-			
-			
+			// 暂停
+	        gatewayPredicatePause:function(o){
+	        	layer.confirm('您确定要让【' + o.data.description + '】这条网关规则暂停吗？' ,  { title:'系统提示', icon:7, skin: 'layui-layer-molv', anim:4 , btn : [ '确定', '取消' ] }, 
+					function(index , ele) {  // 确定按钮
+						var type_ = 'post';
+			            var url_ = layui.setter.path + 'gateway/ajax_btn_gateway_route_pause.do';
+			        	var data_ = {
+			        			routeId:o.data.routeId,
+								eleValue : o.key
+						};
+			        	var obj = JSON.parse(layui.setter.ajaxs.sendAjax(type_ , url_ , data_));
+			            if(obj.status == 'success'){
+			            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
+			            		$("#page-search").click();  // 定位在当前页同时刷新数据
+			            		layer.close(a);
+			            		layer.close(index);
+		            		});
+			            }else{
+			            	layer.alert( obj.msg , {title:'系统提示 !' , icon:5, skin: 'layui-layer-molv' ,closeBtn:0, anim:4});
+			            }
+					}, 
+					function(index , ele) {  // 取消按钮
+						layer.close(index);
+					}
+				);
+	        },
 		};
 		
 		layer.pageDialog = pageDialog;

@@ -2,7 +2,7 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
-import com.matrix.base.BaseClass;
+import com.matrix.aspectj.IdempotentRequest;
 import com.matrix.pojo.dto.GwRouteDto;
 import com.matrix.pojo.view.McUserInfoView;
 
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class FindGatewayRouteListRequest extends BaseClass implements Serializable{
+public class FindGatewayRouteListRequest extends IdempotentRequest implements Serializable{
 
 	private static final long serialVersionUID = 8800745158048157336L;
 
