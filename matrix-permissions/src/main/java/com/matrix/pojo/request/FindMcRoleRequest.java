@@ -29,7 +29,7 @@ public class FindMcRoleRequest extends BaseClass implements Serializable{
 	private String roleName;	// 模糊查询
 	
 	public Result<PageInfo<McRoleView>> validateAjaxSystemRoleList() {
-		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString() , userCache.getType())) {   
+		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getType())) {   
 			// 用户会话异常! platform cod or cid is null
 			return Result.ERROR(this.getInfo(101010013), ResultCode.INVALID_ARGUMENT);
 		}

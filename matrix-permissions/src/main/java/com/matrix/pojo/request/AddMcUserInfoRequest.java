@@ -68,13 +68,9 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 			e.setType(platform.split("@")[0]);
 			// Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
 			e.setPlatform(platform.split("@")[1]);
-			e.setCid(cid); 		// Leader后台创建的admin类型用户
 		}else {
 			e.setType("user"); // 标识其他平台管理员所创建的用户
 			e.setPlatform(userCache.getPlatform());	// 非Leader平台(具体某个平台)创建的用户，则继承其创建者的平台标识码
-			e.setCid(userCache.getCid()); 		// 继承其创建者的cid
-			e.setUserCode(String.valueOf(System.currentTimeMillis()).substring(5, 13));
-			e.setMcOrganizationId(mcOrganizationId);		// 组织机构id|type=user 则此字段生效|默认0 代表无归属机构
 		}
 		e.setQq(qq);
 		e.setMobile(mobile);

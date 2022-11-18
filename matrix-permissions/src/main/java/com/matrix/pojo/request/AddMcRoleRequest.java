@@ -43,7 +43,6 @@ public class AddMcRoleRequest extends BaseClass implements Serializable{
 			// leader后台创建的角色会传入平台码(如：133C9CB27E18)|其他平台则默认使用用户所在平台的数据
 			e.setPlatform(userCache.getPlatform());	
 		}
-		e.setCid(userCache.getCid());
 		e.buildAddCommon(userCache);
 		return e;
 	}

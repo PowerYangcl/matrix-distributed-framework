@@ -3,6 +3,7 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +24,7 @@ public class UpdateMcRoleRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
-	@NotBlank(message = "100020111")	   // 100020111=主键丢失
+	@NotNull(message = "100020111")	   // 100020111=主键丢失
 	private Long id;
 	
 	@NotBlank(message = "101010027")	   // 101010027=角色名称不得为空

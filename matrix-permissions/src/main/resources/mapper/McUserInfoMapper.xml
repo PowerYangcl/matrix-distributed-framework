@@ -15,12 +15,10 @@
 	
 	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McUserInfo" extends="BaseMap">
 		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="cid" property="cid" jdbcType="BIGINT" />
 		<result column="user_name" property="userName" jdbcType="VARCHAR" />
-		<result column="user_code" property="userCode" jdbcType="VARCHAR" />
-		<result column="mc_organization_id" property="mcOrganizationId" jdbcType="BIGINT" />
 		<result column="password" property="password" jdbcType="VARCHAR" />
 		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="platform" property="platform" jdbcType="VARCHAR" />
 		<result column="flag" property="flag" jdbcType="INTEGER" />
 		<result column="idcard" property="idcard" jdbcType="VARCHAR" />
 		<result column="sex" property="sex" jdbcType="INTEGER" />
@@ -30,7 +28,6 @@
 		<result column="qq" property="qq" jdbcType="VARCHAR" />
 		<result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
 		<result column="page_css" property="pageCss" jdbcType="VARCHAR" />
-		<result column="platform" property="platform" jdbcType="VARCHAR" />
 		<result column="remark" property="remark" jdbcType="LONGVARCHAR" />
 	</resultMap>
 	
@@ -40,14 +37,11 @@
 	<select id="login" parameterType="com.matrix.pojo.entity.McUserInfo" resultMap="McUserInfoViewMap">
 		select 
 			i.id as id,
-			i.cid as cid,
 			i.user_name as userName,
-			i.user_code as userCode,
-			i.mc_organization_id as mcOrganizationId,
 			i.password as password,
 			i.type as type,
+			i.platform as platform,
 			i.flag as flag,
-			i.delete_flag as deleteFlag,
 			i.idcard as idcard,
 			i.sex as sex,
 			i.birthday as birthday,
@@ -56,9 +50,9 @@
 			i.qq as qq,
 			i.pic_url as picUrl,
 			i.page_css as pageCss,
-			i.platform as platform,
 			i.remark as remark,
-			i.create_time as createTime
+			i.create_time as createTime,
+			i.delete_flag as deleteFlag
 		from 
 			mc_user_info i 
 		where 
@@ -72,14 +66,11 @@
 	<select id="loadUserInfo" parameterType="java.lang.Long" resultMap="McUserInfoViewMap">
 		select 
 			i.id as id,
-			i.cid as cid,
 			i.user_name as userName,
-			i.user_code as userCode,
-			i.mc_organization_id as mcOrganizationId,
 			i.password as password,
 			i.type as type,
+			i.platform as platform,
 			i.flag as flag,
-			i.delete_flag as deleteFlag,
 			i.idcard as idcard,
 			i.sex as sex,
 			i.birthday as birthday,
@@ -88,9 +79,9 @@
 			i.qq as qq,
 			i.pic_url as picUrl,
 			i.page_css as pageCss,
-			i.platform as platform,
 			i.remark as remark,
-			i.create_time as createTime
+			i.create_time as createTime,
+			i.delete_flag as deleteFlag
 		from 
 			mc_user_info i 
 		where 
@@ -102,14 +93,11 @@
 	<select id="loadUserInfoList"  resultMap="McUserInfoViewMap">
 		select 
 			i.id as id,
-			i.cid as cid,
 			i.user_name as userName,
-			i.user_code as userCode,
-			i.mc_organization_id as mcOrganizationId,
 			i.password as password,
 			i.type as type,
+			i.platform as platform,
 			i.flag as flag,
-			i.delete_flag as deleteFlag,
 			i.idcard as idcard,
 			i.sex as sex,
 			i.birthday as birthday,
@@ -118,9 +106,9 @@
 			i.qq as qq,
 			i.pic_url as picUrl,
 			i.page_css as pageCss,
-			i.platform as platform,
 			i.remark as remark,
-			i.create_time as createTime
+			i.create_time as createTime,
+			i.delete_flag as deleteFlag
 		from 
 			mc_user_info i 
 		where 
@@ -160,14 +148,11 @@
 	<select id="findPageList" parameterType="com.matrix.pojo.dto.McUserInfoDto" resultMap="McUserInfoViewMap">
 		select 
 			i.id as id,
-			i.cid as cid,
 			i.user_name as userName,
-			i.user_code as userCode,
-			i.mc_organization_id as mcOrganizationId,
 			i.password as password,
 			i.type as type,
+			i.platform as platform,
 			i.flag as flag,
-			i.delete_flag as deleteFlag,
 			i.idcard as idcard,
 			i.sex as sex,
 			i.birthday as birthday,
@@ -176,24 +161,18 @@
 			i.qq as qq,
 			i.pic_url as picUrl,
 			i.page_css as pageCss,
-			i.platform as platform,
 			i.remark as remark,
-			i.create_time as createTime
+			i.create_time as createTime,
+			i.delete_flag as deleteFlag
 		from 
 			mc_user_info i 
 		where
 			i.delete_flag = 1  
-			<if test="cid != null">
-				and i.cid = #{cid , jdbcType=BIGINT} 
-			</if>
 			<if test="type != null">
 				and i.type in(${type}) 
 			</if>
 			<if test="platform != null">
 				and e.platform = #{platform,jdbcType=VARCHAR} 
-			</if>
-			<if test="orgIds != null and orgIds != '' ">
-				and i.mc_organization_id in(${orgIds})
 			</if>
 			<if test="userName != null and userName != ''  ">
 				and i.user_name = #{userName , jdbcType=VARCHAR}
@@ -239,23 +218,17 @@
 			<if test="id != null">
 				id,
 			</if>
-			<if test="cid != null">
-				cid,
-			</if>
 			<if test="userName != null">
 				user_name,
-			</if>
-			<if test="userCode != null">
-				user_code,
-			</if>
-			<if test="mcOrganizationId != null">
-				mc_organization_id,
 			</if>
 			<if test="password != null">
 				password,
 			</if>
 			<if test="type != null">
 				type,
+			</if>
+			<if test="platform != null">
+				platform,
 			</if>
 			<if test="flag != null">
 				flag,
@@ -283,9 +256,6 @@
 			</if>
 			<if test="pageCss != null">
 				page_css,
-			</if>
-			<if test="platform != null">
-				platform,
 			</if>
 			<if test="remark != null">
 				remark,
@@ -317,23 +287,17 @@
 			<if test="id != null">
 				#{id , jdbcType=BIGINT},
 			</if>
-			<if test="cid != null">
-				#{cid , jdbcType=BIGINT},
-			</if>
 			<if test="userName != null">
 				#{userName,jdbcType=VARCHAR},
-			</if>
-			<if test="userCode != null">
-				#{userCode,jdbcType=VARCHAR},
-			</if>
-			<if test="mcOrganizationId != null">
-				#{mcOrganizationId , jdbcType=BIGINT},
 			</if>
 			<if test="password != null">
 				#{password,jdbcType=VARCHAR},
 			</if>
 			<if test="type != null">
 				#{type , jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
 			</if>
 			<if test="flag != null">
 				#{flag,jdbcType=INTEGER},
@@ -361,9 +325,6 @@
 			</if>
 			<if test="pageCss != null">
 				#{pageCss,jdbcType=VARCHAR},
-			</if>
-			<if test="platform != null">
-				#{platform,jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				#{remark,jdbcType=LONGVARCHAR},
@@ -399,17 +360,8 @@
 			<if test="id != null">
 				id,
 			</if>
-			<if test="cid != null">
-				cid,
-			</if>
 			<if test="userName != null">
 				user_name,
-			</if>
-			<if test="userCode != null">
-				user_code,
-			</if>
-			<if test="mcOrganizationId != null">
-				mc_organization_id,
 			</if>
 			<if test="password != null">
 				password,
@@ -417,6 +369,9 @@
 			<if test="type != null">
 				type,
 			</if>
+			<if test="platform != null">
+				platform,
+			</if>			
 			<if test="flag != null">
 				flag,
 			</if>
@@ -443,9 +398,6 @@
 			</if>
 			<if test="pageCss != null">
 				page_css,
-			</if>
-			<if test="platform != null">
-				platform,
 			</if>
 			<if test="remark != null">
 				remark,
@@ -477,17 +429,8 @@
 			<if test="id != null">
 				#{id , jdbcType=BIGINT},
 			</if>
-			<if test="cid != null">
-				#{cid , jdbcType=BIGINT},
-			</if>
 			<if test="userName != null">
 				#{userName,jdbcType=VARCHAR},
-			</if>
-			<if test="userCode != null">
-				#{userCode , jdbcType=VARCHAR},
-			</if>
-			<if test="mcOrganizationId != null">
-				#{mcOrganizationId , jdbcType=BIGINT},
 			</if>
 			<if test="password != null">
 				#{password,jdbcType=VARCHAR},
@@ -495,6 +438,9 @@
 			<if test="type != null">
 				#{type , jdbcType=VARCHAR},
 			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
+			</if>			
 			<if test="flag != null">
 				#{flag , jdbcType=INTEGER},
 			</if>
@@ -521,9 +467,6 @@
 			</if>
 			<if test="pageCss != null">
 				#{pageCss,jdbcType=VARCHAR},
-			</if>
-			<if test="platform != null">
-				#{platform,jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				#{remark,jdbcType=LONGVARCHAR},
@@ -556,21 +499,18 @@
 	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McUserInfo">
 		update mc_user_info
 		<set>
-			<if test="cid != null">
-				cid = #{cid , jdbcType=BIGINT},
-			</if>
 			<if test="userName != null">
 				user_name = #{userName,jdbcType=VARCHAR},
 			</if>
 			<if test="password != null">
 				password = #{password,jdbcType=VARCHAR},
 			</if> 
-			<if test="mcOrganizationId != null">
-				mc_organization_id = #{mcOrganizationId , jdbcType=BIGINT},
-			</if>
 			<if test="type != null">
 				type = #{type,jdbcType=VARCHAR},
-			</if> 
+			</if>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=VARCHAR},
+			</if>
 			<if test="flag != null">
 				flag = #{flag,jdbcType=INTEGER},
 			</if>
@@ -597,9 +537,6 @@
 			</if>
 			<if test="pageCss != null">
 				page_css = #{pageCss,jdbcType=VARCHAR},
-			</if>
-			<if test="platform != null">
-				platform = #{platform,jdbcType=VARCHAR},
 			</if>
 			<if test="remark != null">
 				remark = #{remark,jdbcType=LONGVARCHAR},

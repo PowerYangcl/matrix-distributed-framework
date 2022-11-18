@@ -1,8 +1,5 @@
 package com.matrix.load;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.fastjson.JSONObject;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
@@ -12,9 +9,7 @@ import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcUserInfoMapper;
-import com.matrix.dao.IMcUserInfoOrganizationMapper;
 import com.matrix.pojo.entity.McUserInfo;
-import com.matrix.pojo.entity.McUserInfoOrganization;
 import com.matrix.pojo.view.McUserInfoView;
 /**
  * @description: 如果缓存取值为空则此处做处理
@@ -59,8 +54,6 @@ public class UserInfoNpInit extends BaseClass implements ILoadCache<String> {
 	
 	@Inject
 	private IMcUserInfoMapper mcUserInfoMapper;
-	@Inject
-	private IMcUserInfoOrganizationMapper mcUserInfoOrganizationMapper;
 	
 	@Override
 	public String load(String key, String field) {			// key 这里做特殊处理|user_name + "," + password（md5加密后的密码）|中间有逗号
@@ -70,23 +63,23 @@ public class UserInfoNpInit extends BaseClass implements ILoadCache<String> {
 		McUserInfoView view = mcUserInfoMapper.login(e);
 		if(view != null) {	
 			if(view.getType().equals("user")) {	// 取出关联的用户数据权限信息
-				McUserInfoOrganization org = new McUserInfoOrganization();
-				org.setMcUserInfoId(view.getId());
-				List<McUserInfoOrganization> list = mcUserInfoOrganizationMapper.findList(org );
-				if(list != null && list.size() !=0) {
-					List<Long> orgidList = new ArrayList<Long>(list.size());
-					for(McUserInfoOrganization o : list) {
-						orgidList.add(o.getMcOrganizationId());
-					}
-					view.setOrgidList(orgidList);
-				}
+//				McUserInfoOrganization org = new McUserInfoOrganization();
+//				org.setMcUserInfoId(view.getId());
+//				List<McUserInfoOrganization> list = mcUserInfoOrganizationMapper.findList(org );
+//				if(list != null && list.size() !=0) {
+//					List<Long> orgidList = new ArrayList<Long>(list.size());
+//					for(McUserInfoOrganization o : list) {
+//						orgidList.add(o.getMcOrganizationId());
+//					}
+//					view.setOrgidList(orgidList);
+//				}
 			}
 			
 			String value = JSONObject.toJSONString(view);
-			if(view.getMcOrganizationId() != null && view.getMcOrganizationId() != 0) {
-				String mcOrg = launch.loadDictCache(CachePrefix.McOrganization , "McOrganizationInit").get(view.getMcOrganizationId().toString());
-				view.setMcOrg(JSONObject.parseObject(mcOrg));
-			}
+//			if(view.getMcOrganizationId() != null && view.getMcOrganizationId() != 0) {
+//				String mcOrg = launch.loadDictCache(CachePrefix.McOrganization , "McOrganizationInit").get(view.getMcOrganizationId().toString());
+//				view.setMcOrg(JSONObject.parseObject(mcOrg));
+//			}
 			launch.loadDictCache(CachePrefix.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 4*60*60);
 			launch.loadDictCache(CachePrefix.UserInfoId , null).set(view.getId().toString() , e.getUserName() + "," + e.getPassword() , 4*60*60);  // 依据user info id，方便操作
 			return value;

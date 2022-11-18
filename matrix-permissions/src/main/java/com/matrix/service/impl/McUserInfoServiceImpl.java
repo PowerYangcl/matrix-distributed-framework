@@ -34,7 +34,6 @@ import com.matrix.cache.CacheLaunch;
 import com.matrix.cache.enums.CachePrefix;
 import com.matrix.cache.inf.IBaseLaunch;
 import com.matrix.cache.inf.ICacheFactory;
-import com.matrix.dao.IMcOrganizationMapper;
 import com.matrix.dao.IMcSysFunctionMapper;
 import com.matrix.dao.IMcUserInfoMapper;
 import com.matrix.dao.IMcUserRoleMapper;
@@ -66,12 +65,12 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	
 	@Resource
 	private IMcUserInfoMapper mcUserInfoMapper;
+	
 	@Resource
 	private IMcUserRoleMapper mcUserRoleMapper;
+	
 	@Resource
 	private IMcSysFunctionMapper mcSysFunctionMapper;
-	@Resource
-	private IMcOrganizationMapper mcOrganizationMapper;
 
 	/**
 	 * @description: 验证用户登录信息|PC端用户|【仅JSP项目使用】
@@ -154,7 +153,7 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			dto.setPlatform(null);	
 		}else {
 			dto.setType(" 'user' ");   // 非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
-			dto.setCid(userCache.getCid());
+//			dto.setCid(userCache.getCid());
 			dto.setPlatform(userCache.getPlatform()); 
 		}
 		

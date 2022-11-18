@@ -180,13 +180,6 @@ public class ApiServiceImpl extends BaseClass implements IApiService {
 		/////// 登录后可访问的接口，添加用户信息附着  ///////
 		if(StringUtils.isNotBlank(userInfo)) { 		// 登录后可访问的接口
 			McUserInfoView view = JSONObject.parseObject(userInfo, McUserInfoView.class);
-			if(view.getCid() != 0) {		// 0 或 -1；cid如果 != 0 则代表用户拥有多店铺，需要前端传入cid
-				JSONObject shopObj = view.getShopInfoMap().get("key-" + param.getHead().getCid());
-				if (shopObj != null){
-					view.setCid(param.getHead().getCid());  
-					view.setTenantInfoId(shopObj.getLong("tenantInfoId"));
-				}
-			}
 			param.setUserCache(view); 		// 加入用户Session信息
 			log.info("用户：" + view.getUserName() + " 接口名称：" + apiInfo.getName() + " target = " + head.getTarget());
 		}

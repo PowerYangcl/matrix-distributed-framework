@@ -34,7 +34,7 @@ public class FindMcUserInfoListRequest extends BaseClass implements Serializable
 	}
 	
 	public Result<PageInfo<McUserInfoView>> validateAjaxSystemUserList() {
-		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getCid().toString()  , userCache.getType() )) {   
+		if(StringUtils.isAnyBlank(userCache.getPlatform() , userCache.getType() )) {   
 			// 用户会话异常! platform cod or cid is null
 			return Result.ERROR(this.getInfo(101010013), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}

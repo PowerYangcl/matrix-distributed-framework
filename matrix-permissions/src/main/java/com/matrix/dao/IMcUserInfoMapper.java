@@ -14,10 +14,13 @@ public interface IMcUserInfoMapper extends IBaseDao<Long , McUserInfo , McUserIn
 	
 	public McUserInfoView loadUserInfo(Long id); 
 	
+	// TODO 未使用到
 	public List<McUserInfoView> loadUserInfoList();
 
 	/**
 	 * @description: 显示没有关联任何角色的用户列表 |巧妙的左查询
+	 * 
+	 * 	TODO 未使用到
 	 * 
 	 * @param entity
 	 * @return

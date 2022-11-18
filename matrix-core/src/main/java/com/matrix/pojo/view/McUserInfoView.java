@@ -25,37 +25,33 @@ public class McUserInfoView implements Serializable {
 	
 	//	McUserInfo实体数据
 	private Long id; 
-	private Long cid;
-	private Long tenantInfoId;
     private String userName;
-    private String userCode;
-    private Long mcOrganizationId;
     private String password;
-    private String type;	// leader Leader后台用户|admin 其他平台管理员|user其他平台用户
-    private Integer flag;
-    private String idcard;
-    private Integer sex;
-    private Date birthday;
-    private String mobile;
-    private String email;
-    private String qq;
-    private String remark;
+    private String type;				// leader Leader后台用户|admin 其他平台管理员|user其他平台用户
+    private String platform;		// 平台标识码
+    private Integer flag;				// 启用状态；1启用 2停用|type=user 则此字段生效
+    private String idcard;			// 身份证号
+    private Integer sex;				// 性别 1：男 2：女
+    private Date birthday;			// 生日
+    private String mobile;			// 手机号
+    private String email;			// 邮箱
+    private String qq;					// qq号码
+    private String picUrl;			// 用户头像
+    private String pageCss;		// 后台页面css样式
+    private String remark;			// 备注
     private Date createTime;
     private Integer deleteFlag;
-    private String picUrl;
-    private String pageCss;
-    private String platform;
     
     // type=user|则此字段生效，为mc_user_info_organization表的mc_organization_id记录集合
-    private List<Long> orgidList; 
+//    private List<Long> orgidList; 
     
-    private JSONObject mcOrg;  // mc_organization表对象，代表当前用户的归属组织，mcOrganizationId=0时此处为null
+//    private JSONObject mcOrg;  // mc_organization表对象，代表当前用户的归属组织，mcOrganizationId=0时此处为null
     
     /**
      *  店铺列表(cid != 0等情况)：用户可能为多个店铺。
      *  key: "key-" + cid
      */
-    private Map<String , JSONObject> shopInfoMap = new HashMap<String , JSONObject>(); 
+//    private Map<String , JSONObject> shopInfoMap = new HashMap<String , JSONObject>(); 
     
     
 }

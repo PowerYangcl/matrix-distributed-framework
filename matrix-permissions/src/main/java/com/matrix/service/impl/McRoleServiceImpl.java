@@ -83,7 +83,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			dto.setPlatform(null);	
 		}else {
 			dto.setType("admin");   // 由具体某个平台的系统管理员所创建
-			dto.setCid(userCache.getCid());
+//			dto.setCid(userCache.getCid());
 			dto.setPlatform(userCache.getPlatform()); 
 		}
 		return super.pageListByDto(dto, request); 
@@ -143,7 +143,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			if(!param.getRoleName().equals(param.getOldRoleName())) {
 				// 验证角色名称是否重复
 				McRole role_ = new McRole();
-				role_.setCid(userCache.getCid());
+//				role_.setCid(userCache.getCid());
 				if(userCache.getType().equals("leader") ) {
 					role_.setPlatform(param.getPlatform());
 				}else {
@@ -291,7 +291,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 				dto.setType("leader"); // + dto.platform取结果集
 			}else {
 				dto.setType("admin");   // 由具体某个平台的系统管理员所创建
-				dto.setCid(userCache.getCid());
+//				dto.setCid(userCache.getCid());
 				dto.setPlatform(userCache.getPlatform()); 
 			}
 			
