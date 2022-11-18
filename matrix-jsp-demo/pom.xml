@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.matrix</groupId>
+		<artifactId>matrix-distributed-framework</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent> 
+	<artifactId>matrix-jsp-demo</artifactId>
+	<packaging>war</packaging>
+	<name>matrix-jsp-demo</name>
+	<url>https://github.com/PowerYangcl</url>
+	
+	<properties>
+	    <failOnMissingWebXml>false</failOnMissingWebXml>
+	    <start-class>com.matrix.MatrixJspDemoApplication</start-class>
+	</properties>
+
+	<dependencies>
+		<!-- 作为基础web示例程序包涵如下三个matrix依赖即可运行 -->
+		<dependency>
+			<groupId>com.matrix</groupId>
+			<artifactId>matrix-permissions</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.matrix</groupId>
+			<artifactId>matrix-web-adapter</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.matrix</groupId>
+			<artifactId>matrix-websocket</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+        <!--nacos-discovery 注册中心-服务发现与注册-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${spring-cloud-alibaba.version}</version>
+        </dependency>
+	</dependencies>
+	
+    <build>
+        <plugins>
+            <plugin> <!-- 支持热部署 配合spring-boot-devtools使用 -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                	<fork>true</fork>
+                	<addResources>true</addResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

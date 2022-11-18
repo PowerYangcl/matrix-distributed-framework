@@ -23,6 +23,7 @@
         <module>matrix-file</module>
         <module>matrix-websocket</module>
         <module>matrix-dubbo</module>
+        <module>matrix-jsp-demo</module>
     </modules>
     
    	<parent>	<!-- 使用最高版本的spring-boot覆盖所有引用到的第三方项目中的低版本spring-boot -->
