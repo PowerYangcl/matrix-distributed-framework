@@ -6,6 +6,7 @@
 【info-国际化文件顺序】
 		info.matrix-core.1000.properties
 		info.matrix-permissions.1010.properties
+		info.matrix-employee.1011.properties
 		info.matrix-manager-api.1020.properties
 		info.matrix-web-adapter.1030.properties
 		info.matrix-websocket.1040.properties

@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.matrix.dao.IMcGoodsPurchaseMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McGoodsPurchase" extends="BaseMap">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="serial_number" jdbcType="VARCHAR" property="serialNumber" />
+		<result column="produce_name" jdbcType="VARCHAR" property="produceName" />
+		<result column="sku" jdbcType="VARCHAR" property="sku" />
+		<result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+		<result column="purchase_type" jdbcType="INTEGER" property="purchaseType" />
+		<result column="purchase_channle" jdbcType="VARCHAR" property="purchaseChannle" />
+		<result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+		<result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
+		<result column="quantity" jdbcType="INTEGER" property="quantity" />
+		<result column="real_get_quantity" jdbcType="INTEGER" property="realGetQuantity" />
+		<result column="date_of_minimum_durability" jdbcType="INTEGER" property="dateOfMinimumDurability" />
+		<result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
+		<result column="arrival_time" jdbcType="TIMESTAMP" property="arrivalTime" />
+		<result column="drawee_bank_name" jdbcType="VARCHAR" property="draweeBankName" />
+		<result column="drawee_bank_card" jdbcType="VARCHAR" property="draweeBankCard" />
+		<result column="allocate_funds" jdbcType="DECIMAL" property="allocateFunds" />
+		<result column="payment_funds" jdbcType="DECIMAL" property="paymentFunds" />
+		<result column="payment_funds_time" jdbcType="TIMESTAMP" property="paymentFundsTime" />
+		<result column="refund" jdbcType="DECIMAL" property="refund" />
+		<result column="refund_status" jdbcType="INTEGER" property="refundStatus" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="invoice_url" jdbcType="VARCHAR" property="invoiceUrl" />
+		<result column="applicant_user_id" jdbcType="BIGINT" property="applicantUserId" />
+		<result column="responsible_user_id" jdbcType="BIGINT" property="responsibleUserId" />
+		<result column="surveyor_user_id" jdbcType="BIGINT" property="surveyorUserId" />
+		<result column="storeroom_user_id" jdbcType="BIGINT" property="storeroomUserId" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	
+	<sql id="base_column_list"> 
+		id, serial_number, produce_name, sku, pic_url, purchase_type,
+		purchase_channle, shop_name,
+		unit_price, quantity, real_get_quantity, date_of_minimum_durability, order_time,
+		arrival_time, drawee_bank_name, drawee_bank_card, allocate_funds,
+		payment_funds,
+		payment_funds_time, refund, refund_status, status, invoice_url, applicant_user_id,
+		responsible_user_id, surveyor_user_id, storeroom_user_id, remark,
+		create_time, create_user_id,
+		create_user_name, update_time, update_user_id, update_user_name, delete_flag
+	</sql>
+	
+	<select id="find" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+			<include refid="base_column_list" />
+		from 
+			mc_goods_purchase
+		where 
+			id = #{id,jdbcType=BIGINT}
+		and
+			delete_flag = 1
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from mc_goods_purchase where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.McGoodsPurchase">
+		insert into mc_goods_purchase
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="serialNumber != null">
+				serial_number,
+			</if>
+			<if test="produceName != null">
+				produce_name,
+			</if>
+			<if test="sku != null">
+				sku,
+			</if>
+			<if test="picUrl != null">
+				pic_url,
+			</if>
+			<if test="purchaseType != null">
+				purchase_type,
+			</if>
+			<if test="purchaseChannle != null">
+				purchase_channle,
+			</if>
+			<if test="shopName != null">
+				shop_name,
+			</if>
+			<if test="unitPrice != null">
+				unit_price,
+			</if>
+			<if test="quantity != null">
+				quantity,
+			</if>
+			<if test="realGetQuantity != null">
+				real_get_quantity,
+			</if>
+			<if test="dateOfMinimumDurability != null">
+				date_of_minimum_durability,
+			</if>
+			<if test="orderTime != null">
+				order_time,
+			</if>
+			<if test="arrivalTime != null">
+				arrival_time,
+			</if>
+			<if test="draweeBankName != null">
+				drawee_bank_name,
+			</if>
+			<if test="draweeBankCard != null">
+				drawee_bank_card,
+			</if>
+			<if test="allocateFunds != null">
+				allocate_funds,
+			</if>
+			<if test="paymentFunds != null">
+				payment_funds,
+			</if>
+			<if test="paymentFundsTime != null">
+				payment_funds_time,
+			</if>
+			<if test="refund != null">
+				refund,
+			</if>
+			<if test="refundStatus != null">
+				refund_status,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="invoiceUrl != null">
+				invoice_url,
+			</if>
+			<if test="applicantUserId != null">
+				applicant_user_id,
+			</if>
+			<if test="responsibleUserId != null">
+				responsible_user_id,
+			</if>
+			<if test="surveyorUserId != null">
+				surveyor_user_id,
+			</if>
+			<if test="storeroomUserId != null">
+				storeroom_user_id,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="serialNumber != null">
+				#{serialNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="produceName != null">
+				#{produceName,jdbcType=VARCHAR},
+			</if>
+			<if test="sku != null">
+				#{sku,jdbcType=VARCHAR},
+			</if>
+			<if test="picUrl != null">
+				#{picUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="purchaseType != null">
+				#{purchaseType,jdbcType=INTEGER},
+			</if>
+			<if test="purchaseChannle != null">
+				#{purchaseChannle,jdbcType=VARCHAR},
+			</if>
+			<if test="shopName != null">
+				#{shopName,jdbcType=VARCHAR},
+			</if>
+			<if test="unitPrice != null">
+				#{unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="quantity != null">
+				#{quantity,jdbcType=INTEGER},
+			</if>
+			<if test="realGetQuantity != null">
+				#{realGetQuantity,jdbcType=INTEGER},
+			</if>
+			<if test="dateOfMinimumDurability != null">
+				#{dateOfMinimumDurability,jdbcType=INTEGER},
+			</if>
+			<if test="orderTime != null">
+				#{orderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="arrivalTime != null">
+				#{arrivalTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="draweeBankName != null">
+				#{draweeBankName,jdbcType=VARCHAR},
+			</if>
+			<if test="draweeBankCard != null">
+				#{draweeBankCard,jdbcType=VARCHAR},
+			</if>
+			<if test="allocateFunds != null">
+				#{allocateFunds,jdbcType=DECIMAL},
+			</if>
+			<if test="paymentFunds != null">
+				#{paymentFunds,jdbcType=DECIMAL},
+			</if>
+			<if test="paymentFundsTime != null">
+				#{paymentFundsTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="refund != null">
+				#{refund,jdbcType=DECIMAL},
+			</if>
+			<if test="refundStatus != null">
+				#{refundStatus,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=INTEGER},
+			</if>
+			<if test="invoiceUrl != null">
+				#{invoiceUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="applicantUserId != null">
+				#{applicantUserId,jdbcType=BIGINT},
+			</if>
+			<if test="responsibleUserId != null">
+				#{responsibleUserId,jdbcType=BIGINT},
+			</if>
+			<if test="surveyorUserId != null">
+				#{surveyorUserId,jdbcType=BIGINT},
+			</if>
+			<if test="storeroomUserId != null">
+				#{storeroomUserId,jdbcType=BIGINT},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McGoodsPurchase">
+		update mc_goods_purchase
+		<set>
+			<if test="serialNumber != null">
+				serial_number = #{serialNumber,jdbcType=VARCHAR},
+			</if>
+			<if test="produceName != null">
+				produce_name = #{produceName,jdbcType=VARCHAR},
+			</if>
+			<if test="sku != null">
+				sku = #{sku,jdbcType=VARCHAR},
+			</if>
+			<if test="picUrl != null">
+				pic_url = #{picUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="purchaseType != null">
+				purchase_type = #{purchaseType,jdbcType=INTEGER},
+			</if>
+			<if test="purchaseChannle != null">
+				purchase_channle = #{purchaseChannle,jdbcType=VARCHAR},
+			</if>
+			<if test="shopName != null">
+				shop_name = #{shopName,jdbcType=VARCHAR},
+			</if>
+			<if test="unitPrice != null">
+				unit_price = #{unitPrice,jdbcType=DECIMAL},
+			</if>
+			<if test="quantity != null">
+				quantity = #{quantity,jdbcType=INTEGER},
+			</if>
+			<if test="realGetQuantity != null">
+				real_get_quantity = #{realGetQuantity,jdbcType=INTEGER},
+			</if>
+			<if test="dateOfMinimumDurability != null">
+				date_of_minimum_durability = #{dateOfMinimumDurability,jdbcType=INTEGER},
+			</if>
+			<if test="orderTime != null">
+				order_time = #{orderTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="arrivalTime != null">
+				arrival_time = #{arrivalTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="draweeBankName != null">
+				drawee_bank_name = #{draweeBankName,jdbcType=VARCHAR},
+			</if>
+			<if test="draweeBankCard != null">
+				drawee_bank_card = #{draweeBankCard,jdbcType=VARCHAR},
+			</if>
+			<if test="allocateFunds != null">
+				allocate_funds = #{allocateFunds,jdbcType=DECIMAL},
+			</if>
+			<if test="paymentFunds != null">
+				payment_funds = #{paymentFunds,jdbcType=DECIMAL},
+			</if>
+			<if test="paymentFundsTime != null">
+				payment_funds_time = #{paymentFundsTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="refund != null">
+				refund = #{refund,jdbcType=DECIMAL},
+			</if>
+			<if test="refundStatus != null">
+				refund_status = #{refundStatus,jdbcType=INTEGER},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=INTEGER},
+			</if>
+			<if test="invoiceUrl != null">
+				invoice_url = #{invoiceUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="applicantUserId != null">
+				applicant_user_id = #{applicantUserId,jdbcType=BIGINT},
+			</if>
+			<if test="responsibleUserId != null">
+				responsible_user_id = #{responsibleUserId,jdbcType=BIGINT},
+			</if>
+			<if test="surveyorUserId != null">
+				surveyor_user_id = #{surveyorUserId,jdbcType=BIGINT},
+			</if>
+			<if test="storeroomUserId != null">
+				storeroom_user_id = #{storeroomUserId,jdbcType=BIGINT},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+

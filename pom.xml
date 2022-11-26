@@ -23,6 +23,7 @@
         <module>matrix-file</module>
         <module>matrix-websocket</module>
         <module>matrix-dubbo</module>
+        <module>matrix-employee</module>
         <module>matrix-jsp-demo</module>
     </modules>
     

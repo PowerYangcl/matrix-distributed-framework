@@ -88,6 +88,14 @@
 /matrix-jsp-demo/.DS_Store
 
 
+/matrix-employee/target/
+/matrix-employee/.settings/
+/matrix-employee/.project 
+/matrix-employee/.classpath
+/matrix-employee/.DS_Store
+
+
+
 /.idea/
 /matrix-distributed-framework.iml
 /matrix-admin/matrix-admin.iml
@@ -103,6 +111,7 @@
 /matrix-websocket/matrix-websocket.iml
 /matrix-dubbo/matrix-dubbo.iml
 /matrix-jsp-demo/matrix-jsp-demo.iml
+/matrix-employee/matrix-employee.iml
 
 *.iml
 

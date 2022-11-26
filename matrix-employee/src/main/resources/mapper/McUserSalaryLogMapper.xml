@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.matrix.dao.IMcUserSalaryLogMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McUserSalaryLog" extends="BaseMap">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="mc_user_id" jdbcType="BIGINT" property="mcUserId" />
+		<result column="year" jdbcType="VARCHAR" property="year" />
+		<result column="month" jdbcType="VARCHAR" property="month" />
+		<result column="salary_pay" jdbcType="DECIMAL" property="salaryPay" />
+		<result column="salary_basic" jdbcType="DECIMAL" property="salaryBasic" />
+		<result column="salary_merit" jdbcType="DECIMAL" property="salaryMerit" />
+		<result column="merit_point" jdbcType="DECIMAL" property="meritPoint" />
+		<result column="social_security_personal" jdbcType="DECIMAL" property="socialSecurityPersonal" />
+		<result column="social_security_company" jdbcType="DECIMAL" property="socialSecurityCompany" />
+		<result column="individual_income_tax" jdbcType="DECIMAL" property="individualIncomeTax" />
+		<result column="housing_fund_personal" jdbcType="DECIMAL" property="housingFundPersonal" />
+		<result column="housing_fund_company" jdbcType="DECIMAL" property="housingFundCompany" />
+		<result column="bonus" jdbcType="DECIMAL" property="bonus" />
+		<result column="bonus_reason" jdbcType="VARCHAR" property="bonusReason" />
+		<result column="penalty" jdbcType="DECIMAL" property="penalty" />
+		<result column="penalty_reason" jdbcType="VARCHAR" property="penaltyReason" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	
+	<sql id="base_column_list">
+		id, mc_user_id, year, month, salary_pay, salary_basic, salary_merit,
+		merit_point,
+		social_security_personal, social_security_company, individual_income_tax,
+		housing_fund_personal,
+		housing_fund_company, bonus, bonus_reason, penalty, penalty_reason, remark, create_time,
+		create_user_id, create_user_name, update_time, update_user_id,
+		update_user_name,
+		delete_flag
+	</sql>
+	
+	<select id="find" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+			<include refid="base_column_list" />
+		from 
+			mc_user_salary_log
+		where 
+			id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from mc_user_salary_log where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.McUserSalaryLog">
+		insert into mc_user_salary_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="mcUserId != null">
+				mc_user_id,
+			</if>
+			<if test="year != null">
+				year,
+			</if>
+			<if test="month != null">
+				month,
+			</if>
+			<if test="salaryPay != null">
+				salary_pay,
+			</if>
+			<if test="salaryBasic != null">
+				salary_basic,
+			</if>
+			<if test="salaryMerit != null">
+				salary_merit,
+			</if>
+			<if test="meritPoint != null">
+				merit_point,
+			</if>
+			<if test="socialSecurityPersonal != null">
+				social_security_personal,
+			</if>
+			<if test="socialSecurityCompany != null">
+				social_security_company,
+			</if>
+			<if test="individualIncomeTax != null">
+				individual_income_tax,
+			</if>
+			<if test="housingFundPersonal != null">
+				housing_fund_personal,
+			</if>
+			<if test="housingFundCompany != null">
+				housing_fund_company,
+			</if>
+			<if test="bonus != null">
+				bonus,
+			</if>
+			<if test="bonusReason != null">
+				bonus_reason,
+			</if>
+			<if test="penalty != null">
+				penalty,
+			</if>
+			<if test="penaltyReason != null">
+				penalty_reason,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="mcUserId != null">
+				#{mcUserId,jdbcType=BIGINT},
+			</if>
+			<if test="year != null">
+				#{year,jdbcType=VARCHAR},
+			</if>
+			<if test="month != null">
+				#{month,jdbcType=VARCHAR},
+			</if>
+			<if test="salaryPay != null">
+				#{salaryPay,jdbcType=DECIMAL},
+			</if>
+			<if test="salaryBasic != null">
+				#{salaryBasic,jdbcType=DECIMAL},
+			</if>
+			<if test="salaryMerit != null">
+				#{salaryMerit,jdbcType=DECIMAL},
+			</if>
+			<if test="meritPoint != null">
+				#{meritPoint,jdbcType=DECIMAL},
+			</if>
+			<if test="socialSecurityPersonal != null">
+				#{socialSecurityPersonal,jdbcType=DECIMAL},
+			</if>
+			<if test="socialSecurityCompany != null">
+				#{socialSecurityCompany,jdbcType=DECIMAL},
+			</if>
+			<if test="individualIncomeTax != null">
+				#{individualIncomeTax,jdbcType=DECIMAL},
+			</if>
+			<if test="housingFundPersonal != null">
+				#{housingFundPersonal,jdbcType=DECIMAL},
+			</if>
+			<if test="housingFundCompany != null">
+				#{housingFundCompany,jdbcType=DECIMAL},
+			</if>
+			<if test="bonus != null">
+				#{bonus,jdbcType=DECIMAL},
+			</if>
+			<if test="bonusReason != null">
+				#{bonusReason,jdbcType=VARCHAR},
+			</if>
+			<if test="penalty != null">
+				#{penalty,jdbcType=DECIMAL},
+			</if>
+			<if test="penaltyReason != null">
+				#{penaltyReason,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McUserSalaryLog">
+		update mc_user_salary_log
+		<set>
+			<if test="mcUserId != null">
+				mc_user_id = #{mcUserId,jdbcType=BIGINT},
+			</if>
+			<if test="year != null">
+				year = #{year,jdbcType=VARCHAR},
+			</if>
+			<if test="month != null">
+				month = #{month,jdbcType=VARCHAR},
+			</if>
+			<if test="salaryPay != null">
+				salary_pay = #{salaryPay,jdbcType=DECIMAL},
+			</if>
+			<if test="salaryBasic != null">
+				salary_basic = #{salaryBasic,jdbcType=DECIMAL},
+			</if>
+			<if test="salaryMerit != null">
+				salary_merit = #{salaryMerit,jdbcType=DECIMAL},
+			</if>
+			<if test="meritPoint != null">
+				merit_point = #{meritPoint,jdbcType=DECIMAL},
+			</if>
+			<if test="socialSecurityPersonal != null">
+				social_security_personal = #{socialSecurityPersonal,jdbcType=DECIMAL},
+			</if>
+			<if test="socialSecurityCompany != null">
+				social_security_company = #{socialSecurityCompany,jdbcType=DECIMAL},
+			</if>
+			<if test="individualIncomeTax != null">
+				individual_income_tax = #{individualIncomeTax,jdbcType=DECIMAL},
+			</if>
+			<if test="housingFundPersonal != null">
+				housing_fund_personal = #{housingFundPersonal,jdbcType=DECIMAL},
+			</if>
+			<if test="housingFundCompany != null">
+				housing_fund_company = #{housingFundCompany,jdbcType=DECIMAL},
+			</if>
+			<if test="bonus != null">
+				bonus = #{bonus,jdbcType=DECIMAL},
+			</if>
+			<if test="bonusReason != null">
+				bonus_reason = #{bonusReason,jdbcType=VARCHAR},
+			</if>
+			<if test="penalty != null">
+				penalty = #{penalty,jdbcType=DECIMAL},
+			</if>
+			<if test="penaltyReason != null">
+				penalty_reason = #{penaltyReason,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>

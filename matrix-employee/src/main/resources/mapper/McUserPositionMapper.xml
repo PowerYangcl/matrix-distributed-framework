@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.matrix.dao.IMcUserPositionMapper">
+
+	<!-- 基类字段映射 -->
+	<resultMap id="BaseMap" type="com.matrix.base.BaseEntity"> 
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="create_user_id" property="createUserId" jdbcType="BIGINT" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+		<result column="update_user_name" property="updateUserName" jdbcType="VARCHAR" />
+		<result column="delete_flag" property="deleteFlag" jdbcType="INTEGER" />
+	</resultMap>
+	
+	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McUserPosition" extends="BaseMap">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="position_type" jdbcType="INTEGER" property="positionType" />
+		<result column="position" jdbcType="VARCHAR" property="position" />
+		<result column="position_level" jdbcType="VARCHAR" property="positionLevel" />
+		<result column="skill_requirement" jdbcType="VARCHAR" property="skillRequirement" />
+		<result column="salary_cap" jdbcType="DECIMAL" property="salaryCap" />
+		<result column="salary_floor" jdbcType="DECIMAL" property="salaryFloor" />
+		<result column="merit_pay" jdbcType="DECIMAL" property="meritPay" />
+		<result column="annual_bonus" jdbcType="INTEGER" property="annualBonus" />
+		<result column="promotion" jdbcType="VARCHAR" property="promotion" />
+		<result column="active_staff" jdbcType="INTEGER" property="activeStaff" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	
+	<sql id="base_column_list">
+		id, position_type, position, position_level, skill_requirement,
+		salary_cap, salary_floor,
+		merit_pay, annual_bonus, promotion, active_staff, remark, create_time,
+		create_user_id,
+		create_user_name, update_time, update_user_id, update_user_name, delete_flag
+	</sql>
+	
+	<select id="find" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select
+			<include refid="base_column_list" />
+		from 
+			mc_user_position
+		where 
+			id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from mc_user_position where id = #{id,jdbcType=BIGINT}
+	</delete>
+	
+	<insert id="insertSelective" parameterType="com.matrix.pojo.entity.McUserPosition">
+		insert into mc_user_position
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="positionType != null">
+				position_type,
+			</if>
+			<if test="position != null">
+				position,
+			</if>
+			<if test="positionLevel != null">
+				position_level,
+			</if>
+			<if test="skillRequirement != null">
+				skill_requirement,
+			</if>
+			<if test="salaryCap != null">
+				salary_cap,
+			</if>
+			<if test="salaryFloor != null">
+				salary_floor,
+			</if>
+			<if test="meritPay != null">
+				merit_pay,
+			</if>
+			<if test="annualBonus != null">
+				annual_bonus,
+			</if>
+			<if test="promotion != null">
+				promotion,
+			</if>
+			<if test="activeStaff != null">
+				active_staff,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="createUserName != null">
+				create_user_name,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="updateUserName != null">
+				update_user_name,
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=BIGINT},
+			</if>
+			<if test="positionType != null">
+				#{positionType,jdbcType=INTEGER},
+			</if>
+			<if test="position != null">
+				#{position,jdbcType=VARCHAR},
+			</if>
+			<if test="positionLevel != null">
+				#{positionLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="skillRequirement != null">
+				#{skillRequirement,jdbcType=VARCHAR},
+			</if>
+			<if test="salaryCap != null">
+				#{salaryCap,jdbcType=DECIMAL},
+			</if>
+			<if test="salaryFloor != null">
+				#{salaryFloor,jdbcType=DECIMAL},
+			</if>
+			<if test="meritPay != null">
+				#{meritPay,jdbcType=DECIMAL},
+			</if>
+			<if test="annualBonus != null">
+				#{annualBonus,jdbcType=INTEGER},
+			</if>
+			<if test="promotion != null">
+				#{promotion,jdbcType=VARCHAR},
+			</if>
+			<if test="activeStaff != null">
+				#{activeStaff,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=BIGINT},
+			</if>
+			<if test="createUserName != null">
+				#{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				#{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				#{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McUserPosition">
+		update mc_user_position
+		<set>
+			<if test="positionType != null">
+				position_type = #{positionType,jdbcType=INTEGER},
+			</if>
+			<if test="position != null">
+				position = #{position,jdbcType=VARCHAR},
+			</if>
+			<if test="positionLevel != null">
+				position_level = #{positionLevel,jdbcType=VARCHAR},
+			</if>
+			<if test="skillRequirement != null">
+				skill_requirement = #{skillRequirement,jdbcType=VARCHAR},
+			</if>
+			<if test="salaryCap != null">
+				salary_cap = #{salaryCap,jdbcType=DECIMAL},
+			</if>
+			<if test="salaryFloor != null">
+				salary_floor = #{salaryFloor,jdbcType=DECIMAL},
+			</if>
+			<if test="meritPay != null">
+				merit_pay = #{meritPay,jdbcType=DECIMAL},
+			</if>
+			<if test="annualBonus != null">
+				annual_bonus = #{annualBonus,jdbcType=INTEGER},
+			</if>
+			<if test="promotion != null">
+				promotion = #{promotion,jdbcType=VARCHAR},
+			</if>
+			<if test="activeStaff != null">
+				active_staff = #{activeStaff,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=BIGINT},
+			</if>
+			<if test="updateUserName != null">
+				update_user_name = #{updateUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="deleteFlag != null">
+				delete_flag = #{deleteFlag,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=BIGINT}
+	</update>
+</mapper>
