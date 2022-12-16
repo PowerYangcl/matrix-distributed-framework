@@ -48,15 +48,7 @@ public class McSysFuncInit extends BaseClass implements ILoadCache<String> {
 				return "";
 			}
 			e.setUserCache(null);
-			e.setUpdateTime(null);
-			e.setUpdateUserId(null);
-			e.setUpdateUserName(null);
-			e.setCreateTime(null);
-			e.setCreateUserId(null);
-			e.setCreateUserName(null);
-			e.setDeleteFlag(null);
-			e.setPageSize(null);
-			e.setStartIndex(null);
+			e.buildNullCommon();
 			String value = JSONObject.toJSONString(e); 
 			launch.loadDictCache(CachePrefix.McSysFunc , null).set(key , value , 30*24*60*60);
 			return value;

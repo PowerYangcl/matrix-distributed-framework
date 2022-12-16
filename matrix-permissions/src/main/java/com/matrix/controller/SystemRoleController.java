@@ -59,8 +59,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月1日 上午11:05:51 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_add_tree_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_add_tree_node", produces = { "application/json;charset=utf-8" })
 	public Result<McSysFunction> ajaxAddTreeNode(AddMcSysFunctionRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_add_tree_node", "添加系统功能到数据库-mc_sys_function表添加记录");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -74,8 +74,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月1日 下午5:33:30 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_edit_tree_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_edit_tree_node", produces = { "application/json;charset=utf-8" })
 	public Result<McSysFunction> ajaxEditTreeNode(UpdateMcSysFunctionRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_edit_tree_node", "更新一个节点到数据库");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo")); 
@@ -90,8 +90,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月2日 下午5:33:07 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_update_tree_nodes", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_update_tree_nodes", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxUpdateTreeNodes(UpdateMcSysFunctionRequest param, HttpSession session){
 		super.userBehavior(session, "ajax_update_tree_nodes", "更新拖拽后的同层节点");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -106,8 +106,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2018年10月15日 下午3:00:50 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_delete_node", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_delete_node", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxDeleteNode(DeleteMcSysFunctionRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_delete_node", "删除一个系统功能节点及其子节点");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -124,8 +124,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年3月1日 上午11:03:16 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_tree_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_tree_list", produces = { "application/json;charset=utf-8" })
 	public Result<TreeListView> ajaxTreeList(FindTreeListRequest param , HttpServletRequest request , HttpSession session){
 		super.userBehavior(session, "ajax_tree_list", "获取树列表");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -139,8 +139,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2018年9月24日 下午3:58:48 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_system_role_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_system_role_list", produces = { "application/json;charset=utf-8" })
 	public Result<PageInfo<McRoleView>> ajaxSystemRoleList(FindMcRoleRequest param , HttpSession session , HttpServletRequest request) {
 		super.userBehavior(session, "ajax_system_role_list", "系统角色列表数据");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -154,8 +154,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年5月19日 下午9:10:56 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_add_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_add_mc_role_only", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnAddMcRoleOnly(AddMcRoleRequest param , HttpSession session) {
 		super.userBehavior(session, "ajax_btn_add_mc_role_only", "添加一个角色，不勾选系统功能");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -169,8 +169,8 @@ public class SystemRoleController  extends BaseController{
 	 * @author Yangcl 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_edit_mc_role_only", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_edit_mc_role_only", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnEditMcRoleOnly(UpdateMcRoleRequest param , HttpSession session) {
 		super.userBehavior(session, "ajax_btn_edit_mc_role_only", "修改角色名称和描述，不勾选系统功能");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -185,8 +185,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年4月20日 上午11:02:30 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_delete_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_delete_mc_role", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnDeleteMcRole(DeleteMcRoleRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_btn_delete_mc_role", "删除系统角色|系统权限配置 / 系统用户相关 / 系统角色列表");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -201,8 +201,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2017年4月19日 下午4:22:28 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_edit_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_edit_mc_role", produces = { "application/json;charset=utf-8" })
 	public Result<McRoleCache> ajaxBtnEditMcRole(UpdateMcRoleTreeRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_btn_edit_mc_role", "修改角色所关联的系统功能|【角色列表】->【角色功能】->【提交】按钮");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -218,8 +218,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2019年11月20日 下午3:41:54 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_relieve_mc_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_relieve_mc_role", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnRelieveMcRole(UpdateMcRoleTreeRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_btn_relieve_mc_role", "在系统功能树(ztree)中解绑与这个角色关联的功能点|【角色列表】->【角色功能】->【解绑】按钮");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -228,18 +228,17 @@ public class SystemRoleController  extends BaseController{
 	
 	/**
 	 * @description: 展示权限列表|如果用户没有这个权限了则标识为【分配】，如果已经有了这个按钮则标识位【取消】
-	 * 
-	 * 	系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发的弹框中显示的列表
+	 * 		系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发的弹框中显示的列表
 	 *
 	 * @param role.userId
-	 * @param role.platform
+	 * @param role.platform 改为逗号分隔
 	 * 
 	 * @author Yangcl
 	 * @date 2019年12月16日 下午4:15:53 
-	 * @version 1.0.0.1
+	 * @version 1.0.0.1|update in v1.6.1.6-multiple-jspweb
 	 */
-	@RequestMapping(value = "ajax_user_role_list", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_user_role_list", produces = { "application/json;charset=utf-8" })
 	public Result<PageInfo<McRoleView>> ajaxUserRoleList(FindUserRoleListRequest param , HttpSession session , HttpServletRequest request) {
 		super.userBehavior(session, "user_role_list", "系统权限配置 / 系统用户相关 / 系统用户列表-【展示权限列表】");  
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -254,8 +253,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_btn_allot_user_role_submit", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_allot_user_role_submit", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnAllotUserRoleSubmit(AddMcUserRoleRequest param , HttpSession session){
 		super.userBehavior(session, "ajax_btn_allot_user_role_submit", "给指定用户分配一个角色<系统权限配置 / 系统用户相关 / 系统用户列表-【用户角色】按钮所触发弹框列表/【分配】按钮>");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
@@ -290,8 +289,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2018年2月5日 下午2:18:32 
 	 * @version 1.0.0
 	 */
-	@RequestMapping(value = "api_func_role", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "api_func_role", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxFuncRole(McUserInfo entity , HttpServletRequest request , HttpSession session){
 		entity.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcSysFunctionService.ajaxFuncRole(entity, request);
@@ -309,8 +308,8 @@ public class SystemRoleController  extends BaseController{
 	 * @date 2018年10月13日 下午3:37:05 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "ajax_find_role_info", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_find_role_info", produces = { "application/json;charset=utf-8" })
 	public Result<McRole> ajaxFindRoleInfo(FindMcRoleRequest param , HttpSession session) {
 		super.userBehavior(session, "ajax_find_role_info", "角色详情");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));

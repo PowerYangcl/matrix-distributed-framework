@@ -12,12 +12,10 @@ public class McSysFunction extends BaseEntity{
 	private static final long serialVersionUID = 5229443632033099730L;
 	
 	private Long id;
-    private Long mcSellerCompanyId;
     private String name;
     private String parentId;
     private Integer seqnum;
     private Integer navType;		// -1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-    private Integer authorize;      // 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
     private String platform; 			// 平台默认标识码|nav_type=0，此处为系统生成默认值
     private String styleClass;
     private String styleKey;

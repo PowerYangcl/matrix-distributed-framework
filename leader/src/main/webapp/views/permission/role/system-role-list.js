@@ -21,7 +21,7 @@ layui.config({
  	    	  	[
  	  	         	{field:'id', title:'角色ID', width:100,unresize: true, sort: true},  //  fixed: 'left', 
  	  	         	{field:'roleName', title:'角色名称', width:200},
- 	  	         	{field:'type', title:'平台名称', width:250, sort: true},
+ 	  	         	{field:'platformName', title:'平台名称', width:150, sort: true},
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},
  	  	         	{fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:180}
@@ -87,7 +87,7 @@ layui.config({
 				layer.open({
 					title : '添加角色',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
-		          	area : ['600px', '250px'],
+		          	area : ['600px', '350px'],
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
@@ -122,7 +122,7 @@ layui.config({
 				layer.open({
 					title : '修改角色',
 		          	type : 1,	// 1：解析HTML代码段；2：解析url
-		          	area : ['600px', '250px'],
+		          	area : ['600px', '350px'],
 		          	fixed : false,
 		          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 		          	resize : false,        // 是否允许拉伸 默认：true
@@ -343,8 +343,8 @@ layui.config({
 							if(sflist[i].name.toLocaleLowerCase()  == 'leader'){
 								isChecked = ' checked ';
 							}
-							html_ += '<input type="radio" ' + isChecked + ' name="platform" value="' + sflist[i].platform +'"style="vertical-align:middle;">';
-							html_ += '<span style="vertical-align:middle;">' + sflist[i].name +'</span>&nbsp&nbsp&nbsp&nbsp&nbsp';
+							html_ += '<input type="radio" ' + isChecked + ' name="platform" value="' + sflist[i].platform +'"style="vertical-align:middle;">&nbsp';
+							html_ += '<span style="vertical-align:middle;">' + sflist[i].remark +'</span>&nbsp&nbsp&nbsp&nbsp&nbsp</br>';
 						}
 					}
 				}

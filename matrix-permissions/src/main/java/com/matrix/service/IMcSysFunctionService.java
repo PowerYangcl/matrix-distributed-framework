@@ -1,6 +1,9 @@
 package com.matrix.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import com.matrix.base.Result;
@@ -23,7 +26,7 @@ import com.matrix.pojo.view.TreeListView;
  * @date 2019年12月18日 下午3:33:02 
  * @version 1.0.0.1
  */
-public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunction , McSysFunctionDto , McSysFunctionView> {
+public interface IMcSysFunctionService extends IBaseService<Long , McSysFunction , McSysFunctionDto , McSysFunctionView> {
 
 	/**
 	 * @description: 添加系统功能到数据库-mc_sys_function表添加记录
@@ -77,7 +80,14 @@ public interface IMcSysFunctionService  extends IBaseService<Long , McSysFunctio
 	
 	public Result<?> ajaxFuncRole(McUserInfo entity, HttpServletRequest request);
 	
-	
+	/**
+	 * @description: 获取平台信息列表|ManagerCenterController使用
+	 *
+	 * @author Yangcl
+	 * @date 2019年12月20日 下午3:31:38 
+	 * @version 1.0.0.1
+	 */
+	public Result<List<McSysFunction>> ajaxPlatformInfoList(HttpSession session);
 }
 
 

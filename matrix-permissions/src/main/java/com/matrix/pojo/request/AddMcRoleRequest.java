@@ -36,13 +36,13 @@ public class AddMcRoleRequest extends BaseClass implements Serializable{
 		e.setRoleDesc(roleDesc);
 		if(userCache.getType().equals("leader") ) {
 			e.setType("leader");
-			e.setPlatform(platform);
 		}else {
 			// 其他平台系统管理员或拥有分配权限的用户创建的角色，类型固定为admin
 			e.setType("admin");
 			// leader后台创建的角色会传入平台码(如：133C9CB27E18)|其他平台则默认使用用户所在平台的数据
-			e.setPlatform(userCache.getPlatform());	
+//			e.setPlatform(userCache.getPlatform());
 		}
+		e.setPlatform(platform);
 		e.buildAddCommon(userCache);
 		return e;
 	}

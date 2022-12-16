@@ -62,6 +62,24 @@ public class BaseEntity implements Serializable {
 		this.updateUserId = userCache.getId();
 		this.updateUserName = userCache.getUserName();
 	}
+	
+	// json不会包涵空字段，故主动置空部分无需返回的数据
+	public void buildNullCommon() {
+		this.setCreateTime(null);
+		this.setCreateUserId(null);
+		this.setCreateUserName(null);
+		
+		this.setUpdateTime(null);
+		this.setUpdateUserId(null);
+		this.setUpdateUserName(null);
+		
+		this.setDeleteFlag(null);
+		
+		this.setPageSize(null);
+		this.setStartIndex(null);
+		
+		this.setOrderBy(null);
+	}
 }
 
 

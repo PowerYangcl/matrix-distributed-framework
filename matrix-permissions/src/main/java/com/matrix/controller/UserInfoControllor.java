@@ -94,16 +94,20 @@ public class UserInfoControllor  extends BaseController{
 	}
 	
 	/**
-	 * @description: 添加用户
+	 * @description: 添加系统类型用户：leader 或 admin。
+	 * 		【矩阵分布式框架控制台】创建的用户要么是leader类型，要么是admin类型；
+	 * 		leader类型用户只能分配【矩阵分布式框架控制台】这个系统。
+	 * 		admin类型用户允许分配除【矩阵分布式框架控制台】外的多个web平台，方便跨系统登录。
+	 * 		针对user类型用户由于涉及到mc_user_info_ext记录，迁移到matrix-employee模块进行创建操作。
 	 *		
 	 * @author Yangcl
 	 * @date 2019年12月5日 上午10:28:56 
-	 * @version 1.0.0.1
+	 * @version 1.0.0.1|update in v1.6.1.6-multiple-jspweb
 	 */
-	@RequestMapping(value = "ajax_btn_add_system_user", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "ajax_btn_add_system_user", produces = { "application/json;charset=utf-8" })
 	public Result<?> ajaxBtnAddSystemUser(AddMcUserInfoRequest param , HttpSession session) {
-		super.userBehavior(session, "ajax_btn_add_system_user", "添加用户");
+		super.userBehavior(session, "ajax_btn_add_system_user", "添加系统类型用户：leader 或 admin");
 		param.setUserCache((McUserInfoView) session.getAttribute("userInfo"));
 		return mcUserInfoService.addSysUser(param);
 	}

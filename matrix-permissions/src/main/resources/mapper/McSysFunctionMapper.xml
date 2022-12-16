@@ -15,7 +15,6 @@
 	
 	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McSysFunction" extends="BaseMap">
 		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="authorize" property="authorize" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="parent_id" property="parentId" jdbcType="VARCHAR" />
 		<result column="seqnum" property="seqnum" jdbcType="INTEGER" />
@@ -30,16 +29,6 @@
 		<result column="ele_value" property="eleValue" jdbcType="VARCHAR" />  
 	</resultMap>
 	
-	
-	
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
-		select
-			*
-		from 
-			mc_sys_function
-		where 
-			id = #{id , jdbcType=BIGINT}
-	</select>
 	
 	<select id="find" resultMap="BaseResultMap" parameterType="java.lang.Long">
 		select
@@ -82,7 +71,7 @@
 	</select>
 	
 	
-	<select id="getSysFuncList" resultMap="BaseResultMap" parameterType="com.matrix.pojo.entity.McSysFunction" >
+	<select id="findPlatformInfoList" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.McSysFunctionDto" >
 	    select 
 	    	* 
     	from 
@@ -92,9 +81,9 @@
 			<if test="navType != null">
 				and nav_type = #{navType , jdbcType=INTEGER}
 			</if>
-			<if test="authorize != null">
-				and authorize = #{authorize , jdbcType=INTEGER}
-			</if>
+			<if test="platformList != null">
+				and platform in(${platformList}) 
+			</if>			
 	</select>
 	
 	
@@ -114,9 +103,6 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				id,
-			</if>
-			<if test="authorize != null">
-				authorize,
 			</if>
 			<if test="name != null">
 				name,
@@ -180,9 +166,6 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				#{id , jdbcType=BIGINT},
-			</if>
-			<if test="authorize != null">
-				#{authorize , jdbcType=INTEGER},
 			</if>
 			<if test="name != null">
 				#{name,jdbcType=VARCHAR},
@@ -249,9 +232,6 @@
 	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McSysFunction">
 		update mc_sys_function
 		<set>
-			<if test="authorize != null">
-				authorize = #{authorize , jdbcType=INTEGER},
-			</if>
 			<if test="name != null">
 				name = #{name,jdbcType=VARCHAR},
 			</if>

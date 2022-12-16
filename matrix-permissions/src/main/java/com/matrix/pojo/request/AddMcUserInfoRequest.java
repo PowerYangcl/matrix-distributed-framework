@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * @description: leader Leader后台用户|admin 其他平台管理员|user其他平台用户
+ * @description: leader Leader后台用户|admin 其他平台管理员
  * 
  * @author Yangcl
  * @date 2021-6-4 16:33:42
@@ -43,7 +43,6 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 	@NotBlank(message = "101010001")			// 101010001=用户名或密码不得为空
     private String password;
 	
-    private Long mcOrganizationId;
     private String idcard;
     private Integer sex;
     
@@ -64,14 +63,8 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 		McUserInfo e = new McUserInfo();
 		e.setUserName(userName);
 		e.setPassword(SignUtil.md5Sign(password));
-		if(StringUtils.contains(platform, "@")) {
-			e.setType(platform.split("@")[0]);
-			// Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
-			e.setPlatform(platform.split("@")[1]);
-		}else {
-			e.setType("user"); // 标识其他平台管理员所创建的用户
-			e.setPlatform(userCache.getPlatform());	// 非Leader平台(具体某个平台)创建的用户，则继承其创建者的平台标识码
-		}
+		e.setType(platform.split("@")[0]);
+		e.setPlatform(platform.split("@")[1]);
 		e.setQq(qq);
 		e.setMobile(mobile);
 		e.setEmail(email);
@@ -82,11 +75,33 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 		return e;
 	}
 	
+	
+	/**
+	 * @description: 由于仅限于【添加系统类型用户：leader 或 admin】故此处验证逻辑进行修改
+	 * 
+	 * @author Yangcl
+	 * @date 2022-11-27 23:13:20
+	 * @home https://github.com/PowerYangcl
+	 * @version v1.6.1.6-multiple-jspweb
+	 */
 	public Result<?> validate(IMcUserInfoMapper mcUserInfoMapper) {
-		if (userCache.getType().equals("leader") && StringUtils.isBlank(platform)) {   
+		if ((userCache.getType().equals("leader") || userCache.getType().equals("admin") )&& StringUtils.isBlank(platform)) {   
 			// 101010018=平台识别码错误
 			return Result.ERROR(this.getInfo(101010018), ResultCode.MISSING_ARGUMENT);
 		}
+		if(!StringUtils.contains(platform, "@")) { // Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
+			// 101010018=平台识别码错误
+			return Result.ERROR(this.getInfo(101010018), ResultCode.MISSING_ARGUMENT);
+		}
+		if(StringUtils.contains(platform, "leader") && StringUtils.contains(platform, ",")) {
+			// 101010067=Leader底层管理系统不得与业务系统共同勾选
+			return Result.ERROR(this.getInfo(101010067), ResultCode.MISSING_ARGUMENT);
+		}
+		if(StringUtils.contains(platform, "leader") && !"133C9CB27E18".equals(platform.split("@")[1])) {
+			// 101010068=Leader底层管理系统平台唯一标识码错误
+			return Result.ERROR(this.getInfo(101010068), ResultCode.INVALID_ARGUMENT);
+		}
+		
 		
 		McUserInfo e = new McUserInfo();
 		e.setUserName(userName);

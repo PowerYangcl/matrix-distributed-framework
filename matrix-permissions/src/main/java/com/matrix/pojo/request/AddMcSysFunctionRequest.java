@@ -3,7 +3,6 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Range;
@@ -14,7 +13,6 @@ import com.matrix.base.ResultCode;
 import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.view.McUserInfoView;
 import com.matrix.util.DateUtil;
-import com.matrix.validate.Validation;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,12 +21,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
 
-	private static final long serialVersionUID = -4703428007044146964L;
+	private static final long serialVersionUID = 4703428007044146964L;
 
 	private McUserInfoView userCache;
 	
-    private Long mcSellerCompanyId;
-    
     @NotBlank(message = "101010059")	   // 101010059=功能名称 | 父节点不能为空 ! 
     private String name;
     
@@ -41,7 +37,6 @@ public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
     @Range(min=0, max=5, message="101010062")
     private Integer navType;		// -1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
     
-    private Integer authorize;      // 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
     private String platform; 			// 平台默认标识码|nav_type=0，此处为系统生成默认值
     private String styleClass;
     private String styleKey;
@@ -62,12 +57,10 @@ public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
 	
 	public McSysFunction buildAddMcSysFunction() {
 		McSysFunction e = new McSysFunction();
-		e.setMcSellerCompanyId(mcSellerCompanyId);
 		e.setName(name);
 		e.setParentId(parentId);
 		e.setSeqnum(seqnum);
 		e.setNavType(navType);
-		e.setAuthorize(authorize);
 		e.setPlatform(platform);
 		e.setStyleClass(styleClass);
 		e.setStyleKey(styleKey);
@@ -128,25 +121,6 @@ public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
 		return Result.SUCCESS();
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

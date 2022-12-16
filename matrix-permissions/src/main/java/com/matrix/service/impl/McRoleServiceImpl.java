@@ -79,7 +79,6 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 		// 此种情况为Leader后台进行数据请求 且对别当前登录用户的缓存信息是否正确
 		if(userCache.getType().equals("leader") ) {     // master.getType() will be: leader or admin or user
 			dto.setType("leader");
-			dto.setCid(null); 		// 联合查询字段主动置空 防御攻击
 			dto.setPlatform(null);	
 		}else {
 			dto.setType("admin");   // 由具体某个平台的系统管理员所创建
@@ -105,7 +104,6 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			McRole role = param.buildAddMcRole();
 			// 验证角色名称是否重复
 			McRole role_ = new McRole();
-			role_.setCid(role.getCid());
 			role_.setPlatform(role.getPlatform());
 			role_.setRoleName(role.getRoleName());
 			McRole ishas = mcRoleMapper.findByType(role_);
@@ -277,7 +275,7 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
     	int pageSize = 10;	// 当前页所显示记录条数
 		try {
 			McRoleDto dto = param.buildUserRoleList();
-			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))){
+			if(StringUtils.isAnyBlank(request.getParameter("pageNum") , request.getParameter("pageSize"))) {
 				pageNum = dto.getStartIndex();
 				pageSize = dto.getPageSize();
 			}else{
@@ -288,13 +286,10 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			
 			McUserInfoView userCache = dto.getUserCache();
 			if(userCache.getType().equals("leader") ) {     // master.getType() will be: leader or admin or user
-				dto.setType("leader"); // + dto.platform取结果集
+				dto.setType("leader"); 		// + dto.platform取结果集
 			}else {
-				dto.setType("admin");   // 由具体某个平台的系统管理员所创建
-//				dto.setCid(userCache.getCid());
-				dto.setPlatform(userCache.getPlatform()); 
+				dto.setType("admin");   		// 由具体某个平台的系统管理员所创建
 			}
-			
 			List<McRoleView> list = mcRoleMapper.queryPageView(dto);
 			if (list != null && list.size() > 0) {
 				List<McUserRole> urList = mcUserRoleMapper.selectByMcUserId(param.getUserId());  

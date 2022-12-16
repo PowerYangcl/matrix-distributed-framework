@@ -2,11 +2,6 @@ package com.matrix.pojo.view;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 

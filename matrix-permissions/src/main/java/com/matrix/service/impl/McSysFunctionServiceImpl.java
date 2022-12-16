@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -233,8 +234,44 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	}
 
 
-
+	/**
+	 * @description: 获取平台信息列表|ManagerCenterController使用
+	 *
+	 * @author Yangcl
+	 * @date 2018年9月22日 下午2:23:23 
+	 * @version 1.0.0.1
+	 */
+	public Result<List<McSysFunction>> ajaxPlatformInfoList(HttpSession session) {
+		try {
+			McUserInfoView userCache = (McUserInfoView) session.getAttribute("userInfo");
+			String type = userCache.getType(); // leader Leader后台用户|admin 其他平台管理员|user其他平台用户
+			
+			McSysFunctionDto dto = new McSysFunctionDto();
+			dto.setNavType(0);
+			if(!"leader".equals(type)) {
+				String platforms = userCache.getPlatform();	// admin or user 此字段是平台标识码逗号分隔
+				dto.setPlatformList(platforms);
+			}
+			List<McSysFunction> sflist = mcSysFunctionMapper.findPlatformInfoList(dto);
+			return Result.SUCCESS(sflist);
+		} catch (Exception ex) {
+			ex.printStackTrace(); 		// 101010044=获取平台信息列表失败，状态查询异常
+			return Result.ERROR(this.getInfo(101010044), ResultCode.SERVER_EXCEPTION);
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

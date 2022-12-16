@@ -11,7 +11,6 @@ public class McRoleView  extends BaseView{
 	private static final long serialVersionUID = -7615697912055073094L;
 	
 	private Long id;
-	private Long cid;
 	private String type;				// leader Leader后台创建的角色|admin 其他平台管理员创建的角色
 	private String platform;
     private String roleName;

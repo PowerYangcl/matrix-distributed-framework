@@ -15,7 +15,6 @@
 	
 	<resultMap id="BaseResultMap" type="com.matrix.pojo.entity.McRole" extends="BaseMap">
 		<id column="id" property="id" jdbcType="BIGINT" />
-		<result column="cid" property="cid" jdbcType="BIGINT" />
 		<result column="type" property="type" jdbcType="VARCHAR" />
 		<result column="platform" property="platform" jdbcType="VARCHAR" />
 		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
@@ -38,7 +37,6 @@
 	<select id="findRoleCache" resultMap="McRoleCacheMap" parameterType="java.lang.Long">  
 		select 
 			r.id as mcRoleId,	  
-			r.cid as cid,
 			r.type as type,
 			r.platform as platform,
 			r.role_name as roleName,
@@ -58,9 +56,6 @@
 			mc_role r
 		where 
 			r.delete_flag = 1 
-			<if test="cid != null">
-				and r.cid = #{cid , jdbcType=BIGINT}
-			</if>
 			<if test="type != null">
 				and r.type = #{type,jdbcType=VARCHAR}
 			</if>
@@ -90,7 +85,6 @@
 	<select id="findMcRoleDtoList" resultMap="McRoleCacheMap" >  
 		select 
 			r.id as mcRoleId,	  
-			r.cid as cid,
 			r.type as type,
 			r.platform as platform,
 			r.role_name as roleName,
@@ -106,19 +100,17 @@
 	<resultMap id="queryPageViewMap" type="com.matrix.pojo.view.McRoleView" extends="BaseResultMap"></resultMap>
 	<select id="queryPageView" parameterType="com.matrix.pojo.dto.McRoleDto" resultMap="queryPageViewMap">
 		select 
-			* 
+			f.name as platformName,
+			r.* 
 		from 
-			mc_role r
+			mc_role r left join mc_sys_function f on r.platform = f.platform
 		<where>
-			r.delete_flag = 1 
-			<if test="cid != null">
-				and r.cid = #{cid , jdbcType=BIGINT}
-			</if>
+			r.delete_flag = 1 and f.nav_type = 0
 			<if test="type != null">
 				and r.type = #{type,jdbcType=VARCHAR}
 			</if>
 			<if test="platform != null">
-				and r.platform = #{platform,jdbcType=VARCHAR}
+				and r.platform in (${platform})
 			</if>
 			<if test="roleName != null and roleName != ''  ">
 				and r.role_name = #{roleName , jdbcType=VARCHAR}
@@ -137,9 +129,6 @@
 			r.delete_flag = 1 
 		and
 			f.nav_type = 0
-			<if test="cid != null">
-				and r.cid = #{cid , jdbcType=BIGINT}
-			</if>
 			<if test="type != null  and type != '' ">
 				and r.type = #{type,jdbcType=VARCHAR}
 			</if>
@@ -163,9 +152,6 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				id,
-			</if>
-			<if test="cid != null">
-				cid,
 			</if>
 			<if test="type != null">
 				type,
@@ -207,9 +193,6 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				#{id,jdbcType=BIGINT},
-			</if>
-			<if test="cid != null">
-				#{cid , jdbcType=BIGINT},
 			</if>
 			<if test="type != null">
 				#{type , jdbcType=VARCHAR},
@@ -256,9 +239,6 @@
 			<if test="id != null">
 				id,
 			</if>
-			<if test="cid != null">
-				cid,
-			</if>
 			<if test="type != null">
 				type,
 			</if>
@@ -299,9 +279,6 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				#{id,jdbcType=BIGINT},
-			</if>
-			<if test="cid != null">
-				#{cid , jdbcType=BIGINT},
 			</if>
 			<if test="type != null">
 				#{type , jdbcType=VARCHAR},
@@ -345,9 +322,6 @@
 	<update id="updateSelective" parameterType="com.matrix.pojo.entity.McRole">
 		update mc_role
 		<set>
-			<if test="cid != null">
-				cid = #{cid , jdbcType=BIGINT},
-			</if>
 			<if test="type != null">
 				type = #{type,jdbcType=VARCHAR},
 			</if>

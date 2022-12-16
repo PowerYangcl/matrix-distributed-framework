@@ -3,6 +3,7 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import com.matrix.annotation.Inject;
@@ -27,7 +28,7 @@ public class UpdateMcUserInfoRequest extends BaseClass implements Serializable{
 	
 	private McUserInfoView userCache;
 	
-	@NotBlank(message = "100020111")		// 100020111=主键丢失
+	@NotNull(message = "100020111")		// 100020111=主键丢失
 	private Long id;
 	
     private String userName;

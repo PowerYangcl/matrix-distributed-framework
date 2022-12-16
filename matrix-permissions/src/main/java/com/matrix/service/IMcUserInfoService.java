@@ -111,19 +111,6 @@ public interface IMcUserInfoService extends IBaseService<Long , McUserInfo , McU
 	public Result<?> ajaxBtnUserCacheReload();
 	
 	/**
-	 * @description: 获取平台信息列表|ManagerCenterController使用
-	 *
-	 * @return 
-	 * @author Yangcl
-	 * @date 2019年12月20日 下午3:31:38 
-	 * @version 1.0.0.1
-	 */
-	public Result<List<McSysFunction>> ajaxPlatformInfoList();
-	
-
-	
-	
-	/**
 	 * @description: 【仅matrix-manager-api项目使用】
 	 * 		验证用户登录信息|客户端用户：nodejs/IOS平板等
 	 *

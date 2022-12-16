@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class McRoleCache {
 	private Long mcRoleId;
-	private Long cid;
 	private String type;
 	private String platform;
 	private String roleName;

@@ -181,11 +181,12 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	}
 	
 	/**
-	 * @description: 添加用户
-	 *
+	 * @description: 添加系统类型用户：leader 或 admin。
+	 * 		针对user类型用户由于涉及到mc_user_info_ext记录，迁移到matrix-employee模块进行操作
+	 *		
 	 * @author Yangcl
 	 * @date 2019年12月5日 上午10:28:56 
-	 * @version 1.0.0.1
+	 * @version 1.0.0.1|update in v1.6.1.6-multiple-jspweb
 	 */
 	public Result<?> addSysUser(@Valid AddMcUserInfoRequest param) {
 		Result<?> validate = param.validate(mcUserInfoMapper);
@@ -313,30 +314,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			throw new RuntimeException(this.getInfo(100020112));
 		}
 	}
-	
-	/**
-	 * @description: 获取平台信息列表|ManagerCenterController使用
-	 *
-	 * @param info
-	 * @author Yangcl
-	 * @date 2018年9月22日 下午2:23:23 
-	 * @version 1.0.0.1
-	 */
-	public Result<List<McSysFunction>> ajaxPlatformInfoList() {
-		try {
-			McSysFunction e = new McSysFunction();
-			e.setNavType(0);
-			e.setAuthorize(0); 		// 用户与角色是否委托Leader创建。0:委托 1:不委托|nav_type=0此字段生效。
-			List<McSysFunction> sflist = mcSysFunctionMapper.getSysFuncList(e);
-			return Result.SUCCESS(sflist);
-		} catch (Exception ex) {
-			ex.printStackTrace(); 		// 101010044=获取平台信息列表失败，状态查询异常
-			return Result.ERROR(this.getInfo(101010044), ResultCode.SERVER_EXCEPTION);
-		}
-	}
-	
-	
-	
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////【仅项目使用】////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
