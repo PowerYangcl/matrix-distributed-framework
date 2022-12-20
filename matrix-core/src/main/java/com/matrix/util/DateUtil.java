@@ -30,6 +30,21 @@ import com.alibaba.fastjson.JSONObject;
  * @version 1.0.0.1
  */
 public class DateUtil {
+	
+	/**
+	 * @description: 格式化格林威治时间
+	 * 		比如：2022-12-17T17:37:25+08:00，格式化后的结果：2022-12-17 17:37:25
+	 * 
+	 * @param gmtTime
+	 * @return String
+	 * @author Yangcl
+	 * @date 2022-12-17 17:37:25
+	 * @home https://github.com/PowerYangcl
+	 * @version v1.6.1.6-multiple-jspweb
+	 */
+	public String fomateGmtTime(String gmtTime) {
+		return gmtTime.substring(0, 19).replace("T", " ");
+	}
 
 	/**
 	 * @description: 两个日期的时间差计算

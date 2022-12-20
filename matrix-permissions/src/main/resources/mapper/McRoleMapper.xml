@@ -42,7 +42,8 @@
 			r.role_name as roleName,
 			r.role_desc as roleDesc,
 			GROUP_CONCAT(rf.mc_sys_function_id order by rf.mc_sys_function_id asc) as ids
-		from `mc_role_function` rf  left join `mc_role` r on r.id = rf.mc_role_id
+		from 
+			`mc_role_function` rf  left join `mc_role` r on r.id = rf.mc_role_id
 		where 
 			r.delete_flag = 1 and r.id = #{id , jdbcType=BIGINT}
 		group by rf.mc_role_id

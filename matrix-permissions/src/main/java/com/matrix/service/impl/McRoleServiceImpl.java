@@ -322,19 +322,22 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2019年12月17日 下午5:30:40 
 	 * @version 1.0.0.1
 	 */
+	@Transactional
 	public Result<?> allotUserRole(@Valid AddMcUserRoleRequest param) {
-		try {
-			McUserRole entity = param.buildAllotUserRole();
-			Integer count = mcUserRoleMapper.insertSelective(entity);
-			if(count != 0){
-				launch.loadDictCache(CachePrefix.McUserRole , null).del(entity.getMcUserId().toString()); 
+		McUserRole entity = param.buildAllotUserRole();
+		Integer count = mcUserRoleMapper.insertSelective(entity);
+		if(count != 0) {
+			String roleValue = launch.loadDictCache(CachePrefix.McRole , "McRoleInit").get(param.getMcRoleId().toString());  
+			if(StringUtils.isNotBlank(roleValue)) {
+				McRoleCache cache = JSONObject.parseObject(roleValue, McRoleCache.class);
+				String key = cache.getPlatform() + "@" + entity.getMcUserId();
+				launch.loadDictCache(CachePrefix.McUserRole , null).del(key);
 				return Result.SUCCESS(this.getInfo(101010056));	// 101010056=系统角色分配成功
+			}else {
+				throw new RuntimeException(this.getInfo(100010105) + " " + this.getInfo(101010007));	// 100010105=数据更新失败，服务器异常!
 			}
-			return Result.ERROR(this.getInfo(101010007), ResultCode.ERROR_INSERT);	// 101010007=系统角色分配失败
-		} catch (Exception ex) {
-			ex.printStackTrace();	// 100010112=服务器异常!
-			throw new RuntimeException(this.getInfo(100010112));
 		}
+		return Result.ERROR(this.getInfo(101010007), ResultCode.ERROR_INSERT);	// 101010007=系统角色分配失败
 	}
 	
 	/**
@@ -345,16 +348,22 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 	 * @date 2019年12月17日 下午5:39:55 
 	 * @version 1.0.0.1
 	 */
+	@Transactional
 	public Result<?> deleteUserRole(@Valid DeleteMcUserRoleRequest param) {
-		try {
-			McUserRoleDto dto = param.buildDeleteUserRole();
-			mcUserRoleMapper.deleteByDto(dto);   
-			launch.loadDictCache(CachePrefix.McUserRole , null).del(dto.getUserId().toString());
-			return Result.SUCCESS(this.getInfo(101010010));	// 101010010=系统角色移除成功! 
-		} catch (Exception ex) {
-			ex.printStackTrace();	// 100010112=服务器异常!
-			throw new RuntimeException(this.getInfo(100010112));
+		McUserRoleDto dto = param.buildDeleteUserRole();
+		Integer count = mcUserRoleMapper.deleteByDto(dto);
+		if(count != 0) {
+			String roleValue = launch.loadDictCache(CachePrefix.McRole , "McRoleInit").get(param.getMcRoleId().toString());  
+			if(StringUtils.isNotBlank(roleValue)) {
+				McRoleCache cache = JSONObject.parseObject(roleValue, McRoleCache.class);
+				String key = cache.getPlatform() + "@" + dto.getUserId();
+				launch.loadDictCache(CachePrefix.McUserRole , null).del(key);
+				return Result.SUCCESS(this.getInfo(101010010));	// 101010010=系统角色移除成功! 
+			}else {
+				throw new RuntimeException(this.getInfo(100010105) + " " + this.getInfo(101010007));	// 100010105=数据更新失败，服务器异常!
+			}
 		}
+		return Result.ERROR(this.getInfo(101010007), ResultCode.ERROR_INSERT);	// 101010007=系统角色分配失败
 	}
 	
 	/**

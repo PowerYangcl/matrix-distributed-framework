@@ -2,12 +2,9 @@ package com.matrix.pojo.request;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.matrix.base.BaseClass;
-import com.matrix.base.Result;
-import com.matrix.base.ResultCode;
 import com.matrix.pojo.entity.McUserRole;
 import com.matrix.pojo.view.McUserInfoView;
 

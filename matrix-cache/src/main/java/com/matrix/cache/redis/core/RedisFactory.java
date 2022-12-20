@@ -1,6 +1,8 @@
 package com.matrix.cache.redis.core;
 
 import java.util.*;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
@@ -152,6 +154,12 @@ public class RedisFactory extends BaseClass implements ICacheFactory{
      * @version 1.0.0.1
      */
     public Boolean batchInsert(List<RedisEntity> list, long expire) {
+    	if(CollectionUtils.isNotEmpty(list)) {
+    		for(int i = 0 ; i < list.size(); i ++) {
+    			String key = list.get(i).getKey();
+    			list.get(i).setKey(baseKey + key);
+    		}
+    	}
     	return RedisTemplateLettuce.getInstance().batchInsert(list, expire);
     }
 

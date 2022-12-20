@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class McUserRoleCache {
 	private Long mcUserId; 
+	private String platform;		// 多平台唯一标识 v1.6.1.6-multiple-jspweb
 	private List<McSysFunction> msfList = new ArrayList<McSysFunction>();
 	
 }

@@ -36,7 +36,7 @@ public class McRoleInit extends BaseClass implements ILoadCache<String> {
 	
 	public String load(String key, String field) {
 		try {
-			McRoleCache e = mcRoleMapper.findRoleCache(Long.parseLong(key));
+			McRoleCache e = mcRoleMapper.findRoleCache(Long.parseLong(key)); // 角色只有根节点会导致此处查询为空。
 			if(e == null) {
 				return "";
 			}

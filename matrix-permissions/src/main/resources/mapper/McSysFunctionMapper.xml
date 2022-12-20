@@ -86,6 +86,16 @@
 			</if>			
 	</select>
 	
+	<!-- v1.6.1.6-multiple-jspweb -->
+	<select id="findListByIds" resultMap="BaseResultMap" parameterType="com.matrix.pojo.dto.McSysFunctionDto" >
+	    select 
+	    	* 
+    	from 
+    		mc_sys_function 
+   		where  
+			id in(${ids}) and delete_flag = 1 
+	</select>
+	
 	
 	<delete id="deleteById" parameterType="java.lang.Long">
 		delete from mc_sys_function where id = #{id , jdbcType=BIGINT}

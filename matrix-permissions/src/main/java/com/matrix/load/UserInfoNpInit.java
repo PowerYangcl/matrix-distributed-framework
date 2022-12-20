@@ -29,20 +29,6 @@ import com.matrix.pojo.view.McUserInfoView;
 	    "email": "root@pm.com",
 	    "pageCss": "",
 	    "mobile": "13511112221",
-	    "mcOrg":{
-	    	"status":"success",
-	    	"msg":"查询成功",
-	    	"cid":"1",
-	    	"name":"组织机构名称",
-	    	"platform":"平台标识码",
-	    		……  详细信息请参考：McOrganizationInit.java
-	    		
-	    	"address":"机构地址信息"
-	    }
-	    "orgidList":[
-	    	23948127349182348,
-	    	12394109751029349
-	    ]
 	}
  * @author Yangcl
  * @home https://github.com/PowerYangcl
@@ -62,26 +48,11 @@ public class UserInfoNpInit extends BaseClass implements ILoadCache<String> {
 		e.setPassword(key.split(",")[1]);
 		McUserInfoView view = mcUserInfoMapper.login(e);
 		if(view != null) {	
-			if(view.getType().equals("user")) {	// 取出关联的用户数据权限信息
-//				McUserInfoOrganization org = new McUserInfoOrganization();
-//				org.setMcUserInfoId(view.getId());
-//				List<McUserInfoOrganization> list = mcUserInfoOrganizationMapper.findList(org );
-//				if(list != null && list.size() !=0) {
-//					List<Long> orgidList = new ArrayList<Long>(list.size());
-//					for(McUserInfoOrganization o : list) {
-//						orgidList.add(o.getMcOrganizationId());
-//					}
-//					view.setOrgidList(orgidList);
-//				}
-			}
-			
 			String value = JSONObject.toJSONString(view);
-//			if(view.getMcOrganizationId() != null && view.getMcOrganizationId() != 0) {
-//				String mcOrg = launch.loadDictCache(CachePrefix.McOrganization , "McOrganizationInit").get(view.getMcOrganizationId().toString());
-//				view.setMcOrg(JSONObject.parseObject(mcOrg));
-//			}
 			launch.loadDictCache(CachePrefix.UserInfoNp , null).set(e.getUserName() + "," + e.getPassword() , value , 4*60*60);
-			launch.loadDictCache(CachePrefix.UserInfoId , null).set(view.getId().toString() , e.getUserName() + "," + e.getPassword() , 4*60*60);  // 依据user info id，方便操作
+			
+			String np = e.getUserName() + "," + e.getPassword();
+			launch.loadDictCache(CachePrefix.UserInfoId , null).set(view.getId().toString() , np, 4*60*60);  // 依据user info id，方便操作
 			return value;
 		}
 		return "";

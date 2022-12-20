@@ -19,6 +19,8 @@ public enum CachePrefix {
 	
 	McSysFunc,     // mc_sys_function 表的缓存标识
 	
+	McSysFuncList,     // 提高查询效率，对mc_sys_function列表进行整体缓存初始化，v1.6.1.6-multiple-jspweb。
+	
 	McRole,        // 角色信息
 	
 	McUserRole,      // 用户与角色关联

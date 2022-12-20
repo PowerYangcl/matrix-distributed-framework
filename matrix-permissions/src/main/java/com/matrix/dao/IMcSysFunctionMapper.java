@@ -17,7 +17,18 @@ public interface IMcSysFunctionMapper extends IBaseDao<Long , McSysFunction , Mc
 	 * @home https://github.com/PowerYangcl
 	 * @version v1.6.1.6-multiple-jspweb
 	 */
-    public List<McSysFunction> findPlatformInfoList(McSysFunctionDto e);
+    public List<McSysFunction> findPlatformInfoList(McSysFunctionDto dto);
 
 	public Integer deleteByIds(List<Long> list);   
+	
+	
+	/**
+	 * @description: 根据mc_sys_function表id列表查询数据
+	 * 
+	 * @author Yangcl
+	 * @date 2022-12-19 18:41:26
+	 * @home https://github.com/PowerYangcl
+	 * @version v1.6.1.6-multiple-jspweb
+	 */
+	public List<McSysFunction> findListByIds(McSysFunctionDto e);
 }

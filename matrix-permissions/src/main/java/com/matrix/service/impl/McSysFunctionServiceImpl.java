@@ -178,8 +178,11 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	public Result<TreeListView> treeList(@Valid FindTreeListRequest param) {
 		McSysFunctionDto dto = param.buildTreeList();
 		McUserInfoView userCache = param.getUserCache();
-		if(!userCache.getType().equals("leader")) {
-			dto.setPlatform(userCache.getPlatform()); // 不再使用页面传入的平台编码，防止造假
+		if(!userCache.getType().equals("leader")) { // admin or user
+			if(!StringUtils.contains(userCache.getPlatform(), param.getPlatform())) {	// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
+				return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
+			}
+			
 			String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(userCache.getId().toString());
 			McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
 			String ids = "";
@@ -198,7 +201,7 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 		if (list != null && list.size() > 0) {
 			TreeListView view = new TreeListView();
 			view.setList(list);
-			if(dto.getType().equals("role")){
+			if(dto.getType().equals("role")) {  // 反选已有功能节点。
 				if(dto.getRoleId() == null) {		// 100010125=请求参数：{0}不允许为空
 					return Result.ERROR(this.getInfo(100010125, "roleId"), ResultCode.MISSING_ARGUMENT);
 				}

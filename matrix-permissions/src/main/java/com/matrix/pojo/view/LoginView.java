@@ -8,9 +8,9 @@ public class LoginView implements Serializable{
 
 	private static final long serialVersionUID = 1635992313735978268L;
 
-	private String pageJson;
-	
 	private String info;
+
+	private String pageJson;
 	
 	private String uploadUrl;
 

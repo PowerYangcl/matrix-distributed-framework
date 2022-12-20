@@ -55,7 +55,7 @@ import com.matrix.util.SignUtil;
  * @author Yangcl
  * @home https://github.com/PowerYangcl
  * @date 2016年11月25日 下午3:30:37 
- * @version 1.0.0
+ * @version 1.0.0.1
  */
 @Validated
 @Service("mcUserInfo") 
@@ -85,27 +85,19 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 			return Result.ERROR(this.getInfo(101010017), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString());
-		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
-			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
-		}
-		if(!info.getPlatform().equals(param.getPlatform())) {		// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
+		if(StringUtils.isBlank(info.getPlatform()) || !StringUtils.contains(info.getPlatform(), param.getPlatform())) {	// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
 			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
-		McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
-		List<McSysFunction> msfList = new ArrayList<McSysFunction>();
-		for(McSysFunction m : cache.getMsfList()) {	// 防止误操作，去掉与标识码无关的功能项
-			if(m.getPlatform() != null && m.getPlatform().equals(param.getPlatform())) {
-				msfList.add(m);
-			}
-		}
-		cache.setMsfList(msfList); 
 		
+		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(param.getPlatform() + "@" + info.getId().toString());  
+		if(StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
+			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
+		}
 		session.setAttribute("userInfo", info);   // 写入session
 		
 		LoginView view = new LoginView();
-		view.setPageJson(JSONObject.toJSONString(cache));
 		view.setInfo(userInfoNpJson);
+		view.setPageJson(pageJson);
 		view.setUploadUrl(this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));	// 系统文件上传
 		return Result.SUCCESS(view);
 	}
@@ -286,7 +278,12 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 				}
 			}
 			
-			launch.loadDictCache(CachePrefix.McUserRole , null).del(id.toString());
+			String[] arr = view.getPlatform().split(",");
+			if(arr != null && arr.length != 0) {
+				for(String platform : arr) {
+					launch.loadDictCache(CachePrefix.McUserRole , null).del(platform + "@" + id);
+				}
+			}
 			launch.loadDictCache(CachePrefix.UserInfoNp , null).del(view.getUserName() + "," + view.getPassword());
 			return Result.SUCCESS(this.getInfo(100010106));		// 100010106=数据删除成功!
 		} catch (Exception ex) {
@@ -337,31 +334,22 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		}
 		
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
-		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString());
-		if(StringUtils.isBlank(info.getPlatform()) || StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
+		if(StringUtils.isBlank(info.getPlatform()) || !StringUtils.contains(info.getPlatform(), param.getPlatform())) {	// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
+			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
+		}
+		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(param.getPlatform() + "@" + info.getId().toString());
+		if(StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
 			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
-		if(!info.getPlatform().equals(param.getPlatform())) {		// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
-			return Result.ERROR(this.getInfo(101010023 , info.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
-		}
-		
-		McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
-		List<McSysFunction> msfList = new ArrayList<McSysFunction>();
-		for(McSysFunction m : cache.getMsfList()) {	// 防止误操作，去掉与标识码无关的功能项
-			if(m.getPlatform().equals(param.getPlatform())) {
-				msfList.add(m);
-			}
-		}
-		cache.setMsfList(msfList); 
 		
 		// launch.loadDictCache(DCacheEnum.AccessToken , null).get(dto.getAccessToken());  token获取为空，则用户登录已经超时，需要重新登录
 		String accessToken = SignUtil.md5Sign(param.getUserName()) + SignUtil.md5Sign(String.valueOf(System.currentTimeMillis()));
-		launch.loadDictCache(CachePrefix.AccessToken , null).set(accessToken , userInfoNpJson , 60*60);		// 设置用户令牌，有效时间1小时
+		launch.loadDictCache(CachePrefix.AccessToken , null).set(accessToken , userInfoNpJson , 24*60*60);		// 设置用户令牌，有效时间1天
 		
 		ClientLoginView view = new ClientLoginView();
 		view.setAccessToken(accessToken);
-		view.setPageJson(JSONObject.toJSONString(cache));
 		view.setInfo(userInfoNpJson);
+		view.setPageJson(pageJson);
 		view.setUploadUrl(this.getConfig("matrix-core.ajax_file_upload_" + this.getConfig("matrix-core.model")));	// 系统文件上传
 		return Result.SUCCESS(view);
 	}
@@ -379,7 +367,6 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		launch.loadDictCache(CachePrefix.AccessToken , null).del(param.getAccessToken());
 		return Result.SUCCESS( this.getInfo(101010015));  // 101010015=系统已经退出
 	}
-
 	
 	/**
 	 * @description: 【仅matrix-manager-api项目使用】

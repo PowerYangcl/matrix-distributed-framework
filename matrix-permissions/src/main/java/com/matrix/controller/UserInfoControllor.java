@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Controller
-@RequestMapping("userInfo")
+@RequestMapping("userInfo/")
 public class UserInfoControllor  extends BaseController{
 	
 	@Autowired
@@ -47,9 +47,9 @@ public class UserInfoControllor  extends BaseController{
 	 * @date 2016年11月25日 下午4:17:47 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "login", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
-	public Result<LoginView> login(HttpServletRequest request , FindLoginRequest param, HttpSession session) {
+	@RequestMapping(value = "login", produces = { "application/json;charset=utf-8" })
+	public Result<LoginView> login(FindLoginRequest param, HttpServletRequest request , HttpSession session) {
 		log.info(param.getUserName() + " - 尝试请求 - " + "login() - 方法 - " +  "正在尝试登录"); 
 		return mcUserInfoService.login(param, session);
 	}
@@ -61,8 +61,8 @@ public class UserInfoControllor  extends BaseController{
 	 * @date 2019年12月19日 下午2:41:27 
 	 * @version 1.0.0.1
 	 */
-	@RequestMapping(value = "logout", produces = { "application/json;charset=utf-8" })
 	@ResponseBody
+	@RequestMapping(value = "logout", produces = { "application/json;charset=utf-8" })
 	public Result<?> logout(HttpSession session) {
 		super.userBehavior(session, "logout", ((McUserInfoView) session.getAttribute("userInfo")).getUserName() + "：退出系统|PC端用户");
 		return mcUserInfoService.logout(session);

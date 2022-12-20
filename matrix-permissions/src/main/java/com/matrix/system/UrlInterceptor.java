@@ -1,5 +1,6 @@
 package com.matrix.system;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,23 +80,40 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         
         // 如果这个".do"请求不在 ExcludeUri 数组中则验证Session是否有值，如果Session未超时则不拦截这个请求。
         HttpSession session = request.getSession();
-        McUserInfoView info = (McUserInfoView) session.getAttribute("userInfo");  
-        if (info != null){
+        McUserInfoView info = (McUserInfoView) session.getAttribute("userInfo");
+        if (info != null) {
         	if( url.equals("page_permissions_index.do")){
         		return true;	// 如果用户已经登录则可以访问首页        
         	}
         	
+        	List<McUserRoleCache> clist = new ArrayList<McUserRoleCache>();
+        	Boolean flag = false;
+        	if(StringUtils.startsWith(url, "dialog_") || StringUtils.startsWith(url, "page_") || StringUtils.startsWith(url, "ajax_btn_")) {
+        		String[] arrPlatform = info.getPlatform().split(",");
+        		for(String platform : arrPlatform) {
+        			String key = platform + "@" + info.getId();
+        			McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(key), McUserRoleCache.class);
+        			if(cache != null) {
+        				clist.add(cache);
+        			}
+        		}
+        	}
+        	
         	if(StringUtils.startsWith(url, "dialog_")) {
-        		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
-        		List<McSysFunction> list = cache.getMsfList();
-        		for(McSysFunction sf : list) {
-        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-        			if(sf.getNavType() != null && sf.getNavType() == 5){ 
-        				String [] arr = sf.getFuncUrl().split("/");
-        				if(arr[arr.length -1].equals(url)){
-        					return true;
+        		for(McUserRoleCache cache : clist) {
+        			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+        			for(McSysFunction sf : list) {
+        				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+        				if(sf.getNavType() != null && sf.getNavType() == 5){ 
+        					String [] arr = sf.getFuncUrl().split("/");
+        					if(arr[arr.length -1].equals(url)){
+        						flag = true;
+        						break;
+        					}
         				}
+        			}
+        			if(flag) {
+        				return true;
         			}
         		}
         		
@@ -105,20 +123,24 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         	}
         	
         	if(StringUtils.startsWith(url, "page_")){ 
-        		// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
-        		List<McSysFunction> list = cache.getMsfList();
-        		for(McSysFunction sf : list) {
-        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-        			if(sf.getNavType() != null && sf.getNavType() == 3){ 
-        				String [] arr = sf.getFuncUrl().split("/");
-        				if(arr[arr.length -1].equals(url)){
-        					return true;
+        		for(McUserRoleCache cache : clist) {
+        			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+        			for(McSysFunction sf : list) {
+        				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+        				if(sf.getNavType() != null && sf.getNavType() == 3){ 
+        					String [] arr = sf.getFuncUrl().split("/");
+        					if(arr[arr.length -1].equals(url)){
+        						flag = true;
+        						break;
+        					}
         				}
+        			}
+        			if(flag) {
+        				return true;
         			}
         		}
         		
-        		String pageErrorUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/page-error.html" ;
+        		String pageErrorUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/page-error.jsp" ;
         		response.sendRedirect(pageErrorUrl);
 		        return false;
         	}
@@ -138,17 +160,21 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         		        return false;
         			}
         			
-        			// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-            		McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(info.getId().toString()), McUserRoleCache.class);
-            		List<McSysFunction> list = cache.getMsfList();
-            		for(McSysFunction sf : list) {
-            			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-            			if(sf.getNavType() != null && sf.getNavType() == 4){
-            				if(btn.equals(sf.getEleValue()) && url.equals(sf.getAjaxBtnUrl())){  // ajax_btn_*****需要与eleValue匹配
-            					return true;
+        			for(McUserRoleCache cache : clist) {
+            			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+            			for(McSysFunction sf : list) {
+            				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+            				if(sf.getNavType() != null && sf.getNavType() == 4){
+            					if(btn.equals(sf.getEleValue()) && url.equals(sf.getAjaxBtnUrl())){  // ajax_btn_*****需要与eleValue匹配
+            						flag = true;
+            						break;
+            					}
             				}
             			}
-            		}
+            			if(flag) {
+            				return true;
+            			}
+        			}
             		
             		// 如果请求被排除则跳转到默认提示页面
     		        response.sendRedirect(ajaxErrorUrl);
@@ -157,7 +183,7 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         		// 正常的ajax请求，非按钮标识
         		return true;
         	}
-        }else{
+        } else{
         	if(StringUtils.startsWith(url, "ajax_")) {
         		String timeOutUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/views/tips/ajax-session-timeout.html" ;
 		        response.sendRedirect(timeOutUrl);
