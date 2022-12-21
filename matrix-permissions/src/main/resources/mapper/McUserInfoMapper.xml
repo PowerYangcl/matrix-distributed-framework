@@ -172,7 +172,7 @@
 				and i.type in(${type}) 
 			</if>
 			<if test="platform != null">
-				and e.platform = #{platform,jdbcType=VARCHAR} 
+				and i.platform like  '%${platform}%'
 			</if>
 			<if test="userName != null and userName != ''  ">
 				and i.user_name = #{userName , jdbcType=VARCHAR}

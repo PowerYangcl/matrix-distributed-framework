@@ -1,6 +1,5 @@
 package com.matrix.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -37,9 +36,7 @@ import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.dao.IMcSysFunctionMapper;
 import com.matrix.dao.IMcUserInfoMapper;
 import com.matrix.dao.IMcUserRoleMapper;
-import com.matrix.pojo.cache.McUserRoleCache;
 import com.matrix.pojo.dto.McUserInfoDto;
-import com.matrix.pojo.entity.McSysFunction;
 import com.matrix.pojo.entity.McUserInfo;
 import com.matrix.pojo.entity.McUserRole;
 import com.matrix.pojo.view.ClientLoginView;
@@ -86,13 +83,14 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		}
 		McUserInfoView info = JSONObject.parseObject(userInfoNpJson, McUserInfoView.class);
 		if(StringUtils.isBlank(info.getPlatform()) || !StringUtils.contains(info.getPlatform(), param.getPlatform())) {	// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
-			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
+			return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);	// 此处会自动拦截admin类型用户登录leader系统
 		}
-		
+		info.setWebcode(param.getPlatform());
 		String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(param.getPlatform() + "@" + info.getId().toString());  
 		if(StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
 			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
+		// 如果你的两个窗口是同属一个网站，且在同一个用户名下，那么session也是一样的；如果不是，那么session也不一样。
 		session.setAttribute("userInfo", info);   // 写入session
 		
 		LoginView view = new LoginView();
@@ -116,7 +114,8 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 	
 	/**
 	 * @description: 系统用户列表页数据
-	 * 	非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
+	 * 		leader用户在【矩阵分布式框架控制台】中查看leader和所有平台的admin用户信息，但admin用户无法登录【矩阵分布式框架控制台】系统。
+	 * 		admin用户可以登录其已经分配platform标识码的系统，但那个系统仅展示user类型用户。
 	 * 
 	 *		system-user-list.jsp根据Leader系统或者mip-web等衍生系统的不同
 	 *		增加dto.type 和 dto.platform为参数条件
@@ -141,12 +140,11 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		McUserInfoView userCache = param.getUserCache();
 		if(userCache.getType().equals("leader") ) {     // master.getType() will be: leader or admin or user
 			dto.setType("'leader','admin'");
-			dto.setCid(null); 		// 联合查询字段主动置空 防御攻击
+			dto.setCid(null); 				// 联合查询字段主动置空 防御攻击
 			dto.setPlatform(null);	
 		}else {
-			dto.setType(" 'user' ");   // 非Leader平台的Admin用户不应该显示在其对应的平台的用户列表中
-//			dto.setCid(userCache.getCid());
-			dto.setPlatform(userCache.getPlatform()); 
+			dto.setType(" 'user' ");   // admin用户不应该显示在其对应的平台的用户列表中
+			dto.setPlatform(userCache.getWebcode()); 		// 后续like查询
 		}
 		
 		int pageNum = 1;	// 当前第几页 | 必须大于0
@@ -341,10 +339,11 @@ public class McUserInfoServiceImpl extends BaseServiceImpl<Long , McUserInfo , M
 		if(StringUtils.isBlank(pageJson)) {  	// 101010022=未授权用户
 			return Result.ERROR(this.getInfo(101010022), ResultCode.INTERNAL_VALIDATION_FAILED);
 		}
+		info.setWebcode(param.getPlatform());
 		
 		// launch.loadDictCache(DCacheEnum.AccessToken , null).get(dto.getAccessToken());  token获取为空，则用户登录已经超时，需要重新登录
 		String accessToken = SignUtil.md5Sign(param.getUserName()) + SignUtil.md5Sign(String.valueOf(System.currentTimeMillis()));
-		launch.loadDictCache(CachePrefix.AccessToken , null).set(accessToken , userInfoNpJson , 24*60*60);		// 设置用户令牌，有效时间1天
+		launch.loadDictCache(CachePrefix.AccessToken , null).set(accessToken , JSONObject.toJSONString(info) , 15*24*60*60);		// 设置用户令牌，有效时间15天
 		
 		ClientLoginView view = new ClientLoginView();
 		view.setAccessToken(accessToken);

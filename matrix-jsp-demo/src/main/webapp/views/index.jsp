@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>矩阵管理系统</title>
+		<title>业务系统示例</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -99,7 +99,7 @@
 				<div class="layui-side layui-side-menu">
 					<div class="layui-side-scroll">
 						<div class="layui-logo" lay-href="home/console.html">
-							<span style="font-size: 25px">矩阵控制台</span>
+							<span style="font-size: 25px">业务系统示例</span>
 						</div>
 	
 						<ul id="LAY-system-side-menu" class="layui-nav layui-nav-tree" lay-shrink="all"  lay-filter="layadmin-system-side-menu">

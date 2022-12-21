@@ -252,8 +252,12 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 			McSysFunctionDto dto = new McSysFunctionDto();
 			dto.setNavType(0);
 			if(!"leader".equals(type)) {
-				String platforms = userCache.getPlatform();	// admin or user 此字段是平台标识码逗号分隔
-				dto.setPlatformList(platforms);
+				String str = "";
+				String[] arr = userCache.getPlatform().split(",");	// admin or user 此字段是平台标识码逗号分隔
+				for(String s : arr) {
+					str = str + "'" + s + "',";
+				}
+				dto.setPlatformList(str.substring(0, str.length() -1));
 			}
 			List<McSysFunction> sflist = mcSysFunctionMapper.findPlatformInfoList(dto);
 			return Result.SUCCESS(sflist);

@@ -89,6 +89,10 @@ public class AddMcUserInfoRequest extends BaseClass implements Serializable{
 			// 101010018=平台识别码错误
 			return Result.ERROR(this.getInfo(101010018), ResultCode.MISSING_ARGUMENT);
 		}
+		if(userCache.getType().equals("admin") && !StringUtils.contains(platform, "user@")) {
+			// 101010069=系统用户类型错误，用户类型不得为{0}
+			return Result.ERROR(this.getInfo(101010069, platform.split("@")[0]), ResultCode.MISSING_ARGUMENT);
+		}
 		if(!StringUtils.contains(platform, "@")) { // Leader平台传入的标识码会有 'leader@' + code (Leader平台用户)或者 'admin@' + code的情况(其他平台管理员由Leader创建);
 			// 101010018=平台识别码错误
 			return Result.ERROR(this.getInfo(101010018), ResultCode.MISSING_ARGUMENT);

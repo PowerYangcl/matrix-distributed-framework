@@ -58,7 +58,7 @@ public class McSysFuncListInit extends BaseClass implements ILoadCache<String> {
 					String id = e.getId() + "";
 					String rfJson = launch.loadDictCache(CachePrefix.McSysFunc , "").get(id.toString());
 					if(StringUtils.isNotBlank(rfJson)) {
-						log.info("McSysFuncListInit load() McSysFunction in redis id=" + id);
+						log.info("McSysFuncListInit load() McSysFunction not in redis id=" + id);
 						continue;
 					}
 					

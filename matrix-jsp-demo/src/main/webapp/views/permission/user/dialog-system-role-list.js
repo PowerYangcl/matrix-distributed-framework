@@ -31,6 +31,7 @@ layui.config({
   	      	cols: [
  	    	  	[
  	  	         	{field:'id', title:'角色ID', width:100,unresize: true, sort: true},  //  fixed: 'left', 
+ 	  	         	{field:'platformName', title:'归属平台', width:150},
  	  	         	{field:'roleName', title:'角色名称', width:200},
  	  	         	{field:'roleDesc', title:'角色描述'},
  	  	         	{field:'createTime', title:'创建时间', width:180},

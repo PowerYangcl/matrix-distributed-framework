@@ -37,7 +37,9 @@ public class AddMcSysFunctionRequest extends BaseClass implements Serializable{
     @Range(min=0, max=5, message="101010062")
     private Integer navType;		// -1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
     
+    @NotBlank(message = "101010002")	   // 101010002=平台唯一标识码不得为空
     private String platform; 			// 平台默认标识码|nav_type=0，此处为系统生成默认值
+    
     private String styleClass;
     private String styleKey;
     private String funcUrl;			// nav_type=3或5; 标识为一个跳转页面 如：example/page_form_example.do

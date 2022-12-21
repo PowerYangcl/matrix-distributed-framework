@@ -23,7 +23,8 @@ public class McUserInfoView implements Serializable {
     private String userName;
     private String password;
     private String type;				// leader Leader后台用户|admin 其他平台管理员|user其他平台用户
-    private String platform;		// 平台标识码
+    private String platform;		// 平台标识码集合，半角逗号分隔
+    private String webcode;		// 保存当前登录的系统所属的平台标识码platform的子集；用户登录后进行赋值操作 v1.6.1.6-multiple-jspweb
     private Integer flag;				// 启用状态；1启用 2停用|type=user 则此字段生效
     private String idcard;			// 身份证号
     private Integer sex;				// 性别 1：男 2：女

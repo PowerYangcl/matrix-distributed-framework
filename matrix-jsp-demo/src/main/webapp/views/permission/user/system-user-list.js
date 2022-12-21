@@ -37,7 +37,7 @@ layui.config({
 					 }
 				 },
 	  	         {field:'remark', title:'备注'},
-	  	         {field:'type', title:'用户类型', width:100, sort: true},
+	  	         {field:'type', title:'用户类型', width:120, sort: true},
 	  	         {field:'mobile', title:'手机号码', width:120, sort: true},
 	  	         {field:'createTime', title:'加入时间', width:160},
 	  	         {fixed: 'right', title:'操作', toolbar: '#table-btn-toolbar', width:260}
@@ -110,7 +110,7 @@ layui.config({
 			layer.open({
 				title : '添加系统用户',
 	          	type : 1,	// 1：解析HTML代码段；2：解析url
-	          	area : ['600px', '450px'],
+	          	area : ['600px', '550px'],
 	          	fixed : false,
 	          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 	          	resize : false,        // 是否允许拉伸 默认：true
@@ -118,8 +118,21 @@ layui.config({
           		anim : 0 ,		// 弹窗从上掉落
           		btn : ['提交' , '取消'],
           		yes : function(index , layero){
+          			var arr = new Array();
+          			var type = 'admin@';
+          			$("input[class='platform-add']:checked").each(function(){
+          				var v = $(this).val();		// admin@133C9CB27E18
+//          				var v1 = v.split("@")[0];
+          				var v2 = v.split("@")[1];
+          				arr.push(v2);
+          			});
+          			
+          			var obj = new Object();
+          			obj.name = 'platform';
+          			obj.value = type + arr.join();
           			var url_ =  layui.setter.path + 'userInfo/ajax_btn_add_system_user.do';
 					var data_ = $("#dialog-user-form").serializeArray();
+					data_.push(obj);
 					var obj = JSON.parse(layui.setter.ajaxs.sendAjax('post' , url_ , data_));
 					if(obj.status == 'success'){
 		            	layer.alert( obj.msg , {title:'操作成功 !' , icon:1, skin: 'layui-layer-molv' ,closeBtn:0, anim:4} , function(a){
@@ -268,7 +281,7 @@ layui.config({
 	          	fixed : false,
 	          	shadeClose : false,	// 鼠标点击遮罩层是否可以关闭弹框，默认false
 	          	resize : false,        // 是否允许拉伸 默认：true
-          		content : layui.setter.path + 'permissions/dialog_permissions_system_role_list.do',
+          		content : layui.setter.path + 'permissions/dialog_permissions_system_role_list.do',	// 返回系统用户列表-角色列表弹窗页面
           		anim : 0 ,		// 弹窗从上掉落
           		success: function(layero, index){	// 弹层绘制完成后的回调方法，携带两个参数，分别是当前层DOM当前层索引。
                     var iframe = window['layui-layer-iframe' + index];  // 获取子页面的iframe
@@ -358,7 +371,7 @@ layui.config({
 		},
 		
 		
-		// 绘制平台分配Radio框
+		// 绘制平台分配checkbox框
 		drawPlatformRadio : function(){
 			var html_ = '<tr><td align="right">平台分配：</td><td align="left">';
 			var url_ = layui.setter.path + 'manager/ajax_platform_info_list.do';
@@ -376,8 +389,8 @@ layui.config({
 						}else{
 							val_ = 'admin@' + sflist[i].platform;
 						}
-						html_ += '<input type="radio" ' + isChecked + ' name="platform" value="' + val_ +'"style="vertical-align:middle;">';
-						html_ += '<span style="vertical-align:middle;">' + sflist[i].name +'</span>&nbsp&nbsp&nbsp&nbsp&nbsp';
+						html_ += '<input type="checkbox" ' + isChecked + ' class="platform-add" value="' + val_ +'"style="vertical-align:middle;">&nbsp';
+						html_ += '<span style="vertical-align:middle;">' + sflist[i].remark +'</span>&nbsp&nbsp&nbsp&nbsp&nbsp</br>';
 					}
 				}
 			}
