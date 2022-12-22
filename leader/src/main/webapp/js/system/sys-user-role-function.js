@@ -235,7 +235,7 @@ var surfunc = {
             switch(level_){
                 case 0: // root节点
                     break;
-                case 1: // 商户节点(惠家有等)
+                case 1: // web系统节点
                     surfunc.firstLevelEdit(event , treeNode);
                     break;
                 case 2: // 导航栏
@@ -263,11 +263,11 @@ var surfunc = {
         firstLevelEdit:function(event , treeNode){
         	surfunc.currentNode = treeNode;
             $($("#tree-node-edit")[0].childNodes).remove();
-            var type_ = 'post';
             var url_ = ''; 
+            var html_ = '';
             if(treeNode.name == "新建结点"){
             	url_ = 'ajax_add_tree_node.do';
-            	var html_ = '<input type="text" name="name" class="smallinput " placeholder="系统名称" style="margin-bottom: 10px;">';
+            	html_ = '<input type="text" name="name" class="smallinput " placeholder="系统名称" style="margin-bottom: 10px;">';
             	html_ += '<textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " placeholder="请输入这个新创建的系统相关信息描述" style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
@@ -280,7 +280,7 @@ var surfunc = {
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
             }else{
             	url_ = 'ajax_edit_tree_node.do';
-            	var html_ = '系统定义名称：<input type="text" name="name" class="smallinput " placeholder="系统名称" style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
+            	html_ = '系统定义名称：<input type="text" name="name" class="smallinput " placeholder="系统名称" style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
             	
             	if(typeof(treeNode.children) == "undefined" || treeNode.children.length == 0){
             		html_ += '平台唯一标识：<input type="text" name="platform" class="smallinput " placeholder="平台唯一识别码，无子节点可编辑" style="margin-bottom: 10px;" value="' + treeNode.platform + '" >';
@@ -302,11 +302,11 @@ var surfunc = {
         navEdit:function(event , treeNode){
         	surfunc.currentNode = treeNode;
         	$($("#tree-node-edit")[0].childNodes).remove();
-            var type_ = 'post';
             var url_ = ''; 
+            var html_ = '';
             if(treeNode.name == "新建结点"){
             	url_ = 'ajax_add_tree_node.do';
-            	var html_ = '页面导航名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;"><br/>';
+            	html_ = '页面导航名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;"><br/>';
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput "  style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
@@ -320,7 +320,7 @@ var surfunc = {
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
             }else{
             	url_ = 'ajax_edit_tree_node.do';
-            	var html_ = '页面导航名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
+            	html_ = '页面导航名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;">' + treeNode.remark + '</textarea><br/>';
             	html_ += '<input type="hidden" name="id" value="' + treeNode.id +'" >'; 
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
@@ -336,11 +336,11 @@ var surfunc = {
         fMenuEdit:function(event , treeNode){
         	surfunc.currentNode = treeNode;
 			$($("#tree-node-edit")[0].childNodes).remove();
-            var type_ = 'post';
             var url_ = ''; 
+            var html_ = '';
             if(treeNode.name == "新建结点"){
             	url_ = 'ajax_add_tree_node.do';
-            	var html_ = '一级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;"><br/>';
+            	html_ = '一级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;"><br/>';
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
             	
@@ -354,7 +354,7 @@ var surfunc = {
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
             }else{
             	url_ = 'ajax_edit_tree_node.do';
-            	var html_ = '一级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
+            	html_ = '一级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;">' + treeNode.remark + '</textarea><br/>';
             	html_ += '<input type="hidden" name="id" value="' + treeNode.id +'" >'; 
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
@@ -370,11 +370,11 @@ var surfunc = {
         sMenuEdit:function(event , treeNode){
         	surfunc.currentNode = treeNode;
         	$($("#tree-node-edit")[0].childNodes).remove();
-            var type_ = 'post';
             var url_ = ''; 
+            var html_ = '';
             if(treeNode.name == "新建结点"){
             	url_ = 'ajax_add_tree_node.do';
-            	var html_ = '二级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;"><br/>';
+            	html_ = '二级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;"><br/>';
             	html_ += '页面跳转地址：<input type="text" class="smallinput " placeholder="exa/example.do" style="margin-bottom: 10px;" name="funcUrl" value="" ><br/>';
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;"></textarea><br/>';
             	html_ += '<input type="hidden" name="parentId" value="' + treeNode.parentId +'" >';
@@ -388,7 +388,7 @@ var surfunc = {
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
             }else{
             	url_ = 'ajax_edit_tree_node.do';
-            	var html_ = '二级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
+            	html_ = '二级菜单名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>';
             	html_ += '页面跳转地址：<input type="text" class="smallinput " placeholder="exa/example.do" style="margin-bottom: 10px;" name="funcUrl" value="' + treeNode.funcUrl + '" ><br/>'; 
             	html_ += '<div style="vertical-align:middle">节点备注信息：</div><textarea cols="80" rows="5" maxlength="250"  name="remark"  class="longinput " style="margin-bottom: 10px;">' + treeNode.remark + '</textarea><br/>';
             	html_ += '<input type="hidden" name="id" value="' + treeNode.id +'" >'; 
@@ -405,11 +405,11 @@ var surfunc = {
         subMenuEdit:function(event ,treeNode){
         	surfunc.currentNode = treeNode;
         	$($("#tree-node-edit")[0].childNodes).remove();
-            var type_ = 'post';
             var url_ = ''; 
+            var html_ = '';
             if(treeNode.name == "新建结点"){
             	url_ = 'ajax_add_tree_node.do';
-            	var html_ = '页面按钮名称：<input type="text" name="name" class="smallinput " placeholder="按钮节点|跳转页" style="margin-bottom: 10px;"><br/>';
+            	html_ = '页面按钮名称：<input type="text" name="name" class="smallinput " placeholder="按钮节点|跳转页" style="margin-bottom: 10px;"><br/>';
             	html_ += '页面按钮位置：<select id="btnArea" name="btnArea" class="radius3"  style="margin-left:0px; margin-bottom: 10px;">';
 				html_ += '<option value="10001">功能区域</option><option value="10002">查询区域</option><option value="10003">数据区域</option></select><br/>';
 				
@@ -432,7 +432,7 @@ var surfunc = {
             	html_ += '<button class="layui-btn layui-btn-radius" onclick="surfunc.addData(\'' + url_ +'\')"> 提 交 </button>'
             }else{
             	url_ = 'ajax_edit_tree_node.do';
-            	var html_ = '页面按钮名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>'; 
+            	html_ = '页面按钮名称：<input type="text" name="name" class="smallinput " style="margin-bottom: 10px;" value="' + treeNode.name + '" ><br/>'; 
             	
             	// 按钮位置勾选判定
             	html_ += '页面按钮位置：<select id="btnArea" name="btnArea" class="radius3"  style="margin-left:0px; margin-bottom: 10px;">';
