@@ -90,7 +90,10 @@ public class McUserRoleInit extends BaseClass implements ILoadCache<String> {
 				if(set != null && set.size() != 0) {
 					String setStr = set.toString();	// 提高查询效率，对列表进行整体缓存初始化，避免单个数据库链接查询产生的开销。
 					String key = setStr.substring(1, setStr.length()-1).replace(" ", "");
+					long startTime = System.currentTimeMillis();
 					launch.loadDictCache(CachePrefix.McSysFuncList , "McSysFuncListInit").get(key);
+					long endTime = System.currentTimeMillis();
+					log.info("程序运行时间：" + (endTime - startTime) + "ms");
 					
 					for(Long id : set) {
 						String rfJson = launch.loadDictCache(CachePrefix.McSysFunc , "McSysFuncInit").get(id.toString());

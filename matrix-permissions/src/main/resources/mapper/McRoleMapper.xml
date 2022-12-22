@@ -134,7 +134,7 @@
 				and r.type = #{type,jdbcType=VARCHAR}
 			</if>
 			<if test="platform != null and platform != '' ">
-				and r.platform = #{platform,jdbcType=VARCHAR}
+				and r.platform in (${platform})
 			</if>
 			<if test="roleName != null and roleName != ''  ">
 				and r.role_name like  '%${roleName}%'

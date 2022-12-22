@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -178,16 +179,18 @@ public class McSysFunctionServiceImpl extends BaseServiceImpl<Long , McSysFuncti
 	public Result<TreeListView> treeList(@Valid FindTreeListRequest param) {
 		McSysFunctionDto dto = param.buildTreeList();
 		McUserInfoView userCache = param.getUserCache();
-		if(!userCache.getType().equals("leader")) { // admin or user
-			if(!StringUtils.contains(userCache.getPlatform(), param.getPlatform())) {	// 101010023=未授权用户，平台未对您分配权限，标识码：{0}
-				return Result.ERROR(this.getInfo(101010023 , param.getPlatform()), ResultCode.INTERNAL_VALIDATION_FAILED);
-			}
-			
-			String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(userCache.getId().toString());
-			McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
-			String ids = "";
-			for(McSysFunction m : cache.getMsfList()) {	// 去掉与平台标识码无关的功能项
-				if(m.getPlatform().equals(dto.getPlatform())) {
+		if(!userCache.getType().equals("leader")) { // admin or user  v1.6.1.6-multiple-jspweb
+//			dto.setPlatform(userCache.getWebcode());
+			String ids = "1,";  // 默认需要展示根节点
+			String[] arr = userCache.getPlatform().split(",");
+			for(String platform : arr) {
+				String key = platform + "@" + userCache.getId();
+				String pageJson = launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(key);
+				McUserRoleCache cache = JSONObject.parseObject(pageJson, McUserRoleCache.class);
+				if(cache == null || CollectionUtils.isEmpty(cache.getMsfList())) {
+					continue;
+				}
+				for(McSysFunction m : cache.getMsfList()) {	// 去掉与平台标识码无关的功能项
 					ids += m.getId() + ",";
 				}
 			}

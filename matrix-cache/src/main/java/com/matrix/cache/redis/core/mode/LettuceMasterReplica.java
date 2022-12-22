@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.google.common.collect.Lists;
 import com.matrix.pojo.entity.RedisEntity;
 
@@ -158,7 +160,7 @@ public class LettuceMasterReplica extends AbstractLettuceMode {
 	}
 
 	/**
-	 * @description: 使用pipeline进行大批量数据插入 TODO 重点测试
+	 * @description: 使用pipeline进行大批量数据插入
 	 * 
 	 * @author Yangcl
 	 * @date 2021-2-5 16:26:33
@@ -166,6 +168,9 @@ public class LettuceMasterReplica extends AbstractLettuceMode {
 	 * @version 1.0.0.1
 	 */
 	public Boolean batchInsert(List<RedisEntity> list, long expire) {
+		if(CollectionUtils.isEmpty(list)) {
+			return true;
+		}
 		try {
 			asyncCommands.setAutoFlushCommands(false);
 			List<RedisFuture<?>> futureList = Lists.newArrayList(); // perform a series of independent calls
@@ -178,7 +183,8 @@ public class LettuceMasterReplica extends AbstractLettuceMode {
     		this.reset();
     		return awaitAll;
 		} catch (Exception ex) {
-			ex.printStackTrace(); // TODO 指定log格式
+			ex.printStackTrace();
+			log.error("LettuceMasterReplica batchInsert() Exception ! ex = {}" , ex);
 		}
 		return false;
 	}

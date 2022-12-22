@@ -1,6 +1,5 @@
 package com.matrix.system;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,34 +85,21 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         		return true;	// 如果用户已经登录则可以访问首页        
         	}
         	
-        	List<McUserRoleCache> clist = new ArrayList<McUserRoleCache>();
-        	Boolean flag = false;
+        	McUserRoleCache cache = null;
         	if(StringUtils.startsWith(url, "dialog_") || StringUtils.startsWith(url, "page_") || StringUtils.startsWith(url, "ajax_btn_")) {
-        		String[] arrPlatform = info.getPlatform().split(",");
-        		for(String platform : arrPlatform) {
-        			String key = platform + "@" + info.getId();
-        			McUserRoleCache cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(key), McUserRoleCache.class);
-        			if(cache != null) {
-        				clist.add(cache);
-        			}
-        		}
+        		String key = info.getWebcode() + "@" + info.getId();
+    			cache = JSONObject.parseObject(launch.loadDictCache(CachePrefix.McUserRole , "McUserRoleInit").get(key), McUserRoleCache.class);
         	}
         	
         	if(StringUtils.startsWith(url, "dialog_")) {
-        		for(McUserRoleCache cache : clist) {
-        			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        			for(McSysFunction sf : list) {
-        				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-        				if(sf.getNavType() != null && sf.getNavType() == 5){ 
-        					String [] arr = sf.getFuncUrl().split("/");
-        					if(arr[arr.length -1].equals(url)){
-        						flag = true;
-        						break;
-        					}
+        		List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+        		for(McSysFunction sf : list) {
+        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+        			if(sf.getNavType() != null && sf.getNavType() == 5){ 
+        				String [] arr = sf.getFuncUrl().split("/");
+        				if(arr[arr.length -1].equals(url)){
+        					return true;
         				}
-        			}
-        			if(flag) {
-        				return true;
         			}
         		}
         		
@@ -122,21 +108,15 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
     			return false;
         	}
         	
-        	if(StringUtils.startsWith(url, "page_")){ 
-        		for(McUserRoleCache cache : clist) {
-        			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-        			for(McSysFunction sf : list) {
-        				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-        				if(sf.getNavType() != null && sf.getNavType() == 3){ 
-        					String [] arr = sf.getFuncUrl().split("/");
-        					if(arr[arr.length -1].equals(url)){
-        						flag = true;
-        						break;
-        					}
+        	if(StringUtils.startsWith(url, "page_")) {
+        		List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+        		for(McSysFunction sf : list) {
+        			// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+        			if(sf.getNavType() != null && sf.getNavType() == 3){ 
+        				String [] arr = sf.getFuncUrl().split("/");
+        				if(arr[arr.length -1].equals(url)){
+        					return true;
         				}
-        			}
-        			if(flag) {
-        				return true;
         			}
         		}
         		
@@ -160,22 +140,16 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
         		        return false;
         			}
         			
-        			for(McUserRoleCache cache : clist) {
-            			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
-            			for(McSysFunction sf : list) {
-            				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
-            				if(sf.getNavType() != null && sf.getNavType() == 4){
-            					if(btn.equals(sf.getEleValue()) && url.equals(sf.getAjaxBtnUrl())){  // ajax_btn_*****需要与eleValue匹配
-            						flag = true;
-            						break;
-            					}
-            				}
-            			}
-            			if(flag) {
-            				return true;
-            			}
+        			List<McSysFunction> list = cache.getMsfList();	// 此时开始判断这个url 是否为该用户权限内的，如果不是，则返回false
+        			for(McSysFunction sf : list) {
+        				// navType：-1 根节点 0 平台标记 1 横向导航栏|2 为1级菜单栏|3 2级菜单栏 |4 页面按钮|5 按钮内包含跳转页面(dialog或新页面)
+        				if(sf.getNavType() != null && sf.getNavType() == 4){
+        					if(btn.equals(sf.getEleValue()) && url.equals(sf.getAjaxBtnUrl())){  // ajax_btn_*****需要与eleValue匹配
+        						return true;
+        					}
+        				}
         			}
-            		
+        			
             		// 如果请求被排除则跳转到默认提示页面
     		        response.sendRedirect(ajaxErrorUrl);
             		return false;
@@ -207,7 +181,6 @@ public class UrlInterceptor extends BaseClass implements AsyncHandlerInterceptor
 //        super.postHandle(request, response, handler, modelAndView);
     }
     
-    // TODO 
     private boolean openApi(HttpServletRequest request, HttpServletResponse response) {
     	return true;
     }

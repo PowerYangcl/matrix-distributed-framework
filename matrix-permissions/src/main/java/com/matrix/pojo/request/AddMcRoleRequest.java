@@ -23,7 +23,8 @@ public class AddMcRoleRequest extends BaseClass implements Serializable{
 
 	private McUserInfoView userCache;
 	
-	private String platform;	// 非Leader平台用户创建角色不得携带平台编码
+	@NotBlank(message = "101010002")		// 101010002=平台唯一标识码不得为空
+	private String platform;
 	
 	@NotBlank(message = "101010027")		// 101010027=角色名称不得为空
     private String roleName;
@@ -51,10 +52,11 @@ public class AddMcRoleRequest extends BaseClass implements Serializable{
     	if(userCache.getType().equals("leader") && StringUtils.isBlank(platform)) {	// 100020103=参数缺失：{0}
     		return Result.ERROR(this.getInfo(100020103, "platform"), ResultCode.MISSING_ARGUMENT);
     	}
-    	if(!userCache.getType().equals("leader") && StringUtils.isNotBlank(platform) ) {
-			// 101010028=非Leader平台用户创建角色不得携带平台编码
-			return Result.ERROR(this.getInfo(101010028), ResultCode.ILLEGAL_ARGUMENT);
-		}
+    	if(StringUtils.isNotBlank(platform) && !StringUtils.contains(userCache.getPlatform(), this.platform)) {
+    		// 101010028=您没有此平台的创建权限：{0}
+    		return Result.ERROR(this.getInfo(101010028, this.platform), ResultCode.ILLEGAL_ARGUMENT);
+    	}
+    	
 		return Result.SUCCESS();
 	}
 }

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.collections.CollectionUtils;
+
 import com.google.common.collect.Lists;
 import com.matrix.pojo.entity.RedisEntity;
 
@@ -163,6 +166,9 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	     * @version 1.0.0.1
 	     */
 	    public Boolean batchInsert(List<RedisEntity> list, long expire) {
+	    	if(CollectionUtils.isEmpty(list)) {
+	    		return true;
+	    	}
 	    	try {
 	    		asyncCommands.setAutoFlushCommands(false);
 	    		List<RedisFuture<?>> futureList = Lists.newArrayList();		// perform a series of independent calls
@@ -176,6 +182,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 	    		return awaitAll;
 			} catch (Exception ex) {
 				ex.printStackTrace();    // TODO 指定log格式
+				log.error("LettuceStandalone batchInsert() Exception ! ex = {}" , ex);
 			}
 	    	return false;
 	    }

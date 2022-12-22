@@ -82,8 +82,12 @@ public class McRoleServiceImpl extends BaseServiceImpl<Long , McRole , McRoleDto
 			dto.setPlatform(null);	
 		}else {
 			dto.setType("admin");   // 由具体某个平台的系统管理员所创建
-//			dto.setCid(userCache.getCid());
-			dto.setPlatform(userCache.getPlatform()); 
+			String str = "";
+			String[] arr = userCache.getPlatform().split(",");
+			for(String platform : arr) {
+				str = str + "'" + platform + "',";
+			}
+			dto.setPlatform(str.substring(0, str.length() -1));
 		}
 		return super.pageListByDto(dto, request); 
 	}
