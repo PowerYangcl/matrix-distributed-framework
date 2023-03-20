@@ -15,7 +15,7 @@ import com.matrix.pojo.dto.FindConfigInfoDto;
 /**
  * @description: 获取API接口项目中的Config配置信息|如果部署多个API接口服务器，
  * 		则可能随机获取其中的一个，但会返回一个标识的IP地址作为区分依据
- *			{"key":"matrix-api.default_leader_service_list_master"}
+ *			{"key":"matrix-api.default_leader_service_list_prod"}
  * @tag API-COMMON-CONFIG-INFO
  * 
  * @author Yangcl

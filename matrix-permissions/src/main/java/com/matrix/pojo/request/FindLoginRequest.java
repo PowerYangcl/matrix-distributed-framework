@@ -39,7 +39,7 @@ public class FindLoginRequest extends BaseClass implements Serializable{
 	private McUserInfoView userCache;
     
 	public Result<ClientLoginView> validateAjaxClientLogin() {
-		if(this.getConfig("matrix-core.model").equals("master") || this.getConfig("matrix-core.model").equals("prod")) {   // 线上环境验证码生效
+		if(this.getConfig("matrix-core.model").equals("prod")) {   // 线上环境验证码生效
 			if(StringUtils.isBlank(validateCode)) {		// 101010024=验证码不得为空
 				return Result.ERROR(this.getInfo(101010024), ResultCode.MISSING_ARGUMENT);
 			}

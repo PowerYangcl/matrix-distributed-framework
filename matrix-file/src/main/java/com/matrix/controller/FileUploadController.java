@@ -64,7 +64,7 @@ public class FileUploadController  extends BaseController{
 		String originHeader = request.getHeader("Origin");
 		if (StringUtils.isNotBlank(originHeader)) {
 			
-			if(this.getConfig("matrix-core.model").equals("master")) {
+			if(this.getConfig("matrix-core.model").equals("prod")) {
 				String allowDomain = this.getConfig("matrix-file.access_control_allow_origin_" + this.getConfig("matrix-core.model")); 
 				if (StringUtils.contains(allowDomain, originHeader)){
 					response.setHeader("Access-Control-Allow-Origin", originHeader); // 解决跨域访问限制

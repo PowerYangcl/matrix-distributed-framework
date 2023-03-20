@@ -64,20 +64,15 @@ public class MatrixCoreInit extends BaseInit {
 			e.printStackTrace();
 		}
 		
-		if(StringUtils.isBlank(properties.getProperty("dubbo.application.model"))) {
-			return true;
-		}
+//		if(StringUtils.isBlank(properties.getProperty("dubbo.application.model"))) {
+//			return true;
+//		}
 		log.info("-------------------------------------------Dubbo服务开始初始化差异化配置! ");
 		log.info("-------------------------------------------系统初始运行环境：" + this.getConfig("matrix-core.model"));
-		if(this.getConfig("matrix-core.build_type").equals("jenkins")) {
-			// 根据部署结果重置项目版本信息，此时将覆盖config.matrix-core.properties文件中的model信息
-			PowerCache.getInstance().reset("PropConfig", "matrix-core.model", properties.getProperty("dubbo.application.model")); 
-			log.info("-------------------------------------------系统重置运行环境：" + this.getConfig("matrix-core.model"));
-		}
-		PowerCache.getInstance().reset("PropConfig", "matrix-core.zookeeper_host", properties.getProperty("dubbo.registry.address")); 
-		PowerCache.getInstance().reset("PropConfig", "matrix-core.dubbo_application_name", properties.getProperty("dubbo.application.name")); 
-		PowerCache.getInstance().reset("PropConfig", "matrix-core.dubbo_application_owner", properties.getProperty("dubbo.application.owner")); 
-		log.info("-------------------------------------------Zookeepper重置地址：" + this.getConfig("matrix-core.zookeeper_host"));
+//		PowerCache.getInstance().reset("PropConfig", "matrix-core.zookeeper_host", properties.getProperty("dubbo.registry.address")); 
+//		PowerCache.getInstance().reset("PropConfig", "matrix-core.dubbo_application_name", properties.getProperty("dubbo.application.name")); 
+//		PowerCache.getInstance().reset("PropConfig", "matrix-core.dubbo_application_owner", properties.getProperty("dubbo.application.owner")); 
+		log.info("-------------------------------------------Dubbo当前：" + properties.toString());
 		return true;
 	}
 	

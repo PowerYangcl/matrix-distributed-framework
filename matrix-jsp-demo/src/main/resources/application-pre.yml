@@ -6,13 +6,14 @@ spring:
     matrix:  # 数据源1
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://192.168.162.135:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
+      # 192.168.254.*** pre.leader-mysql.com 此处需要覆盖host文件
+      url: jdbc:mysql://pre.leader-mysql.com:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
       username: root
       password: XianYue1998@
   cloud:
     nacos:
       discovery:
-        server-addr: nacos-node1.pre:8848
+        server-addr: pre.nacos-node1.com:8848
 
 
 

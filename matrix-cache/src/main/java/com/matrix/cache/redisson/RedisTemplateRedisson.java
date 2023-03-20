@@ -32,7 +32,7 @@ public class RedisTemplateRedisson extends BaseClass {
 	
 	// // 连接类型，支持standalone-单机节点，sentinel-哨兵，cluster-集群，master-replica-主从
 	public Config createConfig() {
-		String type = this.getConfig("matrix-cache.cache_model_model_" + this.getConfig("matrix-core.model"));		// sentinel or cluster and so on.
+		String type = this.getConfig("matrix-cache.cache_model_" + this.getConfig("matrix-core.model"));		// sentinel or cluster and so on.
 		RedissonProperties properties = new RedissonProperties();
 		properties.setType(type);
 		String url = this.getConfig("matrix-cache.lettuce_cache_url_" + this.getConfig("matrix-core.model"));
