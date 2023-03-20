@@ -75,20 +75,22 @@ public class PropConfig extends BaseEhcache<String, String> {
 			this.addElement("matrix-core.host_ip", "");
 		}
 		log.info("当前主机地址段：" + this.getValue("matrix-core.host_ip"));
-		try {
-			ResourceBundle resource = ResourceBundle.getBundle("properties/dubbo");
-			if(this.getValue("matrix-core.build_type").equals("jenkins")) {
-				// 根据部署结果重置项目版本信息，此时将覆盖config.matrix-core.properties文件中的model信息
-				this.resetElement("matrix-core.model", resource.getString("dubbo.application.model"));  
-				log.info("系统运行环境：" + this.getValue("matrix-core.model"));
-			}
-			this.addElement("matrix-core.zookeeper_host", resource.getString("dubbo.registry.address")); 
-			this.addElement("matrix-core.dubbo_application_name", resource.getString("dubbo.application.name")); 
-			this.addElement("matrix-core.dubbo_application_owner", resource.getString("dubbo.application.owner")); 
-			log.info("Zookeepper：" + this.getValue("matrix-core.zookeeper_host"));
-		} catch (Exception ex) {
-			log.error("properties/dubbo.xml文件不存在");
-		}
+		
+		
+//		try {
+//			ResourceBundle resource = ResourceBundle.getBundle("properties/dubbo");
+//			if(this.getValue("matrix-core.build_type").equals("jenkins")) {
+//				// 根据部署结果重置项目版本信息，此时将覆盖config.matrix-core.properties文件中的model信息
+//				this.resetElement("matrix-core.model", resource.getString("dubbo.application.model"));  
+//				log.info("系统运行环境：" + this.getValue("matrix-core.model"));
+//			}
+//			this.addElement("matrix-core.zookeeper_host", resource.getString("dubbo.registry.address")); 
+//			this.addElement("matrix-core.dubbo_application_name", resource.getString("dubbo.application.name")); 
+//			this.addElement("matrix-core.dubbo_application_owner", resource.getString("dubbo.application.owner")); 
+//			log.info("Zookeepper：" + this.getValue("matrix-core.zookeeper_host"));
+//		} catch (Exception ex) {
+//			log.error("properties/dubbo.xml文件不存在");
+//		}
 		
 	}
 

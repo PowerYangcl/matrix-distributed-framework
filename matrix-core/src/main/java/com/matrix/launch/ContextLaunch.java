@@ -86,7 +86,7 @@ public class ContextLaunch {
 	 * @description: 初始化配置文件中的config和info信息
 	 *
 	 * @author Yangcl
-	 * @date 22018年9月14日 下午16:22:58
+	 * @date 2018年9月14日 下午16:22:58
 	 * @home https://github.com/PowerYangcl
 	 * @version 1.0.0.1
 	 */

@@ -12,7 +12,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: nacos-node1.dev:8848
+        server-addr: dev.nacos-node1.com:8848
 
 
 
