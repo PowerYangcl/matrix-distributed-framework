@@ -1,7 +1,3 @@
----
-typora-copy-images-to: ./document\images
----
-
 # Matrix-Distributed-Framework
 
 对power-matrix的深度改进版本，基于Dubbo的微服务技术中台核心底层，致力于为中大型企业快速构建庞大、健壮的微服务生态环境。
@@ -36,9 +32,15 @@ websocket页面消息通知功能
 
 http://localhost:8080/leader/login.html
 
-![index-html](D:\workspace\matrix\matrix-distributed-framework\document\images\index-html.png)
 
-![user-list-index](D:\workspace\matrix\matrix-distributed-framework\document\images\user-list-index.png)
+
+![index-html](document/images/index-html.png)
+
+
+
+
+
+![user-list-index](document/images/user-list-index.png)
 
 
 
