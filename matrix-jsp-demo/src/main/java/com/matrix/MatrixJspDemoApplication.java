@@ -40,8 +40,8 @@ public class MatrixJspDemoApplication {
     			Resource[] arr = IoUtil.getInstance().listResources("classpath*:/maven-conf/" + active + "/*.properties");
     			if(arr != null && arr.length != 0) {
     				for(Resource rce : arr) {
-    					log.info("初始差异化配置文件：" + rce.getFile().getPath());	//  if(rce.getFilename().equals("log4j.properties")) {}
-    					PropertyConfigurator.configure(rce.getFile().getPath());
+    					log.info("初始差异化配置文件：/maven-conf/" + active + "/" + rce.getFilename());	//  if(rce.getFilename().equals("log4j.properties")) {}
+    					PropertyConfigurator.configure(rce.getURL());
     				}
     			}
     		}
