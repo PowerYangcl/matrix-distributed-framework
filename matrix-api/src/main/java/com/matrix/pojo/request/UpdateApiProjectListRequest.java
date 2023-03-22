@@ -3,6 +3,7 @@ package com.matrix.pojo.request;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.matrix.base.BaseClass;
 import com.matrix.pojo.entity.AcApiProject;
@@ -17,7 +18,7 @@ public class UpdateApiProjectListRequest extends BaseClass implements Serializab
 
 	private static final long serialVersionUID = 4031131855729422206L;
 	
-	@NotBlank(message = "100020111")			// 100020111=主键丢失
+	@NotNull(message = "100020111")			// 100020111=主键丢失
 	private Long id;
 	
 	@NotBlank(message = "600010060")			// 项目名称不得为空
