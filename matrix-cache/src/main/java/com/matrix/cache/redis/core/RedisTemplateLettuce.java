@@ -1,11 +1,13 @@
 package com.matrix.cache.redis.core;
 
+import com.matrix.annotation.Inject;
 import com.matrix.base.BaseClass;
 import com.matrix.cache.inf.ICacheFactory;
 import com.matrix.cache.redis.core.mode.LettuceCluster;
 import com.matrix.cache.redis.core.mode.LettuceMasterReplica;
 import com.matrix.cache.redis.core.mode.LettuceSentinel;
 import com.matrix.cache.redis.core.mode.LettuceStandalone;
+import com.matrix.cache.redis.core.mode.RedisConnectionProperty;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,12 +33,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class RedisTemplateLettuce extends BaseClass {
+	@Inject
+	private RedisConnectionProperty redisConnectionProperty;
 	
 	private ICacheFactory cacheFactory;
-	private String config = "standalone";	// 默认为单机模式
-
-	private RedisTemplateLettuce() {
-		config = this.getConfig("matrix-cache.cache_model_" + this.getConfig("matrix-core.model"));
+	
+	public RedisTemplateLettuce() {
+		String config = redisConnectionProperty.getModel();
 		switch (config) {
 			case "master-replica":
 				cacheFactory = new LettuceMasterReplica();
@@ -52,18 +55,6 @@ public class RedisTemplateLettuce extends BaseClass {
 				break;
 		}
 	}
-	
-	private static class LazyHolder{
-		private static final RedisTemplateLettuce INSTANCE = new RedisTemplateLettuce();
-	}
-	
-	public static final ICacheFactory getInstance() {
-		return LazyHolder.INSTANCE.getCacheFactory();
-	}
-
-	
-	
-	
 }
 
 

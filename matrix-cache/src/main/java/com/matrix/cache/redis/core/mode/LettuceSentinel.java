@@ -57,6 +57,7 @@ public class LettuceSentinel extends AbstractLettuceMode {
 				.withSentinelMasterId(sentinelMasterId)		// 哨兵Master的ID		文档写的模糊，暂时不知道是个什么，MMP查了好久。
 				.withAuthentication(username, password)
 				.withTimeout(Duration.of(300, ChronoUnit.SECONDS)) // 30秒超时
+				.withDatabase(Integer.valueOf(defalutDb))
 				.build();
 		resources = DefaultClientResources.builder()
 				.ioThreadPoolSize(4) // I/O线程数 default: Runtime.getRuntime().availableProcessors()

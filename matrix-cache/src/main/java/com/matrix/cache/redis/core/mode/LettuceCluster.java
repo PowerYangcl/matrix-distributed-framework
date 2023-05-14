@@ -56,6 +56,7 @@ public class LettuceCluster extends AbstractLettuceMode{
 	            .withPort(port)
 	            .withAuthentication(username, password)
 				.withTimeout(Duration.of(300, ChronoUnit.SECONDS)) // 30秒超时
+				.withDatabase(Integer.valueOf(defalutDb))
 	            .build();
 		resources = DefaultClientResources.builder()
 				.ioThreadPoolSize(4)							// I/O线程数 default : Runtime.getRuntime().availableProcessors()

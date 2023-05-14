@@ -1,6 +1,7 @@
 package com.matrix.launch;
 
 import org.redisson.Redisson;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 
+import com.matrix.cache.redis.core.mode.RedisConnectionProperty;
 import com.matrix.cache.redisson.DistributedLockHandler;
 import com.matrix.support.RedissonLock;
 
@@ -28,8 +30,26 @@ public class RedissonAutoConfig {
 	@Order(value = 1)
     @ConditionalOnMissingBean
     @DependsOn(value = {"tx-advice-advisor"})
-    public RedissonLock redissonLock() {
-        RedissonLock redissonLock = new RedissonLock();
+    public RedissonLock redissonLock(
+    		@Value("${spring.redis.model}") String model,
+			@Value("${spring.redis.host}") String host,
+			@Value("${spring.redis.port}") String port,
+			@Value("${spring.redis.name}") String name,
+			@Value("${spring.redis.password}") String password,
+			@Value("${spring.redis.sentinelPassword}") String sentinelPassword,
+			@Value("${spring.redis.sentinelMasterId}") String sentinelMasterId,
+			@Value("${spring.redis.database}") String database ) {
+		RedisConnectionProperty entity = new RedisConnectionProperty();
+		entity.setModel(model);
+		entity.setHost(host);
+		entity.setPort(port);
+		entity.setName(name);
+		entity.setPassword(password);
+		entity.setSentinelPassword(sentinelPassword);
+		entity.setSentinelMasterId(sentinelMasterId);
+		entity.setDefalutDb(database);
+		
+        RedissonLock redissonLock = new RedissonLock(entity);
         return redissonLock;
     }
 	

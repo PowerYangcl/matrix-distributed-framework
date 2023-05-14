@@ -30,13 +30,4 @@ public class RedissonProperties {
      */
     private int database;
     
-    public RedissonProperties setPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
-    public RedissonProperties setDatabase(int database) {
-        this.database = database;
-        return this;
-    }
 }

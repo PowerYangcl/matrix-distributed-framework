@@ -4,6 +4,7 @@ import org.redisson.config.Config;
 
 import com.matrix.base.BaseClass;
 import com.matrix.cache.inf.IRedissonConfigService;
+import com.matrix.cache.redis.core.mode.RedisConnectionProperty;
 import com.matrix.cache.redisson.mode.ClusterConfigImpl;
 import com.matrix.cache.redisson.mode.MasterslaveConfigImpl;
 import com.matrix.cache.redisson.mode.SentineConfigImpl;
@@ -13,6 +14,7 @@ import com.matrix.pojo.properties.RedissonProperties;
 /**
  * @description: Redisson核心配置，用于提供初始化的redisson实例
  * 		参考：https://www.cnblogs.com/qdhxhz/p/11059200.html
+ * 					https://github.com/yudiandemingzi
  * 
  * @author Yangcl
  * @date 2021-7-21 16:06:28
@@ -21,29 +23,20 @@ import com.matrix.pojo.properties.RedissonProperties;
  * @version 1.6.0.4-redisson
  */
 public class RedisTemplateRedisson extends BaseClass {
-	private RedisTemplateRedisson() {
-    }
-	private static class LazyHolder {
-		private static final RedisTemplateRedisson INSTANCE = new RedisTemplateRedisson();
-	}
-	public static final RedisTemplateRedisson getInstance() {
-		return LazyHolder.INSTANCE; 
-	}
 	
 	// // 连接类型，支持standalone-单机节点，sentinel-哨兵，cluster-集群，master-replica-主从
-	public Config createConfig() {
-		String type = this.getConfig("matrix-cache.cache_model_" + this.getConfig("matrix-core.model"));		// sentinel or cluster and so on.
+	public Config createConfig(RedisConnectionProperty config) {
 		RedissonProperties properties = new RedissonProperties();
-		properties.setType(type);
-		String url = this.getConfig("matrix-cache.lettuce_cache_url_" + this.getConfig("matrix-core.model"));
-		String port = this.getConfig("matrix-cache.lettuce_port_" + this.getConfig("matrix-core.model"));
+		properties.setType(config.getModel());		// sentinel or cluster and so on.
+		String url = config.getHost();
+		String port = config.getPort();
 		properties.setAddress(url + ":" + port);
-		properties.setUsername(this.getConfig("matrix-cache.lettuce_username_" + this.getConfig("matrix-core.model")));
-		properties.setPassword(this.getConfig("matrix-cache.lettuce_password_" + this.getConfig("matrix-core.model")));
-		properties.setDatabase(1);
+		properties.setUsername(config.getName());
+		properties.setPassword(config.getPassword());
+		properties.setDatabase(Integer.valueOf(config.getDefalutDb()) + 1);
 		
 		IRedissonConfigService redissonConfigService = null; 
-		switch (type) {
+		switch (properties.getType()) {
 			case "master-replica":
 				redissonConfigService = new MasterslaveConfigImpl();
 				break;
@@ -58,6 +51,15 @@ public class RedisTemplateRedisson extends BaseClass {
 				break;
 		}
 		return redissonConfigService.createRedissonConfig(properties);
+	}
+	
+	private RedisTemplateRedisson() {
+    }
+	private static class LazyHolder {
+		private static final RedisTemplateRedisson INSTANCE = new RedisTemplateRedisson();
+	}
+	public static final RedisTemplateRedisson getInstance() {
+		return LazyHolder.INSTANCE; 
 	}
 }
 

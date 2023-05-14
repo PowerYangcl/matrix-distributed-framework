@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LettuceStandalone extends AbstractLettuceMode {
 	
-//	TODO 事务和批量命令执行  模仿内部类的方式解决，对外暴露一个可实现的接口
+	//	TODO 事务和批量命令执行  模仿内部类的方式解决，对外暴露一个可实现的接口
 
 	// 单机、主从、哨兵三种模式
 	private RedisClient client = null;			// 2  创建客户端
@@ -53,6 +53,7 @@ public class LettuceStandalone extends AbstractLettuceMode {
 				.withPort(port)
 				.withAuthentication(username, password)
 				.withTimeout(Duration.of(300, ChronoUnit.SECONDS))		// 2秒超时
+				.withDatabase(Integer.valueOf(defalutDb))
 				.build();
 		resources = DefaultClientResources.builder()
 	    		.ioThreadPoolSize(2)							// I/O线程数 default : Runtime.getRuntime().availableProcessors()

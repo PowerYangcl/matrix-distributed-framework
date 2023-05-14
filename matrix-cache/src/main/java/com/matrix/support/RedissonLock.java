@@ -7,6 +7,7 @@ import org.redisson.api.RLock;
 import org.redisson.config.Config;
 
 import com.matrix.base.BaseClass;
+import com.matrix.cache.redis.core.mode.RedisConnectionProperty;
 import com.matrix.cache.redisson.RedisTemplateRedisson;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,15 +24,14 @@ public class RedissonLock extends BaseClass{
 	
 	private Redisson redisson;
 	
-	public RedissonLock() {
+	public RedissonLock(RedisConnectionProperty entity) {
 		try {
-			Config config = RedisTemplateRedisson.getInstance().createConfig();
+			Config config = RedisTemplateRedisson.getInstance().createConfig(entity);
 			redisson = (Redisson) Redisson.create(config);
         } catch (Exception e) {
             log.error("Redisson init error", e);
             e.printStackTrace();
-            throw new IllegalArgumentException("please input correct configurations," +
-                    "connectionType must in standalone/sentinel/cluster/master-replica");
+            throw new IllegalArgumentException("please input correct configurations, connectionType must in standalone/sentinel/cluster/master-replica");
         }
 	} 
 	
