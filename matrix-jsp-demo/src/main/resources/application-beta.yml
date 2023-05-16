@@ -2,6 +2,10 @@
 
 ##配置sql打印日志
 spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: beta.nacos-node1.com:8848
   datasource:
     matrix:  # 数据源1
       type: com.alibaba.druid.pool.DruidDataSource
@@ -10,10 +14,6 @@ spring:
       url: jdbc:mysql://beta.leader-mysql.com:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
       username: root
       password: XianYue1998@
-  cloud:
-    nacos:
-      discovery:
-        server-addr: beta.nacos-node1.com:8848
 
 
 
