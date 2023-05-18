@@ -30,14 +30,19 @@
    	<parent>	<!-- 使用最高版本的spring-boot覆盖所有引用到的第三方项目中的低版本spring-boot -->
 	   <groupId>org.springframework.boot</groupId>
 	   <artifactId>spring-boot-starter-parent</artifactId>
-	   <version>2.6.6</version>
+	   <version>2.7.10</version>
 	</parent>
     
     <properties>
         <!-- 全局性控制项目编码为UTF-8 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!-- Spring Cloud Alibaba Version|Spring Cloud Version|Spring Boot Version 各个版本依赖关系：https://github.com/alibaba/spring-cloud-alibaba/wiki/版本说明 -->
         <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
-        <spring-cloud-starter-bootstrap.version>3.1.0</spring-cloud-starter-bootstrap.version>
+        <!-- spring-cloud-starter-bootstrap 3.1.6 版本是适配Spring-Boot 2.7.10的最高版本；但他会引入一个问题：静态内部类无法使用非静态资源，原因不详。-->
+        <spring-cloud-starter-bootstrap.version>3.1.6</spring-cloud-starter-bootstrap.version>
+        
+        
         
         <druid-spring-boot-starter.version>1.2.4</druid-spring-boot-starter.version>
         <!--MyBatis-Spring		MyBatis	Spring 	Spring Framework    参考建议见官网：http://mybatis.org/spring/zh/index.html-->
@@ -111,6 +116,7 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
+            <version>8.0.28</version><!-- 2.7.*需要指定版本号 -->
         </dependency>
         
         <!-- Mybatis -->
