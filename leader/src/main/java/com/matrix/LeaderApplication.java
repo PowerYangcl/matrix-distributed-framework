@@ -26,8 +26,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @PropertySources({
-    @PropertySource(value = {"classpath:application.yml"}, ignoreResourceNotFound = false),
-    @PropertySource(value = {"classpath:application-${spring.profiles.active}.yml"}, ignoreResourceNotFound = false)
+    @PropertySource(value = {"classpath:application.yaml"}, ignoreResourceNotFound = false),
+    @PropertySource(value = {"classpath:application-${spring.profiles.active}.yaml"}, ignoreResourceNotFound = false)
 })
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class LeaderApplication {

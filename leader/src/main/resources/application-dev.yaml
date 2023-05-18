@@ -2,10 +2,6 @@
 
 ##配置sql打印日志
 spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: dev.nacos-node1.com:8848
   datasource:
     matrix:  # 数据源1
       type: com.alibaba.druid.pool.DruidDataSource

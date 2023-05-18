@@ -36,6 +36,8 @@
     <properties>
         <!-- 全局性控制项目编码为UTF-8 -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
+        <spring-cloud-starter-bootstrap.version>3.1.0</spring-cloud-starter-bootstrap.version>
         
         <druid-spring-boot-starter.version>1.2.4</druid-spring-boot-starter.version>
         <!--MyBatis-Spring		MyBatis	Spring 	Spring Framework    参考建议见官网：http://mybatis.org/spring/zh/index.html-->
@@ -53,7 +55,6 @@
         <curator.version>4.0.0</curator.version>					<!-- Curator(ZooKeeper客户端)版本 -->
         
         <httpclient.version>4.5.1</httpclient.version>
-        <spring-cloud-alibaba.version>2021.0.1.0</spring-cloud-alibaba.version>
     </properties>
     
     <dependencies>
@@ -66,8 +67,8 @@
            	<scope>import</scope>
        	</dependency>
        	
-    	<!-- spring framework -->
-        <dependency> <!-- springboot web依赖 --> 
+    	<!-- spring framework springboot web依赖-->
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>

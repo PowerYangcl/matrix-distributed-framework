@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    nacos:
+      discovery: 
+        server-addr: 127.0.0.1
+        namespace: test
+        group: test-nacos
+      config:
+        server-addr: 127.0.0.1
+        namespace: test										# 区分环境：开发环境、测试环境、预发布环境、⽣产环境
+        group: test-nacos										# 区分不同应⽤：同⼀个环境内，不同应⽤的配置，通过group来区分。
+        file-extension: yaml
+        shared-configs:
+          - dataId: constant.yaml
+            group: test-nacos									# 如果Group不为空这边必须要写Group
+            refresh: true
+          - dataId: application.yaml
+            group: test-nacos
+            refresh: true
