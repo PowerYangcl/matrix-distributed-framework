@@ -7,8 +7,8 @@ spring:
         group: leader
       config:
         server-addr: 127.0.0.1
-        namespace: mdf-dev										# 区分环境：开发环境、测试环境、预发布环境、⽣产环境
-        group: leader													# 区分不同应⽤：同⼀个环境内，不同应⽤的配置，通过group来区分。
+        namespace: mdf-dev							  # 区分环境：开发环境、测试环境、预发布环境、⽣产环境
+        group: leader										  # 区分不同应⽤：同⼀个环境内，不同应⽤的配置，通过group来区分。
         file-extension: yaml
         shared-configs:
           - dataId: application.yaml					# 记录项目固定配置信息
