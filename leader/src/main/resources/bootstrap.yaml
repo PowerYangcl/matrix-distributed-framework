@@ -11,9 +11,9 @@ spring:
         group: test-nacos										# 区分不同应⽤：同⼀个环境内，不同应⽤的配置，通过group来区分。
         file-extension: yaml
         shared-configs:
-          - dataId: constant.yaml
+          - dataId: constant.yaml			# 记录项目额外用到的信息
             group: test-nacos									# 如果Group不为空这边必须要写Group
             refresh: true
-          - dataId: application.yaml
+          - dataId: application.yaml		# 记录项目固定配置信息
             group: test-nacos
             refresh: true
