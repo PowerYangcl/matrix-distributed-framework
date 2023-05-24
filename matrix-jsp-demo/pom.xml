@@ -19,6 +19,28 @@
 	</properties>
 
 	<dependencies>
+        <!--nacos-discovery 注册中心-服务发现与注册-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+            <version>${spring-cloud-alibaba.version}</version>
+        </dependency>
+
+        <!-- nacos配置中心-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+            <version>${spring-cloud-alibaba.version}</version>
+        </dependency>
+
+        <!-- Spring Cloud 新版本默认将 Bootstrap 禁用，需要将 spring-cloud-starter-bootstrap 依赖引入到工程中 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+            <version>${spring-cloud-starter-bootstrap.version}</version>
+        </dependency>
+        
+        
 		<!-- 作为基础web示例程序包涵如下三个matrix依赖即可运行 -->
 		<dependency>
 			<groupId>com.matrix</groupId>
@@ -35,13 +57,6 @@
 			<artifactId>matrix-websocket</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-        <!--nacos-discovery 注册中心-服务发现与注册-->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>${spring-cloud-alibaba.version}</version>
-        </dependency>
 	</dependencies>
 	
     <build>

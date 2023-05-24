@@ -2,10 +2,6 @@
 
 ##配置sql打印日志
 spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: dev.nacos-node1.com:8848
   datasource:
     matrix:  # 数据源1
       type: com.alibaba.druid.pool.DruidDataSource
@@ -13,7 +9,21 @@ spring:
       url: jdbc:mysql://127.0.0.1:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
       username: root
       password: XianYue1998@
-
+  redis:
+    model: standalone
+    host: dev.leader-redis.com		# redis服务器地址（默认为loaclhost）
+    port: 6301
+    name: 
+    password: JDyun123
+    sentinelPassword: 
+    sentinelMasterId: 
+    database: 10 									# redis数据库索引(默认为0)，我们使用索引为3的数据库，避免和其他数据库冲突
+    timeout: 0   									# redis连接超时时间（单位毫秒）
+    pool:
+      max-active: 8				 # 最大可用连接数（默认为8，负数表示无限）
+      max-idle: 8					 # 最大空闲连接数（默认为8，负数表示无限）
+      min-idle: 0						 # 最小空闲连接数（默认为0，该值只有为正数才有用）
+      max-wait: -1					 # 从连接池中获取连接最大等待时间（默认为-1，单位为毫秒，负数表示无限）
 
 
 
