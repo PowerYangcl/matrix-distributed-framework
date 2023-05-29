@@ -43,7 +43,6 @@ import com.matrix.pojo.view.JobExecLogView;
 import com.matrix.pojo.view.JobGroupView;
 import com.matrix.pojo.view.JobInfoView;
 import com.matrix.service.IJobService;
-import com.matrix.service.IMatrixRouteService;
 
 
 @Service("jobService")
@@ -56,8 +55,9 @@ public class JobServiceImpl extends BaseClass implements IJobService {
 	private IJobGroupMapper jobGroupMapper;
 	@Resource
 	private IJobExecLogMapper jobExecLogMapper;
-	@Resource
-	private IMatrixRouteService matrixRouteService;
+	
+//	@Resource
+//	private IMatrixRouteService matrixRouteService;
 	
 	/**
 	 * @description: 根据定时任务名称更新执行时间等内容
