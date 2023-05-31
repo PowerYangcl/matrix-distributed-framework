@@ -9,13 +9,13 @@ COPY target/*.war /app.war
 EXPOSE 8080
 
 ENTRYPOINT ["sh","-c","java -jar \
--Dspring.profiles.active=prod \
+-Dspring.profiles.active=beta \
 -Dfile.encoding=utf8 \
--Dspring.cloud.nacos.discovery.server-addr=mdf-prod-nacos.matrix-distributed-framework:8848 \
--Dspring.cloud.nacos.discovery.namespace=mdf-prod \
+-Dspring.cloud.nacos.discovery.server-addr=mdf-beta-nacos.mdf-beta:8848 \
+-Dspring.cloud.nacos.discovery.namespace=mdf-beta \
 -Dspring.cloud.nacos.discovery.group=leader \
--Dspring.cloud.nacos.config.server-addr=mdf-prod-nacos.matrix-distributed-framework:8848 \
--Dspring.cloud.nacos.config.namespace=mdf-prod \
+-Dspring.cloud.nacos.config.server-addr=mdf-beta-nacos.mdf-beta:8848 \
+-Dspring.cloud.nacos.config.namespace=mdf-beta \
 -Dspring.cloud.nacos.config.group=leader \
 -Dspring.cloud.nacos.config.file-extension=yaml  \
 -Dspring.cloud.nacos.config.shared-configs[0].dataId=application.yaml \

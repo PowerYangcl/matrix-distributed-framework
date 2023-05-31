@@ -6,12 +6,12 @@ spring:
     matrix:  # 数据源1
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
+      url: jdbc:mysql://mdf-dev-mysql-service-inner.mdf-dev:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
       username: root
       password: XianYue1998@
   redis:
     model: standalone
-    host: dev.leader-redis.com		# redis服务器地址（默认为loaclhost）
+    host: mdf-dev-redis-service-inner.mdf-dev		# redis服务器地址（默认为loaclhost）
     port: 6301
     name: 
     password: JDyun123

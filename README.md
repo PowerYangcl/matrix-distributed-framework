@@ -51,25 +51,25 @@ http://localhost:8080/leader/login.html
 ### beta环境示例
 
 ```bash
-192.168.254.133 beta.leader-mysql.com
-192.168.254.133 beta.leader-redis.com
-192.168.254.133 beta.nacos-node1.com
+192.168.254.133 mdf-beta-mysql-service-inner.mdf-beta
+192.168.254.133 mdf-beta-redis-service-inner.mdf-beta
+192.168.254.133 mdf-beta-nacos.mdf-beta
 ```
 
 ### pre环境示例
 
 ```bash
-192.168.254.133 pre.leader-mysql.com
-192.168.254.133 pre.leader-redis.com
-192.168.254.133 pre.nacos-node1.com
+192.168.254.133 mdf-pre-mysql-service-inner.mdf-pre
+192.168.254.133 mdf-pre-redis-service-inner.mdf-pre
+192.168.254.133 mdf-pre-nacos.mdf-pre
 ```
 
 ### prod环境示例
 
 ```bash
-192.168.254.133 prod.leader-mysql.com
-192.168.254.133 prod.leader-redis.com
-192.168.254.133 prod.nacos-node1.com
+192.168.254.133 mdf-prod-mysql-service-inner.mdf-prod
+192.168.254.133 mdf-prod-redis-service-inner.mdf-prod
+192.168.254.133 mdf-prod-nacos.mdf-prod
 ```
 
 

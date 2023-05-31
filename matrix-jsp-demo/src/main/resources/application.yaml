@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet: 
-    context-path: /jsp-demo
+    context-path: /matrix-jsp-demo
 spring:
   application:
     name: matrix-jsp-demo

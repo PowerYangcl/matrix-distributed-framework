@@ -6,13 +6,12 @@ spring:
     matrix:  # 数据源1
       type: com.alibaba.druid.pool.DruidDataSource
       driver-class-name: com.mysql.cj.jdbc.Driver
-      # 192.168.254.*** beta.leader-mysql.com 此处需要覆盖host文件
-      url: jdbc:mysql://beta.leader-mysql.com:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
+      url: jdbc:mysql://mdf-beta-mysql-service-inner.mdf-beta:3306/matrix?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false&serverTimezone=Hongkong
       username: root
       password: XianYue1998@
   redis:
     model: standalone
-    host: beta.leader-redis.com
+    host: mdf-beta-redis-service-inner.mdf-beta
     port: 6379
     name: 
     password: ****************
