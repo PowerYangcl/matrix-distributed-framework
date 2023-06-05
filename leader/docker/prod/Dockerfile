@@ -11,10 +11,10 @@ EXPOSE 8080
 ENTRYPOINT ["sh","-c","java -jar \
 -Dspring.profiles.active=prod \
 -Dfile.encoding=utf8 \
--Dspring.cloud.nacos.discovery.server-addr=mdf-prod-mysql-service-inner.mdf-prod:8848 \
+-Dspring.cloud.nacos.discovery.server-addr=mdf-prod-nacos.mdf-prod:8848 \
 -Dspring.cloud.nacos.discovery.namespace=mdf-prod \
 -Dspring.cloud.nacos.discovery.group=leader \
--Dspring.cloud.nacos.config.server-addr=mdf-prod-mysql-service-inner.mdf-prod:8848 \
+-Dspring.cloud.nacos.config.server-addr=mdf-prod-nacos.mdf-prod:8848 \
 -Dspring.cloud.nacos.config.namespace=mdf-prod \
 -Dspring.cloud.nacos.config.group=leader \
 -Dspring.cloud.nacos.config.file-extension=yaml  \
