@@ -90,8 +90,6 @@ echo "$DOCKER_PWD_VAR" | docker login $REGISTRY -u "$DOCKER_USER_VAR" --password
                 sh '''alias docker=podman
 docker tag matrix-jsp-demo:latest $REGISTRY/$DOCKERHUB_NAMESPACE/matrix-jsp-demo:snapshot-$BUILD_NUMBER
 docker images'''
-                sh ''' alias docker=podman
-docker push  $REGISTRY/$DOCKERHUB_NAMESPACE/matrix-jsp-demo:snapshot-$BUILD_NUMBER'''
               }
 
             }
@@ -102,16 +100,23 @@ docker push  $REGISTRY/$DOCKERHUB_NAMESPACE/matrix-jsp-demo:snapshot-$BUILD_NUMB
       }
     }
 
-    stage('deploy to dev') {
-      steps {
-        container('maven') {
-          input(id: 'deploy-to-dev', message: 'deploy to dev?')
-          withCredentials([kubeconfigContent(credentialsId : 'KUBECONFIG_CREDENTIAL_ID' ,variable : 'KUBECONFIG_CONFIG' ,)]) {
-            sh 'mkdir -p ~/.kube/'
-            sh 'echo "$KUBECONFIG_CONFIG" > ~/.kube/config'
-            sh 'envsubst < deploy/dev-ol/deploy.yaml | kubectl apply -f -'
-          }
+    stage('default-4') {
+      parallel {
+        stage('部署到Prod环境(线上环境)') {
+          agent none
+          steps {
+            container('maven') {
+              kubernetesDeploy(enableConfigSubstitution: true, deleteResource: false, kubeconfigId: 'demo-kubeconfig', configs: 'leader/deploy/deploy-prod.yaml')
+            }
 
+          }
+        }
+
+        stage('demo-jps部署到Prod环境') {
+          agent none
+          steps {
+            sh 'ls'
+          }
         }
 
       }
