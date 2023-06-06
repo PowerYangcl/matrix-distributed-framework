@@ -25,23 +25,24 @@ spec:
         - name: aliyun-docker-hub-secrets  #提前在项目下配置访问阿里云的账号密码
       containers:
         - image: $REGISTRY/$DOCKERHUB_NAMESPACE/leader:snapshot-$BUILD_NUMBER
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            timeoutSeconds: 10
-            failureThreshold: 30
-            periodSeconds: 5
+#          readinessProbe:
+#            httpGet:
+#              path: /actuator/health
+#              port: 8080
+#            timeoutSeconds: 10
+#            failureThreshold: 30
+#            periodSeconds: 5
           imagePullPolicy: Always
           name: app
           ports:
-            - containerPort: 8080
+            - name: tcp-8080               # 必须指明，否则会出现http-0的情况
+              containerPort: 8080
               protocol: TCP
           resources:
-            limits:
-              cpu: 300m
-              memory: 600Mi
-          terminationMessagePath: /dev/termination-log
+            limits:                                 # 资源预留
+              cpu: 2000m
+              memory: 2000Mi
+          terminationMessagePath: /opt/application/logs/termination-log             # 统一日志输出
           terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -52,7 +53,26 @@ kind: Service
 metadata:
   labels:
     app: leader
-  name: leader
+  name: leader-beta-service-np
+  namespace: mdf-beta
+spec:
+  ports:
+    - name: http-8080
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 32602                    # 指定开放端口32602
+  selector:
+    app: leader
+  sessionAffinity: None
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: leader
+  name: leader-beta-service-inner
   namespace: mdf-beta
 spec:
   ports:
@@ -64,3 +84,13 @@ spec:
     app: leader
   sessionAffinity: None
   type: ClusterIP
+
+
+
+
+
+
+
+
+
+
