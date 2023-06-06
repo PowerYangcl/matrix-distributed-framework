@@ -35,7 +35,7 @@ mvn clean package -Dmaven.test.skip=true'''
           steps {
             container('maven') {
               sh '''alias docker=podman
-docker build --tag leader:latest -f leader/Dockerfile ./leader/
+docker build --tag leader:latest -f leader/docker/prod/Dockerfile ./leader/
 podman ps -a
 podman -v'''
             }
@@ -48,7 +48,7 @@ podman -v'''
           steps {
             container('maven') {
               sh '''alias docker=podman
-docker build --tag matrix-jsp-demo:latest -f matrix-jsp-demo/Dockerfile ./matrix-jsp-demo/
+docker build --tag matrix-jsp-demo:latest -f matrix-jsp-demo/docker/prod/Dockerfile ./matrix-jsp-demo/
 podman ps -a
 podman -v'''
             }
@@ -100,36 +100,14 @@ docker images'''
       }
     }
 
-    stage('default-4') {
-      parallel {
-        stage('部署到Prod环境(线上环境)') {
-          agent none
-          steps {
-            container('maven') {
-              kubernetesDeploy(enableConfigSubstitution: true, deleteResource: false, kubeconfigId: 'demo-kubeconfig', configs: 'leader/deploy/deploy-prod.yaml')
-            }
-
-          }
-        }
-
-        stage('demo-jps部署到Prod环境') {
-          agent none
-          steps {
-            sh 'ls'
-          }
-        }
-
-      }
-    }
-
-    stage('deploy to production') {
+    stage('部署到Prod环境(线上环境)') {
+      agent none
       steps {
         container('maven') {
-          input(id: 'deploy-to-production', message: 'deploy to production?')
-          withCredentials([kubeconfigContent(credentialsId : 'KUBECONFIG_CREDENTIAL_ID' ,variable : 'KUBECONFIG_CONFIG' ,)]) {
+          withCredentials([kubeconfigContent(credentialsId : 'demo-kubeconfig' ,variable : 'KUBECONFIG_CONFIG' ,)]) {
             sh 'mkdir -p ~/.kube/'
             sh 'echo "$KUBECONFIG_CONFIG" > ~/.kube/config'
-            sh 'envsubst < deploy/prod-ol/deploy.yaml | kubectl apply -f -'
+            sh 'envsubst < leader/deploy/deploy-prod.yaml | kubectl apply -f -'
           }
 
         }
@@ -146,7 +124,6 @@ docker images'''
     DOCKERHUB_NAMESPACE = 'power-matrix'
     GITHUB_ACCOUNT = 'kubesphere'
     APP_NAME = 'devops-java-sample'
-    ALIYUNHUB_NAMESPACE = 'power-matrix'
   }
   parameters {
     string(name: 'TAG_NAME', defaultValue: '', description: '')
