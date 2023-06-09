@@ -14,7 +14,7 @@ import com.matrix.util.IoUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @description: 项目入口	http://localhost:8868/jsp-demo/login.html
+ * @description: 项目入口	http://localhost:8080/matrix-jsp-demo/login.html
  * 		spring.profiles.active 配置在启动参数中【Debug Configurations】【Arguments】【VM arguments】【-Dspring.profiles.active=dev】
  * 
  * @author Yangcl
@@ -25,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @PropertySources({
-    @PropertySource(value = {"classpath:application.yml"}, ignoreResourceNotFound = false),
-    @PropertySource(value = {"classpath:application-${spring.profiles.active}.yml"}, ignoreResourceNotFound = false)
+    @PropertySource(value = {"classpath:application.yaml"}, ignoreResourceNotFound = false),
+    @PropertySource(value = {"classpath:application-${spring.profiles.active}.yaml"}, ignoreResourceNotFound = false)
 })
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MatrixJspDemoApplication {
