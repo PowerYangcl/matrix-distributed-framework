@@ -26,30 +26,61 @@ import lombok.extern.slf4j.Slf4j;
 public class DynamicScalingController {
 	
 	/**
-	 * @description: 开辟10M内存空间，1分钟后回收
-	 * 		http://localhost:8080/matrix-jsp-demo/ds/api_dynamic_scaling_request.do
+	 * @description: 模拟CPU占用，这段代码会执行一个CPU密集型的操作，即计算正弦函数。
+	 * 		http://localhost:8080/matrix-jsp-demo/ds/api_dynamic_scaling_cpu_request.do?sin=100
+	 * 		样本数据：从sin=100,0000(100万) 到 sin=1000,0000(1000万)，三个pod cpu占用率明显飙升
 	 * 
-	 * @param request
 	 * @author Yangcl
 	 * @date 2023-6-12 18:01:59
 	 * @home https://github.com/PowerYangcl
 	 * @version v-matrix-hd-test
 	 */
 	@ResponseBody
-	@RequestMapping(value = "api_dynamic_scaling_request", produces = { "application/json;charset=utf-8" })
-	public Result<?> apiDynamicScalingRequest(HttpServletRequest request, HttpSession session){ 
-		byte[] memory = null;
+	@RequestMapping(value = "api_dynamic_scaling_cpu_request", produces = { "application/json;charset=utf-8" })
+	public Result<?> apiDynamicScalingCpuRequest(Integer sin, HttpServletRequest request, HttpSession session){ 
+		double value = 0;
         try {
-        	memory = new byte[1024 * 1024 * 10];		// 开辟10M内存空间
-        	log.info("api dynamic scaling：" + memory.length);
-			Thread.sleep(60000);	// Sleep for 1 minute
-		} catch (InterruptedException e) {
+        	if(sin == null || sin <= 0) {
+        		sin = 10000;
+    		}
+        	for (int i = 0; i < sin; i++) {		// Perform some CPU-intensive operation
+        		value += Math.sin(i);
+            }
+		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			memory = null;		// Deallocate memory
+			log.info("api dynamic scaling cpu request Math.sin(" + sin + ") = " + value);
 		}
-		return Result.SUCCESS("api dynamic scaling 10 M");
+		return Result.SUCCESS("api dynamic scaling cpu sin += " + value);
 	}
+	
+	/**
+	 * @description: 模拟内存占用
+	 * 		http://localhost:8080/matrix-jsp-demo/ds/api_dynamic_scaling_mem_request.do?mem=20
+	 * 
+	 * @param mem
+	 * @author Yangcl
+	 * @date 2023-6-13 15:00:31
+	 * @home https://github.com/PowerYangcl
+	 * @version v-matrix-hd-test
+	 */
+	@ResponseBody
+	@RequestMapping(value = "api_dynamic_scaling_mem_request", produces = { "application/json;charset=utf-8" })
+	public Result<?> apiDynamicScalingMemRequest(Integer mem, HttpServletRequest request, HttpSession session){ 
+		if(mem == null || mem <= 0) {
+			mem = 10;
+		}
+		byte[] memory = new byte[1024 * 1024 * mem];		// 开辟10M内存空间
+		try {
+			Thread.sleep(1000);	 
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		log.info("api dynamic scaling2 used：" + mem + "Mb  MaxMemory: " + Runtime.getRuntime().maxMemory() / 1024 / 1024 + "Mb  TotalMemory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + "Mb  FreeMemory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + "Mb");
+		
+		return Result.SUCCESS("api dynamic scaling " + mem + " M");
+	}
+	
 }
 
 
